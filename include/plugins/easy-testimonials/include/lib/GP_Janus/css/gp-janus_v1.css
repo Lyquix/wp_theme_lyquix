@@ -1,0 +1,47 @@
+.gp_janus {
+	border: 1px solid lightgray !important;
+	position: relative;
+	margin-top: 5px !important;
+	margin-bottom: 5px !important;
+	padding-top: 25px !important;
+}
+
+.gp_janus:last-child {
+	margin-bottom: 20px !important;
+}
+
+.gp_janus legend {
+	background: #e4e5e6  none repeat scroll 0 0;
+    box-sizing: border-box;
+    color: black;
+    padding: 10px 25px 10px 5px;
+    width: 100%;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+}
+
+.gp_janus legend::after {
+	content: ' ';
+	height: 0;
+	position: absolute;
+	width: 0;
+	right: 12px;
+	top: 15px;
+	border: 5px solid transparent;
+	border-top-color: #333;
+}
+
+.gp_janus_open {
+	border-width: 1px !important;
+	padding-top: 45px !important;
+	padding-bottom: 10px !important;
+}
+
+.gp_janus_open legend::after {
+	border-top-color: transparent;
+	border-bottom-color: #333;
+	top: 10px;
+}
+

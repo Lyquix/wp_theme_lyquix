@@ -1,0 +1,515 @@
+.easy_testimonials_admin_wrap .form-table {
+    clear: none
+}
+
+.easy_testimonials_admin_wrap h3 {
+    border-bottom: 1px solid #ccc;
+    font-size: 24px;
+    margin-top: 30px;
+    padding-bottom: 10px
+}
+
+.easy_testimonials_admin_wrap .stars {
+    margin-bottom: 5px;
+    white-space: nowrap
+}
+
+.easy_testimonials_admin_wrap .easy-t-radio-button {
+    float: left;
+    margin: 0 20px 10px 0;
+    max-width: 367px;
+    width: 30%
+}
+
+.easy_testimonials_admin_wrap .form-table.easy_t_options h4 {
+    clear: both;
+    margin: 0 0 .5em;
+    padding: 1.33em 0 0;
+    text-decoration: underline
+}
+
+.easy_testimonials_admin_wrap .easy-t-radio-button em {
+    margin-left: 20px
+}
+
+.easy_testimonials_admin_wrap .plugin_is_registered {
+    background-color: #fff;
+    border-left: 4px solid green;
+    box-shadow: 0 1px 1px 0 #d3d3d3;
+    color: green;
+    font-weight: 700;
+    padding: 10px 15px
+}
+
+.easy_testimonials_admin_wrap .plugin_is_not_registered {
+    background-color: #fff;
+    border-left: 6px solid #ff4500;
+    box-shadow: 0 1px 1px 0 #d3d3d3;
+    color: #ff4500;
+    font-weight: 700;
+    padding: 10px 15px
+}
+
+.easy_testimonials_admin_wrap .plugin_is_not_registered a {
+    color: #0074a2;
+    text-decoration: underline
+}
+
+.form-table .ezt_theme_description {
+    font-size: 12px;
+    font-style: italic;
+    padding: 10px
+}
+
+.easy_testimonials_admin_wrap {
+    position: relative
+}
+
+.sidebar_hello_t.hello_t_banner {
+    background: #fff;
+    padding-right: 40px;
+    margin-top: 30px
+}
+
+.easy_testimonials_not_registered,
+.easy_testimonials_registered {
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+    padding: 10px 15px;
+    font-weight: 700;
+    background-color: #fff
+}
+
+.sidebar_hello_t.hello_t_banner .smallBlueButton {
+    font-size: 26px;
+    text-align: center;
+    width: 236px
+}
+
+.sidebar_hello_t.hello_t_banner h3 {
+    line-height: 1.25;
+    margin-top: 30px
+}
+
+.hello_t_banner p {
+    font-size: 16px
+}
+
+.easy_testimonials_registered {
+    border-left: 4px solid green;
+    color: green
+}
+
+.easy_testimonials_not_registered {
+    border-left: 4px solid red;
+    color: red
+}
+
+.gp_upload_file_wrapper p:first-child {
+    font-weight: 700;
+    vertical-align: middle;
+    margin-bottom: 3px
+}
+
+.gp_upload_file_wrapper #upload {
+    background-color: #fff;
+    font-weight: 400;
+    display: block;
+    padding: 4px;
+    margin-top: 6px;
+    margin-left: 2px;
+    border: 1px solid #d3d3d3
+}
+
+.gp_upload_file_wrapper p.submit {
+    margin-top: 3px
+}
+
+a.approve_testimonial,
+a.trash_testimonial {
+    cursor: pointer;
+    white-space: nowrap
+}
+
+#easy_t_recent_submissions tr.updated {
+    background-color: #ffffe0
+}
+
+.ezt_submission_form_settings input[type=text],
+.ezt_submission_form_settings textarea {
+    min-width: 400px
+}
+
+.easy_t_preview {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    margin: 25px 0;
+    padding: 50px
+}
+
+.easy_t_options fieldset {
+    padding: 20px!important
+}
+
+.easy_testimonials_not_registered_box{background-color:#fff;border-left:4px solid red;box-shadow:1px 1px 1px #d3d3d3;font-weight:700;padding:15px;width:auto;max-width:860px;margin:25px 2px}.easy_testimonials_not_registered_box h3{border-bottom:1px solid #d3d3d3;color:#008b8b;margin-top:0;padding-bottom:12px}div.easy_testimonials_not_registered_box{box-sizing:border-box;padding-bottom:8px;padding-left:20px;width:100%}div.easy_testimonials_not_registered_box>p{margin-left:2px}
+
+/*gp admin quicknav*/
+.gp-admin-quicknav-ul {
+    list-style-type: disc;
+    padding: 0 0 0 18px;
+}
+
+.gp-admin-quicknav-h3 {
+    padding-top: 40px;
+}
+
+
+/* new sc generator */
+#easy-t-shortcode-generator #insert-media-button {
+    display: none;
+}
+
+#easy-t-shortcode-generator .mce-toolbar-grp {
+    display: none;
+}
+
+
+/* New Signup Form */
+@media only screen and (min-width: 1074px) {
+	.easy_testimonials_admin_wrap.not-pro  {
+		padding-right: 370px;
+	}
+}
+
+#signup_wrapper {
+    bottom: -65px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 12px;
+    position: absolute;
+    right: -10px;
+    top: 0px;
+    width: 350px;
+}
+
+#signup_wrapper .customer_testimonial {
+	border-top: 1px solid #ccc;
+	color: gray;
+    font-size: 17px;
+    font-style: italic;
+    padding-top: 20px;	
+}
+
+#signup_wrapper .customer_testimonial .author {
+	display: block;
+    font-size: 14px;
+    font-style: normal;
+    margin-right: 18px;
+    margin-top: 13px;
+    text-align: right;
+}
+
+.easy_testimonials_admin_wrap .easy_testimonials_admin_wrap #signup_wrapper .respect
+{
+	color: gray;
+	font-style: italic;
+	font-weight: bold;
+	padding-left: 5px;
+}
+				
+.easy_testimonials_admin_wrap .green_bg {				
+	background: #009b21; /* Old browsers */
+	background: -moz-linear-gradient(top,  #009b21 0%, #007719 50%, #009b21 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#009b21), color-stop(50%,#007719), color-stop(100%,#009b21)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #009b21 0%,#007719 50%,#009b21 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #009b21 0%,#007719 50%,#009b21 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #009b21 0%,#007719 50%,#009b21 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #009b21 0%,#007719 50%,#009b21 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#009b21', endColorstr='#009b21',GradientType=0 ); /* IE6-9 */
+}
+.easy_testimonials_admin_wrap .yellow_orange_bg {	
+	background: rgba(241,231,103,1);
+	background: -moz-linear-gradient(top, rgba(241,231,103,1) 0%, rgba(252,220,75,1) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(241,231,103,1)), color-stop(100%, rgba(252,220,75,1)));
+	background: -webkit-linear-gradient(top, rgba(241,231,103,1) 0%, rgba(252,220,75,1) 100%);
+	background: -o-linear-gradient(top, rgba(241,231,103,1) 0%, rgba(252,220,75,1) 100%);
+	background: -ms-linear-gradient(top, rgba(241,231,103,1) 0%, rgba(252,220,75,1) 100%);
+	background: linear-gradient(to bottom, rgba(241,231,103,1) 0%, rgba(252,220,75,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f1e767', endColorstr='#fcdc4b', GradientType=0 );
+}
+/* MailChimp Form Embed Code - Slim - 08/17/2011 */
+.easy_testimonials_admin_wrap .topper {	
+    color: darkred;
+    padding: 4px 22px 10px;
+	border-top-left-radius: 5px;	
+	border-top-right-radius: 5px;
+	margin-top: 0px;
+}
+.easy_testimonials_admin_wrap .topper h3 {
+    color: #757575;
+    font-family: arial;
+    font-size: 18px;
+    font-weight: bold !important;
+    margin-bottom: 14px;
+}
+.easy_testimonials_admin_wrap .topper .upgrade_link {
+	display: block;
+	padding-bottom: 10px;
+}
+.easy_testimonials_admin_wrap #mc_embed_signup .save_now {
+	margin-top: 10px;
+	padding-left: 10px;
+}
+
+.easy_testimonials_admin_wrap #mc_embed_signup form {display:block; position:relative; text-align:left; padding:10px 0 10px 3%}
+.easy_testimonials_admin_wrap #mc_embed_signup h2 {font-weight:bold; padding:0; margin:15px 0; font-size:1.4em;}
+.easy_testimonials_admin_wrap #mc_embed_signup input {-webkit-appearance:none;}
+.easy_testimonials_admin_wrap #mc_embed_signup input[type=checkbox]{-webkit-appearance:checkbox;}
+.easy_testimonials_admin_wrap #mc_embed_signup input[type=radio]{-webkit-appearance:radio;}
+.easy_testimonials_admin_wrap #mc_embed_signup input:focus {border-color:#333;}
+.easy_testimonials_admin_wrap #mc_embed_signup .button {clear:both; background-color: #aaa; border: 0 none; border-radius:4px; color: #FFFFFF; cursor: pointer; display: inline-block; font-size:15px; font-weight: bold; height: 32px; line-height: 32px; margin: 0 5px 10px 0; padding:0; text-align: center; text-decoration: none; vertical-align: top; white-space: nowrap; width: auto;}
+.easy_testimonials_admin_wrap #mc_embed_signup .button:hover {background-color:#777;}
+.easy_testimonials_admin_wrap #mc_embed_signup .small-meta {font-size: 11px;}
+.easy_testimonials_admin_wrap #mc_embed_signup .nowrap {white-space:nowrap;}     
+.easy_testimonials_admin_wrap #mc_embed_signup .clear {clear:none; display:inline;}
+
+.easy_testimonials_admin_wrap #signup_wrapper #mc_embed_signup {
+	padding-bottom: 5px;
+	border-bottom-left-radius: 5px;	
+	border-bottom-right-radius: 5px;	
+}
+.easy_testimonials_admin_wrap #mc_embed_signup h3 { 
+	color: #008888;
+    display: block;
+    font-size: 19px;
+    font-weight: bold;
+    margin: 0;
+    padding-bottom: 0;
+}
+.easy_testimonials_admin_wrap #mc_embed_signup p.pitch {  
+	color: #454545;
+    margin-bottom: 20px;
+}
+.easy_testimonials_admin_wrap #mc_embed_signup .secure {
+	text-align: center;
+	font-size: 8px;
+	line-height: 16px;
+	font-weight: bold;
+	font-family: Verdana, sans-serif;
+	text-transform: uppercase;
+	color: darkgray;
+	padding-top: 8px;
+	padding-bottom: 8px;
+}
+
+.easy_testimonials_admin_wrap #mc_embed_signup .secure img {
+	display: inline-block;
+	margin-right: 5px;
+    position: relative;
+    top: 2px;
+}
+
+
+.easy_testimonials_admin_wrap #mc_embed_signup .explain {
+	color: #808080;
+	width: auto;
+}
+.easy_testimonials_admin_wrap #mc_embed_signup label {
+	color: steelblue;
+	display: block;
+	font-size: 15px;
+	font-weight: bold;
+	padding-bottom: 10px;
+}
+.easy_testimonials_admin_wrap #mc_embed_signup input.name,
+.easy_testimonials_admin_wrap #mc_embed_signup input.email {
+	display:block;
+	padding:8px 0;
+	margin:0 4% 10px 0;
+	text-indent:5px;
+	width:100%;
+	min-width:130px;
+}
+.easy_testimonials_admin_wrap #mc_embed_signup .smallBlueButton {
+	margin: 10px 0;
+    width: 100%;
+}
+
+
+.easy_testimonials_admin_wrap #mc_embed_signup div#mce-responses {float:left; top:-1.4em; padding:0em .5em 0em .5em; overflow:hidden; width:90%;margin: 0 5%; clear: both;}
+.easy_testimonials_admin_wrap #mc_embed_signup div.response {margin:1em 0; padding:1em .5em .5em 0; font-weight:bold; float:left; top:-1.5em; z-index:1; width:80%;}
+.easy_testimonials_admin_wrap #mc_embed_signup #mce-error-response {display:none;}
+.easy_testimonials_admin_wrap #mc_embed_signup #mce-success-response {color:#529214; display:none;}
+.easy_testimonials_admin_wrap #mc_embed_signup label.error {display:block; float:none; width:auto; margin-left:1.05em; text-align:left; padding:.5em 0;}		
+.easy_testimonials_admin_wrap #mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
+.easy_testimonials_admin_wrap #mc_embed_signup{    
+			background-color: white;
+			border: 1px solid #DCDCDC;
+			clear: left;
+			color: #008000;
+			font: 14px Helvetica,Arial,sans-serif;
+			margin-top: 0px;
+			margin-bottom: 0px;
+			max-width: 800px;
+			padding: 15px 12px 5px;
+}
+.easy_testimonials_admin_wrap #mc_embed_signup form{padding: 10px}
+
+.easy_testimonials_admin_wrap #mc_embed_signup .special-offer {
+	color: #808080;
+	margin: 0;
+	padding: 0 0 3px;
+	text-transform: uppercase;
+}
+.easy_testimonials_admin_wrap #mc_embed_signup .button {
+  background: #5dd934;
+  background-image: -webkit-linear-gradient(top, #5dd934, #549e18);
+  background-image: -moz-linear-gradient(top, #5dd934, #549e18);
+  background-image: -ms-linear-gradient(top, #5dd934, #549e18);
+  background-image: -o-linear-gradient(top, #5dd934, #549e18);
+  background-image: linear-gradient(to bottom, #5dd934, #549e18);
+  -webkit-border-radius: 5;
+  -moz-border-radius: 5;
+  border-radius: 5px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 20px;
+  padding: 10px 20px 10px 20px;
+  line-height: 1.5;
+  height: auto;
+  margin-top: 7px;
+  text-decoration: none;
+  width: 100%;
+  text-align: center;
+}
+
+.easy_testimonials_admin_wrap #mc_embed_signup .button:hover {
+  background: #65e831;
+  background-image: -webkit-linear-gradient(top, #65e831, #5dd934);
+  background-image: -moz-linear-gradient(top, #65e831, #5dd934);
+  background-image: -ms-linear-gradient(top, #65e831, #5dd934);
+  background-image: -o-linear-gradient(top, #65e831, #5dd934);
+  background-image: linear-gradient(to bottom, #65e831, #5dd934);
+  text-decoration: none;
+}
+.easy_testimonials_admin_wrap #signup_wrapper {
+	max-width: 800px;
+}
+@media only screen and (max-width: 1075px) {
+	.easy_testimonials_admin_wrap #signup_wrapper {
+		position: static;
+		margin: 30px 0 0 -10px;
+		width: 550px;
+	}
+}
+.easy_testimonials_admin_wrap #signup_wrapper .u_to_p
+{
+	font-size: 10px;
+	margin: 0;
+	padding: 2px 0 0 3px;
+	text-align: center;	
+}
+
+.easy_testimonials_admin_wrap .smallBlueButton {
+    background: linear-gradient(to bottom, #79bbff 5%, #378de5 100%) repeat scroll 0 0 #79bbff;
+    border: 1px solid #337bc4;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px -2px #111, 0 2px 5px 0 rgba(255, 255, 255, 0.3) inset;
+    color: #ffffff;
+    cursor: pointer;
+    display: inline-block;
+    font-family: arial;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 12px 24px;
+    text-decoration: none;
+    text-shadow: 0 1px 0 #528ecc;
+}
+.easy_testimonials_admin_wrap .smallBlueButton:hover {
+    background: linear-gradient(to bottom, #378de5 5%, #79bbff 100%) repeat scroll 0 0 #378de5;
+}
+.easy_testimonials_admin_wrap .smallBlueButton:active {
+    position: relative;
+    top: 1px;
+}
+
+#mc-show-coupon-codes .upgrade_link{
+    padding: 10px 0 20px !important;
+	text-align: center;
+}
+
+#mc-show-coupon-codes .upgrade_link a {
+	color: white;
+    margin: 0 0 15px;
+    text-align: center;
+}
+
+#mc-show-coupon-codes .upgrade_link .package a {
+	font-size: 22px;
+}
+
+#mc-show-coupon-codes .upgrade_link .desc a {
+	color: wheat;
+	font-size: 18px;	
+}
+
+#mc-show-coupon-codes .thx {
+	padding-bottom: 10px;
+}
+
+#mc-show-coupon-codes .package a {
+    display: inline-block;
+    font-weight: bold;
+	font-size: 18px;
+    margin-bottom: 6px;
+    text-decoration: none;
+}
+
+#mc-show-coupon-codes .desc a {
+	color: gray;
+    text-decoration: none;
+}
+
+#mc-show-coupon-codes.modern {
+    padding: 20px 10px 10px;
+}
+#mc-show-coupon-codes.modern h3 {
+    border-bottom: 0 none;
+}
+#mc-show-coupon-codes.modern .thx {
+    color: gray;
+}
+
+.easy_testimonials_admin_wrap #mc_embed_signup .features {
+    margin-top: 0px;
+    margin-bottom: 5px;
+    padding: 10px 20px 10px;
+}
+.easy_testimonials_admin_wrap #mc_embed_signup .features strong {
+	display: block;
+    font-size: 18px;
+    line-height: 26px;
+    margin-bottom: 14px;
+}
+
+.easy_testimonials_admin_wrap #mc_embed_signup .features ul {
+	padding-left: 15px;
+}
+
+.easy_testimonials_admin_wrap #mc_embed_signup .features ul li {
+	color: gray;
+	list-style-type: disc;
+	padding-bottom: 2px;
+	padding-left: 3px;
+	margin-left: 15px;
+	max-width: 85%;
+}		
+.easy_testimonials_admin_wrap fieldset {
+	border: 1px solid #ccc ;
+	display: block;
+	margin: 20px 0 ;
+	padding: 0 20px ;
+}
+.easy_testimonials_admin_wrap fieldset legend{
+	font-size: 18px;
+	font-weight: bold;
+}

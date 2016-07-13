@@ -1,0 +1,24 @@
+.bikeshed_typography {
+	/* margin-bottom: 20px; */
+}
+
+.bikeshed .select_wrapper {
+	display: inline-block;
+	margin-right: 10px;
+}
+
+.bikeshed .select_wrapper select{
+	min-width: 150px;
+	
+}
+
+.bikeshed .color_picker_wrapper {
+	display: inline-block;
+	height: 28px;
+	vertical-align: middle;
+	margin-top: 3px;
+}
+.bikeshed .color_picker_wrapper .wp-picker-holder {
+	position: absolute;
+	z-index: 9998;
+}

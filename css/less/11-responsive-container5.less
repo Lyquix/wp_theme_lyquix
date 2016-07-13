@@ -1,0 +1,65 @@
+// Responsive layout styles for 5 blocks in small screens
+// --------------------------------------------------------------------
+// Provides the classes for creating a responsive grid-based layout
+
+// Container
+// --------------------------------------------------------------------
+// The container class allows to wrap the page content to fit it within the available
+// screen size. Using media queries the width of the container class is adjusted
+// automagically. By default the grid system allows up to 20 blocks. To setup a narrower
+// site, for example 12 blocks, you need to comment the rules for lg and xl screens
+// and change the one for 12 blocks to include lg and xl screens.
+
+.container {
+	margin:0 auto;
+}
+
+body[screen=xs] {
+	.container {
+		width: (@blk5-width + @blk-padding-border-margin-width * 2);	// xs screen - 5 blocks
+	}
+	
+	&.blkfluid-xs .container {
+		width: 100%;
+	}
+}
+
+body[screen=sm] {
+	.container {
+		width: (@blk10-width + @blk-padding-border-margin-width * 2);	// sm screen - 10 blocks
+	}
+	
+	&.blkfluid-sm .container {
+		width: 100%;
+	}
+}
+  
+body[screen=md] {
+  .container {
+    width: (@blk15-width + @blk-padding-border-margin-width * 2); // md screen - 15 blocks
+  }
+  
+  &.blkfluid-md .container {
+    width: 100%;
+  }
+}
+
+body[screen=lg] {
+  .container {
+    width: (@blk20-width + @blk-padding-border-margin-width * 2); // lg screen - 20 blocks
+  }
+  
+  &.blkfluid-lg .container {
+    width: 100%;
+  }
+}
+  
+body[screen=xl] { 
+  .container {
+    width: (@blk25-width + @blk-padding-border-margin-width * 2); // xl screen - 25 blocks
+  }
+  
+  &.blkfluid-xl .container {
+    width: 100%;
+  }
+}

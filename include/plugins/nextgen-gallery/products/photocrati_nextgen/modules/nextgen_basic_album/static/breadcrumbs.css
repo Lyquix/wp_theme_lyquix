@@ -1,0 +1,23 @@
+.ngg-breadcrumbs {
+    list-style: none;
+    overflow: hidden;
+    margin: 0;
+    padding: .5em 0 .5em 0;
+}
+
+ul.ngg-breadcrumbs > li {
+    float: left;
+    padding: 0 .3em 0 .15em;
+    margin: 0;
+    vertical-align: middle;
+    border: none;
+    list-style-type: none;
+}
+
+.ngg-breadcrumbs li a {
+}
+
+.ngg-breadcrumbs .ngg-breadcrumb-divisor {
+    margin: 0;
+    padding: 0 0 0 .15em;
+}

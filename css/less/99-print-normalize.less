@@ -1,0 +1,45 @@
+// Print normalize
+// --------------------------------------------------------------------
+// Basic styles to produce usable print versions
+
+@media print {
+    // Avoid breaking fixed-width text blocks and quotes
+    code,
+    pre,
+    blockquote {
+        page-break-inside: avoid;
+    }
+
+    // Add table header on every page, and avoid breaking rows
+    thead {
+        display: table-header-group;
+    }
+
+    tr {
+        page-break-inside: avoid;
+    }
+    
+    // Avoid breaking images
+    img {
+        page-break-inside: avoid;
+    }
+    
+    // Allow up to 3 orphan/widow lines
+    p,
+    h2,
+    h3 {
+        orphans: 3;
+        widows: 3;
+    }
+    
+    // Don't break right after a heading'
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        page-break-after: avoid;
+    }
+    
+}

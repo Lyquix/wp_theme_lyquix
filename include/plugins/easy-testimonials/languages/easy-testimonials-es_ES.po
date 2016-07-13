@@ -1,0 +1,134 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2015-09-29 16:04-0400\n"
+"PO-Revision-Date: 2015-09-29 16:05-0400\n"
+"Last-Translator: Richard Gabriel <richard@illuminatikarate.com>\n"
+"Language-Team: \n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.4\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: __;_e;_x\n"
+"X-Poedit-SearchPath-0: easy-testimonials.php\n"
+"X-Poedit-SearchPath-1: include\n"
+"X-Poedit-SearchPath-2: readme.txt\n"
+"X-Poedit-SearchPathExcluded-0: include/css\n"
+"X-Poedit-SearchPathExcluded-1: include/js\n"
+"X-Poedit-SearchPathExcluded-2: include/img\n"
+
+#: easy-testimonials.php:660
+msgid "Testimonial Category"
+msgstr "Testimonio Categoría"
+
+#: easy-testimonials.php:1058
+msgid "Previous Testimonials"
+msgstr "Previous Testimonios"
+
+#: easy-testimonials.php:1059
+msgid "Next Testimonials"
+msgstr "Next Testimonios"
+
+#: easy-testimonials.php:1534
+msgid "&lt;&lt; Prev"
+msgstr ""
+
+#: easy-testimonials.php:1535
+msgid "Next &gt;&gt;"
+msgstr ""
+
+#: include/easy_testimonial_options.php:182
+msgid "Basic Options"
+msgstr ""
+
+#: include/easy_testimonial_options.php:183
+msgid "Display Options"
+msgstr ""
+
+#: include/easy_testimonial_options.php:184
+msgid "Themes"
+msgstr ""
+
+#: include/easy_testimonial_options.php:185
+msgid "Submission Form Options"
+msgstr ""
+
+#: include/easy_testimonial_options.php:186
+msgid "Shortcode Generator"
+msgstr ""
+
+#: include/easy_testimonial_options.php:187
+msgid "Import & Export"
+msgstr ""
+
+#: include/easy_testimonial_options.php:188
+msgid "Help & Instructions"
+msgstr ""
+
+#: include/easy_testimonial_options.php:451
+#: include/easy_testimonial_options.php:485
+#: include/easy_testimonial_options.php:493
+#: include/easy_testimonial_options.php:596
+#: include/easy_testimonial_options.php:1402
+#: include/easy_testimonial_options.php:1510
+msgid "Save Changes"
+msgstr ""
+
+#: include/easy_testimonial_options.php:462
+#: include/easy_testimonial_options.php:504
+#: include/easy_testimonial_options.php:1014
+msgid "Upgrade to Easy Testimonials Pro now"
+msgstr ""
+
+#: include/easy_testimonial_options.php:462
+msgid "to unlock all 75+ themes!"
+msgstr ""
+
+#: include/easy_testimonial_options.php:504
+#: include/easy_testimonial_options.php:1014
+msgid "and get access to new features and settings."
+msgstr ""
+
+#: include/easy_testimonial_options.php:1513
+msgid "Import From Hello Testimonials Now"
+msgstr ""
+
+#: include/lib/ik-custom-post-type.php:29
+msgid "Testimonial"
+msgstr "Testimonio"
+
+#: include/lib/ik-custom-post-type.php:30
+msgid "Testimonials"
+msgstr "Testimonios"
+
+#: include/lib/ik-custom-post-type.php:44
+#: include/lib/ik-custom-post-type.php:45
+msgid "Add New Testimonial"
+msgstr ""
+
+#: include/lib/ik-custom-post-type.php:46
+msgid "Edit Testimonial"
+msgstr ""
+
+#: include/lib/ik-custom-post-type.php:47
+msgid "New Testimonial"
+msgstr ""
+
+#: include/lib/ik-custom-post-type.php:48
+msgid "View Testimonial"
+msgstr ""
+
+#: include/lib/ik-custom-post-type.php:49
+msgid "Search Testimonial"
+msgstr ""
+
+#: include/lib/ik-custom-post-type.php:50
+msgid "No testimonials found"
+msgstr ""
+
+#: include/lib/ik-custom-post-type.php:51
+msgid "No testimonials found in Trash"
+msgstr ""
