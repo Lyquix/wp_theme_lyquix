@@ -18,9 +18,12 @@ $tmpl_url = get_template_directory_uri();
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="profile" href="http://gmpg.org/xfn/11">
 	<?php if ( is_singular() && pings_open( get_queried_object() ) ) : ?>
-	<script src="<?php echo $tmpl_url; ?>/js/lyquix.js?v=<?php echo date("YmdHis", filemtime($tmpl_path . '/js/lyquix.js')); ?>"></script>
 	<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
 	<?php endif;
+	wp_head(); ?>
+	<script src="<?php echo $tmpl_url; ?>/js/functions.js?v=<?php echo date("YmdHis", filemtime($tmpl_path . '/js/lyquix.js')); ?>"></script>
+	<script src="<?php echo $tmpl_url; ?>/js/lyquix.js?v=<?php echo date("YmdHis", filemtime($tmpl_path . '/js/lyquix.js')); ?>"></script>
+	<?php 
 	echo "<script>
 	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -30,7 +33,7 @@ $tmpl_url = get_template_directory_uri();
 	echo get_option('analytics_code')."', 'auto');
 	ga('send', 'pageview');
 	</script>";
-	wp_head(); ?>
+	?>
 </head>
 
 <body <?php body_class(); ?>>
@@ -39,7 +42,7 @@ $tmpl_url = get_template_directory_uri();
 		<!--<a class="skip-link screen-reader-text" href="#content"><?php _e( 'Skip to content', 'twentysixteen' ); ?></a>-->
 
 		<header id="masthead" class="site-header" role="banner">
-			<div class="site-header-main <?php echo (get_option('header_class'))?>">
+			<div class="site-header-main <?php echo (get_theme_mod('header_class'))?>">
 				<div class="site-branding">
 					<?php twentysixteen_the_custom_logo(); ?>
 
@@ -58,7 +61,7 @@ $tmpl_url = get_template_directory_uri();
 				<?php if ( has_nav_menu( 'primary' ) || has_nav_menu( 'social' ) ) : ?>
 					<button id="menu-toggle" class="menu-toggle"><?php _e( 'Menu', 'twentysixteen' ); ?></button>
 
-					<div id="site-header-menu" class="site-header-menu <?php echo get_option('main_nav_class')?>">
+					<div id="site-header-menu" class="site-header-menu <?php echo get_theme_mod('main_nav_class')?>">
 						<?php if ( has_nav_menu( 'primary' ) ) : ?>
 							<nav id="site-navigation" class="main-navigation" role="navigation" aria-label="<?php esc_attr_e( 'Primary Menu', 'twentysixteen' ); ?>">
 								<?php
@@ -106,5 +109,5 @@ $tmpl_url = get_template_directory_uri();
 				<?php endif; ?>
 			</div><!-- .site-header-main -->
 		</header><!-- .site-header -->
-		<?php $main_class = get_option('main_wrapper_class');?>
+		<?php $main_class = get_theme_mod('main_wrapper_class');?>
 		<div id="content" class="site-content <?php echo $main_class;?>">

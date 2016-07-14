@@ -1,7 +1,7 @@
 <?php
 /* Template Name: One Column Page */
 get_header();?>
-<div id="primary" class="content-area">
+<div id="primary" class="content-area <?php echo get_theme_mod('primary_class')?>">
 	<main id="main" class="site-main" role="main">
 		<?php
 		// Start the loop.
@@ -26,7 +26,7 @@ get_header();?>
 </div><!-- .content-area -->
 
 <?php if ( is_active_sidebar( 'sidebar-1' )  ) : ?>
-	<aside id="secondary" class="sidebar widget-area" role="complementary">
+	<aside id="secondary" class="sidebar widget-area <?php echo get_theme_mod('secondary_class')?>" role="complementary">
 		<?php dynamic_sidebar( 'sidebar-1' ); ?>
 	</aside><!-- .sidebar .widget-area -->
 <?php endif;

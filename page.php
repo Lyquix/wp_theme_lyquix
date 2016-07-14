@@ -12,8 +12,8 @@
  */
 
 get_header();?>
-<div id="primary" class="content-area <?php echo get_option('content_wrapper_class')?>">
-	<main id="main" class="site-main <?php echo get_option('primary_class')?>" role="main">
+<div id="primary" class="content-area <?php echo get_theme_mod('primary_class')?>">
+	<main id="main" class="site-main" role="main">
 		<?php
 		// Start the loop.
 		while ( have_posts() ) : the_post();

@@ -102,7 +102,15 @@ endif; // twentysixteen_header_style
  */
 function twentysixteen_customize_register( $wp_customize ) {
 	$color_scheme = twentysixteen_get_color_scheme();
-
+	$wp_customize->get_setting( 'header_class' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'main_nav_class' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'main_wrapper_class' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'content_wrapper_class' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'primary_class' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'secondary_class' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'widget_area_1_class' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'widget_area_2_class' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'footer_class' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'blogname' )->transport         = 'postMessage';
 	$wp_customize->get_setting( 'blogdescription' )->transport  = 'postMessage';
 
@@ -183,6 +191,102 @@ function twentysixteen_customize_register( $wp_customize ) {
 	$wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'secondary_text_color', array(
 		'label'       => __( 'Secondary Text Color', 'twentysixteen' ),
 		'section'     => 'colors',
+	) ) );
+	//Add custom settings for the lyquix template
+	$wp_customize->add_setting( 'header_color' , array(
+	    'default'     => $color_scheme[4],
+	    'sanitize_callback' => 'sanitize_hex_color',
+	    'transport'   => 'postMessage',
+	) );			
+	$wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'header_color', array(
+		'label'        => __( 'Header Color', 'twentysixteen' ),
+		'section'    => 'colors',
+	) ) );
+	//Add custom functions for Lyquix Theme
+	$wp_customize->add_section( 'custom_theme_options' , array(
+	    'title'      => __( 'Custom Theme Options', 'lyquix_theme' ),
+	    'priority'   => 30,
+	) );
+	$wp_customize->add_setting( 'header_class' , array(
+		'type'        => 'theme_mod',
+	    'transport'   => 'postMessage',
+	) );			
+	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'header_class', array(
+		'label'        => __( 'Header Class', 'lyquix_theme' ),
+		'section'    => 'custom_theme_options',
+		'settings'   => 'header_class',
+	) ) );
+	$wp_customize->add_setting( 'main_nav_class' , array(
+	    'default'     => '',
+	    'transport'   => 'postMessage',
+	) );			
+	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'main_nav_class', array(
+		'label'        => __( 'Main Nav Class', 'lyquix_theme' ),
+		'section'    => 'custom_theme_options',
+		'settings'   => 'main_nav_class',
+	) ) );
+	$wp_customize->add_setting( 'main_wrapper_class' , array(
+	    'default'     => '',
+	    'transport'   => 'postMessage',
+	) );			
+	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'main_wrapper_class', array(
+		'label'        => __( 'Main Wrapper Class', 'lyquix_theme' ),
+		'section'    => 'custom_theme_options',
+		'settings'   => 'main_wrapper_class',
+	) ) );
+	$wp_customize->add_setting( 'content_wrapper_class' , array(
+	    'default'     => '',
+	    'transport'   => 'postMessage',
+	) );			
+	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'content_wrapper_class', array(
+		'label'        => __( 'Content Wrapper Class', 'lyquix_theme' ),
+		'section'    => 'custom_theme_options',
+		'settings'   => 'content_wrapper_class',
+	) ) );
+	$wp_customize->add_setting( 'primary_class' , array(
+	    'default'     => '',
+	    'transport'   => 'postMessage',
+	) );			
+	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'primary_class', array(
+		'label'        => __( 'Primary Content Class', 'lyquix_theme' ),
+		'section'    => 'custom_theme_options',
+		'settings'   => 'primary_class',
+	) ) );
+	$wp_customize->add_setting( 'secondary_class' , array(
+	    'default'     => '',
+	    'transport'   => 'postMessage',
+	) );			
+	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'secondary_class', array(
+		'label'        => __( 'Secondary Class', 'lyquix_theme' ),
+		'section'    => 'custom_theme_options',
+		'settings'   => 'secondary_class',
+	) ) );
+	$wp_customize->add_setting( 'widget_area_1_class' , array(
+	    'default'     => '',
+	    'transport'   => 'postMessage',
+	) );			
+	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'sidebar_area_1_class', array(
+		'label'        => __( 'Widget Area 1 Class', 'lyquix_theme' ),
+		'section'    => 'custom_theme_options',
+		'settings'   => 'sidebar_area_1_class',
+	) ) );
+	$wp_customize->add_setting( 'widget_area_2_class' , array(
+	    'default'     => '',
+	    'transport'   => 'postMessage',
+	) );			
+	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'sidebar_area_2_class', array(
+		'label'        => __( 'Widget Area 2 Class', 'lyquix_theme' ),
+		'section'    => 'custom_theme_options',
+		'settings'   => 'sidebar_area_2_class',
+	) ) );
+	$wp_customize->add_setting( 'footer_class' , array(
+	    'default'     => '',
+	    'transport'   => 'postMessage',
+	) );			
+	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'footer_class', array(
+		'label'        => __( 'Footer Class', 'lyquix_theme' ),
+		'section'    => 'custom_theme_options',
+		'settings'   => 'footer_class',
 	) ) );
 }
 add_action( 'customize_register', 'twentysixteen_customize_register', 11 );

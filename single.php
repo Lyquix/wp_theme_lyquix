@@ -9,7 +9,7 @@
 
 get_header(); ?>
 
-<div id="primary" class="content-area">
+<div id="primary" class="content-area <?php echo get_theme_mod('primary_class')?>">
 	<main id="main" class="site-main" role="main">
 		<?php
 		// Start the loop.

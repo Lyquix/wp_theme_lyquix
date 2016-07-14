@@ -12,7 +12,7 @@
 
 		</div><!-- .site-content -->
 
-		<footer id="colophon" class="site-footer <?php echo (get_option('footer_class'))?>" role="contentinfo">
+		<footer id="colophon" class="site-footer <?php echo get_theme_mod('footer_class')?>" role="contentinfo">
 			<?php if ( has_nav_menu( 'primary' ) ) : ?>
 				<nav class="main-navigation" role="navigation" aria-label="<?php esc_attr_e( 'Footer Primary Menu', 'twentysixteen' ); ?>">
 					<?php

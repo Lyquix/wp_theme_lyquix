@@ -7,7 +7,6 @@
 
 ( function( $ ) {
 	var body, masthead, menuToggle, siteNavigation, socialNavigation, siteHeaderMenu, resizeTimer;
-
 	function initMainNavigation( container ) {
 
 		// Add dropdown toggle that displays child menu items.
@@ -16,7 +15,7 @@
 			'aria-expanded': false
 		} ).append( $( '<span />', {
 			'class': 'screen-reader-text',
-			text: screenReaderText.expand
+			'text': 'screenReaderText.expand'
 		} ) );
 
 		container.find( '.menu-item-has-children > a' ).after( dropdownToggle );
@@ -182,7 +181,6 @@
 
 	$( document ).ready( function() {
 		body = $( document.body );
-
 		$( window )
 			.on( 'load.twentysixteen', onResizeARIA )
 			.on( 'resize.twentysixteen', function() {
