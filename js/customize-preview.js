@@ -24,14 +24,29 @@
 			$( '.site-description' ).text( to );
 		} );
 	} );
-
+	// Minimum Screen Size
+	api( 'min_screen', function( value ) {
+		value.bind( function( to ) {
+			lqx.setOptions({bodyScreenSize: {min: to}});
+		} );
+	} );
+	api( 'fluid_screen', function( value ) {
+		$('input[type="checkbox"]').each(function(){
+			console.log("it's a checkbox!");
+		});
+	} );
+	// Maximum Screen Size
+	api( 'max_screen', function( value ) {
+		value.bind( function( to ) {
+			lqx.setOptions({bodyScreenSize: {max: to}});
+		} );
+	} );
 	// Add custom-background-image body class when background image is added.
 	api( 'background_image', function( value ) {
 		value.bind( function( to ) {
 			$( 'body' ).toggleClass( 'custom-background-image', '' !== to );
 		} );
 	} );
-
 	// Color Scheme CSS.
 	api.bind( 'preview-ready', function() {
 		api.preview.bind( 'update-color-scheme-css', function( css ) {

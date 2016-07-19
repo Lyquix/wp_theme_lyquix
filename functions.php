@@ -32,7 +32,7 @@ if ( version_compare( $GLOBALS['wp_version'], '4.4-alpha', '<' ) ) {
 	require get_template_directory() . '/inc/back-compat.php';
 }
 
-if ( ! function_exists( 'twentysixteen_setup' ) ) :
+if ( ! function_exists( 'lqx_setup' ) ) :
 /**
  * Sets up theme defaults and registers support for various WordPress features.
  *
@@ -40,18 +40,19 @@ if ( ! function_exists( 'twentysixteen_setup' ) ) :
  * runs before the init hook. The init hook is too late for some features, such
  * as indicating support for post thumbnails.
  *
- * Create your own twentysixteen_setup() function to override in a child theme.
+ * Create your own lqx_setup() function to override in a child theme.
  *
  * @since Twenty Sixteen 1.0
  */
-function twentysixteen_setup() {
+
+function lqx_setup() {
 	/*
 	 * Make theme available for translation.
 	 * Translations can be filed in the /languages/ directory.
 	 * If you're building a theme based on Twenty Sixteen, use a find and replace
-	 * to change 'twentysixteen' to the name of your theme in all the template files
+	 * to change 'lyquix' to the name of your theme in all the template files
 	 */
-	load_theme_textdomain( 'twentysixteen', get_template_directory() . '/languages' );
+	load_theme_textdomain( 'lyquix', get_template_directory() . '/languages' );
 
 	// Add default posts and comments RSS feed links to head.
 	add_theme_support( 'automatic-feed-links' );
@@ -85,8 +86,8 @@ function twentysixteen_setup() {
 
 	// This theme uses wp_nav_menu() in two locations.
 	register_nav_menus( array(
-		'primary' => __( 'Primary Menu', 'twentysixteen' ),
-		'social'  => __( 'Social Links Menu', 'twentysixteen' ),
+		'primary' => __( 'Primary Menu', 'lyquix' ),
+		'social'  => __( 'Social Links Menu', 'lyquix' ),
 	) );
 
 	/*
@@ -122,13 +123,13 @@ function twentysixteen_setup() {
 	 * This theme styles the visual editor to resemble the theme style,
 	 * specifically font, colors, icons, and column width.
 	 */
-	add_editor_style( array( 'css/editor-style.css', twentysixteen_fonts_url() ) );
+	add_editor_style( array( 'css/editor-style.css', lqx_fonts_url() ) );
 
 	// Indicate widget sidebars can use selective refresh in the Customizer.
 	add_theme_support( 'customize-selective-refresh-widgets' );
 }
-endif; // twentysixteen_setup
-add_action( 'after_setup_theme', 'twentysixteen_setup' );
+endif; // lqx_setup
+add_action( 'after_setup_theme', 'lqx_setup' );
 define('mytheme_inc_path', TEMPLATEPATH . '/include/');
 define('mytheme_inc_url', get_template_directory_uri(). '/include/');
 //print_r(mytheme_inc_url);
@@ -143,10 +144,10 @@ define('mytheme_inc_url', get_template_directory_uri(). '/include/');
  *
  * @since Twenty Sixteen 1.0
  */
-function twentysixteen_content_width() {
-	$GLOBALS['content_width'] = apply_filters( 'twentysixteen_content_width', 840 );
+function lqx_content_width() {
+	$GLOBALS['content_width'] = apply_filters( 'lqx_content_width', 840 );
 }
-add_action( 'after_setup_theme', 'twentysixteen_content_width', 0 );
+add_action( 'after_setup_theme', 'lqx_content_width', 0 );
 
 /**
  * Registers a widget area.
@@ -155,11 +156,11 @@ add_action( 'after_setup_theme', 'twentysixteen_content_width', 0 );
  *
  * @since Twenty Sixteen 1.0
  */
-function twentysixteen_widgets_init() {
+function lqx_widgets_init() {
 	register_sidebar( array(
-		'name'          => __( 'Sidebar', 'twentysixteen' ),
+		'name'          => __( 'Sidebar', 'lyquix' ),
 		'id'            => 'sidebar-1',
-		'description'   => __( 'Add widgets here to appear in your sidebar.', 'twentysixteen' ),
+		'description'   => __( 'Add widgets here to appear in your sidebar.', 'lyquix' ),
 		'before_widget' => '<section id="%1$s" class="widget %2$s">',
 		'after_widget'  => '</section>',
 		'before_title'  => '<h2 class="widget-title">',
@@ -167,9 +168,9 @@ function twentysixteen_widgets_init() {
 	) );
 
 	register_sidebar( array(
-		'name'          => __( 'Content Bottom 1', 'twentysixteen' ),
+		'name'          => __( 'Content Bottom 1', 'lyquix' ),
 		'id'            => 'sidebar-2',
-		'description'   => __( 'Appears at the bottom of the content on posts and pages.', 'twentysixteen' ),
+		'description'   => __( 'Appears at the bottom of the content on posts and pages.', 'lyquix' ),
 		'before_widget' => '<section id="%1$s" class="widget %2$s">',
 		'after_widget'  => '</section>',
 		'before_title'  => '<h2 class="widget-title">',
@@ -177,44 +178,44 @@ function twentysixteen_widgets_init() {
 	) );
 
 	register_sidebar( array(
-		'name'          => __( 'Content Bottom 2', 'twentysixteen' ),
+		'name'          => __( 'Content Bottom 2', 'lyquix' ),
 		'id'            => 'sidebar-3',
-		'description'   => __( 'Appears at the bottom of the content on posts and pages.', 'twentysixteen' ),
+		'description'   => __( 'Appears at the bottom of the content on posts and pages.', 'lyquix' ),
 		'before_widget' => '<section id="%1$s" class="widget %2$s">',
 		'after_widget'  => '</section>',
 		'before_title'  => '<h2 class="widget-title">',
 		'after_title'   => '</h2>',
 	) );
 }
-add_action( 'widgets_init', 'twentysixteen_widgets_init' );
+add_action( 'widgets_init', 'lqx_widgets_init' );
 
-if ( ! function_exists( 'twentysixteen_fonts_url' ) ) :
+if ( ! function_exists( 'lqx_fonts_url' ) ) :
 /**
  * Register Google fonts for Twenty Sixteen.
  *
- * Create your own twentysixteen_fonts_url() function to override in a child theme.
+ * Create your own lqx_fonts_url() function to override in a child theme.
  *
  * @since Twenty Sixteen 1.0
  *
  * @return string Google fonts URL for the theme.
  */
-function twentysixteen_fonts_url() {
+function lqx_fonts_url() {
 	$fonts_url = '';
 	$fonts     = array();
 	$subsets   = 'latin,latin-ext';
 
 	/* translators: If there are characters in your language that are not supported by Merriweather, translate this to 'off'. Do not translate into your own language. */
-	if ( 'off' !== _x( 'on', 'Merriweather font: on or off', 'twentysixteen' ) ) {
+	if ( 'off' !== _x( 'on', 'Merriweather font: on or off', 'lyquix' ) ) {
 		$fonts[] = 'Merriweather:400,700,900,400italic,700italic,900italic';
 	}
 
 	/* translators: If there are characters in your language that are not supported by Montserrat, translate this to 'off'. Do not translate into your own language. */
-	if ( 'off' !== _x( 'on', 'Montserrat font: on or off', 'twentysixteen' ) ) {
+	if ( 'off' !== _x( 'on', 'Montserrat font: on or off', 'lyquix' ) ) {
 		$fonts[] = 'Montserrat:400,700';
 	}
 
 	/* translators: If there are characters in your language that are not supported by Inconsolata, translate this to 'off'. Do not translate into your own language. */
-	if ( 'off' !== _x( 'on', 'Inconsolata font: on or off', 'twentysixteen' ) ) {
+	if ( 'off' !== _x( 'on', 'Inconsolata font: on or off', 'lyquix' ) ) {
 		$fonts[] = 'Inconsolata:400';
 	}
 
@@ -236,60 +237,61 @@ endif;
  *
  * @since Twenty Sixteen 1.0
  */
-function twentysixteen_javascript_detection() {
+function lqx_javascript_detection() {
 	echo "<script>(function(html){html.className = html.className.replace(/\bno-js\b/,'js')})(document.documentElement);</script>\n";
 }
-add_action( 'wp_head', 'twentysixteen_javascript_detection', 0 );
+add_action( 'wp_head', 'lqx_javascript_detection', 0 );
 
 /**
  * Enqueues scripts and styles.
  *
  * @since Twenty Sixteen 1.0
  */
-function twentysixteen_scripts() {
+
+function lqx_scripts() {
 	// Add custom fonts, used in the main stylesheet.
-	wp_enqueue_style( 'twentysixteen-fonts', twentysixteen_fonts_url(), array(), null );
+	wp_enqueue_style( 'lyquix-fonts', lqx_fonts_url(), array(), null );
 
 	// Add Genericons, used in the main stylesheet.
 	wp_enqueue_style( 'genericons', get_template_directory_uri() . '/genericons/genericons.css', array(), '3.4.1' );
 
 	// Theme stylesheet.
-	wp_enqueue_style( 'twentysixteen-style', get_stylesheet_uri() );
+	wp_enqueue_style( 'lyquix-style', get_stylesheet_uri() );
 
 	// Load the Internet Explorer specific stylesheet.
-	wp_enqueue_style( 'twentysixteen-ie', get_template_directory_uri() . '/css/ie.css', array( 'twentysixteen-style' ), '20160412' );
-	wp_style_add_data( 'twentysixteen-ie', 'conditional', 'lt IE 10' );
+	wp_enqueue_style( 'lyquix-ie', get_template_directory_uri() . '/css/ie.css', array( 'lyquix-style' ), '20160412' );
+	wp_style_add_data( 'lyquix-ie', 'conditional', 'lt IE 10' );
 
 	// Load the Internet Explorer 8 specific stylesheet.
-	wp_enqueue_style( 'twentysixteen-ie8', get_template_directory_uri() . '/css/ie8.css', array( 'twentysixteen-style' ), '20160412' );
-	wp_style_add_data( 'twentysixteen-ie8', 'conditional', 'lt IE 9' );
+	wp_enqueue_style( 'lyquix-ie8', get_template_directory_uri() . '/css/ie8.css', array( 'lyquix-style' ), '20160412' );
+	wp_style_add_data( 'lyquix-ie8', 'conditional', 'lt IE 9' );
 
 	// Load the Internet Explorer 7 specific stylesheet.
-	wp_enqueue_style( 'twentysixteen-ie7', get_template_directory_uri() . '/css/ie7.css', array( 'twentysixteen-style' ), '20160412' );
-	wp_style_add_data( 'twentysixteen-ie7', 'conditional', 'lt IE 8' );
+	wp_enqueue_style( 'lyquix-ie7', get_template_directory_uri() . '/css/ie7.css', array( 'lyquix-style' ), '20160412' );
+	wp_style_add_data( 'lyquix-ie7', 'conditional', 'lt IE 8' );
 
 	// Load the html5 shiv.
-	wp_enqueue_script( 'twentysixteen-html5', get_template_directory_uri() . '/js/html5.js', array(), '3.7.3' );
-	wp_script_add_data( 'twentysixteen-html5', 'conditional', 'lt IE 9' );
+	wp_enqueue_script( 'lyquix-html5', get_template_directory_uri() . '/js/html5.js', array(), '3.7.3' );
+	wp_script_add_data( 'lyquix-html5', 'conditional', 'lt IE 9' );
 
-	wp_enqueue_script( 'twentysixteen-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20160412', true );
+	wp_enqueue_script( 'lyquix-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20160412', true );
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}
 
 	if ( is_singular() && wp_attachment_is_image() ) {
-		wp_enqueue_script( 'twentysixteen-keyboard-image-navigation', get_template_directory_uri() . '/js/keyboard-image-navigation.js', array( 'jquery' ), '20160412' );
+		wp_enqueue_script( 'lyquix-keyboard-image-navigation', get_template_directory_uri() . '/js/keyboard-image-navigation.js', array( 'jquery' ), '20160412' );
 	}
 
-	wp_enqueue_script( 'twentysixteen-script', get_template_directory_uri() . '/js/lyquix.js', array( 'jquery' ), '20160412', true );
+	wp_enqueue_script( 'lyquix-script', get_template_directory_uri() . '/js/lyquix.js', array( 'jquery' ), '20160412', true );
 
-	wp_localize_script( 'twentysixteen-script', 'screenReaderText', array(
-		'expand'   => __( 'expand child menu', 'twentysixteen' ),
-		'collapse' => __( 'collapse child menu', 'twentysixteen' ),
+	wp_localize_script( 'lyquix-script', 'screenReaderText', array(
+		'expand'   => __( 'expand child menu', 'lyquix' ),
+		'collapse' => __( 'collapse child menu', 'lyquix' ),
 	) );
 }
-add_action( 'wp_enqueue_scripts', 'twentysixteen_scripts' );
+add_action( 'wp_enqueue_scripts', 'lqx_scripts' );
 
 /**
  * Adds custom classes to the array of body classes.
@@ -299,7 +301,7 @@ add_action( 'wp_enqueue_scripts', 'twentysixteen_scripts' );
  * @param array $classes Classes for the body element.
  * @return array (Maybe) filtered body classes.
  */
-function twentysixteen_body_classes( $classes ) {
+function lqx_body_classes( $classes ) {
 	// Adds a class of custom-background-image to sites with a custom background image.
 	if ( get_background_image() ) {
 		$classes[] = 'custom-background-image';
@@ -322,7 +324,7 @@ function twentysixteen_body_classes( $classes ) {
 
 	return $classes;
 }
-add_filter( 'body_class', 'twentysixteen_body_classes' );
+add_filter( 'body_class', 'lqx_body_classes' );
 
 /**
  * Converts a HEX value to RGB.
@@ -333,7 +335,7 @@ add_filter( 'body_class', 'twentysixteen_body_classes' );
  * @return array Array containing RGB (red, green, and blue) values for the given
  *               HEX code, empty array otherwise.
  */
-function twentysixteen_hex2rgb( $color ) {
+function lqx_hex2rgb( $color ) {
 	$color = trim( $color, '#' );
 
 	if ( strlen( $color ) === 3 ) {
@@ -372,7 +374,7 @@ require get_template_directory() . '/inc/customizer.php';
  *                      values in pixels (in that order).
  * @return string A source size value for use in a content image 'sizes' attribute.
  */
-function twentysixteen_content_image_sizes_attr( $sizes, $size ) {
+function lqx_content_image_sizes_attr( $sizes, $size ) {
 	$width = $size[0];
 
 	840 <= $width && $sizes = '(max-width: 709px) 85vw, (max-width: 909px) 67vw, (max-width: 1362px) 62vw, 840px';
@@ -386,7 +388,7 @@ function twentysixteen_content_image_sizes_attr( $sizes, $size ) {
 
 	return $sizes;
 }
-add_filter( 'wp_calculate_image_sizes', 'twentysixteen_content_image_sizes_attr', 10 , 2 );
+add_filter( 'wp_calculate_image_sizes', 'lqx_content_image_sizes_attr', 10 , 2 );
 
 /**
  * Add custom image sizes attribute to enhance responsive image functionality
@@ -399,14 +401,14 @@ add_filter( 'wp_calculate_image_sizes', 'twentysixteen_content_image_sizes_attr'
  * @param array $size Registered image size or flat array of height and width dimensions.
  * @return string A source size value for use in a post thumbnail 'sizes' attribute.
  */
-function twentysixteen_post_thumbnail_sizes_attr( $attr, $attachment, $size ) {
+function lqx_post_thumbnail_sizes_attr( $attr, $attachment, $size ) {
 	if ( 'post-thumbnail' === $size ) {
 		is_active_sidebar( 'sidebar-1' ) && $attr['sizes'] = '(max-width: 709px) 85vw, (max-width: 909px) 67vw, (max-width: 984px) 60vw, (max-width: 1362px) 62vw, 840px';
 		! is_active_sidebar( 'sidebar-1' ) && $attr['sizes'] = '(max-width: 709px) 85vw, (max-width: 909px) 67vw, (max-width: 1362px) 88vw, 1200px';
 	}
 	return $attr;
 }
-add_filter( 'wp_get_attachment_image_attributes', 'twentysixteen_post_thumbnail_sizes_attr', 10 , 3 );
+add_filter( 'wp_get_attachment_image_attributes', 'lqx_post_thumbnail_sizes_attr', 10 , 3 );
 
 /**
  * Modifies tag cloud widget arguments to have all tags in the widget same font size.
@@ -416,15 +418,16 @@ add_filter( 'wp_get_attachment_image_attributes', 'twentysixteen_post_thumbnail_
  * @param array $args Arguments for tag cloud widget.
  * @return array A new modified arguments.
  */
-function twentysixteen_widget_tag_cloud_args( $args ) {
+function lqx_widget_tag_cloud_args( $args ) {
 	$args['largest'] = 1;
 	$args['smallest'] = 1;
 	$args['unit'] = 'em';
 	return $args;
 }
-add_filter( 'widget_tag_cloud_args', 'twentysixteen_widget_tag_cloud_args' );
+add_filter( 'widget_tag_cloud_args', 'lqx_widget_tag_cloud_args' );
 
 //Custom Theme Options
 //include(get_template_directory() . 'theme-options.php');
-
+ if(file_exists(get_template_directory() . '/functions-custom.php')) : include get_template_directory() . '/functions-custom.php'; 
+ endif;
 ?>

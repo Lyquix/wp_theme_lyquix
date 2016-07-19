@@ -12,10 +12,10 @@
  *
  * @since Twenty Sixteen 1.0
  *
- * @see twentysixteen_header_style()
+ * @see lqx_header_style()
  */
-function twentysixteen_custom_header_and_background() {
-	$color_scheme             = twentysixteen_get_color_scheme();
+function lqx_custom_header_and_background() {
+	$color_scheme             = lqx_get_color_scheme();
 	$default_background_color = trim( $color_scheme[0], '#' );
 	$default_text_color       = trim( $color_scheme[3], '#' );
 
@@ -30,7 +30,7 @@ function twentysixteen_custom_header_and_background() {
 	 *     @type string $default-color Default color of the background.
 	 * }
 	 */
-	add_theme_support( 'custom-background', apply_filters( 'twentysixteen_custom_background_args', array(
+	add_theme_support( 'custom-background', apply_filters( 'lqx_custom_background_args', array(
 		'default-color' => $default_background_color,
 	) ) );
 
@@ -50,27 +50,27 @@ function twentysixteen_custom_header_and_background() {
 	 *                                      displayed on the blog.
 	 * }
 	 */
-	add_theme_support( 'custom-header', apply_filters( 'twentysixteen_custom_header_args', array(
+	add_theme_support( 'custom-header', apply_filters( 'lqx_custom_header_args', array(
 		'default-text-color'     => $default_text_color,
 		'width'                  => 1200,
 		'height'                 => 280,
 		'flex-height'            => true,
-		'wp-head-callback'       => 'twentysixteen_header_style',
+		'wp-head-callback'       => 'lqx_header_style',
 	) ) );
 }
-add_action( 'after_setup_theme', 'twentysixteen_custom_header_and_background' );
+add_action( 'after_setup_theme', 'lqx_custom_header_and_background' );
 
-if ( ! function_exists( 'twentysixteen_header_style' ) ) :
+if ( ! function_exists( 'lqx_header_style' ) ) :
 /**
  * Styles the header text displayed on the site.
  *
- * Create your own twentysixteen_header_style() function to override in a child theme.
+ * Create your own lqx_header_style() function to override in a child theme.
  *
  * @since Twenty Sixteen 1.0
  *
- * @see twentysixteen_custom_header_and_background().
+ * @see lqx_custom_header_and_background().
  */
-function twentysixteen_header_style() {
+function lqx_header_style() {
 	// If the header text option is untouched, let's bail.
 	if ( display_header_text() ) {
 		return;
@@ -91,7 +91,7 @@ function twentysixteen_header_style() {
 	</style>
 	<?php
 }
-endif; // twentysixteen_header_style
+endif; // lqx_header_style
 
 /**
  * Adds postMessage support for site title and description for the Customizer.
@@ -100,8 +100,9 @@ endif; // twentysixteen_header_style
  *
  * @param WP_Customize_Manager $wp_customize The Customizer object.
  */
-function twentysixteen_customize_register( $wp_customize ) {
-	$color_scheme = twentysixteen_get_color_scheme();
+ 
+function lqx_customize_register( $wp_customize ) {
+	$color_scheme = lqx_get_color_scheme();
 	$wp_customize->get_setting( 'header_class' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'main_nav_class' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'main_wrapper_class' )->transport = 'postMessage';
@@ -111,6 +112,29 @@ function twentysixteen_customize_register( $wp_customize ) {
 	$wp_customize->get_setting( 'widget_area_1_class' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'widget_area_2_class' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'footer_class' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'analytics_account' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'disqus_shortname' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'addthis_pubid' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'google_site_verification' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'msvalidate' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'p_domain_verify' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'lyquix_library_options' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'add_css_libraries' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'non_min_js' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'lessjs' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'angularjs' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'lodash' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'es5_shim' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'es5_es6_shim' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'json3' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'add_js_libraries' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'remove_css_js_libraries' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'min_screen' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'max_screen' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'fluid_screen' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'fluid_device' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'mobile_detect_method' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'ie9_alert' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'blogname' )->transport         = 'postMessage';
 	$wp_customize->get_setting( 'blogdescription' )->transport  = 'postMessage';
 
@@ -118,19 +142,19 @@ function twentysixteen_customize_register( $wp_customize ) {
 		$wp_customize->selective_refresh->add_partial( 'blogname', array(
 			'selector' => '.site-title a',
 			'container_inclusive' => false,
-			'render_callback' => 'twentysixteen_customize_partial_blogname',
+			'render_callback' => 'lqx_customize_partial_blogname',
 		) );
 		$wp_customize->selective_refresh->add_partial( 'blogdescription', array(
 			'selector' => '.site-description',
 			'container_inclusive' => false,
-			'render_callback' => 'twentysixteen_customize_partial_blogdescription',
+			'render_callback' => 'lqx_customize_partial_blogdescription',
 		) );
 	}
 
 	// Add color scheme setting and control.
 	$wp_customize->add_setting( 'color_scheme', array(
 		'default'           => 'default',
-		'sanitize_callback' => 'twentysixteen_sanitize_color_scheme',
+		'sanitize_callback' => 'lqx_sanitize_color_scheme',
 		'transport'         => 'postMessage',
 	) );
 
@@ -138,7 +162,7 @@ function twentysixteen_customize_register( $wp_customize ) {
 		'label'    => __( 'Base Color Scheme', 'twentysixteen' ),
 		'section'  => 'colors',
 		'type'     => 'select',
-		'choices'  => twentysixteen_get_color_scheme_choices(),
+		'choices'  => lqx_get_color_scheme_choices(),
 		'priority' => 1,
 	) );
 
@@ -203,8 +227,302 @@ function twentysixteen_customize_register( $wp_customize ) {
 		'section'    => 'colors',
 	) ) );
 	//Add custom functions for Lyquix Theme
-	$wp_customize->add_section( 'custom_theme_options' , array(
-	    'title'      => __( 'Custom Theme Options', 'lyquix_theme' ),
+	$wp_customize->add_section( 'lqx_theme_settings' , array(
+	    'title'      => __( 'Lyquix Theme Settings', 'lyquix_theme' ),
+	    'priority'   => 30,
+	) );
+	$wp_customize->add_setting( 'analytics_account' , array(
+		'type'        => 'theme_mod',
+	    'transport'   => 'refresh',
+	) );			
+	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'analytics_account', array(
+		'label'        => __( 'Google Analytics Account', 'lyquix_theme' ),
+		'section'    => 'lqx_theme_settings',
+		'settings'   => 'analytics_account',
+	) ) );
+	$wp_customize->add_setting( 'disqus_shortname' , array(
+		'type'        => 'theme_mod',
+	    'transport'   => 'refresh',
+	) );			
+	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'disqus_shortname', array(
+		'label'        => __( 'Disqus Shortname', 'lyquix_theme' ),
+		'section'    => 'lqx_theme_settings',
+		'settings'   => 'disqus_shortname',
+	) ) );
+	$wp_customize->add_setting( 'addthis_pubid' , array(
+		'type'        => 'theme_mod',
+	    'transport'   => 'refresh',
+	) );			
+	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'addthis_pubid', array(
+		'label'        => __( 'AddThis PubID', 'lyquix_theme' ),
+		'section'    => 'lqx_theme_settings',
+		'settings'   => 'addthis_pubid',
+	) ) );
+	$wp_customize->add_setting( 'google_site_verification' , array(
+		'type'        => 'theme_mod',
+	    'transport'   => 'refresh',
+	) );			
+	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'google_site_verification', array(
+		'label'        => __( 'Google Site Verification', 'lyquix_theme' ),
+		'section'    => 'lqx_theme_settings',
+		'settings'   => 'google_site_verification',
+	) ) );
+	$wp_customize->add_setting( 'msvalidate' , array(
+		'type'        => 'theme_mod',
+	    'transport'   => 'refresh',
+	) );			
+	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'msvalidate', array(
+		'label'        => __( 'Microsoft Site Validation', 'lyquix_theme' ),
+		'section'    => 'lqx_theme_settings',
+		'settings'   => 'msvalidate',
+	) ) );
+	$wp_customize->add_setting( 'p_domain_verify' , array(
+		'type'        => 'theme_mod',
+	    'transport'   => 'refresh',
+	) );			
+	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'p_domain_verify', array(
+		'label'        => __( 'P Domain Verify', 'lyquix_theme' ),
+		'section'    => 'lqx_theme_settings',
+		'settings'   => 'p_domain_verify',
+	) ) );
+	$wp_customize->add_setting( 'lqx_options' , array(
+		'type'        => 'theme_mod',
+	    'transport'   => 'refresh',
+	) );			
+	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'lqx_options', array(
+		'label'        => __( 'Lyquix Library Options', 'lyquix_theme' ),
+		'section'    => 'lqx_theme_settings',
+		'settings'   => 'lqx_options',
+	) ) );
+	$wp_customize->add_setting( 'add_css_libraries' , array(
+		'type'        => 'theme_mod',
+	    'transport'   => 'refresh',
+	) );			
+	$wp_customize->add_control( 'add_css_libraries', array(
+		'type'		 => 'textarea',
+		'label'        => __( 'Additional CSS Libraries', 'lyquix_theme' ),
+		'section'    => 'lqx_theme_settings',
+		'settings'   => 'add_css_libraries',
+	) );
+	$wp_customize->add_setting( 'non_min_js' , array(
+		'type'        => 'theme_mod',
+	    'transport'   => 'refresh',
+	) );			
+	$wp_customize->add_control( 'non_min_js', array(
+		'type'		 => 'radio',
+		'label'        => __( 'Use Original JS', 'lyquix_theme' ),
+		'section'    => 'lqx_theme_settings',
+		'settings'   => 'non_min_js',
+		'choices' => array(
+			'0' => 'No',
+			'1'  => 'Yes',
+		),
+	) );
+	$wp_customize->add_setting( 'lessjs' , array(
+		'type'        => 'theme_mod',
+	    'transport'   => 'refresh',
+	) );			
+	$wp_customize->add_control( 'lessjs', array(
+		'type'		 => 'radio',
+		'label'        => __( 'Use less.js', 'lyquix_theme' ),
+		'section'    => 'lqx_theme_settings',
+		'settings'   => 'lessjs',
+		'choices' => array(
+			'0' => 'No',
+			'1'  => 'Yes',
+		),
+	) );
+	$wp_customize->add_setting( 'angularjs' , array(
+		'type'        => 'theme_mod',
+	    'transport'   => 'refresh',
+	) );			
+	$wp_customize->add_control( 'angularjs', array(
+		'type'		 => 'radio',
+		'label'        => __( 'Load AngularJS Library', 'lyquix_theme' ),
+		'section'    => 'lqx_theme_settings',
+		'settings'   => 'angularjs',
+		'choices' => array(
+			'0' => 'No',
+			'1'  => 'Yes',
+		),
+	) );
+	$wp_customize->add_setting( 'lodash' , array(
+		'type'        => 'theme_mod',
+	    'transport'   => 'refresh',
+	) );			
+	$wp_customize->add_control( 'lodash', array(
+		'type'		 => 'radio',
+		'label'        => __( 'Use Lodash library', 'lyquix_theme' ),
+		'section'    => 'lqx_theme_settings',
+		'settings'   => 'lodash',
+		'choices' => array(
+			'0' => 'No',
+			'1'  => 'Yes',
+		),
+	) );
+	$wp_customize->add_setting( 'es5_shim' , array(
+		'type'        => 'theme_mod',
+	    'transport'   => 'refresh',
+	) );			
+	$wp_customize->add_control( 'es5_shim', array(
+		'type'		 => 'radio',
+		'label'        => __( 'Load ES5 shim library', 'lyquix_theme' ),
+		'section'    => 'lqx_theme_settings',
+		'settings'   => 'es5_shim',
+		'choices' => array(
+			'0' => 'No',
+			'1'  => 'Yes',
+		),
+	) );
+	$wp_customize->add_setting( 'es5_es6_shim' , array(
+		'type'        => 'theme_mod',
+	    'transport'   => 'refresh',
+	) );			
+	$wp_customize->add_control( 'es5_es6_shim', array(
+		'type'		 => 'radio',
+		'label'        => __( 'Load ES5 + ES6 shim library', 'lyquix_theme' ),
+		'section'    => 'lqx_theme_settings',
+		'settings'   => 'es5_es6_shim',
+		'choices' => array(
+			'0' => 'No',
+			'1'  => 'Yes',
+		),
+	) );
+	$wp_customize->add_setting( 'json3' , array(
+		'type'        => 'theme_mod',
+	    'transport'   => 'refresh',
+	) );			
+	$wp_customize->add_control( 'json3', array(
+		'type'		 => 'radio',
+		'label'        => __( 'Load JSON3 library', 'lyquix_theme' ),
+		'section'    => 'lqx_theme_settings',
+		'settings'   => 'json3',
+		'choices' => array(
+			'0' => 'No',
+			'1'  => 'Yes',
+		),
+	) );
+	$wp_customize->add_setting( 'add_js_libraries' , array(
+		'type'        => 'theme_mod',
+	    'transport'   => 'refresh',
+	) );			
+	$wp_customize->add_control( 'add_js_libraries', array(
+		'type'		 => 'textarea',
+		'label'        => __( 'Additional Javascript Libraries', 'lyquix_theme' ),
+		'section'    => 'lqx_theme_settings',
+		'settings'   => 'add_js_libraries',
+	) );
+	$wp_customize->add_setting( 'remove_css_js_libraries' , array(
+		'type'        => 'theme_mod',
+	    'transport'   => 'refresh',
+	) );			
+	$wp_customize->add_control( 'remove_css_js_libraries', array(
+		'type'		 => 'textarea',
+		'label'        => __( 'Remove Javascript/CSS Libraries', 'lyquix_theme' ),
+		'section'    => 'lqx_theme_settings',
+		'settings'   => 'remove_css_js_libraries',
+	) );
+	$wp_customize->add_setting( 'min_screen' , array(
+		'type'        => 'theme_mod',
+	    'transport'   => 'refresh',
+	    'default'     => '0',
+	) );			
+	$wp_customize->add_control( 'min_screen', array(
+		'type'		 => 'select',
+		'label'        => __( 'Minimum Screen Size', 'lyquix_theme' ),
+		'section'    => 'lqx_theme_settings',
+		'settings'   => 'min_screen',
+		'choices' => array(
+			'0' => 'XS',
+			'1'  => 'SM',
+			'2' => 'MD',
+			'3'  => 'LG',
+			'4'  => 'XL',
+		),
+	) );
+	$wp_customize->add_setting( 'max_screen' , array(
+		'type'        => 'theme_mod',
+	    'transport'   => 'refresh',
+	    'default'     => '4',
+	) );			
+	$wp_customize->add_control( 'max_screen', array(
+		'type'		 => 'select',
+		'label'        => __( 'Maximum Screen Size', 'lyquix_theme' ),
+		'section'    => 'lqx_theme_settings',
+		'settings'   => 'max_screen',
+		'choices' => array(
+			'0' => 'XS',
+			'1'  => 'SM',
+			'2' => 'MD',
+			'3'  => 'LG',
+			'4'  => 'XL',
+		),
+	) );
+	$wp_customize->add_setting( 'fluid_screen' , array(
+		'type'        => 'theme_mod',
+	    'transport'   => 'refresh',
+	    'default'     => 'none',
+	    'sanitize_callback' => 'lqx_sanitize_fluid_screens'
+	) );
+	$wp_customize->add_control(new lqx_Customize_Control_Checkbox_Multiple( $wp_customize, 'fluid_screen', array(
+		'label'        => __( 'Fluid Layout Screens', 'lyquix_theme' ),
+		'section'    => 'lqx_theme_settings',
+		'settings'   => 'fluid_screen',
+		'choices' => array(
+			'XS' => 'XS',
+			'SM'  =>'SM',
+			'MD' => 'MD',
+			'LG'  => 'LG',
+			'XL'  => 'XL',
+		),
+	) ) );
+	$wp_customize->add_setting( 'fluid_device' , array(
+		'type'        => 'theme_mod',
+	    'transport'   => 'refresh',
+	) );	
+	$wp_customize->add_control( 'fluid_device', array(
+		'type'		 => 'radio',
+		'label'        => __( 'Fluid Layout Devices', 'lyquix_theme' ),
+		'section'    => 'lqx_theme_settings',
+		'settings'   => 'fluid_device',
+		'choices' => array(
+			'any' => 'Any (Mobile and Desktop)',
+			'mobile'  => 'Mobile only',
+			'phone' => 'Phones only',
+			'tablet'  => 'Tablets only',
+		),
+	) );
+	$wp_customize->add_setting( 'mobiledetect_method' , array(
+		'type'        => 'theme_mod',
+	    'transport'   => 'refresh',
+	) );			
+	$wp_customize->add_control( 'mobiledetect_method', array(
+		'type'		 => 'radio',
+		'label'        => __( 'Mobile Detect Method', 'lyquix_theme' ),
+		'section'    => 'lqx_theme_settings',
+		'settings'   => 'mobiledetect_method',
+		'choices' => array(
+			'php' => 'Server-Side (PHP)',
+			'js'  => 'Client-Side (JavaScript)',
+		),
+	) );
+	$wp_customize->add_setting( 'ie9_alert' , array(
+		'type'        => 'theme_mod',
+	    'transport'   => 'refresh',
+	) );			
+	$wp_customize->add_control( 'ie9_alert', array(
+		'type'		 => 'radio',
+		'label'        => __( 'Show IE9 upgrade alert', 'lyquix_theme' ),
+		'section'    => 'lqx_theme_settings',
+		'settings'   => 'ie9_alert',
+		'choices' => array(
+			'0' => 'No',
+			'1'  => 'Yes',
+		),
+	) );
+	/*
+	$wp_customize->add_section( 'body_classes' , array(
+	    'title'      => __( 'Body Classes', 'lyquix_theme' ),
 	    'priority'   => 30,
 	) );
 	$wp_customize->add_setting( 'header_class' , array(
@@ -213,7 +531,7 @@ function twentysixteen_customize_register( $wp_customize ) {
 	) );			
 	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'header_class', array(
 		'label'        => __( 'Header Class', 'lyquix_theme' ),
-		'section'    => 'custom_theme_options',
+		'section'    => 'body_classes',
 		'settings'   => 'header_class',
 	) ) );
 	$wp_customize->add_setting( 'main_nav_class' , array(
@@ -222,7 +540,7 @@ function twentysixteen_customize_register( $wp_customize ) {
 	) );			
 	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'main_nav_class', array(
 		'label'        => __( 'Main Nav Class', 'lyquix_theme' ),
-		'section'    => 'custom_theme_options',
+		'section'    => 'body_classes',
 		'settings'   => 'main_nav_class',
 	) ) );
 	$wp_customize->add_setting( 'main_wrapper_class' , array(
@@ -231,7 +549,7 @@ function twentysixteen_customize_register( $wp_customize ) {
 	) );			
 	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'main_wrapper_class', array(
 		'label'        => __( 'Main Wrapper Class', 'lyquix_theme' ),
-		'section'    => 'custom_theme_options',
+		'section'    => 'body_classes',
 		'settings'   => 'main_wrapper_class',
 	) ) );
 	$wp_customize->add_setting( 'content_wrapper_class' , array(
@@ -240,7 +558,7 @@ function twentysixteen_customize_register( $wp_customize ) {
 	) );			
 	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'content_wrapper_class', array(
 		'label'        => __( 'Content Wrapper Class', 'lyquix_theme' ),
-		'section'    => 'custom_theme_options',
+		'section'    => 'body_classes',
 		'settings'   => 'content_wrapper_class',
 	) ) );
 	$wp_customize->add_setting( 'primary_class' , array(
@@ -249,7 +567,7 @@ function twentysixteen_customize_register( $wp_customize ) {
 	) );			
 	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'primary_class', array(
 		'label'        => __( 'Primary Content Class', 'lyquix_theme' ),
-		'section'    => 'custom_theme_options',
+		'section'    => 'body_classes',
 		'settings'   => 'primary_class',
 	) ) );
 	$wp_customize->add_setting( 'secondary_class' , array(
@@ -258,7 +576,7 @@ function twentysixteen_customize_register( $wp_customize ) {
 	) );			
 	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'secondary_class', array(
 		'label'        => __( 'Secondary Class', 'lyquix_theme' ),
-		'section'    => 'custom_theme_options',
+		'section'    => 'body_classes',
 		'settings'   => 'secondary_class',
 	) ) );
 	$wp_customize->add_setting( 'widget_area_1_class' , array(
@@ -267,7 +585,7 @@ function twentysixteen_customize_register( $wp_customize ) {
 	) );			
 	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'sidebar_area_1_class', array(
 		'label'        => __( 'Widget Area 1 Class', 'lyquix_theme' ),
-		'section'    => 'custom_theme_options',
+		'section'    => 'body_classes',
 		'settings'   => 'sidebar_area_1_class',
 	) ) );
 	$wp_customize->add_setting( 'widget_area_2_class' , array(
@@ -276,7 +594,7 @@ function twentysixteen_customize_register( $wp_customize ) {
 	) );			
 	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'sidebar_area_2_class', array(
 		'label'        => __( 'Widget Area 2 Class', 'lyquix_theme' ),
-		'section'    => 'custom_theme_options',
+		'section'    => 'body_classes',
 		'settings'   => 'sidebar_area_2_class',
 	) ) );
 	$wp_customize->add_setting( 'footer_class' , array(
@@ -285,21 +603,27 @@ function twentysixteen_customize_register( $wp_customize ) {
 	) );			
 	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'footer_class', array(
 		'label'        => __( 'Footer Class', 'lyquix_theme' ),
-		'section'    => 'custom_theme_options',
+		'section'    => 'body_classes',
 		'settings'   => 'footer_class',
-	) ) );
+	) ) );*/
 }
-add_action( 'customize_register', 'twentysixteen_customize_register', 11 );
+add_action( 'customize_register', 'lqx_customize_register', 11 );
 
+function lqx_sanitize_fluid_screens( $values ) {
+
+    $multi_values = !is_array( $values ) ? explode( ',', $values ) : $values;
+
+    return !empty( $multi_values ) ? array_map( 'sanitize_text_field', $multi_values ) : array();
+}
 /**
  * Render the site title for the selective refresh partial.
  *
  * @since Twenty Sixteen 1.2
- * @see twentysixteen_customize_register()
+ * @see lqx_customize_register()
  *
  * @return void
  */
-function twentysixteen_customize_partial_blogname() {
+function lqx_customize_partial_blogname() {
 	bloginfo( 'name' );
 }
 
@@ -307,18 +631,18 @@ function twentysixteen_customize_partial_blogname() {
  * Render the site tagline for the selective refresh partial.
  *
  * @since Twenty Sixteen 1.2
- * @see twentysixteen_customize_register()
+ * @see lqx_customize_register()
  *
  * @return void
  */
-function twentysixteen_customize_partial_blogdescription() {
+function lqx_customize_partial_blogdescription() {
 	bloginfo( 'description' );
 }
 
 /**
  * Registers color schemes for Twenty Sixteen.
  *
- * Can be filtered with {@see 'twentysixteen_color_schemes'}.
+ * Can be filtered with {@see 'lqx_color_schemes'}.
  *
  * The order of colors in a colors array:
  * 1. Main Background Color.
@@ -331,7 +655,7 @@ function twentysixteen_customize_partial_blogdescription() {
  *
  * @return array An associative array of color scheme options.
  */
-function twentysixteen_get_color_schemes() {
+function lqx_get_color_schemes() {
 	/**
 	 * Filter the color schemes registered for use with Twenty Sixteen.
 	 *
@@ -352,7 +676,7 @@ function twentysixteen_get_color_schemes() {
 	 *     }
 	 * }
 	 */
-	return apply_filters( 'twentysixteen_color_schemes', array(
+	return apply_filters( 'lqx_color_schemes', array(
 		'default' => array(
 			'label'  => __( 'Default', 'twentysixteen' ),
 			'colors' => array(
@@ -406,19 +730,19 @@ function twentysixteen_get_color_schemes() {
 	) );
 }
 
-if ( ! function_exists( 'twentysixteen_get_color_scheme' ) ) :
+if ( ! function_exists( 'lqx_get_color_scheme' ) ) :
 /**
  * Retrieves the current Twenty Sixteen color scheme.
  *
- * Create your own twentysixteen_get_color_scheme() function to override in a child theme.
+ * Create your own lqx_get_color_scheme() function to override in a child theme.
  *
  * @since Twenty Sixteen 1.0
  *
  * @return array An associative array of either the current or default color scheme HEX values.
  */
-function twentysixteen_get_color_scheme() {
+function lqx_get_color_scheme() {
 	$color_scheme_option = get_theme_mod( 'color_scheme', 'default' );
-	$color_schemes       = twentysixteen_get_color_schemes();
+	$color_schemes       = lqx_get_color_schemes();
 
 	if ( array_key_exists( $color_scheme_option, $color_schemes ) ) {
 		return $color_schemes[ $color_scheme_option ]['colors'];
@@ -426,21 +750,21 @@ function twentysixteen_get_color_scheme() {
 
 	return $color_schemes['default']['colors'];
 }
-endif; // twentysixteen_get_color_scheme
+endif; // lqx_get_color_scheme
 
-if ( ! function_exists( 'twentysixteen_get_color_scheme_choices' ) ) :
+if ( ! function_exists( 'lqx_get_color_scheme_choices' ) ) :
 /**
  * Retrieves an array of color scheme choices registered for Twenty Sixteen.
  *
- * Create your own twentysixteen_get_color_scheme_choices() function to override
+ * Create your own lqx_get_color_scheme_choices() function to override
  * in a child theme.
  *
  * @since Twenty Sixteen 1.0
  *
  * @return array Array of color schemes.
  */
-function twentysixteen_get_color_scheme_choices() {
-	$color_schemes                = twentysixteen_get_color_schemes();
+function lqx_get_color_scheme_choices() {
+	$color_schemes                = lqx_get_color_schemes();
 	$color_scheme_control_options = array();
 
 	foreach ( $color_schemes as $color_scheme => $value ) {
@@ -449,14 +773,14 @@ function twentysixteen_get_color_scheme_choices() {
 
 	return $color_scheme_control_options;
 }
-endif; // twentysixteen_get_color_scheme_choices
+endif; // lqx_get_color_scheme_choices
 
 
-if ( ! function_exists( 'twentysixteen_sanitize_color_scheme' ) ) :
+if ( ! function_exists( 'lqx_sanitize_color_scheme' ) ) :
 /**
  * Handles sanitization for Twenty Sixteen color schemes.
  *
- * Create your own twentysixteen_sanitize_color_scheme() function to override
+ * Create your own lqx_sanitize_color_scheme() function to override
  * in a child theme.
  *
  * @since Twenty Sixteen 1.0
@@ -464,8 +788,8 @@ if ( ! function_exists( 'twentysixteen_sanitize_color_scheme' ) ) :
  * @param string $value Color scheme name value.
  * @return string Color scheme name.
  */
-function twentysixteen_sanitize_color_scheme( $value ) {
-	$color_schemes = twentysixteen_get_color_scheme_choices();
+function lqx_sanitize_color_scheme( $value ) {
+	$color_schemes = lqx_get_color_scheme_choices();
 
 	if ( ! array_key_exists( $value, $color_schemes ) ) {
 		return 'default';
@@ -473,7 +797,7 @@ function twentysixteen_sanitize_color_scheme( $value ) {
 
 	return $value;
 }
-endif; // twentysixteen_sanitize_color_scheme
+endif; // lqx_sanitize_color_scheme
 
 /**
  * Enqueues front-end CSS for color scheme.
@@ -482,7 +806,7 @@ endif; // twentysixteen_sanitize_color_scheme
  *
  * @see wp_add_inline_style()
  */
-function twentysixteen_color_scheme_css() {
+function lqx_color_scheme_css() {
 	$color_scheme_option = get_theme_mod( 'color_scheme', 'default' );
 
 	// Don't do anything if the default color scheme is selected.
@@ -490,10 +814,10 @@ function twentysixteen_color_scheme_css() {
 		return;
 	}
 
-	$color_scheme = twentysixteen_get_color_scheme();
+	$color_scheme = lqx_get_color_scheme();
 
 	// Convert main text hex color to rgba.
-	$color_textcolor_rgb = twentysixteen_hex2rgb( $color_scheme[3] );
+	$color_textcolor_rgb = lqx_hex2rgb( $color_scheme[3] );
 
 	// If the rgba values are empty return early.
 	if ( empty( $color_textcolor_rgb ) ) {
@@ -511,11 +835,11 @@ function twentysixteen_color_scheme_css() {
 
 	);
 
-	$color_scheme_css = twentysixteen_get_color_scheme_css( $colors );
+	$color_scheme_css = lqx_get_color_scheme_css( $colors );
 
 	wp_add_inline_style( 'twentysixteen-style', $color_scheme_css );
 }
-add_action( 'wp_enqueue_scripts', 'twentysixteen_color_scheme_css' );
+add_action( 'wp_enqueue_scripts', 'lqx_color_scheme_css' );
 
 /**
  * Binds the JS listener to make Customizer color_scheme control.
@@ -524,21 +848,21 @@ add_action( 'wp_enqueue_scripts', 'twentysixteen_color_scheme_css' );
  *
  * @since Twenty Sixteen 1.0
  */
-function twentysixteen_customize_control_js() {
+function lqx_customize_control_js() {
 	wp_enqueue_script( 'color-scheme-control', get_template_directory_uri() . '/js/color-scheme-control.js', array( 'customize-controls', 'iris', 'underscore', 'wp-util' ), '20160412', true );
-	wp_localize_script( 'color-scheme-control', 'colorScheme', twentysixteen_get_color_schemes() );
+	wp_localize_script( 'color-scheme-control', 'colorScheme', lqx_get_color_schemes() );
 }
-add_action( 'customize_controls_enqueue_scripts', 'twentysixteen_customize_control_js' );
+add_action( 'customize_controls_enqueue_scripts', 'lqx_customize_control_js' );
 
 /**
  * Binds JS handlers to make the Customizer preview reload changes asynchronously.
  *
  * @since Twenty Sixteen 1.0
  */
-function twentysixteen_customize_preview_js() {
+function lqx_customize_preview_js() {
 	wp_enqueue_script( 'twentysixteen-customize-preview', get_template_directory_uri() . '/js/customize-preview.js', array( 'customize-preview' ), '20160412', true );
 }
-add_action( 'customize_preview_init', 'twentysixteen_customize_preview_js' );
+add_action( 'customize_preview_init', 'lqx_customize_preview_js' );
 
 /**
  * Returns CSS for the color schemes.
@@ -548,7 +872,7 @@ add_action( 'customize_preview_init', 'twentysixteen_customize_preview_js' );
  * @param array $colors Color scheme colors.
  * @return string Color scheme CSS.
  */
-function twentysixteen_get_color_scheme_css( $colors ) {
+function lqx_get_color_scheme_css( $colors ) {
 	$colors = wp_parse_args( $colors, array(
 		'background_color'      => '',
 		'page_background_color' => '',
@@ -861,7 +1185,7 @@ CSS;
  *
  * @since Twenty Sixteen 1.0
  */
-function twentysixteen_color_scheme_css_template() {
+function lqx_color_scheme_css_template() {
 	$colors = array(
 		'background_color'      => '{{ data.background_color }}',
 		'page_background_color' => '{{ data.page_background_color }}',
@@ -872,11 +1196,11 @@ function twentysixteen_color_scheme_css_template() {
 	);
 	?>
 	<script type="text/html" id="tmpl-twentysixteen-color-scheme">
-		<?php echo twentysixteen_get_color_scheme_css( $colors ); ?>
+		<?php echo lqx_get_color_scheme_css( $colors ); ?>
 	</script>
 	<?php
 }
-add_action( 'customize_controls_print_footer_scripts', 'twentysixteen_color_scheme_css_template' );
+add_action( 'customize_controls_print_footer_scripts', 'lqx_color_scheme_css_template' );
 
 /**
  * Enqueues front-end CSS for the page background color.
@@ -885,8 +1209,8 @@ add_action( 'customize_controls_print_footer_scripts', 'twentysixteen_color_sche
  *
  * @see wp_add_inline_style()
  */
-function twentysixteen_page_background_color_css() {
-	$color_scheme          = twentysixteen_get_color_scheme();
+function lqx_page_background_color_css() {
+	$color_scheme          = lqx_get_color_scheme();
 	$default_color         = $color_scheme[1];
 	$page_background_color = get_theme_mod( 'page_background_color', $default_color );
 
@@ -949,7 +1273,7 @@ function twentysixteen_page_background_color_css() {
 
 	wp_add_inline_style( 'twentysixteen-style', sprintf( $css, $page_background_color ) );
 }
-add_action( 'wp_enqueue_scripts', 'twentysixteen_page_background_color_css', 11 );
+add_action( 'wp_enqueue_scripts', 'lqx_page_background_color_css', 11 );
 
 /**
  * Enqueues front-end CSS for the link color.
@@ -958,8 +1282,8 @@ add_action( 'wp_enqueue_scripts', 'twentysixteen_page_background_color_css', 11 
  *
  * @see wp_add_inline_style()
  */
-function twentysixteen_link_color_css() {
-	$color_scheme    = twentysixteen_get_color_scheme();
+function lqx_link_color_css() {
+	$color_scheme    = lqx_get_color_scheme();
 	$default_color   = $color_scheme[2];
 	$link_color = get_theme_mod( 'link_color', $default_color );
 
@@ -1045,7 +1369,7 @@ function twentysixteen_link_color_css() {
 
 	wp_add_inline_style( 'twentysixteen-style', sprintf( $css, $link_color ) );
 }
-add_action( 'wp_enqueue_scripts', 'twentysixteen_link_color_css', 11 );
+add_action( 'wp_enqueue_scripts', 'lqx_link_color_css', 11 );
 
 /**
  * Enqueues front-end CSS for the main text color.
@@ -1054,8 +1378,8 @@ add_action( 'wp_enqueue_scripts', 'twentysixteen_link_color_css', 11 );
  *
  * @see wp_add_inline_style()
  */
-function twentysixteen_main_text_color_css() {
-	$color_scheme    = twentysixteen_get_color_scheme();
+function lqx_main_text_color_css() {
+	$color_scheme    = lqx_get_color_scheme();
 	$default_color   = $color_scheme[3];
 	$main_text_color = get_theme_mod( 'main_text_color', $default_color );
 
@@ -1065,7 +1389,7 @@ function twentysixteen_main_text_color_css() {
 	}
 
 	// Convert main text hex color to rgba.
-	$main_text_color_rgb = twentysixteen_hex2rgb( $main_text_color );
+	$main_text_color_rgb = lqx_hex2rgb( $main_text_color );
 
 	// If the rgba values are empty return early.
 	if ( empty( $main_text_color_rgb ) ) {
@@ -1192,7 +1516,7 @@ function twentysixteen_main_text_color_css() {
 
 	wp_add_inline_style( 'twentysixteen-style', sprintf( $css, $main_text_color, $border_color ) );
 }
-add_action( 'wp_enqueue_scripts', 'twentysixteen_main_text_color_css', 11 );
+add_action( 'wp_enqueue_scripts', 'lqx_main_text_color_css', 11 );
 
 /**
  * Enqueues front-end CSS for the secondary text color.
@@ -1201,8 +1525,8 @@ add_action( 'wp_enqueue_scripts', 'twentysixteen_main_text_color_css', 11 );
  *
  * @see wp_add_inline_style()
  */
-function twentysixteen_secondary_text_color_css() {
-	$color_scheme    = twentysixteen_get_color_scheme();
+function lqx_secondary_text_color_css() {
+	$color_scheme    = lqx_get_color_scheme();
 	$default_color   = $color_scheme[4];
 	$secondary_text_color = get_theme_mod( 'secondary_text_color', $default_color );
 
@@ -1266,4 +1590,4 @@ function twentysixteen_secondary_text_color_css() {
 
 	wp_add_inline_style( 'twentysixteen-style', sprintf( $css, $secondary_text_color ) );
 }
-add_action( 'wp_enqueue_scripts', 'twentysixteen_secondary_text_color_css', 11 );
+add_action( 'wp_enqueue_scripts', 'lqx_secondary_text_color_css', 11 );
