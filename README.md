@@ -1,1 +1,0 @@
-# wp_theme_lyquix
