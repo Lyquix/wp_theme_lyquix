@@ -73,7 +73,6 @@ if(get_theme_mod('mobiledetect_method', 'php') == 'php') {
 	if(get_theme_mod('angularjs', 0)): ?>
 	<script src="<?php echo $tmpl_url; ?>/js/angular<?php echo get_theme_mod('non_min_js') ? '' : '.min'; ?>.js?v=<?php echo date("YmdHis", filemtime($tmpl_path . '/js/angular' . (get_theme_mod('non_min_js') ? '' : '.min') . '.js')); ?>"></script>
 	<?php endif;
-	print_r(get_theme_mod('lodash'));
 	if(get_theme_mod('lodash', 0)): ?>
 	<script src="<?php echo $tmpl_url; ?>/js/lodash<?php echo get_theme_mod('non_min_js') ? '' : '.min'; ?>.js?v=<?php echo date("YmdHis", filemtime($tmpl_path . '/js/lodash' . (get_theme_mod('non_min_js') ? '' : '.min') . '.js')); ?>"></script>
 	<?php endif;
@@ -88,7 +87,6 @@ if(get_theme_mod('mobiledetect_method', 'php') == 'php') {
 		}
 	} 
 	?>
-	<script src="<?php echo $tmpl_url; ?>/js/functions<?php echo get_theme_mod('non_min_js') ? '' : '.min'; ?>.js?v=<?php echo date("YmdHis", filemtime($tmpl_path . '/js/lyquix.'.get_theme_mod('non_min_js')? '' : '.min'.'js')); ?>"></script>
 	<script src="<?php echo $tmpl_url; ?>/js/lyquix<?php echo get_theme_mod('non_min_js') ? '' : '.min'; ?>.js?v=<?php echo date("YmdHis", filemtime($tmpl_path . '/js/lyquix.'.get_theme_mod('non_min_js')? '' : '.min'.'js')); ?>"></script>
 	<?php 
 	$analytics_account = get_theme_mod('analytics_account');
