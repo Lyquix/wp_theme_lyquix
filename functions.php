@@ -252,9 +252,6 @@ function lqx_scripts() {
 	// Add custom fonts, used in the main stylesheet.
 	wp_enqueue_style( 'lyquix-fonts', lqx_fonts_url(), array(), null );
 
-	// Add Genericons, used in the main stylesheet.
-	wp_enqueue_style( 'genericons', get_template_directory_uri() . '/genericons/genericons.css', array(), '3.4.1' );
-
 	// Theme stylesheet.
 	wp_enqueue_style( 'lyquix-style', get_stylesheet_uri() );
 
@@ -265,10 +262,6 @@ function lqx_scripts() {
 	// Load the Internet Explorer 8 specific stylesheet.
 	wp_enqueue_style( 'lyquix-ie8', get_template_directory_uri() . '/css/ie8.css', array( 'lyquix-style' ), '20160412' );
 	wp_style_add_data( 'lyquix-ie8', 'conditional', 'lt IE 9' );
-
-	// Load the Internet Explorer 7 specific stylesheet.
-	wp_enqueue_style( 'lyquix-ie7', get_template_directory_uri() . '/css/ie7.css', array( 'lyquix-style' ), '20160412' );
-	wp_style_add_data( 'lyquix-ie7', 'conditional', 'lt IE 8' );
 
 	// Load the html5 shiv.
 	wp_enqueue_script( 'lyquix-html5', get_template_directory_uri() . '/js/html5.js', array(), '3.7.3' );
