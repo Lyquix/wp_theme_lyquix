@@ -15,6 +15,9 @@
  * the visitor has not yet entered the password we will
  * return early without loading the comments.
  */
+if(file_exists(__DIR__ . '/comments-custom.php')) :
+	include __DIR__ . '/comments-custom.php'; 
+else : 
 if ( post_password_required() ) {
 	return;
 }
@@ -77,3 +80,4 @@ if ( post_password_required() ) {
 	?>
 
 </div><!-- .comments-area -->
+<?php endif; ?>

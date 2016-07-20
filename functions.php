@@ -426,8 +426,15 @@ function lqx_widget_tag_cloud_args( $args ) {
 }
 add_filter( 'widget_tag_cloud_args', 'lqx_widget_tag_cloud_args' );
 
-//Custom Theme Options
-//include(get_template_directory() . 'theme-options.php');
+//Support for multiple checkboxes in customizer
+add_action( 'customize_register', 'lqx_load_customize_controls', 0 );
+
+function lqx_load_customize_controls() {
+	
+    require get_template_directory()  . '/php/control-checkbox-multiple.php';
+	
+}
+
  if(file_exists(get_template_directory() . '/functions-custom.php')) : include get_template_directory() . '/functions-custom.php'; 
  endif;
 ?>

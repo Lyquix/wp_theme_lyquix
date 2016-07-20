@@ -6,7 +6,9 @@
  * @subpackage Twenty_Sixteen
  * @since Twenty Sixteen 1.0
  */
-
+if(file_exists(__DIR__ . '/sidebar-content-bottom-custom.php')) :
+	include __DIR__ . '/sidebar-content-bottom-custom.php'; 
+else : 
 if ( ! is_active_sidebar( 'sidebar-2' ) && ! is_active_sidebar( 'sidebar-3' ) ) {
 	return;
 }
@@ -26,3 +28,4 @@ if ( ! is_active_sidebar( 'sidebar-2' ) && ! is_active_sidebar( 'sidebar-3' ) ) 
 		</div><!-- .widget-area -->
 	<?php endif; ?>
 </aside><!-- .content-bottom-widgets -->
+<?php endif;

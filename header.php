@@ -131,14 +131,13 @@ lqx.bodyScreenSize();
 if(get_theme_mod('mobiledetect_method', 'php') == 'php'){
 	echo 'lqx.mobileDetect = {mobile: ' . ($mobile ? 'true' : 'false') . ',phone: ' . ($phone ? 'true' : 'false') . ',tablet: ' . ($tablet ? 'true' : 'false') . "};\n";
 }
-?>
-</script>
-<?php if(get_theme_mod('ie9_alert',0)): ?>
+if(get_theme_mod('ie9_alert',0)): ?>
 <!--<link href="<?php echo $tmpl_url; ?>/css/ie9-alert.css" rel="stylesheet" />
 <div class="ie9-alert">You are using an unsupported version of Internet Explorer. To ensure security, performance, and full functionality, <a href="http://browsehappy.com/?locale=<?php get_locale(); ?>">please upgrade to an up-to-date browser.</a><i></i></div>
 <script>jQuery('.ie9-alert i').click(function(){jQuery('.ie9-alert').hide();});</script>-->
 <?php endif;
 echo get_theme_mod('disqus_shortname') ? '<script src="//' . get_theme_mod('disqus_shortname') . '.disqus.com/embed.js"></script>' : ''; ?>
+</script>
 <div id="page" class="site">
 	<div class="site-inner">
 		<!--<a class="skip-link screen-reader-text" href="#content"><?php _e( 'Skip to content', 'twentysixteen' ); ?></a>-->

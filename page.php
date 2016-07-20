@@ -35,7 +35,6 @@ get_header();?>
 	</main><!-- .site-main -->
 	<?php $my_wp_query = new WP_Query();
 	$post = get_post();
-	print_r($post->ID);
 	$all_wp_pages = $my_wp_query->query(array('post_type' => 'page'));
 	//print_r($all_wp_pages);
 	get_page_children($post->ID , $all_wp_pages[0]); ?>
