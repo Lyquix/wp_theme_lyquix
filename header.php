@@ -13,6 +13,7 @@ if(file_exists(__DIR__ . '/header-custom.php')) :
 	include __DIR__ . '/header-custom.php'; 
 else : 
 $tmpl_url = get_template_directory_uri();
+$tmpl_path = get_template_directory();
 $home = $mobile = $phone = $tablet = false;
 if(get_theme_mod('mobiledetect_method', 'php') == 'php') {
 	require_once(__DIR__ . '/php/Mobile_Detect.php');
