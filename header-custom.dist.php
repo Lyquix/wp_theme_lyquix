@@ -4,9 +4,6 @@
  *
  * Displays all of the head element and everything up until the "site-content" div.
  *
- * @package WordPress
- * @subpackage Lyquix Theme
- * @since Lyquix Theme 1.0
  */
 $tmpl_url = get_template_directory_uri();
 $tmpl_path = get_template_directory();
