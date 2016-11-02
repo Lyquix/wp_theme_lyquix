@@ -1,16 +1,6 @@
 <?php
 /**
- * Twenty Sixteen Customizer functionality
- *
- * @package WordPress
- * @subpackage Twenty_Sixteen
- * @since Twenty Sixteen 1.0
- */
-
-/**
  * Sets up the WordPress core custom header and custom background features.
- *
- * @since Twenty Sixteen 1.0
  *
  * @see lqx_header_style()
  */
@@ -21,8 +11,6 @@ function lqx_custom_header_and_background() {
 
 	/**
 	 * Filter the arguments used when adding 'custom-background' support in Twenty Sixteen.
-	 *
-	 * @since Twenty Sixteen 1.0
 	 *
 	 * @param array $args {
 	 *     An array of custom-background support arguments.
@@ -36,8 +24,6 @@ function lqx_custom_header_and_background() {
 
 	/**
 	 * Filter the arguments used when adding 'custom-header' support in Twenty Sixteen.
-	 *
-	 * @since Twenty Sixteen 1.0
 	 *
 	 * @param array $args {
 	 *     An array of custom-header support arguments.
@@ -66,8 +52,6 @@ if ( ! function_exists( 'lqx_header_style' ) ) :
  *
  * Create your own lqx_header_style() function to override in a child theme.
  *
- * @since Twenty Sixteen 1.0
- *
  * @see lqx_custom_header_and_background().
  */
 function lqx_header_style() {
@@ -78,7 +62,7 @@ function lqx_header_style() {
 
 	// If the header text has been hidden.
 	?>
-	<style type="text/css" id="twentysixteen-header-css">
+	<style type="text/css" id="lqx-header-css">
 		.site-branding {
 			margin: 0 auto 0 0;
 		}
@@ -95,8 +79,6 @@ endif; // lqx_header_style
 
 /**
  * Adds postMessage support for site title and description for the Customizer.
- *
- * @since Twenty Sixteen 1.0
  *
  * @param WP_Customize_Manager $wp_customize The Customizer object.
  */
@@ -159,7 +141,7 @@ function lqx_customize_register( $wp_customize ) {
 	) );
 
 	$wp_customize->add_control( 'color_scheme', array(
-		'label'    => __( 'Base Color Scheme', 'twentysixteen' ),
+		'label'    => __( 'Base Color Scheme', 'lyquix_theme' ),
 		'section'  => 'colors',
 		'type'     => 'select',
 		'choices'  => lqx_get_color_scheme_choices(),
@@ -174,7 +156,7 @@ function lqx_customize_register( $wp_customize ) {
 	) );
 
 	$wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'page_background_color', array(
-		'label'       => __( 'Page Background Color', 'twentysixteen' ),
+		'label'       => __( 'Page Background Color', 'lyquix_theme' ),
 		'section'     => 'colors',
 	) ) );
 
@@ -189,7 +171,7 @@ function lqx_customize_register( $wp_customize ) {
 	) );
 
 	$wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'link_color', array(
-		'label'       => __( 'Link Color', 'twentysixteen' ),
+		'label'       => __( 'Link Color', 'lyquix_theme' ),
 		'section'     => 'colors',
 	) ) );
 
@@ -201,7 +183,7 @@ function lqx_customize_register( $wp_customize ) {
 	) );
 
 	$wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'main_text_color', array(
-		'label'       => __( 'Main Text Color', 'twentysixteen' ),
+		'label'       => __( 'Main Text Color', 'lyquix_theme' ),
 		'section'     => 'colors',
 	) ) );
 
@@ -213,7 +195,7 @@ function lqx_customize_register( $wp_customize ) {
 	) );
 
 	$wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'secondary_text_color', array(
-		'label'       => __( 'Secondary Text Color', 'twentysixteen' ),
+		'label'       => __( 'Secondary Text Color', 'lyquix_theme' ),
 		'section'     => 'colors',
 	) ) );
 	//Add custom settings for the lyquix template
@@ -223,7 +205,7 @@ function lqx_customize_register( $wp_customize ) {
 	    'transport'   => 'postMessage',
 	) );			
 	$wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'header_color', array(
-		'label'        => __( 'Header Color', 'twentysixteen' ),
+		'label'        => __( 'Header Color', 'lyquix_theme' ),
 		'section'    => 'colors',
 	) ) );
 	//Add custom functions for Lyquix Theme
@@ -618,7 +600,6 @@ function lqx_sanitize_fluid_screens( $values ) {
 /**
  * Render the site title for the selective refresh partial.
  *
- * @since Twenty Sixteen 1.2
  * @see lqx_customize_register()
  *
  * @return void
@@ -630,7 +611,6 @@ function lqx_customize_partial_blogname() {
 /**
  * Render the site tagline for the selective refresh partial.
  *
- * @since Twenty Sixteen 1.2
  * @see lqx_customize_register()
  *
  * @return void
@@ -640,7 +620,7 @@ function lqx_customize_partial_blogdescription() {
 }
 
 /**
- * Registers color schemes for Twenty Sixteen.
+ * Registers color schemes for Lyquix Theme.
  *
  * Can be filtered with {@see 'lqx_color_schemes'}.
  *
@@ -651,17 +631,13 @@ function lqx_customize_partial_blogdescription() {
  * 4. Main Text Color.
  * 5. Secondary Text Color.
  *
- * @since Twenty Sixteen 1.0
- *
  * @return array An associative array of color scheme options.
  */
 function lqx_get_color_schemes() {
 	/**
-	 * Filter the color schemes registered for use with Twenty Sixteen.
+	 * Filter the color schemes registered for use with Lyquix Theme.
 	 *
-	 * The default schemes include 'default', 'dark', 'gray', 'red', and 'yellow'.
-	 *
-	 * @since Twenty Sixteen 1.0
+	 * The default schemes include 'default', 'dark', 'gray', 'red', and 'yellow'
 	 *
 	 * @param array $schemes {
 	 *     Associative array of color schemes data.
@@ -736,8 +712,6 @@ if ( ! function_exists( 'lqx_get_color_scheme' ) ) :
  *
  * Create your own lqx_get_color_scheme() function to override in a child theme.
  *
- * @since Twenty Sixteen 1.0
- *
  * @return array An associative array of either the current or default color scheme HEX values.
  */
 function lqx_get_color_scheme() {
@@ -758,8 +732,6 @@ if ( ! function_exists( 'lqx_get_color_scheme_choices' ) ) :
  *
  * Create your own lqx_get_color_scheme_choices() function to override
  * in a child theme.
- *
- * @since Twenty Sixteen 1.0
  *
  * @return array Array of color schemes.
  */
@@ -783,8 +755,6 @@ if ( ! function_exists( 'lqx_sanitize_color_scheme' ) ) :
  * Create your own lqx_sanitize_color_scheme() function to override
  * in a child theme.
  *
- * @since Twenty Sixteen 1.0
- *
  * @param string $value Color scheme name value.
  * @return string Color scheme name.
  */
@@ -801,8 +771,6 @@ endif; // lqx_sanitize_color_scheme
 
 /**
  * Enqueues front-end CSS for color scheme.
- *
- * @since Twenty Sixteen 1.0
  *
  * @see wp_add_inline_style()
  */
@@ -837,7 +805,7 @@ function lqx_color_scheme_css() {
 
 	$color_scheme_css = lqx_get_color_scheme_css( $colors );
 
-	wp_add_inline_style( 'twentysixteen-style', $color_scheme_css );
+	wp_add_inline_style( 'lqx-style', $color_scheme_css );
 }
 add_action( 'wp_enqueue_scripts', 'lqx_color_scheme_css' );
 
@@ -845,8 +813,6 @@ add_action( 'wp_enqueue_scripts', 'lqx_color_scheme_css' );
  * Binds the JS listener to make Customizer color_scheme control.
  *
  * Passes color scheme data as colorScheme global.
- *
- * @since Twenty Sixteen 1.0
  */
 function lqx_customize_control_js() {
 	wp_enqueue_script( 'color-scheme-control', get_template_directory_uri() . '/js/color-scheme-control.js', array( 'customize-controls', 'iris', 'underscore', 'wp-util' ), '20160412', true );
@@ -856,18 +822,14 @@ add_action( 'customize_controls_enqueue_scripts', 'lqx_customize_control_js' );
 
 /**
  * Binds JS handlers to make the Customizer preview reload changes asynchronously.
- *
- * @since Twenty Sixteen 1.0
  */
 function lqx_customize_preview_js() {
-	wp_enqueue_script( 'twentysixteen-customize-preview', get_template_directory_uri() . '/js/customize-preview.js', array( 'customize-preview' ), '20160412', true );
+	wp_enqueue_script( 'lqx-customize-preview', get_template_directory_uri() . '/js/customize-preview.js', array( 'customize-preview' ), '20160412', true );
 }
 add_action( 'customize_preview_init', 'lqx_customize_preview_js' );
 
 /**
  * Returns CSS for the color schemes.
- *
- * @since Twenty Sixteen 1.0
  *
  * @param array $colors Color scheme colors.
  * @return string Color scheme CSS.
@@ -1182,8 +1144,6 @@ CSS;
  *
  * The template generates the css dynamically for instant display in the
  * Customizer preview.
- *
- * @since Twenty Sixteen 1.0
  */
 function lqx_color_scheme_css_template() {
 	$colors = array(
@@ -1204,8 +1164,6 @@ add_action( 'customize_controls_print_footer_scripts', 'lqx_color_scheme_css_tem
 
 /**
  * Enqueues front-end CSS for the page background color.
- *
- * @since Twenty Sixteen 1.0
  *
  * @see wp_add_inline_style()
  */
@@ -1271,14 +1229,12 @@ function lqx_page_background_color_css() {
 		}
 	';
 
-	wp_add_inline_style( 'twentysixteen-style', sprintf( $css, $page_background_color ) );
+	wp_add_inline_style( 'lqx-style', sprintf( $css, $page_background_color ) );
 }
 add_action( 'wp_enqueue_scripts', 'lqx_page_background_color_css', 11 );
 
 /**
  * Enqueues front-end CSS for the link color.
- *
- * @since Twenty Sixteen 1.0
  *
  * @see wp_add_inline_style()
  */
@@ -1367,14 +1323,12 @@ function lqx_link_color_css() {
 		}
 	';
 
-	wp_add_inline_style( 'twentysixteen-style', sprintf( $css, $link_color ) );
+	wp_add_inline_style( 'lqx-style', sprintf( $css, $link_color ) );
 }
 add_action( 'wp_enqueue_scripts', 'lqx_link_color_css', 11 );
 
 /**
  * Enqueues front-end CSS for the main text color.
- *
- * @since Twenty Sixteen 1.0
  *
  * @see wp_add_inline_style()
  */
@@ -1514,14 +1468,12 @@ function lqx_main_text_color_css() {
 		}
 	';
 
-	wp_add_inline_style( 'twentysixteen-style', sprintf( $css, $main_text_color, $border_color ) );
+	wp_add_inline_style( 'lqx-style', sprintf( $css, $main_text_color, $border_color ) );
 }
 add_action( 'wp_enqueue_scripts', 'lqx_main_text_color_css', 11 );
 
 /**
  * Enqueues front-end CSS for the secondary text color.
- *
- * @since Twenty Sixteen 1.0
  *
  * @see wp_add_inline_style()
  */
@@ -1588,6 +1540,6 @@ function lqx_secondary_text_color_css() {
 		}
 	';
 
-	wp_add_inline_style( 'twentysixteen-style', sprintf( $css, $secondary_text_color ) );
+	wp_add_inline_style( 'lqx-style', sprintf( $css, $secondary_text_color ) );
 }
 add_action( 'wp_enqueue_scripts', 'lqx_secondary_text_color_css', 11 );
