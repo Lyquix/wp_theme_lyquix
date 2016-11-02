@@ -6,6 +6,7 @@ var lqx = lqx || {
 	
 	// default settings
 	settings : {
+		debug: false,
 		logger: {
 			enable : false, // set to true to enable console logging
 			namespaces : ['window', 'jQuery', 'lqx'] // array of namespaces to be included when logging
@@ -16,6 +17,7 @@ var lqx = lqx || {
 			scrolldepth: true,
 			photogallery: true,
 			video: true,
+			activetime: true,
 		},
 		shadeColorPercent: {
 			lighter: 20,
@@ -35,6 +37,7 @@ var lqx = lqx || {
 			min: 0,
 			max: 4,
 			breakPoints: [320, 640, 960, 1280, 1600],
+			sizes: ['xs', 'sm', 'md', 'lg', 'xl'],
 		},
 		equalHeightRows: {
 			refreshElems: false, // refreshed the list of elements on each run
@@ -42,17 +45,47 @@ var lqx = lqx || {
 			checkPageLoad: true, // check if there was the page load event when waiting for images
 		},
 		lyqBox: {
-			albumLabel: '%1 of %2',
-	        alwaysShowNavOnTouchDevices: false,
-	        fadeDuration: 500,
-	        fitImagesInViewport: true,
-	        maxWidth: 1920,
-	        maxHeight: 1920,
-	        positionFromTop: 50,
-	        resizeDuration: 700,
-	        showImageNumberLabel: true,
-	        wrapAround: true,
-	        disableScrolling: true
+			lyqboxHTMLContent: 	'<div class="lyqbox">' +
+									'<div class="content-wrapper">' +
+										'<div class="content"></div>' +
+										'<div class="info">' +
+											'<div class="title"></div>' +
+											'<div class="caption"></div>' +
+											'<div class="credit"></div>' +
+										'</div>' +
+									'</div>' +
+									'<div class="content-wrapper">' +
+										'<div class="content"></div>' +
+										'<div class="info">' +
+											'<div class="title"></div>' +
+											'<div class="caption"></div>' +
+											'<div class="credit"></div>' +
+										'</div>' +
+									'</div>' +
+									'<div class="close"></div>' +
+									'<div class="prev"></div>' +
+									'<div class="next"></div>' +
+									'<div class="counter">' + 
+										'<span class="current"></span>' +
+										' of <span class="total"></span>' +
+									'</div>' +
+								'</div>',	        		
+		},
+		userActive: {
+			idleTime: 5000,	// idle time (ms) before user is set to inactive
+			throttle: 100,	// throttle period (ms)
+			refresh: 250	// refresh period (ms)
+		},
+		ga: {
+			createParams: null,		// example: {default: {trackingId: 'UA-XXXXX-Y', cookieDomain: 'auto', fieldsObject: {}}}, where "default" is the tracker name
+			setParams: null,		// example: {default: {dimension1: 'Age', metric1: 25}}
+			requireParams: null,	// example: {default: {pluginName: 'displayFeatures', pluginOptions: {cookieName: 'mycookiename'}}}
+			provideParams: null,	// example: {default: {pluginName: 'MyPlugin', pluginConstructor: myPluginFunc}}
+			customParamsFuncs: null	// example: {default: myCustomFunc}
+		},
+		geoLocation: {
+			enable: false,	// perform geolocation
+			gps: false,		// request gps data for precise lat/lon
 		}
 	},
 	
@@ -60,9 +93,8 @@ var lqx = lqx || {
 	vars: {
 		resizeThrottle: false,  // saves current status of resizeThrottle
 		scrollThrottle: false,  // saves current status of scrollThrottle
-		bodyScreenSize: {
-			sizes: ['xs', 'sm', 'md', 'lg', 'xl'],
-		},
+		youTubeIframeAPIReady: false,
+		youTubeIframeAPIReadyAttempts: 0,
 	},
 	
 	// setOptions
@@ -74,12 +106,18 @@ var lqx = lqx || {
 		return lqx.settings;
 	},
 	
+	// internal console log function
+	// use instead of console.log, and control with lqx.settings.debug
+	log : function() {
+		if(lqx.settings.debug) console.log(arguments);
+	},
+
 	// function logging
 	initLogging: function() {
 		if(lqx.settings.logger.enable) {
-			for(var i in lqx.settings.logger.namespaces) {
-				lqx.addLoggingToNamespace(lqx.settings.logger.namespaces[i]);
-			}
+			lqx.settings.logger.namespaces.forEach(function(namespace){
+				lqx.addLoggingToNamespace(namespace);
+			});
 		}
 	},
 	
@@ -93,13 +131,11 @@ var lqx = lqx || {
 			namespaceObject = window[nameSpace];
 		}
 		
-		for(var name in namespaceObject){
-			var potentialFunction = namespaceObject[name];
-			
+		Object.keys(namespaceObject).forEach(function(potentialFunction, name){
 			if(Object.prototype.toString.call(potentialFunction) === '[object Function]'){
 				namespaceObject[name] = lqx.getLoggableFunction(potentialFunction, name, nameSpace);
 			}
-		}
+		});
 	},
 	
 	getLoggableFunction : function(func, name, nameSpace) {
@@ -116,28 +152,85 @@ var lqx = lqx || {
 	// adds an attribute "screen" to the body tag that indicates the current size of the screen
 	bodyScreenSize : function() {
 		var w = jQuery(window).width();
-		// xs:    0 -  640
-		// sm:  640 -  960
-		// md:  960 - 1280
-		// lg: 1280 - 1600
-		// xl: 1600 -
 		if(w < lqx.settings.bodyScreenSize.breakPoints[1]) s = 0;
 		if(w >= lqx.settings.bodyScreenSize.breakPoints[1]) s = 1;
 		if(w >= lqx.settings.bodyScreenSize.breakPoints[2]) s = 2;
 		if(w >= lqx.settings.bodyScreenSize.breakPoints[3]) s = 3;
 		if(w >= lqx.settings.bodyScreenSize.breakPoints[4]) s = 4;
-		if(lqx.vars.bodyScreenSize.sizes[s] != lqx.vars.lastScreenSize) {
-			// adjust calculated size to min and max range
-			if(s < lqx.settings.bodyScreenSize.min) s = lqx.settings.bodyScreenSize.min;
-			if(s > lqx.settings.bodyScreenSize.max) s = lqx.settings.bodyScreenSize.max;
+		// adjust calculated size to min and max range
+		if(s < lqx.settings.bodyScreenSize.min) s = lqx.settings.bodyScreenSize.min;
+		if(s > lqx.settings.bodyScreenSize.max) s = lqx.settings.bodyScreenSize.max;
+		if(lqx.settings.bodyScreenSize.sizes[s] != lqx.vars.lastScreenSize) {
 			// change the body screen attribute
-			jQuery('body').attr('screen',lqx.vars.bodyScreenSize.sizes[s]);
-			// hack to force IE8 to take the new screen size attribute
-			document.getElementsByTagName('body')[0].className = document.getElementsByTagName('body')[0].className;
+			jQuery('body').attr('screen',lqx.settings.bodyScreenSize.sizes[s]);
 			// save last screen size
-			lqx.vars.lastScreenSize = lqx.vars.bodyScreenSize.sizes[s];
+			lqx.vars.lastScreenSize = lqx.settings.bodyScreenSize.sizes[s];
 			// trigger custom event 'screensizechange'
 			jQuery(document).trigger('screensizechange');
+		}
+	},
+
+	// bodyScreenOrientation
+	// adds an attribute "orientation" to the body tag that indicates the current orientation of the screen
+	bodyScreenOrientation : function() {
+		if('orientation' in window.screen) {
+			switch (window.screen.orientation.type ) {
+				case 'portrait-primary' :
+				case 'portrait-secondary' :
+					lqx.vars.lastScreenOrientation = 'portrait';
+					jQuery('body').attr('orientation', 'portrait');
+					break;
+
+				case 'landscape-primary' :
+				case 'landscape-secondary' :
+					lqx.vars.lastScreenOrientation = 'landscape';
+					jQuery('body').attr('orientation', 'landscape');
+					break;
+			}
+		}
+	},
+
+	// geoLocate
+	// attempts to locate position of user by means of gps or ip address
+	geoLocate : function() {
+		if(lqx.settings.geoLocation.enable) {
+			// ip2geo to get location info
+			jQuery.ajax({
+				cache: false,
+				complete: function(xhr, status){
+					// if gps enabled, attempt to get lat/lon
+					if(lqx.settings.geoLocation.gps && 'geolocation' in navigator) {
+						navigator.geolocation.getCurrentPosition(function(position) {
+							lqx.vars.geoLocation.lat = position.coords.latitude;
+							lqx.vars.geoLocation.lon = position.coords.longitude;
+							lqx.vars.geoLocation.radius = 0;
+						});
+					}
+					// add location attributes to body tag
+					if(lqx.vars.geoLocation.city) jQuery('body').attr('city', lqx.vars.geoLocation.city);
+					if(lqx.vars.geoLocation.subdivision) jQuery('body').attr('subdivision', lqx.vars.geoLocation.subdivision);
+					if(lqx.vars.geoLocation.country) jQuery('body').attr('country', lqx.vars.geoLocation.country);
+					if(lqx.vars.geoLocation.continent) jQuery('body').attr('continent', lqx.vars.geoLocation.continent);
+					if(lqx.vars.geoLocation.time_zone) jQuery('body').attr('time-zone', lqx.vars.geoLocation.time_zone);
+				},
+				dataType: 'json',
+				error: function(){
+					lqx.vars.geoLocation = {
+						city: null,
+						subdivision: null,
+						country: null,
+						continent: null,
+						time_zone: null,
+						lat: null,
+						lon: null,
+						radius: null
+					}
+				},
+				success: function(data, status, xhr){
+					lqx.vars.geoLocation = data;
+				},
+				url: lqx.vars.tmplURL + '/php/ip2geo/',
+			});
 		}
 	},
 	
@@ -164,9 +257,8 @@ var lqx = lqx || {
 	// returns the browser name, type and version, and sets body classes
 	// detects major browsers: IE, Edge, Firefox, Chrome, Safari, Opera, Android
 	// based on: https://github.com/ded/bowser
-	// NOTE: don't use this as a function, as it is converted to an object on the first execution
 	// list of user agen strings: http://www.webapps-online.com/online-tools/user-agent-strings/dv
-	getBrowser : function(){
+	getBrowser : (function(){
 		var ua = navigator.userAgent, browser;
 
 		// helper functions to deal with common regex
@@ -239,14 +331,13 @@ var lqx = lqx || {
 		jQuery('body').addClass(browser.type + '-' + browser.version.replace(/\./g, '-'));
 
 		return browser;
-	},
+	}()),
 
 	// returns the os name, type and version, and sets body classes
 	// detects major desktop and mobile os: Windows, Windows Phone, Mac, iOS, Android, Ubuntu, Fedora, ChromeOS
 	// based on bowser: https://github.com/ded/bowser
-	// NOTE: don't use this as a function, as it is converted to an object on the first execution
 	// list of user agent strings: http://www.webapps-online.com/online-tools/user-agent-strings/dv
-	getOS : function() {
+	getOS : (function() {
 		var ua = navigator.userAgent, os;
 
 		// helper functions to deal with common regex
@@ -321,7 +412,7 @@ var lqx = lqx || {
 		}
 
 		return os;
-	},
+	}()),
 	
 	// browserFixes
 	// implements some general browser fixes
@@ -587,171 +678,191 @@ var lqx = lqx || {
 			B = parseInt(f[2]);
 		return "rgb(" + (Math.round((t - R) * p) + R) + "," + (Math.round((t - G) * p ) + G) + "," + (Math.round((t - B) * p) + B) + ")";
 	},
-     
+	 
 	// initialize google analytics tracking
 	initTracking : function() {
 		
-		// check if google analytics have been loaded
-		// NOTE: make sure you are using Google Universal Analytics Code:
-		/*
-		<script>
-		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-		})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-		ga('create', 'UA-XXXX-Y', 'auto');
-		ga('send', 'pageview');
-		</script>
-		*/
-		if(typeof window.ga !== 'undefined'){
+		// NOTE: this function is triggered by lqx.gaReady
 			
-			// track downloads and outbound links
-			if(lqx.settings.tracking.outbound || lqx.settings.tracking.download){
-				// find all a tags and cycle through them
-				jQuery('a').each(function(){
-					var elem = this;
-					// check if it has an href attribute, otherwise it is just a page anchor
-					if(elem.href) {
-						
-						// skip featherlight video and gallery, video is already handled below, and gallery will be handled by tracking.photogallery
-						if (typeof jQuery(this).attr('data-featherlight') === 'undefined' && typeof jQuery(this).parent().attr('data-featherlight-gallery') === 'undefined'){
+		// track downloads and outbound links
+		if(lqx.settings.tracking.outbound || lqx.settings.tracking.download){
+			// find all a tags and cycle through them
+			jQuery('a').each(function(){
+				var elem = this;
+				// check if it has an href attribute, otherwise it is just a page anchor
+				if(elem.href) {
+					
+					// skip featherlight video and gallery, video is already handled below, and gallery will be handled by tracking.photogallery
+					if (typeof jQuery(this).attr('data-featherlight') === 'undefined' && typeof jQuery(this).parent().attr('data-featherlight-gallery') === 'undefined'){
 
-							// check if it is an outbound link, track as event
-							if(elem.href.indexOf(location.host) == -1 && lqx.settings.tracking.outbound) {
+						// check if it is an outbound link, track as event
+						if(elem.href.indexOf(location.host) == -1 && lqx.settings.tracking.outbound) {
 
-								jQuery(elem).click(function(e){
-									// prevent default
-									e.preventDefault ? e.preventDefault() : e.returnValue = !1;
-									var url = elem.href;
-									var label = url;
-									if(jQuery(elem).attr('title')) {
-										label = jQuery(elem).attr('title') + ' [' + url + ']';
-									}
-									ga('send', {
-										'hitType' : 'event', 
-										'eventCategory' : 'Outbound Links',
-										'eventAction' : 'click',
-										'eventLabel' : label,
-										'nonInteraction' : true,
-										'hitCallback' : function(){ window.location.href = url; } // regarless of target value link will open in same link, otherwise it is blocked by browser
-									});
+							jQuery(elem).click(function(e){
+								// prevent default
+								e.preventDefault ? e.preventDefault() : e.returnValue = !1;
+								var url = elem.href;
+								var label = url;
+								if(jQuery(elem).attr('title')) {
+									label = jQuery(elem).attr('title') + ' [' + url + ']';
+								}
+								ga('send', {
+									'hitType' : 'event', 
+									'eventCategory' : 'Outbound Links',
+									'eventAction' : 'click',
+									'eventLabel' : label,
+									'nonInteraction' : true,
+									'hitCallback' : function(){ window.location.href = url; } // regarless of target value link will open in same link, otherwise it is blocked by browser
 								});
-							}
-							
-							// check if it is a download link, track as pageview
-							else if(elem.href.match(/\.(gif|png|jpg|jpeg|tif|tiff|svg|webp|bmp|zip|rar|gzip|7z|tar|exe|msi|dmg|txt|pdf|rtf|doc|docx|dot|dotx|xls|xlsx|xlt|xltx|ppt|pptx|pot|potx|mp3|wav|mp4|ogg|webm|wma|mov|avi|wmv|flv|swf|xml|js|json|css|less|sass)$/i) && lqx.settings.tracking.downloads) {
-								jQuery(elem).click(function(e){
-									// prevent default
-									e.preventDefault ? e.preventDefault() : e.returnValue = !1;
-									var url = elem.href;
-									var loc = elem.protocol + '//' + elem.hostname + elem.pathname + elem.search;
-									var page = elem.pathname + elem.search;
-									var title = 'Download: ' + page;
-									if(jQuery(elem).attr('title')) {
-										title = jQuery(elem).attr('title');
-									}
-									ga('send', {
-										'hitType': 'pageview', 
-										'location' : loc,
-										'page' : page,
-										'title' : title,
-										'hitCallback' : function(){ window.location.href = url; } // regarless of target value link will open in same link, otherwise it is blocked by browser
-									});
-								});
-							}
+							});
 						}
-					
+						
+						// check if it is a download link, track as pageview
+						else if(elem.href.match(/\.(gif|png|jpg|jpeg|tif|tiff|svg|webp|bmp|zip|rar|gzip|7z|tar|exe|msi|dmg|txt|pdf|rtf|doc|docx|dot|dotx|xls|xlsx|xlt|xltx|ppt|pptx|pot|potx|mp3|wav|mp4|ogg|webm|wma|mov|avi|wmv|flv|swf|xml|js|json|css|less|sass)$/i) && lqx.settings.tracking.downloads) {
+							jQuery(elem).click(function(e){
+								// prevent default
+								e.preventDefault ? e.preventDefault() : e.returnValue = !1;
+								var url = elem.href;
+								var loc = elem.protocol + '//' + elem.hostname + elem.pathname + elem.search;
+								var page = elem.pathname + elem.search;
+								var title = 'Download: ' + page;
+								if(jQuery(elem).attr('title')) {
+									title = jQuery(elem).attr('title');
+								}
+								ga('send', {
+									'hitType': 'pageview', 
+									'location' : loc,
+									'page' : page,
+									'title' : title,
+									'hitCallback' : function(){ window.location.href = url; } // regarless of target value link will open in same link, otherwise it is blocked by browser
+								});
+							});
+						}
 					}
-				});
 				
-			}
-			
-		
-			// track scroll depth
-			if(lqx.settings.tracking.scrolldepth){
-				
-				// get the initial scroll position
-				lqx.vars.scrollDepthMax = Math.ceil(((jQuery(window).scrollTop() + jQuery(window).height()) / jQuery(document).height()) * 10) * 10;
-				
-				// add listener to scrollthrottle event
-				jQuery(window).on('scrollthrottle', function(){
-					// capture the hightest scroll point, stop calculating once reached 100
-					if(lqx.vars.scrollDepthMax < 100) {
-						lqx.vars.scrollDepthMax = Math.max(lqx.vars.scrollDepthMax, Math.ceil(((jQuery(window).scrollTop() + jQuery(window).height()) / jQuery(document).height()) * 10) * 10);
-						if(lqx.vars.scrollDepthMax > 100) lqx.vars.scrollDepthMax = 100;
-					}
-				});
-				
-				// add listener to link
-				jQuery(window).on('unload', function(){
-					
-					ga('send', {
-						'hitType' : 'event', 
-						'eventCategory' : 'Scroll Depth',
-						'eventAction' : lqx.vars.scrollDepthMax,
-						'nonInteraction' : true
-					});				
-					
-				});					
-				
-			}
-			
-			// track photo galleries
-			if(lqx.settings.tracking.photogallery){
-				jQuery('html').on('click', 'a[rel^=lightbox], area[rel^=lightbox], a[data-lightbox], area[data-lightbox], a[data-featherlight-image]', function(){
-					// send event for gallery opened
-					ga('send', {
-						'hitType': 'event', 
-						'eventCategory' : 'Photo Gallery',
-						'eventAction' : 'Open'
-					});
-				
-				});
-				
-				jQuery('html').on('load', 'img.lb-image', function(){
-					// send event for image displayed
-					ga('send', {
-						'hitType': 'event', 
-						'eventCategory' : 'Photo Gallery',
-						'eventAction' : 'Display',
-						'eventLabel' : jQuery(this).attr('src')
-					});
-				
-				});
-
-			}
-			
-			// track video
-			if(lqx.settings.tracking.video){
-				
-				// load youtube iframe api
-				var tag = document.createElement('script');
-				tag.src = "https://www.youtube.com/iframe_api";
-				var firstScriptTag = document.getElementsByTagName('script')[0];
-				firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-				
-				// set listeners for vimeo videos
-				if (window.addEventListener) {
-					window.addEventListener('message', lqx.vimeoReceiveMessage, false);
-				} 
-				else {
-					window.attachEvent('onmessage', lqx.vimeoReceiveMessage, false);
 				}
+			});
+			
+		}
+		
+	
+		// track scroll depth
+		if(lqx.settings.tracking.scrolldepth){
+			
+			// get the initial scroll position
+			lqx.vars.scrollDepthMax = Math.ceil(((jQuery(window).scrollTop() + jQuery(window).height()) / jQuery(document).height()) * 10) * 10;
+			
+			// add listener to scrollthrottle event
+			jQuery(window).on('scrollthrottle', function(){
+				// capture the hightest scroll point, stop calculating once reached 100
+				if(lqx.vars.scrollDepthMax < 100) {
+					lqx.vars.scrollDepthMax = Math.max(lqx.vars.scrollDepthMax, Math.ceil(((jQuery(window).scrollTop() + jQuery(window).height()) / jQuery(document).height()) * 10) * 10);
+					if(lqx.vars.scrollDepthMax > 100) lqx.vars.scrollDepthMax = 100;
+				}
+			});
+			
+			// add listener to page unload
+			jQuery(window).on('unload', function(){
 				
-				// initialize lqx players objects
-				lqx.vars.youtubePlayers = {};
-				lqx.vars.vimeoPlayers = {};
+				ga('send', {
+					'hitType' : 'event', 
+					'eventCategory' : 'Scroll Depth',
+					'eventAction' : lqx.vars.scrollDepthMax,
+					'nonInteraction' : true
+				});				
 				
-				// detect if there are any youtube or vimeo videos, activate js api and add id
-				jQuery('iframe').each(function(){
-					
-					var elem = jQuery(this);
-			    	// init js api for video player
-			    	lqx.initVideoPlayerAPI(elem);
-												 
+			});					
+			
+		}
+		
+		// track photo galleries
+		if(lqx.settings.tracking.photogallery){
+			jQuery('html').on('click', 'a[rel^=lightbox], area[rel^=lightbox], a[data-lightbox], area[data-lightbox], a[data-featherlight-image]', function(){
+				// send event for gallery opened
+				ga('send', {
+					'hitType': 'event', 
+					'eventCategory' : 'Photo Gallery',
+					'eventAction' : 'Open'
 				});
+			
+			});
+			
+			jQuery('html').on('load', 'img.lb-image', function(){
+				// send event for image displayed
+				ga('send', {
+					'hitType': 'event', 
+					'eventCategory' : 'Photo Gallery',
+					'eventAction' : 'Display',
+					'eventLabel' : jQuery(this).attr('src')
+				});
+			
+			});
 
+		}
+		
+		// track video
+		if(lqx.settings.tracking.video){
+			
+			// load youtube iframe api
+			var tag = document.createElement('script');
+			tag.src = "https://www.youtube.com/iframe_api";
+			tag.onload = function(){lqx.vars.youTubeIframeAPIReady = true;};
+			var firstScriptTag = document.getElementsByTagName('script')[0];
+			firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+			
+			// set listeners for vimeo videos
+			if (window.addEventListener) {
+				window.addEventListener('message', lqx.vimeoReceiveMessage, false);
+			} 
+			else {
+				window.attachEvent('onmessage', lqx.vimeoReceiveMessage, false);
 			}
+			
+			// initialize lqx players objects
+			lqx.vars.youtubePlayers = {};
+			lqx.vars.vimeoPlayers = {};
+			
+			// detect if there are any youtube or vimeo videos, activate js api and add id
+			jQuery('iframe').each(function(){
+				
+				var elem = jQuery(this);
+				// init js api for video player
+				lqx.initVideoPlayerAPI(elem);
+											 
+			});
+
+		}
+
+		// track active time
+		if(lqx.settings.tracking.activetime) {
+			// add listener to page unload
+			jQuery(window).on('unload', function(){
+				
+				ga('send', {
+					'hitType' : 'event', 
+					'eventCategory' : 'User Active Time',
+					'eventAction' : 'Percentage',
+					'eventValue' : parseInt(100 * lqx.vars.userActive.activeTime / (lqx.vars.userActive.activeTime + lqx.vars.userActive.inactiveTime)),
+					'nonInteraction' : true
+				});
+				
+				ga('send', {
+					'hitType' : 'event', 
+					'eventCategory' : 'User Active Time',
+					'eventAction' : 'Active Time (ms)',
+					'eventValue' : parseInt(lqx.vars.userActive.activeTime),
+					'nonInteraction' : true
+				});
+				
+				ga('send', {
+					'hitType' : 'event', 
+					'eventCategory' : 'User Active Time',
+					'eventAction' : 'Inactive Time (ms)',
+					'eventValue' : parseInt(lqx.vars.userActive.inactiveTime),
+					'nonInteraction' : true
+				});
+				
+			});
 		}
 
 	},
@@ -759,22 +870,22 @@ var lqx = lqx || {
 	// handle mutation for featherlight gallery, and send the ga data if a new image is loaded by detecting new added image and pass on the src attribute value
 	featherlightMutationHandler: function(mutRec) {
 		jQuery(mutRec.addedNodes).each(function(){
-	    	var elem = jQuery(this);
-	    	var src = elem.attr('src');
+			var elem = jQuery(this);
+			var src = elem.attr('src');
 
-	    	if (typeof elem.prop('tagName') !== 'undefined' && elem.hasClass('featherlight-image')){
-	    		var tag = elem.prop('tagName').toLowerCase();
+			if (typeof elem.prop('tagName') !== 'undefined' && elem.hasClass('featherlight-image')){
+				var tag = elem.prop('tagName').toLowerCase();
 
-		    	if (tag == 'img' && typeof src != 'undefined'){
-		    		// send event for image displayed
+				if (tag == 'img' && typeof src != 'undefined'){
+					// send event for image displayed
 					ga('send', {
 						'hitType': 'event', 
 						'eventCategory' : 'Photo Gallery',
 						'eventAction' : 'Display',
 						'eventLabel' : jQuery(this).attr('src')
 					});
-		    	}
-	    	}
+				}
+			}
 		});
 	},
 
@@ -782,15 +893,15 @@ var lqx = lqx || {
 	videoPlayerMutationHandler : function(mutRec) {
 		
 		jQuery(mutRec.addedNodes).each(function(){
-	    	
-	    	var elem = jQuery(this);
-	    	if (typeof elem.prop('tagName') !== 'undefined'){
-		    	var tag = elem.prop('tagName').toLowerCase();
-		        if (tag == 'iframe') {
-			    	// init js api for video player
-			    	lqx.initVideoPlayerAPI(elem);
+			
+			var elem = jQuery(this);
+			if (typeof elem.prop('tagName') !== 'undefined'){
+				var tag = elem.prop('tagName').toLowerCase();
+				if (tag == 'iframe') {
+					// init js api for video player
+					lqx.initVideoPlayerAPI(elem);
 				}	    		
-	    	}
+			}
 		});
 		
 	},
@@ -800,54 +911,54 @@ var lqx = lqx || {
 
 		var src = elem.attr('src');
 		var playerId = elem.attr('id');
-        
-        if(typeof src != 'undefined') {
-	        // check youtube players
-	        if (src.indexOf('youtube.com/embed/') != -1) {
-	            // add id if it doesn't have one
-	            if (typeof playerId == 'undefined') {
-	                playerId = 'youtubePlayer' + (Object.keys(lqx.vars.youtubePlayers).length);
-	                elem.attr('id', playerId);
-	            }
-	            
-	            // reload with API support enabled
-	            if (src.indexOf('enablejsapi=1') == -1) {
-	                var urlconn = '&';
-	                if (src.indexOf('?') == -1) {
-	                    urlconn = '?';
-	                }
-	                elem.attr('src', src + urlconn + 'enablejsapi=1&version=3');
-	            }
+		
+		if(typeof src != 'undefined') {
+			// check youtube players
+			if (src.indexOf('youtube.com/embed/') != -1) {
+				// add id if it doesn't have one
+				if (typeof playerId == 'undefined') {
+					playerId = 'youtubePlayer' + (Object.keys(lqx.vars.youtubePlayers).length);
+					elem.attr('id', playerId);
+				}
+				
+				// reload with API support enabled
+				if (src.indexOf('enablejsapi=1') == -1) {
+					var urlconn = '&';
+					if (src.indexOf('?') == -1) {
+						urlconn = '?';
+					}
+					elem.attr('src', src + urlconn + 'enablejsapi=1&version=3');
+				}
 
-	            // add to list of players
-	            if(typeof lqx.vars.youtubePlayers[playerId] == 'undefined') {
-		            lqx.vars.youtubePlayers[playerId] = {};
-		            
-		            // add event callbacks to player
+				// add to list of players
+				if(typeof lqx.vars.youtubePlayers[playerId] == 'undefined') {
+					lqx.vars.youtubePlayers[playerId] = {};
+					
+					// add event callbacks to player
 					onYouTubeIframeAPIReady();
 				}
-	        }
-	        
-	        // check vimeo players
+			}
+			
+			// check vimeo players
 			if(src.indexOf('player.vimeo.com/video/') != -1) {
-	            // add id if it doesn't have one
-	            if (typeof playerId == 'undefined') {
-	                playerId = 'vimeoPlayer' + (Object.keys(lqx.vars.vimeoPlayers).length);
-	                elem.attr('id', playerId);
-	            }
-	            
-	            // reload with API support enabled
-	            if (src.indexOf('api=1') == -1) {
-	                var urlconn = '&';
-	                if (src.indexOf('?') == -1) {
-	                    urlconn = '?';
-	                }
-	                elem.attr('src', src + urlconn + 'api=1&player_id=' + playerId);
-	            }
+				// add id if it doesn't have one
+				if (typeof playerId == 'undefined') {
+					playerId = 'vimeoPlayer' + (Object.keys(lqx.vars.vimeoPlayers).length);
+					elem.attr('id', playerId);
+				}
+				
+				// reload with API support enabled
+				if (src.indexOf('api=1') == -1) {
+					var urlconn = '&';
+					if (src.indexOf('?') == -1) {
+						urlconn = '?';
+					}
+					elem.attr('src', src + urlconn + 'api=1&player_id=' + playerId);
+				}
 
-	            // add to list of players
-	            if(typeof lqx.vars.vimeoPlayers[playerId] == 'undefined') {
-		            lqx.vars.vimeoPlayers[playerId] = {};
+				// add to list of players
+				if(typeof lqx.vars.vimeoPlayers[playerId] == 'undefined') {
+					lqx.vars.vimeoPlayers[playerId] = {};
 				}
 				
 			}
@@ -968,8 +1079,8 @@ var lqx = lqx || {
 					
 					// set the listeners
 					lqx.vimeoSendMessage(data.player_id, e.origin, 'addEventListener', 'play');
-			        lqx.vimeoSendMessage(data.player_id, e.origin, 'addEventListener', 'finish');
-        			lqx.vimeoSendMessage(data.player_id, e.origin, 'addEventListener', 'playProgress');
+					lqx.vimeoSendMessage(data.player_id, e.origin, 'addEventListener', 'finish');
+					lqx.vimeoSendMessage(data.player_id, e.origin, 'addEventListener', 'playProgress');
 					
 					break;
 				
@@ -1018,14 +1129,14 @@ var lqx = lqx || {
 	vimeoSendMessage : function(playerId, origin, action, value){
 		
 		var data = {
-            method: action
-        };
+			method: action
+		};
 
-        if (value) {
-            data.value = value;
-        }
+		if (value) {
+			data.value = value;
+		}
 
-        document.getElementById(playerId).contentWindow.postMessage(JSON.stringify(data), origin);
+		document.getElementById(playerId).contentWindow.postMessage(JSON.stringify(data), origin);
 		
 	},
 	
@@ -1051,8 +1162,8 @@ var lqx = lqx || {
 
 		// prevent propagation of clicks
 		jQuery('body').on('click', '.horizontal, .vertical, .slide-out', function(e){
-		    // do not propagate click events outside menus
-		    e.stopPropagation();
+			// do not propagate click events outside menus
+			e.stopPropagation();
 		});
 
 		// open/close slide-out menu
@@ -1111,7 +1222,7 @@ var lqx = lqx || {
 	
 	// create a custom mutation observer that will trigger any needed functions
 	initMutationObserver : function(){
-        // handle videos that may be loaded dynamically
+		// handle videos that may be loaded dynamically
 		var mo = window.MutationObserver || window.WebKitMutationObserver;
 		
 		// check for mutationObserver support , if exists, user the mutation observer object, if not use the listener method.
@@ -1130,7 +1241,7 @@ var lqx = lqx || {
 			// photogallery listener
 			if(lqx.settings.tracking.photogallery){			
 				jQuery('html').on('DOMNodeInserted', 'img.featherlight-image', function(e) {
-				  	var src = jQuery(e.currentTarget).attr('src');
+					var src = jQuery(e.currentTarget).attr('src');
 					if (typeof src != 'undefined'){
 						// send event for image displayed
 						ga('send', {
@@ -1191,714 +1302,659 @@ var lqx = lqx || {
 	// lyqbox: functionality for lightbox, galleries, and alerts
 	lyqBox : {
 
-	    init: function() {
-	    	if (jQuery('[data-lyqbox]').length) {
-		        //console.log('in promise');
-		        var self = this;
-		        this.album = [];
-		        this.currentImageIndex = void 0;
-		        this.enable();
-		        this.build();
+		init: function() {
+			if (jQuery('[data-lyqbox]').length) {
+				//console.log('in promise');
+				lqx.lyqBox.album = [];
+				lqx.lyqBox.currentImageIndex = void 0;
+				lqx.lyqBox.enable();
+				lqx.lyqBox.build();
 
-		        // lyquix addition,
-		        // to handle alertbox and hash url at the same time, we prioritize the alertbox first.
-		        // using promise, we make sure the alertbox shows first, and show the hash url content after the promise is done (alertbox is closed)
-		        var alertPromise = this.alert(jQuery('[data-lyqbox-type=alert]'));
+				// to handle alertbox and hash url at the same time, we prioritize the alertbox first.
+				// using promise, we make sure the alertbox shows first, and show the hash url content after the promise is done (alertbox is closed)
+				var alertPromise = lqx.lyqBox.alert(jQuery('[data-lyqbox-type=alert]'));
 
-		        // check hash after promise is resolved/reject. Rejected is a valid return due to alerbox already shown before/cookie found.
-		        alertPromise.always(function afterAlertCheck() {
-		            //console.log('in promise done');
-		            self.hash();
-		        });
-	    	} 
-	    },
+				// check hash after promise is resolved/reject. Rejected is a valid return due to alerbox already shown before/cookie found.
+				alertPromise.always(function afterAlertCheck() {
+					lqx.lyqBox.hash();
+				});
+			} 
+		},
 
-	    // show the hash url content
-	    hash: function() {
-	        if (window.location.hash.substr(1) != "") {
-	            // get hash value and display the appropriate content
-	            var contentData = window.location.hash.substr(1).split("_");
+		// show the hash url content
+		hash: function() {
+			if (window.location.hash.substr(1) != "") {
+				// get hash value and display the appropriate content
+				var contentData = window.location.hash.substr(1).split("_");
 
-	            if (jQuery('[data-lyqbox=' + contentData[0] + '][data-lyqbox-alias=' + contentData[1] + ']').length){
-	            	this.start(jQuery('[data-lyqbox=' + contentData[0] + '][data-lyqbox-alias=' + contentData[1] + ']'));
-		            //console.log('hash found and initiated');
-	            } else {
-	            	//console.log('hash found in URL but cannot find item matching the hash, rendering normally');
-	            }
-	        } 
-	    },
+				if (jQuery('[data-lyqbox=' + contentData[0] + '][data-lyqbox-alias=' + contentData[1] + ']').length){
+					lqx.lyqBox.start(jQuery('[data-lyqbox=' + contentData[0] + '][data-lyqbox-alias=' + contentData[1] + ']'));
+				}
+			} 
+		},
 
-	    // show alertbox if found.
-	    alert: function(alertbox) {
-	        var self = this;
-	        var deferred = jQuery.Deferred();
-	        // assume that there is only one alertbox at any given time.
-	        if (alertbox.length == 1) {
-	            // check if a cookie for this alertbox exists, if so return deferred reject.
-	            var cookieName = 'lyqbox-alert-' + alertbox.attr('data-lyqbox');
-	            var alertCookieFound = localStorage.getItem(cookieName);
-	            if (alertCookieFound) {
-	                //console.log('cookie found, alertbox skipped ', cookieName);
-	                deferred.reject();
-	            }
-	            // if no cookie found, show the alertbox
-	            else {
-	                // show the alertbox
-	                self.start(alertbox);
-	                //console.log('alert found, no cookie, and initiated');
+		// show alertbox if found.
+		alert: function(alertbox) {
+			var deferred = jQuery.Deferred();
+			// assume that there is only one alertbox at any given time.
+			if (alertbox.length == 1) {
+				// check if a cookie for this alertbox exists, if so return deferred reject.
+				var cookieName = 'lyqbox-alert-' + alertbox.attr('data-lyqbox');
+				var alertCookieFound = localStorage.getItem(cookieName);
+				if (alertCookieFound) {
+					deferred.reject();
+				}
+				// if no cookie found, show the alertbox
+				else {
+					// show the alertbox
+					lqx.lyqBox.start(alertbox);
 
-	                // add listener to the close button to save the cookie and return deferred resolved
-	                jQuery('#lyqbox-wrapper').find('.lyqbox-close-button').on('click', function alertBoxCloseButtonClicked() {
-	                    var cookieName = 'lyqbox-alert-' + self.album[self.currentImageIndex].albumId;
-	                    //console.log('cookie saved ', cookieName);
-	                    localStorage.setItem(cookieName, 1);
+					// add listener to the close button to save the cookie and return deferred resolved
+					jQuery('.lyqbox .close').on('click', function alertBoxCloseButtonClicked() {
+						var cookieName = 'lyqbox-alert-' + lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].albumId;
+						localStorage.setItem(cookieName, 1);
 
-	                    deferred.resolve();
-	                    self.end();
-	                    return false;
-	                });
-	            }
-	        }
-	        // if no alertbox is found, return deferred reject to make way to display content for hash url if any found
-	        else {
-	            deferred.reject();
-	        }
-	        return deferred.promise();
-	    },
+						deferred.resolve();
+						lqx.lyqBox.end();
+						return false;
+					});
+				}
+			}
+			// if no alertbox is found, return deferred reject to make way to display content for hash url if any found
+			else {
+				deferred.reject();
+			}
+			return deferred.promise();
+		},
 
-	    imageCountLabel: function(currentImageNum, totalImages) {
-	        return lqx.settings.lyqBox.albumLabel.replace(/%1/g, currentImageNum).replace(/%2/g, totalImages);
-	    },
+		// Loop through anchors and areamaps looking for either data-lightbox attributes or rel attributes
+		// that contain 'lightbox'. When these are clicked, start lightbox.
+		enable: function() {
+			// we initialize everything
+			jQuery('body').on('click', '[data-lyqbox]', function(event) {
+				jQuery('.lyqbox').addClass('open');
+				lqx.lyqBox.start(jQuery(event.currentTarget));
+				return false;
+			});
 
-	    // Loop through anchors and areamaps looking for either data-lightbox attributes or rel attributes
-	    // that contain 'lightbox'. When these are clicked, start lightbox.
-	    enable: function() {
-	        var self = this;
+		},
 
-	        // lyquix addition, we initialize everything based on [data-lightbox]
-	        jQuery('body').on('click', '[data-lyqbox]', function(event) {
-	            self.start(jQuery(event.currentTarget));
-	            return false;
-	        });
+		build: function() {
+			// append html structure
+			jQuery(lqx.settings.lyqBox.lyqboxHTMLContent).appendTo(jQuery('body'));
 
-	    },
+			// assign the html container class to namespace variable
+			lqx.lyqBox.overlay = jQuery('.lyqbox');
+			
+			// assign active content container to the first .content box
+			lqx.lyqBox.containerActive = lqx.lyqBox.overlay.find('.content-wrapper').first().addClass('active');
 
-	    build: function() {
-	        var self = this;
+			// disable click on content by default
+			lqx.lyqBox.overlay.find('.content').on('click', function() {
+				return false;
+			});	        
 
-	        // mostly different class/id names
-	        jQuery('<div id="lyqbox-overlay" class="lyqbox-overlay"></div>' +
-					'<div id="lyqbox-wrapper">' +
-						'<div class="lyqbox-content-wrapper">' +
-							'<div class="lyqbox-content">' +
-							'</div>' +
-							'<div class="lyqbox-extra-content">' +
-								'<span class="title"></span>' +
-								'<span class="caption"></span>' +
-								'<span class="credit"></span>' +
-							'</div>' +
-							'<div class="lyqbox-buttons-and-counter">' +
-								'<span class="lyqbox-button-prev"></span>' +
-								'<span class="lyqbox-button-next"></span>' +
-								'<span class="lyqbox-counter"></span>' +
-							'</div>' +
-							'<span class="lyqbox-close-button">x</span>' +
-						'</div>' +
-					'</div>').appendTo(jQuery('body'));
+			// Attach event handlers to the newly minted DOM elements
+			lqx.lyqBox.overlay.on('click', function() {
+				// if this is alert, do nothing, we only want alert to go away on the close box/button.
+				if (lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].type == 'alert')
+					return false;
 
-	        // Cache jQuery objects
+				// else exit the lightbox
+				lqx.lyqBox.end();
+				return false;
+			});
 
-	        // lyquix edits: change class/id names
-	        this.$lightbox = jQuery('#lyqbox-wrapper');
-	        this.$overlay = jQuery('#lyqbox-overlay');
-	        this.$container = this.$lightbox.find('.lyqbox-content');
-	        this.$outerContainer = this.$lightbox.find('.lyqbox-content-wrapper');
+			// prev button click handling
+			lqx.lyqBox.overlay.find('.prev').on('click', function() {
+				if (lqx.lyqBox.currentImageIndex === 0) {
+					lqx.lyqBox.changeContent(lqx.lyqBox.album.length - 1);
+				} else {
+					lqx.lyqBox.changeContent(lqx.lyqBox.currentImageIndex - 1);
+				}
+				return false;
+			});
 
-	        // Store css values for future lookup
-	        this.containerTopPadding = parseInt(this.$container.css('padding-top'), 10);
-	        this.containerRightPadding = parseInt(this.$container.css('padding-right'), 10);
-	        this.containerBottomPadding = parseInt(this.$container.css('padding-bottom'), 10);
-	        this.containerLeftPadding = parseInt(this.$container.css('padding-left'), 10);
+			// next button click handling
+			lqx.lyqBox.overlay.find('.next').on('click', function() {
+				if (lqx.lyqBox.currentImageIndex === lqx.lyqBox.album.length - 1) {
+					lqx.lyqBox.changeContent(0);
+				} else {
+					lqx.lyqBox.changeContent(lqx.lyqBox.currentImageIndex + 1);
+				}
+				return false;
+			});
 
-	        // Attach event handlers to the newly minted DOM elements
-	        this.$overlay.on('click', function() {
-	            //console.log('overlay area clicked');
-	            // if this is alert, do nothing
-	            if (self.album[self.currentImageIndex].type == 'alert')
-	                return false;
+			// close button click handling
+			lqx.lyqBox.overlay.find('.close').on('click', function() {
+				// disable the close button for alertbox, cookie save handling to prevent the alert box to reappear will be done on the deferred section on alert function to make sure in the case alert and hashurl found, 
+				// that the alert box is closed properly before showing a hash url content.
+				if (lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].type == 'alert')
+					return false;
 
-	            // else exit the lightbox
-	            self.end();
-	            return false;
-	        });
+				// else close the lightbox
+				lqx.lyqBox.end();
+				return false;
+			});
 
-	        this.$lightbox.hide().on('click', function(event) {
-	            //console.log('lightbox area clicked');
-	            // lyquix edit: change the target id per our html
+		},
 
-	            // if this is alert, do nothing
-	            if (self.album[self.currentImageIndex].type == 'alert')
-	                return false;
+		// Show overlay and lightbox. If the image is part of a set, add siblings to album array.
+		start: function(data) {
+			lqx.lyqBox.album = [];
+			var currentIndex = 0;
+
+			function addToAlbum(data) {
+				lqx.lyqBox.album.push({
+					albumId: data.attr('data-lyqbox'),
+					type: data.attr('data-lyqbox-type'),
+					link: data.attr('data-lyqbox-url'),
+					title: data.attr('data-lyqbox-title'),
+					caption: data.attr('data-lyqbox-caption'),
+					credit: data.attr('data-lyqbox-credit'),
+					class: data.attr('data-lyqbox-class'),
+					alias: data.attr('data-lyqbox-alias'),
+					html: data.attr('data-lyqbox-html'),
+				});
+			}
+
+			var items;
+
+			// build the album, the object which contains all values passed from the attribute 
+			var datalyqboxValue = data.attr('data-lyqbox');
+			if (datalyqboxValue) {
+				items = jQuery(data.prop('tagName') + '[data-lyqbox="' + datalyqboxValue + '"]');
+
+				for (var i = 0; i < items.length; i = ++i) {
+					addToAlbum(jQuery(items[i]));
+					// 
+					if (items[i] === data[0]) {
+						currentIndex = i;
+					}
+				}
+			}
+
+			// change the content to item at index
+			lqx.lyqBox.changeContent(currentIndex);
+		},
+
+		loadHTML: function(url) {
+			var deferred = jQuery.Deferred();
+			// we are using load so one can specify a target with: url.html #targetelement
+			var $container = jQuery('<div></div>').load(url, function(response, status) {
+				if (status !== "error") {
+					deferred.resolve($container.contents());
+				}
+				deferred.fail();
+			});
+			return deferred.promise();
+		},
+
+		// change content, for now we have 3 types, image, iframe and HTML.
+		changeContent: function(index) {
+			lqx.lyqBox.disableKeyboardNav();
+			lqx.lyqBox.overlay.addClass("open");
+
+			// deferred var to be used on alert type lyqbox only, just in case it's loading HTML content from a file
+			var promise = jQuery.Deferred();
+
+			// process the new content
+			switch (lqx.lyqBox.album[index].type) {
+				case 'image':
+					var image = jQuery('<img />');
+					var preloader = new Image();
+					preloader.src = lqx.lyqBox.album[index].link;
+					preloader.onload = function() {
+						var preloaderObject;
+						image.attr('src', lqx.lyqBox.album[index].link);
+
+						preloaderObject = jQuery(preloader);
+
+						lqx.lyqBox.updateContent(image, index, lqx.lyqBox.album[index].type);
+						window.location.hash = lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].albumId + '_' + lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].alias;
+
+						// important line of code to make sure opacity is computed and applied as a starting value to the element so that the css transition works.
+						window.getComputedStyle(image[0]).opacity;
+					}
+
+					break;
+
+				case 'video':
+					var video = jQuery('<iframe></iframe>');
+					video.attr('src', lqx.lyqBox.album[index].link);
+
+					lqx.lyqBox.updateContent('<div class="video-container">' + video.prop('outerHTML') + '</div>', index, lqx.lyqBox.album[index].type);
+
+					window.location.hash = lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].albumId + '_' + lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].alias;
+					break;
+
+				case 'html':
+				case 'alert':
+					// note that the alert lyqbox can grab html content from a file, put the file URL inside the data-lyqbox-url attribute
+					// OR can grab the html content from string, put the string inside the data-lyqbox-html attribute
+					// the priority is given to the data-lyqbox-url attribute first, if this is blank, then data-lyqbox-html will be processed instead.
+
+					// check if url is not empty
+					if (lqx.lyqBox.album[index].link != "" && typeof lqx.lyqBox.album[index].link !== 'undefined' ) {
+						promise = lqx.lyqBox.loadHTML(lqx.lyqBox.album[index].link);
+
+						promise.done(function htmlLoaded(htmlResult) {
+							if (htmlResult != '') 
+								lqx.lyqBox.updateContent(htmlResult, index, lqx.lyqBox.album[index].type);
+						});
+					} else {
+						lqx.lyqBox.updateContent(lqx.lyqBox.album[index].html, index, lqx.lyqBox.album[index].type);
+					}
+					break;
+
+				default:
+					break;
+			}
+		},
+
+		updateContent: function(content, index, type) {
+			lqx.lyqBox.overlay.find('.content-wrapper').not('.active').addClass('active').find('.content').removeClass().addClass('content ' + type).empty().append(content);
+			lqx.lyqBox.containerActive.removeClass('active');
+			lqx.lyqBox.containerActive = lqx.lyqBox.overlay.find('.content-wrapper.active');
+			lqx.lyqBox.currentImageIndex = index;
+			lqx.lyqBox.updateUIandKeyboard();
+		},
+
+		// Display the image and its details and begin preload neighboring images.
+		updateUIandKeyboard: function() {
+			lqx.lyqBox.updateUI();
+			lqx.lyqBox.enableKeyboardNav();
+		},
+
+		// Display caption, image number, and closing button.
+		updateUI: function() {
+
+			// alert type will hide title, caption and credit????
+			if(lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].type != 'alert' ) {
+				// display title
+				if (typeof lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].title !== 'undefined' &&
+					lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].title !== '') {
+					lqx.lyqBox.overlay.find('.title')
+						.html(lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].title);
+				} else  {
+					lqx.lyqBox.overlay.find('.title').html('');
+				}
+				// display caption
+				if (typeof lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].caption !== 'undefined' &&
+					lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].caption !== '') {
+					lqx.lyqBox.overlay.find('.caption')
+						.html(lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].caption);
+				} else  {
+					lqx.lyqBox.overlay.find('.caption').html('');
+				}
+				// display credit
+				if (typeof lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].credit !== 'undefined' &&
+					lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].credit !== '') {
+					lqx.lyqBox.overlay.find('.credit')
+						.html(lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].credit);
+				} else  {
+					lqx.lyqBox.overlay.find('.credit').html('');
+				}
+
+				// display counter (current and total) and nav only if gallery
+				if (lqx.lyqBox.album.length > 1)  {
+					lqx.lyqBox.overlay.find('.current').text(lqx.lyqBox.currentImageIndex + 1);
+					lqx.lyqBox.overlay.find('.total').text(lqx.lyqBox.album.length);
+				} else  {
+					lqx.lyqBox.overlay.find('.prev,.next').addClass('hide');
+					lqx.lyqBox.overlay.find('.counter').addClass('hide');
+				}
+			} else {
+				lqx.lyqBox.overlay.find('.prev,.next').addClass('hide');
+				lqx.lyqBox.overlay.find('.counter').addClass('hide');
+			}
+		},
+
+		enableKeyboardNav: function() {
+			jQuery(document).on('keyup.keyboard', jQuery.proxy(lqx.lyqBox.keyboardAction, lqx.lyqBox));
+		},
+
+		disableKeyboardNav: function() {
+			jQuery(document).off('.keyboard');
+		},
+
+		keyboardAction: function(event) {
+			var KEYCODE_ESC = 27;
+			var KEYCODE_LEFTARROW = 37;
+			var KEYCODE_RIGHTARROW = 39;
+
+			var keycode = event.keyCode;
+			var key = String.fromCharCode(keycode).toLowerCase();
+			if (keycode === KEYCODE_ESC || key.match(/x|o|c/)) {
+				lqx.lyqBox.end();
+			} else if (keycode === KEYCODE_LEFTARROW) {
+				if (lqx.lyqBox.currentImageIndex === 0) {
+					lqx.lyqBox.changeContent(lqx.lyqBox.album.length - 1);
+				} else {
+					lqx.lyqBox.changeContent(lqx.lyqBox.currentImageIndex - 1);
+				}
+			} else if (keycode === KEYCODE_RIGHTARROW) {
+				if (lqx.lyqBox.currentImageIndex === lqx.lyqBox.album.length - 1) {
+					lqx.lyqBox.changeContent(0);
+				} else {
+					lqx.lyqBox.changeContent(lqx.lyqBox.currentImageIndex + 1);
+				}
+			}
+		},
+
+		// This only works in Chrome 9, Firefox 4, Safari 5, Opera 11.50 and in IE 10
+		removeHash: function() { 
+			var scrollV, scrollH, loc = window.location;
+			if ("pushState" in history)
+				history.pushState("", document.title, loc.pathname + loc.search);
+			else {
+				// Prevent scrolling by storing the page's current scroll offset
+				scrollV = document.body.scrollTop;
+				scrollH = document.body.scrollLeft;
+
+				loc.hash = "";
+
+				// Restore the scroll offset, should be flicker free
+				document.body.scrollTop = scrollV;
+				document.body.scrollLeft = scrollH;
+			}
+		},
+
+		// Closing time. :-(
+		end: function() {
+			lqx.lyqBox.disableKeyboardNav();
+			lqx.lyqBox.overlay.removeClass("open");
+			lqx.lyqBox.removeHash();
+		},
+
+	},
+
+	// trigger events for user active/inactive and count active time
+	initUserActive : function()	{
+
+		// initialize the variables
+		lqx.vars.userActive = {
+			active: true,
+			timer: false,
+			throttle: false,
+			lastChangeTime: (new Date()).getTime(),
+			activeTime: 0,
+			inactiveTime: 0,
+		};
+
+		// add listener to common user action events
+		jQuery(window).on('orientationchange resize focusin', function(){lqx.userActive();});
+		jQuery(document).on('mousedown mousemove mouseup wheel keydown keypress keyup touchstart touchmove touchend', function(){lqx.userActive();});
+		
+		// add listener for window on focus out, become inactive immediately
+		jQuery(window).on('focusout', function(){lqx.userInactive();});
+
+		// refresh active and inactive time counters
+		setInterval(function(){
+			if(lqx.vars.userActive.active) {
+				// update active time
+				lqx.vars.userActive.activeTime += (new Date()).getTime() - lqx.vars.userActive.lastChangeTime;
+			}
+			else {
+				// update inactive time
+				lqx.vars.userActive.inactiveTime += (new Date()).getTime() - lqx.vars.userActive.lastChangeTime;
+			}
+			// update last change time
+			lqx.vars.userActive.lastChangeTime = (new Date()).getTime();
+		}, lqx.settings.userActive.refresh);
+		
+		// initialize active state
+		lqx.userActive();
+
+	},
+
+	// function called to indicate user is currently active (heartbeat)
+	userActive : function() {
+		// if no throttle
+		if(!lqx.vars.userActive.throttle) {
+			lqx.vars.userActive.throttle = true;
+			setTimeout(function(){lqx.vars.userActive.throttle = false;}, lqx.settings.userActive.throttle);
+			// when changing from being inactive
+			if(!lqx.vars.userActive.active) {
+				// set state to active
+				lqx.vars.userActive.active = true;
+				// update inactive time
+				lqx.vars.userActive.inactiveTime += (new Date()).getTime() - lqx.vars.userActive.lastChangeTime;
+				// update last change time
+				lqx.vars.userActive.lastChangeTime = (new Date()).getTime();
+			}
+
+			// set state to active
+			lqx.vars.userActive.active = true;
+
+			// after idle time turn inactive
+			clearTimeout(lqx.vars.userActive.timer);
+			lqx.vars.userActive.timer = setTimeout(function(){lqx.userInactive();}, lqx.settings.userActive.idleTime);
+		}
+	},
+
+	// function called to indicate the user is currently inactive
+	userInactive : function() {
+		// set state to inactive
+		lqx.vars.userActive.active = false;
+		// clear timer
+		clearTimeout(lqx.vars.userActive.timer);
+		// add active time
+		lqx.vars.userActive.activeTime += (new Date()).getTime() - lqx.vars.userActive.lastChangeTime;
+		// update last change time
+		lqx.vars.userActive.lastChangeTime = (new Date()).getTime();
+	},
+
+	// handles the google analytics page view event, setting first custom parameters
+	gaReady : function(tracker) {
+		// execute functions to set custom parameters
+		jQuery.Deferred().done(
+			function(){
+				// create commands
+				if(lqx.settings.ga.createParams && typeof lqx.settings.ga.createParams == 'object') {
+					var params = lqx.settings.ga.createParams;
+					Object.keys(params).forEach(function(tracker){
+						if(tracker == 'default') ga('create', params[tracker].trackingId, params[tracker].cookieDomain, params[tracker].fieldsObject);
+						else ga('create', params[tracker].trackingId, params[tracker].cookieDomain, tracker, params[tracker].fieldsObject);
+					});
+				}
+			},
+			function(){
+				// set commands
+				if(lqx.settings.ga.setParams && typeof lqx.settings.ga.setParams == 'object') {
+					var params = lqx.settings.ga.setParams;
+					Object.keys(params).forEach(function(tracker){
+						var cmd = 'set';
+						if(tracker != 'default') cmd = tracker + '.set';
+						Object.keys(params[tracker]).forEach(function(fieldName){
+							ga(cmd, fieldName, params[tracker][fieldName]);
+						});
+					});
+				}
+				// require commands
+				if(lqx.settings.ga.requireParams && typeof lqx.settings.ga.requireParams == 'object') {
+					var params = lqx.settings.ga.requireParams;
+					Object.keys(params).forEach(function(tracker){
+						var cmd = 'require';
+						if(tracker != 'default') cmd = tracker + '.require';
+						params[tracker].forEach(function(elem){
+							ga(cmd, elem.pluginName, elem.pluginOptions);
+						});
+					});
+				}
+				// provide commands
+				if(lqx.settings.ga.provideParams && typeof lqx.settings.ga.provideParams == 'object') {
+					var params = lqx.settings.ga.provideParams;
+					Object.keys(params).forEach(function(tracker){
+						var cmd = 'provide';
+						if(tracker != 'default') cmd = tracker + '.provide';
+						params[tracker].forEach(function(elem){
+							ga(cmd, elem.pluginName, elem.pluginConstructor);
+						});
+					});
+				}
+			},
+			function(){
+				if(typeof lqx.settings.ga.customParamsFuncs == 'function') {
+					try {
+						lqx.settings.ga.customParamsFuncs();
+					}
+					catch(e) {
+						console.log(e);
+					}
+				}
+			},
+			function(){
+				// send pageview
+				ga('send', 'pageview');
+				// initialize analytics tracking
+				lqx.initTracking();
+			}
+		).resolve();
+	},
+
+	// self initialization function
+	init : (function(){
+		// Functions to execute when the DOM is ready
+		jQuery(document).ready(function(){
+			// check screen size 
+			lqx.bodyScreenSize();
+			// update orientation attribute in body tag
+			lqx.bodyScreenOrientation();
+			// geo locate
+			lqx.geoLocate();
+			// add image attributes for load error and load complete
+			lqx.initImgLoadAttr();
+			// execute some browser fixes
+			lqx.browserFixes();
+			// enable function logging
+			lqx.initLogging();	
+			// initialize mobile menu functionality
+			lqx.initMobileMenu();
+			// set equal height rows
+			lqx.initEqualHeightRows();
+			// adds image captions using alt property
+			lqx.imageCaption();
+			// shows a line break symbol before br elements
+			lqx.lineBreakSymbol();
+			// add listener to dynamically added content to the DOM
+			lqx.initMutationObserver();
+			// enable lyqbox;
+			lqx.lyqBox.init();
+			// initialize user active time tracking
+			lqx.initUserActive();
+		});
+
+		// Functions to execute when the page has loaded
+		jQuery(window).load(function(){
+			// check screen size to deal with appearing scrollbar
+			lqx.bodyScreenSize();
+			// set punctuation marks to hanging
+			lqx.hangingPunctuation();
+			// set equal height rows
+			lqx.equalHeightRows();
+		});
+
+		// Trigger on window scroll
+		jQuery(window).scroll(function() {
+			// throttling?
+			if(!lqx.vars.scrollThrottle) {
+				// trigger custom event 'scrollthrottle'
+				jQuery(document).trigger('scrollthrottle');
+
+				// throttling is now on
+				lqx.vars.scrollThrottle = true;
+				
+				// set time out to turn throttling on and check screen size once more
+				setTimeout(function () { 
+					// trigger custom event 'scrollthrottle'
+					jQuery(document).trigger('scrollthrottle');
+
+					// throttling is now off
+					lqx.vars.scrollThrottle = false; 
+				}, lqx.settings.scrollThrottle.duration);
+			}
+		});
+
+		// Trigger on window resize
+		jQuery(window).resize(function() {
+			// throttling?
+			if(!lqx.vars.resizeThrottle) {
+				// trigger custom event 'resizethrottle'
+				jQuery(document).trigger('resizethrottle');
+
+				// throttling is now on
+				lqx.vars.resizeThrottle = true;
+				
+				// set time out to turn throttling on and check screen size once more
+				setTimeout(function () { 
+					// trigger custom event 'resizethrottle'
+					jQuery(document).trigger('resizethrottle');
+
+					// throttling is now off
+					lqx.vars.resizeThrottle = false; 
+				}, lqx.settings.resizeThrottle.duration);
+			}
+		});
+
+		// Trigger on screen orientation change
+		jQuery(window).on('orientationchange', function() {
+			// check screen size and trigger 'screensizechange' event 
+			lqx.bodyScreenSize();
+			// update orientation attribute in body tag
+			lqx.bodyScreenOrientation();
+		});
+
+		// Trigger on custom event screen size change
+		jQuery(window).on('screensizechange', function() {
+			// set equal height rows
+			lqx.equalHeightRows();
+			// set punctuation marks to hanging
+			lqx.hangingPunctuation();
+		});
+
+		// Trigger on custom event scrollthrottle
+		jQuery(window).on('scrollthrottle', function() {
+			
+		});
+
+		// Trigger on custom event resizethrottle
+		jQuery(window).on('resizethrottle', function() {
+			// check screen size
+			lqx.bodyScreenSize();
+		});
 
 
-	            // else if target is lyqbox-wrapper, exit the lightbox
-	            if (jQuery(event.target).attr('id') === 'lyqbox-wrapper') {
-	                self.end();
-	                return false;
-	            }
+		// Other global functions, callbacks
+		// ***********************************
 
-	        });
-
-	        // lyquix edit: change the button class name
-	        this.$lightbox.find('.lyqbox-button-prev').on('click', function() {
-	            if (self.currentImageIndex === 0) {
-	                self.changeContent(self.album.length - 1);
-	            } else {
-	                self.changeContent(self.currentImageIndex - 1);
-	            }
-	            return false;
-	        });
-
-	        // lyquix edit: change the button class name
-	        this.$lightbox.find('.lyqbox-button-next').on('click', function() {
-	            if (self.currentImageIndex === self.album.length - 1) {
-	                self.changeContent(0);
-	            } else {
-	                self.changeContent(self.currentImageIndex + 1);
-	            }
-	            return false;
-	        });
-
-	        this.$lightbox.find('.lyqbox-close-button').on('click', function() {
-	            // disable the close button for alertbox, this will be done on the deferred section on alert function to make sure in the case alert and hashurl found, 
-	            // that the alert box is closed properly before showing a hash url content.
-	            if (self.album[self.currentImageIndex].type == 'alert')
-	                return false;
-
-	            // else close the lightbox
-	            self.end();
-	            return false;
-	        });
-
-	    },
-
-	    // Show overlay and lightbox. If the image is part of a set, add siblings to album array.
-	    start: function($link) {
-	        var self = this;
-	        var $window = jQuery(window);
-
-	        $window.on('resize', jQuery.proxy(this.sizeOverlay, this));
-
-	        jQuery('select, object, embed').css({
-	            visibility: 'hidden'
-	        });
-
-	        this.sizeOverlay();
-
-	        this.album = [];
-	        var imageNumber = 0;
-
-	        function addToAlbum($link) {
-	            self.album.push({
-	                albumId: $link.attr('data-lyqbox'),
-	                type: $link.attr('data-lyqbox-type'),
-	                link: $link.attr('data-lyqbox-url'),
-	                title: $link.attr('data-lyqbox-title'),
-	                caption: $link.attr('data-lyqbox-caption'),
-	                credit: $link.attr('data-lyqbox-credit'),
-	                class: $link.attr('data-lyqbox-class'),
-	                alias: $link.attr('data-lyqbox-alias'),
-	                html: $link.attr('data-lyqbox-html'),
-	            });
-	        }
-	        // Support both data-lightbox attribute and rel attribute implementations
-	        var $links;
-
-	        // lyquix addition 
-	        var datalyqboxValue = $link.attr('data-lyqbox');
-	        if (datalyqboxValue) {
-	            $links = jQuery($link.prop('tagName') + '[data-lyqbox="' + datalyqboxValue + '"]');
-
-	            for (var i = 0; i < $links.length; i = ++i) {
-	                addToAlbum(jQuery($links[i]));
-	                if ($links[i] === $link[0]) {
-	                    imageNumber = i;
-	                }
-	            }
-	        }
-
-	        // show prev next button if this is a gallery
-	        if (this.album.length > 1) {
-	            this.$lightbox.find('.lyqbox-buttons-and-counter').removeClass('hide');
-	        } else {
-	            this.$lightbox.find('.lyqbox-buttons-and-counter').addClass('hide');
-	        }
-
-	        // Position Lightbox
-	        var top = $window.scrollTop() + lqx.settings.lyqBox.positionFromTop;
-	        var left = $window.scrollLeft();
-	        this.$lightbox.css({
-	            top: top + 'px',
-	            left: left + 'px'
-	        }).show();
-
-	        // Disable scrolling of the page while open
-	        if (lqx.settings.lyqBox.disableScrolling) {
-	            jQuery('body').addClass('lb-disable-scrolling');
-	        }
-	        //lyquix addition
-	        this.changeContent(imageNumber);
-	    },
-
-	    loadHTML: function(url) {
-	        var self = this,
-	            deferred = jQuery.Deferred();
-	        /* we are using load so one can specify a target with: url.html #targetelement */
-	        var $container = jQuery('<div></div>').load(url, function(response, status) {
-	            if (status !== "error") {
-	                deferred.resolve($container.contents());
-	            }
-	            deferred.fail();
-	        });
-	        return deferred.promise();
-	    },
-
-	    // lyquix addition/edit: add our own change image function becase we want to display not just images, but video, html and ajax as well.
-	    changeContent: function(index) {
-	        var self = this;
-
-	        this.disableKeyboardNav();
-	        var lyqboxContent = this.$lightbox.find('.lyqbox-content');
-	        this.$overlay.removeClass("close").addClass("open");
-	        this.$outerContainer.addClass('animating');
-
-	        switch (this.album[index].type) {
-	            case 'image':
-	                lyqboxContent.html('<img />')
-	                var $image = lyqboxContent.find('img');
-	                // When image to show is preloaded, we send the width and height to sizeContainer()
-
-	                var preloader = new Image();
-	                preloader.src = self.album[index].link;
-	                preloader.onload = function() {
-						var $preloader;
-						var imageHeight;
-						var imageWidth;
-						var maxImageHeight;
-						var maxImageWidth;
-						var windowHeight;
-						var windowWidth;
-
-						$image.attr('src', self.album[index].link);
-
-						$preloader = jQuery(preloader);
-
-						$image.width(preloader.width);
-						$image.height(preloader.height);
-
-						if (lqx.settings.lyqBox.fitImagesInViewport) {
-							// Fit image inside the viewport.
-							// Take into account the border around the image and an additional 10px gutter on each side.
-
-							windowWidth = jQuery(window).width();
-							windowHeight = jQuery(window).height();
-							maxImageWidth = windowWidth - self.containerLeftPadding - self.containerRightPadding - 20;
-							maxImageHeight = windowHeight - self.containerTopPadding - self.containerBottomPadding - 220;
-
-
-							// Check if image size is larger then maxWidth|maxHeight in settings
-							if (lqx.settings.lyqBox.maxWidth && lqx.settings.lyqBox.maxWidth < maxImageWidth) {
-								maxImageWidth = lqx.settings.lyqBox.maxWidth;
+		// onYouTubeIframeAPIReady
+		// callback function called by iframe youtube players when they are ready
+		window.onYouTubeIframeAPIReady = function(){
+			if(lqx.vars.youTubeIframeAPIReady && (typeof YT !== "undefined") && YT && YT.Player) {
+				for(var playerId in lqx.vars.youtubePlayers) {
+					if(typeof lqx.vars.youtubePlayers[playerId].playerObj == 'undefined') {
+						lqx.vars.youtubePlayers[playerId].playerObj = new YT.Player(playerId, { 
+							events: { 
+								'onReady': function(e){ lqx.youtubePlayerReady(e, playerId) }, 
+								'onStateChange': function(e){ lqx.youtubePlayerStateChange(e, playerId) } 
 							}
-							if (lqx.settings.lyqBox.maxHeight && lqx.settings.lyqBox.maxHeight < maxImageHeight) {
-								maxImageHeight = lqx.settings.lyqBox.maxHeight;
-							}
+						});
+					}
+				}
+			} 
+			else {
+				// keep track how many time we have attempted, retry unless it has been more than 30secs
+				lqx.vars.youTubeIframeAPIReadyAttempts++;
+				if(lqx.vars.youTubeIframeAPIReadyAttempts < 120) setTimeout("onYouTubeIframeAPIReady()",250);
+			}
+		}
 
-							// Is there a fitting issue?
-							if ((preloader.width > maxImageWidth) || (preloader.height > maxImageHeight)) {
-								if ((preloader.width / maxImageWidth) > (preloader.height / maxImageHeight)) {
-									imageWidth = maxImageWidth;
-									imageHeight = parseInt(preloader.height / (preloader.width / imageWidth), 10);
-									$image.width(imageWidth);
-									$image.height(imageHeight);
-								} else {
-									imageHeight = maxImageHeight;
-									imageWidth = parseInt(preloader.width / (preloader.height / imageHeight), 10);
-									$image.width(imageWidth);
-									$image.height(imageHeight);
-								}
-							}
-						}
-						self.$lightbox.find('.lyqbox-content-wrapper').width(preloader.width);
-						self.sizeContainer($image.width(), $image.height());
-					},
+		return true;
 
-					self.currentImageIndex = index;
-	                //console.log(self.album[self.currentImageIndex].albumId, self.album[self.currentImageIndex].alias);
-	                window.location.hash = self.album[self.currentImageIndex].albumId + '_' + self.album[self.currentImageIndex].alias;
-	                break;
-
-	            case 'video':
-	                lyqboxContent.html('<iframe></iframe>');
-	                var $video = lyqboxContent.find('iframe');
-	                $video.attr('src', self.album[index].link);
-
-	                var maxVideoHeight;
-	                var maxVideoWidth;
-	                // resize the video size by using 16:9 ratio, width is the base for calculations, maxwidth is 80% of the current screen
-
-	                if (lqx.settings.lyqBox.fitImagesInViewport) {
-	                    windowWidth = jQuery(window).width();
-	                    windowHeight = jQuery(window).height();
-	                    maxVideoWidth = windowWidth * 70 / 100;
-	                    maxVideoHeight = (maxVideoWidth / 16) * 9;
-	                }
-
-	                // Check if image size is larger then maxWidth|maxHeight in settings
-	                if (lqx.settings.lyqBox.maxWidth && lqx.settings.lyqBox.maxWidth < maxVideoWidth) {
-	                    maxVideoWidth = lqx.settings.lyqBox.maxWidth;
-	                    maxVideoHeight = (maxVideoWidth / 16) * 9;
-	                }
-
-	                $video.attr('width', maxVideoWidth).attr('height', maxVideoHeight);
-
-	                this.currentImageIndex = index; // this precede sizeContainer to make sure the counter text is correct 
-	                self.sizeContainer(maxVideoWidth, maxVideoHeight);
-	                //console.log(self.album[self.currentImageIndex].albumId, self.album[self.currentImageIndex].alias);
-	                window.location.hash = self.album[self.currentImageIndex].albumId + '_' + self.album[self.currentImageIndex].alias;
-
-	                break;
-
-	            case 'alert':
-	                // check if url is not empty
-	                if (self.album[index].link != "") {
-	                    var promise = loadHTML(self.album[index].link);
-
-	                    promise.done(function htmlLoaded(htmlResult) {
-	                        if (htmlResult != '') {
-	                            lyqboxContent.html(htmlResult);
-	                            self.currentImageIndex = index;
-	                        }
-	                    });
-	                } else {
-	                    lyqboxContent.html(self.album[index].html);
-	                    self.currentImageIndex = index;
-	                }
-	                break;
-
-	            default:
-	                break;
-	        }
-	    },
-
-	    // Stretch overlay to fit the viewport
-	    sizeOverlay: function() {
-	        this.$overlay
-	            .width(jQuery(document).width())
-	            .height(jQuery(document).height());
-	    },
-
-	    // Animate the size of the lightbox to fit the image we are showing
-	    sizeContainer: function(imageWidth, imageHeight) {
-	        var self = this;
-
-	        var oldWidth = this.$outerContainer.outerWidth();
-	        var oldHeight = this.$outerContainer.outerHeight();
-	        var newWidth = imageWidth + this.containerLeftPadding + this.containerRightPadding;
-	        var newHeight = imageHeight + this.containerTopPadding + this.containerBottomPadding;
-
-	        function postResize() {
-	            self.$lightbox.find('.lyqbox-content-wrapper').width(newWidth);
-	            self.showImage();
-	        }
-	        postResize();
-	    },
-
-	    // Display the image and its details and begin preload neighboring images.
-	    showImage: function() {
-	        this.updateNav();
-	        this.updateDetails();
-	        //this.preloadNeighboringImages();
-	        this.enableKeyboardNav();
-	    },
-
-	    // Display previous and next navigation if appropriate.
-	    updateNav: function() {
-	        // Check to see if the browser supports touch events. If so, we take the conservative approach
-	        // and assume that mouse hover events are not supported and always show prev/next navigation
-	        // arrows in image sets.
-	        var alwaysShowNav = false;
-	        try {
-	            document.createEvent('TouchEvent');
-	            alwaysShowNav = (lqx.settings.lyqBox.alwaysShowNavOnTouchDevices) ? true : false;
-	        } catch (e) {}
-
-	        if (this.album.length > 1) {
-	            if (lqx.settings.lyqBox.wrapAround) {
-	                if (alwaysShowNav) {
-	                    this.$lightbox.find('.lyqbox-button-prev, .lyqbox-button-next').css('opacity', '1');
-	                }
-	                this.$lightbox.find('.lyqbox-button-prev, .lyqbox-button-next').removeClass('hide');
-	            } else {
-
-	                if (alwaysShowNav) {
-	                    this.$lightbox.find('.lyqbox-button-prev, .lyqbox-button-next').css('opacity', '0');
-	                }
-
-	                this.$lightbox.find('.lyqbox-button-prev, .lyqbox-button-next').addClass('hide');
-
-	                if (this.currentImageIndex != 0) {
-	                    this.$lightbox.find('.lyqbox-button-prev').removeClass('hide');
-	                    if (alwaysShowNav) {
-	                        this.$lightbox.find('.lyqbox-button-prev').css('opacity', '1');
-	                    }
-	                }
-	                if (this.currentImageIndex != this.album.length - 1) {
-	                    this.$lightbox.find('.lyqbox-button-next').removeClass('hide');
-	                    if (alwaysShowNav) {
-	                        this.$lightbox.find('.lyqbox-button-next').css('opacity', '1');
-	                    }
-	                }
-	            }
-	        }
-	    },
-
-	    // Display caption, image number, and closing button.
-	    updateDetails: function() {
-	        var self = this;
-
-	        // Enable anchor clicks in the injected caption html.
-	        // Thanks Nate Wright for the fix. @https://github.com/NateWr
-	        if (typeof this.album[this.currentImageIndex].title !== 'undefined' &&
-	            this.album[this.currentImageIndex].title !== '') {
-	            this.$lightbox.find('.lyqbox-extra-content .title')
-	                .html(this.album[this.currentImageIndex].title);
-	        }
-
-	        if (typeof this.album[this.currentImageIndex].caption !== 'undefined' &&
-	            this.album[this.currentImageIndex].caption !== '') {
-	            this.$lightbox.find('.lyqbox-extra-content .caption')
-	                .html(this.album[this.currentImageIndex].caption);
-	        }
-
-	        if (typeof this.album[this.currentImageIndex].credit !== 'undefined' &&
-	            this.album[this.currentImageIndex].credit !== '') {
-	            this.$lightbox.find('.lyqbox-extra-content .credit')
-	                .html(this.album[this.currentImageIndex].credit);
-	        }
-
-	        if (this.album.length > 1 && lqx.settings.lyqBox.showImageNumberLabel) {
-	            var labelText = this.imageCountLabel(this.currentImageIndex + 1, this.album.length);
-	            this.$lightbox.find('.lyqbox-counter').text(labelText);
-	        } else {
-	            this.$lightbox.find('.lyqbox-counter').hide();
-	        }
-
-	    },
-
-	    // Preload previous and next images in set.
-	    preloadNeighboringImages: function() {
-	        if (this.album.length > this.currentImageIndex + 1) {
-	            var preloadNext = new Image();
-	            preloadNext.src = this.album[this.currentImageIndex + 1].link;
-	        }
-	        if (this.currentImageIndex > 0) {
-	            var preloadPrev = new Image();
-	            preloadPrev.src = this.album[this.currentImageIndex - 1].link;
-	        }
-	    },
-
-	    enableKeyboardNav: function() {
-	        jQuery(document).on('keyup.keyboard', jQuery.proxy(this.keyboardAction, this));
-	    },
-
-	    disableKeyboardNav: function() {
-	        jQuery(document).off('.keyboard');
-	    },
-
-	    keyboardAction: function(event) {
-	        var KEYCODE_ESC = 27;
-	        var KEYCODE_LEFTARROW = 37;
-	        var KEYCODE_RIGHTARROW = 39;
-
-	        var keycode = event.keyCode;
-	        var key = String.fromCharCode(keycode).toLowerCase();
-	        if (keycode === KEYCODE_ESC || key.match(/x|o|c/)) {
-	            this.end();
-	        } else if (key === 'p' || keycode === KEYCODE_LEFTARROW) {
-	            if (this.currentImageIndex !== 0) {
-	                this.changeContent(this.currentImageIndex - 1);
-	            } else if (lqx.settings.lyqBox.wrapAround && this.album.length > 1) {
-	                this.changeContent(this.album.length - 1);
-	            }
-	        } else if (key === 'n' || keycode === KEYCODE_RIGHTARROW) {
-	            if (this.currentImageIndex !== this.album.length - 1) {
-	                this.changeContent(this.currentImageIndex + 1);
-	            } else if (lqx.settings.lyqBox.wrapAround && this.album.length > 1) {
-	                this.changeContent(0);
-	            }
-	        }
-	    },
-
-	    // Closing time. :-(
-	    end: function() {
-	        this.disableKeyboardNav();
-	        jQuery(window).off('resize', this.sizeOverlay);
-	        this.$lightbox.fadeOut(lqx.settings.lyqBox.fadeDuration);
-	        this.$overlay.removeClass("open").addClass("close");
-	        jQuery('select, object, embed').css({
-	            visibility: 'visible'
-	        });
-	        if (lqx.settings.lyqBox.disableScrolling) {
-	            jQuery('body').removeClass('lb-disable-scrolling');
-	        }
-	    },
-
-	},	
+	}())
 
 };
 
 // END Lyquix global object
 // ***********************************
-
-
-// Functions to execute when the DOM is ready
-jQuery(document).ready(function(){
-	
-	// add image attributes for load error and load complete
-	lqx.initImgLoadAttr();
-	// get browser type - NOTE: this converts the function into a string
-	lqx.getBrowser = lqx.getBrowser();
-	// get os - NOTE: this converts the function into a string
-	lqx.getOS = lqx.getOS();
-	// execute some browser fixes
-	lqx.browserFixes();
-	// enable function logging
-	lqx.initLogging();	
-	// add tracking with google analytics
-	lqx.initTracking();
-	// initialize mobile menu functionality
-	lqx.initMobileMenu();
-	// set equal height rows
-	lqx.initEqualHeightRows();
-	// adds image captions using alt property
-	lqx.imageCaption();
-	// shows a line break symbol before br elements
-	lqx.lineBreakSymbol();
-	// add listener to dynamically added content to the DOM
-	lqx.initMutationObserver();
-	// enable lyqbox;
-	lqx.lyqBox.init();	
-});
-
-// Functions to execute when the page has loaded
-jQuery(window).load(function(){
-	
-	// check screen size once again (to deal with appearing scrollbar) 
-	lqx.bodyScreenSize();
-	// set punctuation marks to hanging
-	lqx.hangingPunctuation();
-	// set equal height rows
-	lqx.equalHeightRows();
-	
-});
-
-// Trigger on window scroll
-jQuery(window).scroll(function() {
-
-	// throttling?
-	if(!lqx.vars.scrollThrottle) {
-
-		// trigger custom event 'scrollthrottle'
-		jQuery(document).trigger('scrollthrottle');
-
-		// throttling is now on
-		lqx.vars.scrollThrottle = true;
-		
-		// set time out to turn throttling on and check screen size once more
-		setTimeout(function () { 
-			// trigger custom event 'scrollthrottle'
-			jQuery(document).trigger('scrollthrottle');
-
-			// throttling is now off
-			lqx.vars.scrollThrottle = false; 
-		}, lqx.settings.scrollThrottle.duration);
-		
-	}
-	
-});
-
-// Trigger on window resize
-jQuery(window).resize(function() {
-
-	// throttling?
-	if(!lqx.vars.resizeThrottle) {
-
-		// trigger custom event 'resizethrottle'
-		jQuery(document).trigger('resizethrottle');
-
-		// throttling is now on
-		lqx.vars.resizeThrottle = true;
-		
-		// set time out to turn throttling on and check screen size once more
-		setTimeout(function () { 
-			// trigger custom event 'resizethrottle'
-			jQuery(document).trigger('resizethrottle');
-
-			// throttling is now off
-			lqx.vars.resizeThrottle = false; 
-		}, lqx.settings.resizeThrottle.duration);
-		
-	}
-	
-});
-
-// Trigger on screen orientation change
-jQuery(window).on('orientationchange', function() {
-	
-	// check screen size and trigger 'screensizechange' event 
-	lqx.bodyScreenSize();
-	
-});
-
-// Trigger on custom event screen size change
-jQuery(window).on('screensizechange', function() {
-	
-	// set equal height rows
-	lqx.equalHeightRows();
-	// set punctuation marks to hanging
-	lqx.hangingPunctuation();
-
-});
-
-// Trigger on custom event scrollthrottle
-jQuery(window).on('scrollthrottle', function() {
-	
-});
-
-// Trigger on custom event resizethrottle
-jQuery(window).on('resizethrottle', function() {
-	
-	// check screen size
-	lqx.bodyScreenSize();
-
-});
-
-
-// Other global functions, callbacks
-// ***********************************
-
-// onYouTubeIframeAPIReady
-// callback function called by iframe youtube players when they are ready
-function onYouTubeIframeAPIReady(){
-	for(var playerId in lqx.vars.youtubePlayers) {
-		if(typeof lqx.vars.youtubePlayers[playerId].playerObj == 'undefined') {
-			lqx.vars.youtubePlayers[playerId].playerObj = new YT.Player(playerId, { 
-				events: { 
-					'onReady': function(e){ lqx.youtubePlayerReady(e, playerId) }, 
-					'onStateChange': function(e){ lqx.youtubePlayerStateChange(e, playerId) } 
-				}
-			});
-		}
-	}
-}
