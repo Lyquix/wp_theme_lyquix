@@ -2,30 +2,10 @@
 /**
  * The template for the content bottom widget areas on posts and pages
  *
- * @package WordPress
- * @subpackage Twenty_Sixteen
- * @since Twenty Sixteen 1.0
  */
 if(file_exists(__DIR__ . '/sidebar-content-bottom-custom.php')) :
 	include __DIR__ . '/sidebar-content-bottom-custom.php'; 
 else : 
-if ( ! is_active_sidebar( 'sidebar-2' ) && ! is_active_sidebar( 'sidebar-3' ) ) {
-	return;
-}
-
-// If we get this far, we have widgets. Let's do this.
 ?>
-<aside id="content-bottom-widgets" class="content-bottom-widgets" role="complementary">
-	<?php if ( is_active_sidebar( 'sidebar-2' ) ) : ?>
-		<div class="widget-area-1">
-			<?php dynamic_sidebar( 'sidebar-2' ); ?>
-		</div><!-- .widget-area -->
-	<?php endif; ?>
-
-	<?php if ( is_active_sidebar( 'sidebar-3' ) ) : ?>
-		<div class="widget-area-2">
-			<?php dynamic_sidebar( 'sidebar-3' ); ?>
-		</div><!-- .widget-area -->
-	<?php endif; ?>
-</aside><!-- .content-bottom-widgets -->
-<?php endif;
+<p>File <span style="font-family: monospace;"><?php echo JPATH_BASE . '/templates/' . $this->template; ?>/sidebar-content-bottom-custom.php</span> not found.</p>
+<?php endif;?>
