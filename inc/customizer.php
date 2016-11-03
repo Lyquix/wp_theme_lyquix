@@ -410,7 +410,7 @@ function lqx_customize_register( $wp_customize ) {
 			'js'  => 'Client-Side (JavaScript)',
 		),
 	) );
-	$wp_customize->add_setting( 'i8_alert' , array(
+	$wp_customize->add_setting( 'ie8_alert' , array(
 		'type'        => 'theme_mod',
 	    'transport'   => 'refresh',
 	) );			
