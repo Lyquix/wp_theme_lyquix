@@ -13,7 +13,7 @@ if(file_exists(__DIR__ . '/header-custom.php')) :
 	include __DIR__ . '/header-custom.php'; 
 else : 
 ?><!DOCTYPE html>
-<html lang="<?php echo $this->language; ?>" >
+<html <?php language_attributes(); ?> >
 	<head>
 		<jdoc:include type="head" />
 	</head>
