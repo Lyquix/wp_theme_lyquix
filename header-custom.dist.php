@@ -44,6 +44,17 @@ if(get_theme_mod('mobiledetect_method', 'php') == 'php') {
 	<?php if ( is_singular() && pings_open( get_queried_object() ) ) : ?>
 	<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
 	<?php endif;
+	print_r(get_theme_mod('jQuery_ui'));
+	if(get_theme_mod('jQuery') == 0){  
+		wp_deregister_script("jquery");
+	}
+	if(get_theme_mod('jQuery_ui') !== 0){  
+		wp_deregister_script("jQuery UI");
+	} else { 
+		print_r('ui enabled');
+		wp_enqueue_script("jquery-ui-core");
+		if(get_theme_mod('jQuery_ui') == 2) wp_enqueue_script("jquery-ui-sortable");
+	} 	
 	wp_head();
 	$add_css_libraries = explode("\n", trim(get_theme_mod('add_css_libraries', '')));
 	foreach($add_css_libraries as $cssurl) {
@@ -52,6 +63,15 @@ if(get_theme_mod('mobiledetect_method', 'php') == 'php') {
 			echo '<link href="' . $cssurl . '" rel="stylesheet" />';
 		}
 	}?>
+	<?php if(get_theme_mod('bootstrap', 0)):?>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<?php endif;?>
 	<link href="<?php echo $tmpl_url; ?>/css/styles.<?php echo get_theme_mod('lessjs') ? 'less' : 'css'; ?>?v=<?php echo date("YmdHis", filemtime($tmpl_path . '/css/styles.' . (get_theme_mod('lessjs') ? 'less' : 'css'))); ?>" rel="stylesheet" <?php echo get_theme_mod('lessjs') ? 'type="text/less" ' : ''; ?>/>
 	<link href="<?php echo $tmpl_url; ?>/css/icons.<?php echo get_theme_mod('lessjs') ? 'less' : 'css'; ?>?v=<?php echo date("YmdHis", filemtime($tmpl_path . '/css/icons.' . (get_theme_mod('lessjs') ? 'less' : 'css'))); ?>" rel="stylesheet" <?php echo get_theme_mod('lessjs') ? 'type="text/less" ' : ''; ?>/>
 	<?php if(get_theme_mod('lessjs')): ?>
@@ -165,14 +185,14 @@ lqx.bodyScreenSize();
 <?php endif;
 if(get_theme_mod('mobiledetect_method', 'php') == 'php'){
 	echo 'lqx.mobileDetect = {mobile: ' . ($mobile ? 'true' : 'false') . ',phone: ' . ($phone ? 'true' : 'false') . ',tablet: ' . ($tablet ? 'true' : 'false') . "};\n";
-}
-if(get_theme_mod('ie9_alert',0)): ?>
-<!--<link href="<?php echo $tmpl_url; ?>/css/ie9-alert.css" rel="stylesheet" />
+}?>
+</script>
+<?php if(get_theme_mod('ie9_alert',0)): ?>
+<link href="<?php echo $tmpl_url; ?>/css/ie9-alert.css" rel="stylesheet" />
 <div class="ie9-alert">You are using an unsupported version of Internet Explorer. To ensure security, performance, and full functionality, <a href="http://browsehappy.com/?locale=<?php get_locale(); ?>">please upgrade to an up-to-date browser.</a><i></i></div>
-<script>jQuery('.ie9-alert i').click(function(){jQuery('.ie9-alert').hide();});</script>-->
+<script>jQuery('.ie9-alert i').click(function(){jQuery('.ie9-alert').hide();});</script>
 <?php endif;
 echo get_theme_mod('disqus_shortname') ? '<script src="//' . get_theme_mod('disqus_shortname') . '.disqus.com/embed.js"></script>' : ''; ?>
-</script>
 <div id="page" class="site">
 	<div class="site-inner">
 		<!--<a class="skip-link screen-reader-text" href="#content"><?php _e( 'Skip to content', 'lqx' ); ?></a>-->
