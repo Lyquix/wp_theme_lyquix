@@ -9,6 +9,7 @@
 **/
 
 //Check for override 
+$tmpl_url = get_template_directory_uri();
 if(file_exists(__DIR__ . '/header-custom.php')) :
 	include __DIR__ . '/header-custom.php'; 
 else : 
@@ -18,7 +19,7 @@ else :
 		<jdoc:include type="head" />
 	</head>
 	<body>
-		File <span style="font-family: monospace;"><?php echo JPATH_BASE . '/templates/' . $this->template; ?>/header-custom.php</span> not found.
+		File <span style="font-family: monospace;"><?php echo $tmp_url;?>/header-custom.php</span> not found.
 	</body>
 </html>
 <?php endif;?>
