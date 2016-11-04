@@ -40,6 +40,7 @@
 </div><!-- .site -->
 
 <?php wp_footer(); ?>
-<?php echo get_theme_mod('disqus_shortname') ? '<script src="//' . get_theme_mod('disqus_shortname') . '.disqus.com/embed.js"></script>' : ''; ?>
+<?php echo get_theme_mod('disqus_shortname') ? '<script src="//' . get_theme_mod('disqus_shortname') . '.disqus.com/embed.js"></script>' : ''; 
+include('php/body-bottom.inc.php');?>
 </body>
 </html>
