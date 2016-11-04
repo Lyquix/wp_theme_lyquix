@@ -41,7 +41,7 @@ function lqx_customize_register( $wp_customize ) {
 	$wp_customize->get_setting( 'google_site_verification' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'msvalidate' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'p_domain_verify' )->transport = 'postMessage';
-	$wp_customize->get_setting( 'mobile_detect_method' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'mobiledetect_method' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'ie8_alert' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'ie9_alert' )->transport = 'postMessage';
 
