@@ -264,6 +264,14 @@ function lqx_body_classes( $classes ) {
 	// Adds a class of hfeed to non-singular pages.
 	if ( ! is_singular() ) {
 		$classes[] = 'hfeed';
+		if ( isset( $post ) ) {
+			$classes[] = $post->post_type . '-' . $post->post_name;
+		}
+	}
+
+	// Adds a class if current is type page,
+	if (is_page()) {
+		$classes[] = strtolower(preg_replace('/[^A-Za-z0-9-]+/', '-', get_the_title()));
 	}
 
 	return $classes;
