@@ -230,8 +230,6 @@ function lqx_scripts() {
 		wp_enqueue_script( 'lyquix-keyboard-image-navigation', get_template_directory_uri() . '/js/keyboard-image-navigation.js', array( 'jquery' ), '20160412' );
 	}
 
-	wp_enqueue_script( 'lyquix-script', get_template_directory_uri() . '/js/lyquix.js', array( 'jquery' ), '20160412', true );
-
 	wp_localize_script( 'lyquix-script', 'screenReaderText', array(
 		'expand'   => __( 'expand child menu', 'lyquix' ),
 		'collapse' => __( 'collapse child menu', 'lyquix' ),
