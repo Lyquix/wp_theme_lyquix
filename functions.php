@@ -198,46 +198,6 @@ function lqx_javascript_detection() {
 add_action( 'wp_head', 'lqx_javascript_detection', 0 );
 
 /**
- * Enqueues scripts and styles.
- */
-
-function lqx_scripts() {
-	// Add custom fonts, used in the main stylesheet.
-	wp_enqueue_style( 'lyquix-fonts', lqx_fonts_url(), array(), null );
-
-	// Theme stylesheet.
-	wp_enqueue_style( 'lyquix-style', get_stylesheet_uri() );
-
-	// Load the Internet Explorer specific stylesheet.
-	wp_enqueue_style( 'lyquix-ie', get_template_directory_uri() . '/css/ie.css', array( 'lyquix-style' ), '20160412' );
-	wp_style_add_data( 'lyquix-ie', 'conditional', 'lt IE 10' );
-
-	// Load the Internet Explorer 8 specific stylesheet.
-	wp_enqueue_style( 'lyquix-ie8', get_template_directory_uri() . '/css/ie8.css', array( 'lyquix-style' ), '20160412' );
-	wp_style_add_data( 'lyquix-ie8', 'conditional', 'lt IE 9' );
-
-	// Load the html5 shiv.
-	wp_enqueue_script( 'lyquix-html5', get_template_directory_uri() . '/js/html5.js', array(), '3.7.3' );
-	wp_script_add_data( 'lyquix-html5', 'conditional', 'lt IE 9' );
-
-	wp_enqueue_script( 'lyquix-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20160412', true );
-
-	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
-		wp_enqueue_script( 'comment-reply' );
-	}
-
-	if ( is_singular() && wp_attachment_is_image() ) {
-		wp_enqueue_script( 'lyquix-keyboard-image-navigation', get_template_directory_uri() . '/js/keyboard-image-navigation.js', array( 'jquery' ), '20160412' );
-	}
-
-	wp_localize_script( 'lyquix-script', 'screenReaderText', array(
-		'expand'   => __( 'expand child menu', 'lyquix' ),
-		'collapse' => __( 'collapse child menu', 'lyquix' ),
-	) );
-}
-add_action( 'wp_enqueue_scripts', 'lqx_scripts' );
-
-/**
  * Adds custom classes to the array of body classes.
  *
  * @param array $classes Classes for the body element.
