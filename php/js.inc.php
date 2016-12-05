@@ -29,7 +29,7 @@
 		}
 	} 
 	?>
-	<script src="<?php echo $tmpl_url; ?>/js/lyquix<?php echo get_theme_mod('non_min_js') ? '' : '.min'; ?>.js?v=<?php echo date("YmdHis", filemtime($tmpl_path . '/js/lyquix.'.get_theme_mod('non_min_js')? '' : '.min'.'js')); ?>"></script>
-	<script src="<?php echo $tmpl_url; ?>/js/scripts<?php echo get_theme_mod('non_min_js') ? '' : '.min'; ?>.js?v=<?php echo date("YmdHis", filemtime($tmpl_path . '/js/scripts.'.get_theme_mod('non_min_js')? '' : '.min'.'js')); ?>"></script>
+	<script src="<?php echo $tmpl_url; ?>/js/lyquix<?php echo get_theme_mod('non_min_js') ? '' : '.min'; ?>.js?v=<?php echo date("YmdHis", filemtime($tmpl_path . '/js/lyquix' . (get_theme_mod('non_min_js') ? '' : '.min') . '.js')); ?>"></script>
+	<script src="<?php echo $tmpl_url; ?>/js/scripts<?php echo get_theme_mod('non_min_js') ? '' : '.min'; ?>.js?v=<?php echo date("YmdHis", filemtime($tmpl_path . '/js/scripts' . (get_theme_mod('non_min_js') ? '' : '.min') . '.js')); ?>"></script>
 	<?php echo get_theme_mod('lqx_options') ? '<script>lqx.setOptions(' . get_theme_mod('lqx_options') . ');</script>' : '';
 	echo '<script>lqx.setOptions({bodyScreenSize: {min: ' . get_theme_mod('min_screen', 0) . ', max: ' . get_theme_mod('max_screen', 4) . '}});</script>'; ?>
