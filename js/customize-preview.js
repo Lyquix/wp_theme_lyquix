@@ -53,49 +53,4 @@
 			style.html( css );
 		} );
 	} );
-	api('header_class',function( value ){
-		value.bind( function( to ) {
-			$('.site-header-main').attr( 'class' , 'site-header-main ' + to );
-		} );	
-	} );
-	api('main_nav_class',function( value ){
-		value.bind( function( to ) {
-			$('.main-navigation').attr( 'class' , 'main-navigation ' + to );
-		} );	
-	} );
-	api('main_wrapper_class',function( value ){
-		value.bind( function( to ) {
-			$('.site-content').attr( 'class' , 'site-content ' + to );
-		} );	
-	} );
-	api('content_wrapper_class',function( value ){
-		value.bind( function( to ) {
-			$('.content-area').attr( 'class' , 'content-area ' + to );
-		} );	
-	} );
-	api('primary_class',function( value ){
-		value.bind( function( to ) {
-			$('.site-main').attr( 'class' , 'site-main ' + to );
-		} );	
-	} );
-	api('secondary_class',function( value ){
-		value.bind( function( to ) {
-			$('.sidebar.widget-area').attr( 'class' , 'sidebar widget-area ' + to );
-		} );	
-	} );
-	api('sidebar_area_1_class',function( value ){
-		value.bind( function( to ) {
-			$('.widget-area-1').attr( 'class' , 'widget-area-1 ' + to );
-		} );	
-	} );
-	api('sidebar_area_2_class',function( value ){
-		value.bind( function( to ) {
-			$('.widget-area-2').attr( 'class' , 'widget-area-2 ' + to );
-		} );	
-	} );
-	api('footer_class',function( value ){
-		value.bind( function( to ) {
-			$('.site-footer').attr( 'class' , 'site-footer ' + to );
-		} );	
-	} );
 } )( jQuery );
