@@ -1,6 +1,5 @@
 <script>
 lqx.bodyScreenSize();
-lqx.getBrowser();
 lqx.vars.siteURL = '<?php echo $site_abs_url; ?>';
 lqx.vars.tmplURL = '<?php echo $site_abs_url; ?>';
 <?php if(get_theme_mod('mobiledetect_method', 'php') == 'js'): ?>lqx.mobileDetect = lqx.mobileDetect();
