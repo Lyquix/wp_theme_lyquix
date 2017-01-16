@@ -74,14 +74,18 @@ var lqx = lqx || {
 		userActive: {
 			idleTime: 5000,	// idle time (ms) before user is set to inactive
 			throttle: 100,	// throttle period (ms)
-			refresh: 250	// refresh period (ms)
+			refresh: 250,	// refresh period (ms)
+			maxTime: 1800000 // max time when tracking stops (ms)
 		},
 		ga: {
-			createParams: null,		// example: {default: {trackingId: 'UA-XXXXX-Y', cookieDomain: 'auto', fieldsObject: {}}}, where "default" is the tracker name
-			setParams: null,		// example: {default: {dimension1: 'Age', metric1: 25}}
-			requireParams: null,	// example: {default: {pluginName: 'displayFeatures', pluginOptions: {cookieName: 'mycookiename'}}}
-			provideParams: null,	// example: {default: {pluginName: 'MyPlugin', pluginConstructor: myPluginFunc}}
-			customParamsFuncs: null	// example: {default: myCustomFunc}
+			createParams: null,			// example: {default: {trackingId: 'UA-XXXXX-Y', cookieDomain: 'auto', fieldsObject: {}}}, where "default" is the tracker name
+			setParams: null,			// example: {default: {dimension1: 'Age', metric1: 25}}
+			requireParams: null,		// example: {default: {pluginName: 'displayFeatures', pluginOptions: {cookieName: 'mycookiename'}}}
+			provideParams: null,		// example: {default: {pluginName: 'MyPlugin', pluginConstructor: myPluginFunc}}
+			customParamsFuncs: null,	// example: {default: myCustomFunc}
+			abTestName: null,			// Set a test name to activate A/B Testing Dimension
+			abTestNameDimension: null,		// Set the Google Analytics dimension number to use for test name
+			abTestGroupDimension: null,		// Set the Google Analytics dimension number to use for group
 		},
 		geoLocation: {
 			enable: false,	// perform geolocation
@@ -146,6 +150,43 @@ var lqx = lqx || {
 			
 			return func.apply(this, arguments);
 		}
+	},
+
+	// cookie 
+	// function for handling cookies with ease
+	// inspired by https://github.com/js-cookie/js-cookie and https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie/Simple_document.cookie_framework
+	// lqx.cookie(name) to get value of cookie name
+	// lqx.cookie(name, value) to set cookie name=value
+	// lqx.cookie(name, value, attributes) to set cookie with additional attributes
+	// returns false if no name is passed, returns null if cookie doesn't exist
+	// attributes is an array with any of the following keys:
+	// maxAge: an integer, number of seconds
+	// expires: a Date object
+	// path: string
+	// domain: string
+	// secure: any non-false value
+	// httpOnly: any non-false value
+	cookie: function(name, value, attributes) {
+		var result;
+		if(arguments.length == 0 || !name) return false;
+
+		// get cookie
+		if(arguments.length == 1) {
+			return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(name).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
+		}
+		// set cookie
+		var c = encodeURIComponent(name) + "=" + encodeURIComponent(value);
+		if(typeof attributes == 'object') {
+			if('maxAge' in attributes) c += '; max-age=' + parseInt(attributes.maxAge);
+			if('expires' in attributes && attributes.expires instanceof Date) c += '; expires=' + attributes.expires.toUTCString();
+			if('path' in attributes) c += '; path=' + attributes.path;
+			if('domain' in attributes) c += '; domain=' + attributes.domain;
+			if('secure' in attributes) c += '; secure';
+			if('httpOnly' in attributes) c += '; httponly';
+		}
+		// set cookie
+		document.cookie = c;
+		return true;
 	},
 	
 	// bodyScreenSize
@@ -258,7 +299,7 @@ var lqx = lqx || {
 	// detects major browsers: IE, Edge, Firefox, Chrome, Safari, Opera, Android
 	// based on: https://github.com/ded/bowser
 	// list of user agen strings: http://www.webapps-online.com/online-tools/user-agent-strings/dv
-	getBrowser : function(){
+	getBrowser : (function(){
 		var ua = navigator.userAgent, browser;
 
 		// helper functions to deal with common regex
@@ -331,13 +372,13 @@ var lqx = lqx || {
 		jQuery('body').addClass(browser.type + '-' + browser.version.replace(/\./g, '-'));
 
 		return browser;
-	},
+	}()),
 
 	// returns the os name, type and version, and sets body classes
 	// detects major desktop and mobile os: Windows, Windows Phone, Mac, iOS, Android, Ubuntu, Fedora, ChromeOS
 	// based on bowser: https://github.com/ded/bowser
 	// list of user agent strings: http://www.webapps-online.com/online-tools/user-agent-strings/dv
-	getOS : function() {
+	getOS : (function() {
 		var ua = navigator.userAgent, os;
 
 		// helper functions to deal with common regex
@@ -412,7 +453,7 @@ var lqx = lqx || {
 		}
 
 		return os;
-	},
+	}()),
 	
 	// browserFixes
 	// implements some general browser fixes
@@ -485,72 +526,74 @@ var lqx = lqx || {
 		}
 		
 		var elemsCount = lqx.vars.equalHeightRowElems.length;
-		
-		// first, revert all elements to auto height
-		lqx.vars.equalHeightRowElems.height('auto').promise().done(function(){
-			// reset some vars
-			var currElem,
+
+		// execute the following in specific order
+		jQuery.Deferred().done(
+
+			// revert all elements to auto height
+			function(){
+				lqx.vars.equalHeightRowElems.height('auto');
+			},
+			// update heights per row
+			function() {
+				// reset some vars
+				var currElem,
 				currElemTop = 0,
 				currElemHeight = 0,
 				currRowElems = new Array(),
 				currRowTop = 0,
 				currRowHeight = 0;
-			
-			// update heights per row
-			lqx.vars.equalHeightRowElems.each(function(i){
-				
-				// current element and its top
-				currElem = jQuery(this);
-				currElemTop = currElem.offset().top;
-				currElemHeight = currElem.height();
-				
-				if(currElemTop != currRowTop) {
-					// new row has started, set the height for the previous row if it has more than one element
-					if(currRowElems.length > 1) {
-						for(var j = 0; j < currRowElems.length; j++) {
-							currRowElems[j].height(currRowHeight);
-						}
-					}
-					// wipe out array of current row elems, start with current element
-					currRowElems = new Array(currElem);
-					// set the top of current row (gets again position of elem after adjusting previous row)
-					currRowTop = currElem.offset().top;;
-					// set the current tallest
-					currRowHeight = currElemHeight;
-				}
-				else {
-					// element in same row, add to array of elements
-					currRowElems.push(currElem);
-					// update the row height if new element is taller
-					currRowHeight = (currElemHeight > currRowHeight) ? currElemHeight : currRowHeight;
-					// if this is the last element in the set, update the last row elements height
-					if(i == elemsCount - 1) {
+
+				lqx.vars.equalHeightRowElems.each(function(i){
+					
+					// current element and its top
+					currElem = jQuery(this);
+					currElemTop = currElem.offset().top;
+					currElemHeight = currElem.height();
+					
+					if(currElemTop != currRowTop) {
+						// new row has started, set the height for the previous row if it has more than one element
 						if(currRowElems.length > 1) {
 							for(var j = 0; j < currRowElems.length; j++) {
 								currRowElems[j].height(currRowHeight);
 							}
 						}
+						// wipe out array of current row elems, start with current element
+						currRowElems = new Array(currElem);
+						// set the top of current row (gets again position of elem after adjusting previous row)
+						currRowTop = currElem.offset().top;;
+						// set the current tallest
+						currRowHeight = currElemHeight;
 					}
-				}
-				
-			}).promise().done(function(){
-				// there may be images waiting to load, in that case wait a little and try again
+					else {
+						// element in same row, add to array of elements
+						currRowElems.push(currElem);
+						// update the row height if new element is taller
+						currRowHeight = (currElemHeight > currRowHeight) ? currElemHeight : currRowHeight;
+						// if this is the last element in the set, update the last row elements height
+						if(i == elemsCount - 1) {
+							if(currRowElems.length > 1) {
+								for(var j = 0; j < currRowElems.length; j++) {
+									currRowElems[j].height(currRowHeight);
+								}
+							}
+						}
+					}
+				});
+			},
+			// there may be images waiting to load, in that case wait a little and try again
+			function(){
 				if(!(lqx.settings.equalHeightRows.checkPageLoad && lqx.vars.equalHeightRowPageLoaded)) {
 					lqx.vars.equalHeightRowImgs.each(function(){
-						// is the image still loading? (this.complete works only in IE)
-						if(this.complete != true || (typeof this.naturalWidth !== "undefined" && this.naturalWidth === 0)) {
+						// is the image still loading?
+						if(!this.complete) {
 							// seems to still be loading
-							// if there wasn't an error, run equalheightrows again in 0.25 secs
-							if(typeof jQuery(this).attr('loaderror') != 'undefined'){
-								// there isn't an error, it means the image has not completed loading yet
-								setTimeout(function(){lqx.equalHeightRows(opts)}, 250);
-								
-							}
+							setTimeout(function(){lqx.equalHeightRows(opts)}, 250);
 						}
 					});
 				}
-			});
-		});
+			}
+		).resolve();
 	},
 	
 	// hangingPunctuation
@@ -1269,12 +1312,12 @@ var lqx = lqx || {
 					if (mutRec.addedNodes.length > 0) {
 						// send mutation record to individual handlers
 						lqx.videoPlayerMutationHandler(mutRec);
-						lqx.featherlightMutationHandler (mutRec);
+						lqx.featherlightMutationHandler(mutRec);
+						lqx.imageMutationHandler(mutRec);
 					}
 					
 					// handle removedNodes
-					/*if (mutRec.removedNodes.length > 0) {
-					}*/
+					if (mutRec.removedNodes.length > 0) {}
 					break;
 					
 				case 'attributes':
@@ -1291,12 +1334,48 @@ var lqx = lqx || {
 	
 	// image load error and complete attributes
 	initImgLoadAttr : function() {
-		jQuery('body').on('load', 'img', function(){
-			jQuery(this).attr('loadcomplete','');
+		jQuery('img').each(function(){
+			var elem = jQuery(this);
+			lqx.imgLoadAttr(elem[0]);
 		});
-		jQuery('body').on('error', 'img', function(){
-			jQuery(this).attr('loaderror','');
+	},
+
+	// check if image has been loaded
+	imgLoadAttr : function(elem) {
+		var elem = jQuery(elem);
+		if(!elem[0].complete) {
+			// image has not finished loaded (either success or error)
+			// add listeners
+			elem.on('load', function(){
+				elem.attr('loadcomplete','');
+			});
+			elem.on('error', function(){
+				elem.attr('loaderror','');
+			});
+		}
+		else {
+			if(elem[0].naturalWidth == 0 && elem[0].naturalHeight == 0) {
+				elem.attr('loaderror','');
+			} else {
+				elem.attr('loadcomplete','');
+			}
+		}
+	},
+
+	// handle images added dynamically
+	imageMutationHandler : function(mutRec) {
+		
+		jQuery(mutRec.addedNodes).each(function(){
+			
+			var elem = jQuery(this);
+			if (typeof elem.prop('tagName') !== 'undefined'){
+				var tag = elem.prop('tagName').toLowerCase();
+				if (tag == 'img') {
+					lqx.imgLoadAttr(elem[0]);
+				}	    		
+			}
 		});
+		
 	},
 
 	// lyqbox: functionality for lightbox, galleries, and alerts
@@ -1439,6 +1518,15 @@ var lqx = lqx || {
 
 		},
 
+        // special function remove video iframe from DOM, otherwise it will still play in the background
+        stopVideo: function(type) {
+            if (type == 'video') {
+                lqx.lyqBox.containerActive.find('.content.video .video-container iframe').remove();
+            }
+        },        
+
+
+
 		// Show overlay and lightbox. If the image is part of a set, add siblings to album array.
 		start: function(data) {
 			lqx.lyqBox.album = [];
@@ -1490,6 +1578,11 @@ var lqx = lqx || {
 			return deferred.promise();
 		},
 
+		addHash: function() {
+			if (lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].alias)
+				window.location.hash = lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].albumId + '_' + lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].alias;
+		},
+
 		// change content, for now we have 3 types, image, iframe and HTML.
 		changeContent: function(index) {
 			lqx.lyqBox.disableKeyboardNav();
@@ -1511,7 +1604,7 @@ var lqx = lqx || {
 						preloaderObject = jQuery(preloader);
 
 						lqx.lyqBox.updateContent(image, index, lqx.lyqBox.album[index].type);
-						window.location.hash = lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].albumId + '_' + lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].alias;
+						lqx.lyqBox.addHash();
 
 						// important line of code to make sure opacity is computed and applied as a starting value to the element so that the css transition works.
 						window.getComputedStyle(image[0]).opacity;
@@ -1524,8 +1617,7 @@ var lqx = lqx || {
 					video.attr('src', lqx.lyqBox.album[index].link);
 
 					lqx.lyqBox.updateContent('<div class="video-container">' + video.prop('outerHTML') + '</div>', index, lqx.lyqBox.album[index].type);
-
-					window.location.hash = lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].albumId + '_' + lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].alias;
+					lqx.lyqBox.addHash();
 					break;
 
 				case 'html':
@@ -1553,6 +1645,7 @@ var lqx = lqx || {
 		},
 
 		updateContent: function(content, index, type) {
+            lqx.lyqBox.stopVideo(type);
 			lqx.lyqBox.overlay.find('.content-wrapper').not('.active').addClass('active').find('.content').removeClass().addClass('content ' + type).empty().append(content);
 			lqx.lyqBox.containerActive.removeClass('active');
 			lqx.lyqBox.containerActive = lqx.lyqBox.overlay.find('.content-wrapper.active');
@@ -1664,6 +1757,7 @@ var lqx = lqx || {
 		end: function() {
 			lqx.lyqBox.disableKeyboardNav();
 			lqx.lyqBox.overlay.removeClass("open");
+			lqx.lyqBox.stopVideo(lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].type);
 			lqx.lyqBox.removeHash();
 		},
 
@@ -1674,9 +1768,9 @@ var lqx = lqx || {
 
 		// initialize the variables
 		lqx.vars.userActive = {
-			active: true,
-			timer: false,
-			throttle: false,
+			active: true,		// is user currently active
+			timer: false,		// setTimeout timer
+			throttle: false,	// is throttling currently active
 			lastChangeTime: (new Date()).getTime(),
 			activeTime: 0,
 			inactiveTime: 0,
@@ -1690,17 +1784,22 @@ var lqx = lqx || {
 		jQuery(window).on('focusout', function(){lqx.userInactive();});
 
 		// refresh active and inactive time counters
-		setInterval(function(){
-			if(lqx.vars.userActive.active) {
-				// update active time
-				lqx.vars.userActive.activeTime += (new Date()).getTime() - lqx.vars.userActive.lastChangeTime;
-			}
+		var timer = setInterval(function(){
+			// Stop updating if maxTime is reached
+			if(lqx.vars.userActive.activeTime + lqx.vars.userActive.inactiveTime >= lqx.vars.userActive.maxTime) clearInterval(timer);
+			// Update counters
 			else {
-				// update inactive time
-				lqx.vars.userActive.inactiveTime += (new Date()).getTime() - lqx.vars.userActive.lastChangeTime;
+				if(lqx.vars.userActive.active) {
+					// update active time
+					lqx.vars.userActive.activeTime += (new Date()).getTime() - lqx.vars.userActive.lastChangeTime;
+				}
+				else {
+					// update inactive time
+					lqx.vars.userActive.inactiveTime += (new Date()).getTime() - lqx.vars.userActive.lastChangeTime;
+				}
+				// update last change time
+				lqx.vars.userActive.lastChangeTime = (new Date()).getTime();
 			}
-			// update last change time
-			lqx.vars.userActive.lastChangeTime = (new Date()).getTime();
 		}, lqx.settings.userActive.refresh);
 		
 		// initialize active state
@@ -1793,6 +1892,22 @@ var lqx = lqx || {
 						});
 					});
 				}
+				// a/b testing settings
+				if(lqx.settings.ga.abTestName != null && lqx.settings.ga.abTestNameDimension != null && lqx.settings.ga.abTestGroupDimension != null) {
+					// get a/b test group cookie
+					var abTestGroup = lqx.cookie('abTestGroup');
+					if(abTestGroup == null) {
+						// set a/b test group
+						if(Math.random() < 0.5) abTestGroup = 'A';
+						else abTestGroup = 'B';
+						lqx.cookie('abTestGroup', abTestGroup, {maxAge: 30*24*60*60, path: '/'});
+					}
+					// set body attribute that can be used by css and js
+					jQuery('body').attr('data-abtest', abTestGroup);
+					// set the GA dimensions
+					ga('set', 'dimension' + lqx.settings.ga.abTestNameDimension, lqx.settings.ga.abTestName);
+					ga('set', 'dimension' + lqx.settings.ga.abTestGroupDimension, abTestGroup);
+				}
 			},
 			function(){
 				if(typeof lqx.settings.ga.customParamsFuncs == 'function') {
@@ -1811,6 +1926,30 @@ var lqx = lqx || {
 				lqx.initTracking();
 			}
 		).resolve();
+	},
+
+	// parses URL parameters into lqx.vars.urlParams
+	parseURLParams: function() {
+		lqx.vars.urlParams = {};
+		var params = window.location.search.substr(1).split('&');
+		if(params.length) {
+			params.forEach(function(param){
+				param = param.split('=', 2);
+				if(param.length == 2) lqx.vars.urlParams[param[0]] = decodeURIComponent(param[1].replace(/\+/g, " "));
+				else lqx.vars.urlParams[param[0]] = null;
+			});
+		}
+	},
+
+	// changes all fonts to Comic Sans
+	comicfyFonts: function() {
+		if(typeof lqx.vars.urlParams.comicfy != 'undefined') {
+			var link = document.createElement( "link" );
+			link.href = lqx.vars.tmplURL + "/fonts/comicneue/comicfy.css";
+			link.type = "text/css";
+			link.rel = "stylesheet";
+			document.getElementsByTagName('head')[0].appendChild(link);
+		}
 	},
 
 	// self initialization function
@@ -1843,6 +1982,8 @@ var lqx = lqx || {
 			lqx.lyqBox.init();
 			// initialize user active time tracking
 			lqx.initUserActive();
+			// parse URL parameters
+			lqx.parseURLParams();
 		});
 
 		// Functions to execute when the page has loaded
@@ -1853,6 +1994,8 @@ var lqx = lqx || {
 			lqx.hangingPunctuation();
 			// set equal height rows
 			lqx.equalHeightRows();
+			// Easter Egg: add ?comicfy to URL to change all fonts to Comic Sans
+			lqx.comicfyFonts();
 		});
 
 		// Trigger on window scroll

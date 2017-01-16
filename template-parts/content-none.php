@@ -6,9 +6,9 @@
 ?>
 
 <section class="no-results not-found">
-	<header class="page-header">
+	<div class="page-header">
 		<h1 class="page-title"><?php _e( 'Nothing Found', 'lqx' ); ?></h1>
-	</header><!-- .page-header -->
+	</div><!-- .page-header -->
 
 	<div class="page-content">
 		<?php if ( is_home() && current_user_can( 'publish_posts' ) ) : ?>
