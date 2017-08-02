@@ -1,3 +1,10 @@
+<!--[if IE]>
+<script>if(typeof console=='undefined'||typeof console.log=='undefined'){console={};console.log=function(){};}</script>
+<![endif]-->
+<!--[if lt IE 9]>
+<script src="<?php echo $tmpl_url; ?>/js/aight<?php get_theme_mod('non_min_js') ? '' : '.min'; ?>.js"></script>
+<script src="<?php echo $tmpl_url; ?>/js/selectivizr<?php get_theme_mod('non_min_js') ? '' : '.min'; ?>.js"></script>
+<![endif]-->
 <?php
 
 if(get_theme_mod('bootstrap', 0)):?>
@@ -16,5 +23,8 @@ if($home) {
 		echo get_theme_mod('p_domain_verify') ? '<meta name="p:domain_verify" content="' . get_theme_mod('p_domain_verify') . '"/>' . "\n" : '';
 } 
 ?>
-<meta charset="<?php bloginfo( 'charset' ); ?>">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<?php 
+if(!get_post_meta(get_the_id(), 'og:title')) echo('<meta property="og:title" content="' . get_the_title() . '" />');
+if(!get_post_meta(get_the_id(), 'og:title')) echo('<meta property="og:description" content="' . get_the_content() . '" />'); ?>
