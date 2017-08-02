@@ -1,9 +1,13 @@
-// Common classes
-// --------------------------------------------------------------------
-
-// Paragraphs
-// --------------------------------------------------------------------
-// typographic styles for P tags. apply these clases to parent of P elements
+/**
+ * 06-common-paragraph.less - Common CSS classes to apply typographic styles paragraphs <p>
+ *
+ * @version     1.0.2
+ * @package     tpl_lyquix
+ * @author      Lyquix
+ * @copyright   Copyright (C) 2015 - 2017 Lyquix
+ * @license     GNU General Public License version 2 or later
+ * @link        https://github.com/Lyquix/tpl_lyquix
+ */
 
 // Drop caps
 .drop-caps p:first-child:first-letter {
@@ -50,8 +54,8 @@
 	margin: 1em 0;
 	padding:1em 0;
 	.big();
-	border-top: @blk-border-width solid @gray-light;
-	border-bottom: @blk-border-width solid @gray-light;
+	border-top: @blk-border-top solid @gray-light;
+	border-bottom: @blk-border-bottom solid @gray-light;
 }
 
 .hanging-punctuation {} // implemented with javascript

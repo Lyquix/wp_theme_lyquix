@@ -1,8 +1,13 @@
-// Common classes
-// --------------------------------------------------------------------
-
-// Font styles and effects
-// --------------------------------------------------------------------
+/**
+ * 06-common-font.less - Common CSS classes for font/text styles and effects
+ *
+ * @version     1.0.2
+ * @package     tpl_lyquix
+ * @author      Lyquix
+ * @copyright   Copyright (C) 2015 - 2017 Lyquix
+ * @license     GNU General Public License version 2 or later
+ * @link        https://github.com/Lyquix/tpl_lyquix
+ */
 
 .font-thin { font-weight:100; }
 .font-extralight { font-weight:200; }
@@ -16,10 +21,16 @@
 
 .font-serif { font-family: @font-serif; }
 .font-sans-serif { font-family: @font-sans-serif; }
-.font-monospace { font-family: @font-monospace; }
+.font-monospace { 
+	font-family: @font-monospace;
+	// set figures to fixed-width, lining (same height as caps), and slashed zero
+	font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "onum" 0, "pnum" 0, "dlig" 0, "tnum" 1,  "lnum" 1, "zero" 1;
+}
 
 .font-smallcaps { font-variant: small-caps; }
 .font-uppercase { text-transform: uppercase; }
+// add small caps font feature
+.font-smallcaps, .font-uppercase { font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "onum" 1, "pnum" 1, "dlig" 0, "tnum" 0,  "lnum" 0, "smcp" 1; }
 .font-lowercase { text-transform: lowercase; }
 .font-capitalize { text-transform: capitalize; }
 
