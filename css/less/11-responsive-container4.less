@@ -1,6 +1,13 @@
-// Responsive layout styles for 4 blocks in small screens
-// --------------------------------------------------------------------
-// Provides the classes for creating a responsive grid-based layout
+/**
+ * 11-responsive-container.less - Responsive layout styles for 4 blocks in small screens
+ *
+ * @version     1.0.2
+ * @package     tpl_lyquix
+ * @author      Lyquix
+ * @copyright   Copyright (C) 2015 - 2017 Lyquix
+ * @license     GNU General Public License version 2 or later
+ * @link        https://github.com/Lyquix/tpl_lyquix
+ */
 
 // Container
 // --------------------------------------------------------------------
@@ -16,7 +23,7 @@
 
 body[screen=xs] {
   .container {
-    width: (@blk4-width + @blk-padding-border-margin-width * 2);  // xs screen - 4 blocks
+    width: @blk4-width + @blk-padding-border-margin-left + @blk-padding-border-margin-right;  // xs screen - 4 blocks
   }
   
   &.blkfluid-xs .container {
@@ -26,7 +33,7 @@ body[screen=xs] {
 
 body[screen=sm] {
   .container {
-    width: (@blk8-width + @blk-padding-border-margin-width * 2);  // sm screen - 8 blocks
+    width: @blk8-width + @blk-padding-border-margin-left + @blk-padding-border-margin-right;  // sm screen - 8 blocks
   }
   
   &.blkfluid-sm .container {
@@ -36,7 +43,7 @@ body[screen=sm] {
   
 body[screen=md] {
   .container {
-    width: (@blk12-width + @blk-padding-border-margin-width * 2); // md screen - 12 blocks
+    width: @blk12-width + @blk-padding-border-margin-left + @blk-padding-border-margin-right; // md screen - 12 blocks
   }
   
   &.blkfluid-md .container {
@@ -46,7 +53,7 @@ body[screen=md] {
 
 body[screen=lg] {
   .container {
-    width: (@blk16-width + @blk-padding-border-margin-width * 2); // lg screen - 16 blocks
+    width: @blk16-width + @blk-padding-border-margin-left + @blk-padding-border-margin-right; // lg screen - 16 blocks
   }
   
   &.blkfluid-lg .container {
@@ -56,7 +63,7 @@ body[screen=lg] {
   
 body[screen=xl] { 
   .container {
-    width: (@blk20-width + @blk-padding-border-margin-width * 2); // xl screen - 20 blocks
+    width: @blk20-width + @blk-padding-border-margin-left + @blk-padding-border-margin-right; // xl screen - 20 blocks
   }
   
   &.blkfluid-xl .container {
