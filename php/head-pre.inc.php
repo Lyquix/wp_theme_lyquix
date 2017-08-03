@@ -3,14 +3,14 @@ $remove_css_libraries = explode("\n", get_theme_mod('remove_css_js_libraries', '
 foreach($remove_css_libraries as $css_url) {
 	$css_url = trim($css_url);
 	if($css_url) {
-        unset($doc->_styleSheets[$css_url]);
+        wp_deregister_style($css_url);
 	}
 }
 $remove_js_libraries = explode("\n", get_theme_mod('remove_js_libraries', ''));
 foreach($remove_js_libraries as $js_url) {
 	$js__url = trim($js_url);
 	if($js_url) {
-        unset($doc->_scripts[$js_url]);
+        wp_deregister_script($js_url);
 	}
 }
 
