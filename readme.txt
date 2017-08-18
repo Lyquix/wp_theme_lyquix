@@ -1,1 +1,0 @@
-﻿https://github.com/Lyquix/tpl_lyquix
