@@ -1,8 +1,8 @@
 <?php
-/**
- * The template for displaying all single posts and attachments
- *
- */
+/*
+NOTICE: Do not modify this file!
+If you need to customize your template, create a file named single-custom.php
+*/
 $tmpl_url = get_template_directory_uri();
 if(file_exists(__DIR__ . '/single-custom.php')) :
 	include __DIR__ . '/single-custom.php'; 
@@ -16,4 +16,4 @@ else :
 		File <span style="font-family: monospace;"><?php echo $tmp_url;?>/single-custom.php</span> not found.
 	</body>
 </html>
-<?php endif;?>
+<?php endif;

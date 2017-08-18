@@ -1,13 +1,8 @@
 <?php
-/**
- * The main template file
- *
- * This is the most generic template file in a WordPress theme
- * and one of the two required files for a theme (the other being style.css).
- * It is used to display a page when nothing more specific matches a query.
- * E.g., it puts together the home page when no home.php file exists.
- *
- */
+/*
+NOTICE: Do not modify this file!
+If you need to customize your template, create a file named index-custom.php
+*/
 $tmpl_url = get_template_directory_uri();
 if(file_exists(__DIR__ . '/index-custom.php')) :
 	include __DIR__ . '/index-custom.php'; 
@@ -21,4 +16,4 @@ else :
 		File <span style="font-family: monospace;"><?php echo $tmp_url;?>/index-custom.php</span> not found.
 	</body>
 </html>
-<?php endif;?>
+<?php endif;
