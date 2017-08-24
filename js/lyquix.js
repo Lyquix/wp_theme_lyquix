@@ -90,6 +90,15 @@ var lqx = lqx || {
 		geoLocation: {
 			enable: false,	// perform geolocation
 			gps: false,		// request gps data for precise lat/lon
+		},
+		mobileMenu: {
+			screens: ['sm','xs']
+		},
+		detectSwipe: { // set minimum and maximum horizontal and vertical moves that are consideres swipes
+			minX: 30,
+			maxX: 60,
+			minY: 30,
+			maxY: 60
 		}
 	},
 	
@@ -98,7 +107,7 @@ var lqx = lqx || {
 		resizeThrottle: false,  // saves current status of resizeThrottle
 		scrollThrottle: false,  // saves current status of scrollThrottle
 		youTubeIframeAPIReady: false,
-		youTubeIframeAPIReadyAttempts: 0,
+		youTubeIframeAPIReadyAttempts: 0
 	},
 	
 	// setOptions
@@ -110,10 +119,18 @@ var lqx = lqx || {
 		return lqx.settings;
 	},
 	
-	// internal console log function
-	// use instead of console.log, and control with lqx.settings.debug
+	// internal console log/warn/error functions
+	// use instead of console.log, console.warn, console.error, and control with lqx.settings.debug
 	log : function() {
 		if(lqx.settings.debug) console.log(arguments);
+	},
+
+	warn : function() {
+		if(lqx.settings.debug) console.warn(arguments);
+	},
+
+	error : function() {
+		if(lqx.settings.debug) console.error(arguments);
 	},
 
 	// function logging
@@ -175,7 +192,7 @@ var lqx = lqx || {
 			return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(name).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
 		}
 		// set cookie
-		var c = encodeURIComponent(name) + "=" + encodeURIComponent(value);
+		var c = encodeURIComponent(name) + '=' + encodeURIComponent(value);
 		if(typeof attributes == 'object') {
 			if('maxAge' in attributes) c += '; max-age=' + parseInt(attributes.maxAge);
 			if('expires' in attributes && attributes.expires instanceof Date) c += '; expires=' + attributes.expires.toUTCString();
@@ -364,12 +381,16 @@ var lqx = lqx || {
 			browser.type = browser.name.toLowerCase().replace(/\s/g, '');
 		}
 		// add classes to body
-		// browser type
-		jQuery('body').addClass(browser.type);
-		// browser type and major version
-		jQuery('body').addClass(browser.type + '-' + browser.version.split('.')[0]);
-		// browser type and full version
-		jQuery('body').addClass(browser.type + '-' + browser.version.replace(/\./g, '-'));
+		if(browser.type && browser.version){
+			jQuery(document).ready(function(){
+				// browser type
+				jQuery('body').addClass(browser.type);
+				// browser type and major version
+				jQuery('body').addClass(browser.type + '-' + browser.version.split('.')[0]);
+				// browser type and full version
+				jQuery('body').addClass(browser.type + '-' + browser.version.replace(/\./g, '-'));
+			});
+		}
 
 		return browser;
 	}()),
@@ -441,15 +462,16 @@ var lqx = lqx || {
 				version: getSecondMatch(/cros (.+) (\d+(\.\d+)*)/i)
 			}
 		}
-
 		// add classes to body
 		if(os.type && os.version) {
-			// os type
-			jQuery('body').addClass(os.type);
-			// os type and major version
-			jQuery('body').addClass(os.type + '-' + os.version.split('.')[0]);
-			// os type and full version
-			jQuery('body').addClass(os.type + '-' + os.version.replace(/\./g, '-'));
+			jQuery(document).ready(function(){
+				// os type
+				jQuery('body').addClass(os.type);
+				// os type and major version
+				jQuery('body').addClass(os.type + '-' + os.version.split('.')[0]);
+				// os type and full version
+				jQuery('body').addClass(os.type + '-' + os.version.replace(/\./g, '-'));
+			});
 		}
 
 		return os;
@@ -472,9 +494,9 @@ var lqx = lqx || {
 			});
 			// fix for google fonts not rendering in IE10/11
 			if(lqx.getBrowser.version >= 10) {
-				jQuery('html').css('font-feature-settings', 'normal');
+				jQuery('<style>html, sup, sub, samp, td, th, h1, h2, h3, .font-monospace, .font-smallcaps, .font-uppercase {font-feature-settings: normal;}</style>').appendTo('head');
 			}
-			// replaced svg imager for pngs in IE 8 and older
+			// replace svg images for pngs in IE 8 and older
 			if(lqx.getBrowser.version <= 8) {
 				jQuery('img').each(function(){
 					src = jQuery(this).attr('src');
@@ -708,18 +730,18 @@ var lqx = lqx || {
 			R = (num >> 16) + amt, 
 			G = (num >> 8 & 0x00FF) + amt, 
 			B = (num & 0x0000FF) + amt;
-		return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 + ( G < 255 ? G < 1 ? 0 : G : 255) * 0x100 + (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+		return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 + ( G < 255 ? G < 1 ? 0 : G : 255) * 0x100 + (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
 	},
 	
 	// returns a RBG color lighter or darker by percentage
 	shadeRGB : function(color, percent) {
-		var 	f = color.split(","), 
+		var 	f = color.split(','), 
 			t = percent < 0 ? 0 : 255, 
 			p = percent < 0 ? percent * -1 : percent, 
 			R = parseInt(f[0].slice(4)), 
 			G = parseInt(f[1]), 
 			B = parseInt(f[2]);
-		return "rgb(" + (Math.round((t - R) * p) + R) + "," + (Math.round((t - G) * p ) + G) + "," + (Math.round((t - B) * p) + B) + ")";
+		return 'rgb(' + (Math.round((t - R) * p) + R) + ',' + (Math.round((t - G) * p ) + G) + ',' + (Math.round((t - B) * p) + B) + ')';
 	},
 	 
 	// initialize google analytics tracking
@@ -735,54 +757,49 @@ var lqx = lqx || {
 				// check if it has an href attribute, otherwise it is just a page anchor
 				if(elem.href) {
 					
-					// skip featherlight video and gallery, video is already handled below, and gallery will be handled by tracking.photogallery
-					if (typeof jQuery(this).attr('data-featherlight') === 'undefined' && typeof jQuery(this).parent().attr('data-featherlight-gallery') === 'undefined'){
+					// check if it is an outbound link, track as event
+					if(elem.href.indexOf(location.host) == -1 && lqx.settings.tracking.outbound) {
 
-						// check if it is an outbound link, track as event
-						if(elem.href.indexOf(location.host) == -1 && lqx.settings.tracking.outbound) {
-
-							jQuery(elem).click(function(e){
-								// prevent default
-								e.preventDefault ? e.preventDefault() : e.returnValue = !1;
-								var url = elem.href;
-								var label = url;
-								if(jQuery(elem).attr('title')) {
-									label = jQuery(elem).attr('title') + ' [' + url + ']';
-								}
-								ga('send', {
-									'hitType' : 'event', 
-									'eventCategory' : 'Outbound Links',
-									'eventAction' : 'click',
-									'eventLabel' : label,
-									'nonInteraction' : true,
-									'hitCallback' : function(){ window.location.href = url; } // regarless of target value link will open in same link, otherwise it is blocked by browser
-								});
+						jQuery(elem).click(function(e){
+							// prevent default
+							e.preventDefault ? e.preventDefault() : e.returnValue = !1;
+							var url = elem.href;
+							var label = url;
+							if(jQuery(elem).attr('title')) {
+								label = jQuery(elem).attr('title') + ' [' + url + ']';
+							}
+							ga('send', {
+								'hitType' : 'event', 
+								'eventCategory' : 'Outbound Links',
+								'eventAction' : 'click',
+								'eventLabel' : label,
+								'nonInteraction' : true,
+								'hitCallback' : function(){ window.location.href = url; } // regarless of target value link will open in same link, otherwise it is blocked by browser
 							});
-						}
-						
-						// check if it is a download link, track as pageview
-						else if(elem.href.match(/\.(gif|png|jpg|jpeg|tif|tiff|svg|webp|bmp|zip|rar|gzip|7z|tar|exe|msi|dmg|txt|pdf|rtf|doc|docx|dot|dotx|xls|xlsx|xlt|xltx|ppt|pptx|pot|potx|mp3|wav|mp4|ogg|webm|wma|mov|avi|wmv|flv|swf|xml|js|json|css|less|sass)$/i) && lqx.settings.tracking.downloads) {
-							jQuery(elem).click(function(e){
-								// prevent default
-								e.preventDefault ? e.preventDefault() : e.returnValue = !1;
-								var url = elem.href;
-								var loc = elem.protocol + '//' + elem.hostname + elem.pathname + elem.search;
-								var page = elem.pathname + elem.search;
-								var title = 'Download: ' + page;
-								if(jQuery(elem).attr('title')) {
-									title = jQuery(elem).attr('title');
-								}
-								ga('send', {
-									'hitType': 'pageview', 
-									'location' : loc,
-									'page' : page,
-									'title' : title,
-									'hitCallback' : function(){ window.location.href = url; } // regarless of target value link will open in same link, otherwise it is blocked by browser
-								});
-							});
-						}
+						});
 					}
-				
+					
+					// check if it is a download link, track as pageview
+					else if(elem.href.match(/\.(gif|png|jpg|jpeg|tif|tiff|svg|webp|bmp|zip|rar|gzip|7z|tar|exe|msi|dmg|txt|pdf|rtf|doc|docx|dot|dotx|xls|xlsx|xlt|xltx|ppt|pptx|pot|potx|mp3|wav|mp4|ogg|webm|wma|mov|avi|wmv|flv|swf|xml|js|json|css|less|sass)$/i) && lqx.settings.tracking.downloads) {
+						jQuery(elem).click(function(e){
+							// prevent default
+							e.preventDefault ? e.preventDefault() : e.returnValue = !1;
+							var url = elem.href;
+							var loc = elem.protocol + '//' + elem.hostname + elem.pathname + elem.search;
+							var page = elem.pathname + elem.search;
+							var title = 'Download: ' + page;
+							if(jQuery(elem).attr('title')) {
+								title = jQuery(elem).attr('title');
+							}
+							ga('send', {
+								'hitType': 'pageview', 
+								'location' : loc,
+								'page' : page,
+								'title' : title,
+								'hitCallback' : function(){ window.location.href = url; } // regarless of target value link will open in same link, otherwise it is blocked by browser
+							});
+						});
+					}
 				}
 			});
 			
@@ -820,7 +837,7 @@ var lqx = lqx || {
 		
 		// track photo galleries
 		if(lqx.settings.tracking.photogallery){
-			jQuery('html').on('click', 'a[rel^=lightbox], area[rel^=lightbox], a[data-lightbox], area[data-lightbox], a[data-featherlight-image]', function(){
+			jQuery('html').on('click', 'a[rel^=lightbox], area[rel^=lightbox], a[data-lightbox], area[data-lightbox]', function(){
 				// send event for gallery opened
 				ga('send', {
 					'hitType': 'event', 
@@ -848,7 +865,7 @@ var lqx = lqx || {
 			
 			// load youtube iframe api
 			var tag = document.createElement('script');
-			tag.src = "https://www.youtube.com/iframe_api";
+			tag.src = 'https://www.youtube.com/iframe_api';
 			tag.onload = function(){lqx.vars.youTubeIframeAPIReady = true;};
 			var firstScriptTag = document.getElementsByTagName('script')[0];
 			firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
@@ -908,28 +925,6 @@ var lqx = lqx || {
 			});
 		}
 
-	},
-
-	// handle mutation for featherlight gallery, and send the ga data if a new image is loaded by detecting new added image and pass on the src attribute value
-	featherlightMutationHandler: function(mutRec) {
-		jQuery(mutRec.addedNodes).each(function(){
-			var elem = jQuery(this);
-			var src = elem.attr('src');
-
-			if (typeof elem.prop('tagName') !== 'undefined' && elem.hasClass('featherlight-image')){
-				var tag = elem.prop('tagName').toLowerCase();
-
-				if (tag == 'img' && typeof src != 'undefined'){
-					// send event for image displayed
-					ga('send', {
-						'hitType': 'event', 
-						'eventCategory' : 'Photo Gallery',
-						'eventAction' : 'Display',
-						'eventLabel' : jQuery(this).attr('src')
-					});
-				}
-			}
-		});
 	},
 
 	// handle video players added dynamically
@@ -1245,22 +1240,33 @@ var lqx = lqx || {
 		var go = function(){ target ? window.open(url, target) : window.location.href = url; };
 		
 		// check if there is a deeper menu
-		if(jQuery(li).hasClass('deeper')) {
-			if(jQuery(li).hasClass('open')) {
-				// it is already open, follow the link
-				go();
+		if(jQuery.inArray(lqx.vars.lastScreenSize, lqx.settings.mobileMenu.screens) != -1) {		
+			if(jQuery(li).hasClass('deeper')) {
+				if(jQuery(li).hasClass('open')) {
+					// it is already open, follow the link
+					go();
+				}
+				else {
+					// close any siblings (and their children) and then open itself
+					jQuery(li).siblings('li.open').find('li.open').removeClass('open');
+					jQuery(li).siblings('li.open').removeClass('open');
+					jQuery(li).addClass('open');
+				}
 			}
 			else {
-				// close any siblings (and their children) and then open itself
-				jQuery(li).siblings('li.open').find('li.open').removeClass('open');
-				jQuery(li).siblings('li.open').removeClass('open');
-				jQuery(li).addClass('open');
+				// there isn't a sub-menu, follow the link
+				go();
 			}
-		}
-		else {
-			// there isn't a sub-menu, follow the link
+		}	else {
+		
 			go();
 		}
+	},
+
+	resetMobileMenus: function() {
+		if(jQuery.inArray(lqx.vars.lastScreenSize, lqx.settings.mobileMenu.screens) == -1) {
+			jQuery('.nav .parent').removeClass('open');
+		}		
 	},
 	
 	// create a custom mutation observer that will trigger any needed functions
@@ -1281,22 +1287,6 @@ var lqx = lqx || {
 				});
 			}
 
-			// photogallery listener
-			if(lqx.settings.tracking.photogallery){			
-				jQuery('html').on('DOMNodeInserted', 'img.featherlight-image', function(e) {
-					var src = jQuery(e.currentTarget).attr('src');
-					if (typeof src != 'undefined'){
-						// send event for image displayed
-						ga('send', {
-							'hitType': 'event', 
-							'eventCategory' : 'Photo Gallery',
-							'eventAction' : 'Display',
-							'eventLabel' : src
-						});
-					}
-				});
-			}
-
 		}
 	},
 	
@@ -1312,7 +1302,6 @@ var lqx = lqx || {
 					if (mutRec.addedNodes.length > 0) {
 						// send mutation record to individual handlers
 						lqx.videoPlayerMutationHandler(mutRec);
-						lqx.featherlightMutationHandler(mutRec);
 						lqx.imageMutationHandler(mutRec);
 					}
 					
@@ -1402,9 +1391,9 @@ var lqx = lqx || {
 
 		// show the hash url content
 		hash: function() {
-			if (window.location.hash.substr(1) != "") {
+			if (window.location.hash.substr(1) != '') {
 				// get hash value and display the appropriate content
-				var contentData = window.location.hash.substr(1).split("_");
+				var contentData = window.location.hash.substr(1).split('_');
 
 				if (jQuery('[data-lyqbox=' + contentData[0] + '][data-lyqbox-alias=' + contentData[1] + ']').length){
 					lqx.lyqBox.start(jQuery('[data-lyqbox=' + contentData[0] + '][data-lyqbox-alias=' + contentData[1] + ']'));
@@ -1483,6 +1472,9 @@ var lqx = lqx || {
 				lqx.lyqBox.end();
 				return false;
 			});
+
+			// Add swipe event handler
+			lqx.detectSwipe('.lyqbox .content-wrapper', lqx.lyqBox.swipeHandler);
 
 			// prev button click handling
 			lqx.lyqBox.overlay.find('.prev').on('click', function() {
@@ -1570,7 +1562,7 @@ var lqx = lqx || {
 			var deferred = jQuery.Deferred();
 			// we are using load so one can specify a target with: url.html #targetelement
 			var $container = jQuery('<div></div>').load(url, function(response, status) {
-				if (status !== "error") {
+				if (status !== 'error') {
 					deferred.resolve($container.contents());
 				}
 				deferred.fail();
@@ -1586,7 +1578,7 @@ var lqx = lqx || {
 		// change content, for now we have 3 types, image, iframe and HTML.
 		changeContent: function(index) {
 			lqx.lyqBox.disableKeyboardNav();
-			lqx.lyqBox.overlay.addClass("open");
+			lqx.lyqBox.overlay.addClass('open');
 
 			// deferred var to be used on alert type lyqbox only, just in case it's loading HTML content from a file
 			var promise = jQuery.Deferred();
@@ -1627,7 +1619,7 @@ var lqx = lqx || {
 					// the priority is given to the data-lyqbox-url attribute first, if this is blank, then data-lyqbox-html will be processed instead.
 
 					// check if url is not empty
-					if (lqx.lyqBox.album[index].link != "" && typeof lqx.lyqBox.album[index].link !== 'undefined' ) {
+					if (lqx.lyqBox.album[index].link != '' && typeof lqx.lyqBox.album[index].link !== 'undefined' ) {
 						promise = lqx.lyqBox.loadHTML(lqx.lyqBox.album[index].link);
 
 						promise.done(function htmlLoaded(htmlResult) {
@@ -1711,6 +1703,12 @@ var lqx = lqx || {
 			jQuery(document).off('.keyboard');
 		},
 
+		swipeHandler: function(sel, dir) {
+			console.log(sel, dir);
+			if(dir == 'lt') lqx.lyqBox.keyboardAction({keyCode: 39}); // swipe to the left equals right arrow
+			if(dir == 'rt') lqx.lyqBox.keyboardAction({keyCode: 37}); // swipe to the right equals left arrow
+		},
+
 		keyboardAction: function(event) {
 			var KEYCODE_ESC = 27;
 			var KEYCODE_LEFTARROW = 37;
@@ -1738,14 +1736,14 @@ var lqx = lqx || {
 		// This only works in Chrome 9, Firefox 4, Safari 5, Opera 11.50 and in IE 10
 		removeHash: function() { 
 			var scrollV, scrollH, loc = window.location;
-			if ("pushState" in history)
-				history.pushState("", document.title, loc.pathname + loc.search);
+			if ('pushState' in history)
+				history.pushState('', document.title, loc.pathname + loc.search);
 			else {
 				// Prevent scrolling by storing the page's current scroll offset
 				scrollV = document.body.scrollTop;
 				scrollH = document.body.scrollLeft;
 
-				loc.hash = "";
+				loc.hash = '';
 
 				// Restore the scroll offset, should be flicker free
 				document.body.scrollTop = scrollV;
@@ -1756,7 +1754,7 @@ var lqx = lqx || {
 		// Closing time. :-(
 		end: function() {
 			lqx.lyqBox.disableKeyboardNav();
-			lqx.lyqBox.overlay.removeClass("open");
+			lqx.lyqBox.overlay.removeClass('open');
 			lqx.lyqBox.stopVideo(lqx.lyqBox.album[lqx.lyqBox.currentImageIndex].type);
 			lqx.lyqBox.removeHash();
 		},
@@ -1935,7 +1933,7 @@ var lqx = lqx || {
 		if(params.length) {
 			params.forEach(function(param){
 				param = param.split('=', 2);
-				if(param.length == 2) lqx.vars.urlParams[param[0]] = decodeURIComponent(param[1].replace(/\+/g, " "));
+				if(param.length == 2) lqx.vars.urlParams[param[0]] = decodeURIComponent(param[1].replace(/\+/g, ' '));
 				else lqx.vars.urlParams[param[0]] = null;
 			});
 		}
@@ -1944,12 +1942,81 @@ var lqx = lqx || {
 	// changes all fonts to Comic Sans
 	comicfyFonts: function() {
 		if(typeof lqx.vars.urlParams.comicfy != 'undefined') {
-			var link = document.createElement( "link" );
-			link.href = lqx.vars.tmplURL + "/fonts/comicneue/comicfy.css";
-			link.type = "text/css";
-			link.rel = "stylesheet";
+			var link = document.createElement( 'link' );
+			link.href = lqx.vars.tmplURL + '/fonts/comicneue/comicfy.css';
+			link.type = 'text/css';
+			link.rel = 'stylesheet';
 			document.getElementsByTagName('head')[0].appendChild(link);
 		}
+	},
+
+	almost7Fonts: function() {
+		if(typeof lqx.vars.urlParams.almost7 != 'undefined') {
+			var link = document.createElement( 'link' );
+			link.href = lqx.vars.tmplURL + '/fonts/still-6-but-almost-7/still-6-but-almost-7.css';
+			link.type = 'text/css';
+			link.rel = 'stylesheet';
+			document.getElementsByTagName('head')[0].appendChild(link);
+		}		
+	},
+
+	// enable swipe detection
+	// sel - element selector
+	// func - name of callback function, will receive selector and direction (up, dn, lt, rt)
+	detectSwipe: function(sel, callback) {
+		var swp = {
+			sX: 0,
+			sY: 0,
+			eX: 0,
+			eY: 0,
+			dir: '',
+			opts: lqx.settings.detectSwipe
+		};
+		elem = jQuery(sel);
+		elem.on('touchstart', function(e) {
+			var t = e.originalEvent.touches[0];
+			swp.sX = t.clientX;
+			swp.sY = t.clientY;
+		});
+		elem.on('touchmove', function(e) {
+			e.preventDefault();
+			var t = e.originalEvent.touches[0];
+			swp.eX = t.clientX;
+			swp.eY = t.clientY;
+		});
+		elem.on('touchend', function(e) {
+			// horizontal swipe
+			if (
+				(Math.abs(swp.eX - swp.sX) > swp.opts.minX)
+				&& 
+				(Math.abs(swp.eY - swp.sY) < swp.opts.maxY)
+				&&
+				(swp.eX > 0)
+			) {
+				if (swp.eX > swp.sX) swp.dir = 'rt';
+				else swp.dir = 'lt';
+			}
+			// vertical swipe
+			else if (
+				(Math.abs(swp.eY - swp.sY) > swp.opts.minY)
+				&& 
+				(Math.abs(swp.eX - swp.sX) < swp.opts.maxX)
+				&&
+				(swp.eY > 0)
+			) {
+				if (swp.eY > swp.sY) swp.dir = 'dn';
+				else swp.dir = 'up';
+			}
+
+			if (swp.dir) {console.log(swp.dir, callback);
+				if (typeof callback == 'function') callback(sel, swp.dir);
+			}
+			swp.dir = '';
+			swp.sX = 0;
+			swp.sY = 0;
+			swp.eX = 0;
+			swp.eY = 0;
+		});
 	},
 
 	// self initialization function
@@ -1996,6 +2063,8 @@ var lqx = lqx || {
 			lqx.equalHeightRows();
 			// Easter Egg: add ?comicfy to URL to change all fonts to Comic Sans
 			lqx.comicfyFonts();
+			// Easter Egg: add ?almost7 to URL to change all fonts to Still 6 But Almost 7
+			lqx.almost7Fonts();
 		});
 
 		// Trigger on window scroll
@@ -2054,6 +2123,8 @@ var lqx = lqx || {
 			lqx.equalHeightRows();
 			// set punctuation marks to hanging
 			lqx.hangingPunctuation();
+			// remove 'open' class from menus if not on mobile screens
+			lqx.resetMobileMenus();
 		});
 
 		// Trigger on custom event scrollthrottle
@@ -2074,7 +2145,7 @@ var lqx = lqx || {
 		// onYouTubeIframeAPIReady
 		// callback function called by iframe youtube players when they are ready
 		window.onYouTubeIframeAPIReady = function(){
-			if(lqx.vars.youTubeIframeAPIReady && (typeof YT !== "undefined") && YT && YT.Player) {
+			if(lqx.vars.youTubeIframeAPIReady && (typeof YT !== 'undefined') && YT && YT.Player) {
 				for(var playerId in lqx.vars.youtubePlayers) {
 					if(typeof lqx.vars.youtubePlayers[playerId].playerObj == 'undefined') {
 						lqx.vars.youtubePlayers[playerId].playerObj = new YT.Player(playerId, { 
@@ -2089,7 +2160,7 @@ var lqx = lqx || {
 			else {
 				// keep track how many time we have attempted, retry unless it has been more than 30secs
 				lqx.vars.youTubeIframeAPIReadyAttempts++;
-				if(lqx.vars.youTubeIframeAPIReadyAttempts < 120) setTimeout("onYouTubeIframeAPIReady()",250);
+				if(lqx.vars.youTubeIframeAPIReadyAttempts < 120) setTimeout('onYouTubeIframeAPIReady()',250);
 			}
 		}
 
