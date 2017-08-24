@@ -1,18 +1,13 @@
-/**
- * 06-common-clear-hide-float.less - Common classes for clearing, hiding and floating
- *
- * @version     1.0.2
- * @package     tpl_lyquix
- * @author      Lyquix
- * @copyright   Copyright (C) 2015 - 2017 Lyquix
- * @license     GNU General Public License version 2 or later
- * @link        https://github.com/Lyquix/tpl_lyquix
- */
+// Common classes
+// --------------------------------------------------------------------
+
+// Clear, hiding, floating
+// --------------------------------------------------------------------
 
 // Clear
 .clr, 
 .clear {
-	clear: both;
+	clear:both;
 }
 
 // Clear fix (clears after the element)
@@ -25,7 +20,7 @@
     }
     
     &:after {
-	    clear: both;
+	    clear:both;
     }
     
     *zoom: 1;
@@ -37,8 +32,8 @@
     
     // add margins
     &.margins {
-        margin-right: @blk-margin-right;
-        margin-bottom: @blk-margin-bottom;
+        margin-right: @blk-margin-width;
+        margin-bottom: @blk-margin-width;
     }
 }
 .right {
@@ -46,8 +41,8 @@
     
     // add margins
     &.margins {
-        margin-left: @blk-margin-left;
-        margin-bottom: @blk-margin-right;
+        margin-left: @blk-margin-width;
+        margin-bottom: @blk-margin-width;
     }
 }
 
