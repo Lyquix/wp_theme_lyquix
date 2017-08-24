@@ -1,3 +1,13 @@
+/**
+ * lyquix.js - Lyquix JavaScript library
+ *
+ * @version     1.0.1
+ * @package     tpl_lyquix
+ * @author      Lyquix
+ * @copyright   Copyright (C) 2015 - 2017 Lyquix
+ * @license     GNU General Public License version 2 or later
+ * @link        https://github.com/Lyquix/tpl_lyquix
+ */
 
 // ***********************************
 // BEGIN Lyquix global object
@@ -2008,9 +2018,8 @@ var lqx = lqx || {
 				else swp.dir = 'up';
 			}
 
-			if (swp.dir) {console.log(swp.dir, callback);
-				if (typeof callback == 'function') callback(sel, swp.dir);
-			}
+			if (swp.dir && typeof callback == 'function') callback(sel, swp.dir);
+			
 			swp.dir = '';
 			swp.sX = 0;
 			swp.sY = 0;

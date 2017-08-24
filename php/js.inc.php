@@ -1,4 +1,15 @@
 <?php
+/**
+ * js.inc.php - Includes JavaScript libraries
+ *
+ * @version     1.0.1
+ * @package     tpl_lyquix
+ * @author      Lyquix
+ * @copyright   Copyright (C) 2015 - 2017 Lyquix
+ * @license     GNU General Public License version 2 or later
+ * @link        https://github.com/Lyquix/tpl_lyquix
+ */
+ 
 if(get_theme_mod('angularjs', 0)): ?>
 <script src="<?php echo $cdnjs_url; ?>angular.js/1.6.1/angular<?php echo get_theme_mod('non_min_js') ? '' : '.min'; ?>.js"></script>
 <?php endif;

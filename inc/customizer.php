@@ -28,24 +28,24 @@ function lqx_customize_register( $wp_customize ) {
 
 	//Add new sections for lyquix theme settings
 	$wp_customize->add_section( 'lqx_responsiveness' , array(
-	    'title'      => __( 'Responsiveness', 'lyquix_theme' ),
-	    'priority'   => 30,
+	    'title' => __( 'Responsiveness', 'lyquix_theme' ),
+	    'priority' => 30,
 	) );
 	$wp_customize->add_section( 'lqx_css' , array(
-	    'title'      => __( 'CSS', 'lyquix_theme' ),
-	    'priority'   => 30,
+	    'title' => __( 'CSS', 'lyquix_theme' ),
+	    'priority' => 30,
 	) );
 	$wp_customize->add_section( 'lqx_js' , array(
-	    'title'      => __( 'Javascript', 'lyquix_theme' ),
-	    'priority'   => 30,
+	    'title' => __( 'Javascript', 'lyquix_theme' ),
+	    'priority' => 30,
 	) );
 	$wp_customize->add_section( 'lqx_accounts' , array(
-	    'title'      => __( 'Accounts', 'lyquix_theme' ),
-	    'priority'   => 30,
+	    'title' => __( 'Accounts', 'lyquix_theme' ),
+	    'priority' => 30,
 	) );
 	$wp_customize->add_section( 'lqx_other' , array(
-	    'title'      => __( 'Other', 'lyquix_theme' ),
-	    'priority'   => 30,
+	    'title' => __( 'Other', 'lyquix_theme' ),
+	    'priority' => 30,
 	) );
 	//end new sections
 	if ( isset( $wp_customize->selective_refresh ) ) {
@@ -64,293 +64,293 @@ function lqx_customize_register( $wp_customize ) {
 	$wp_customize->remove_control( 'header_textcolor' );
 	//Add custom functions for Lyquix Theme
 	$wp_customize->add_setting( 'min_screen' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
-	    'default'     => '0',
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
+	    'default' => '0',
 	) );			
 	$wp_customize->add_control( 'min_screen', array(
-		'type'		 => 'select',
-		'label'        => __( 'Minimum Screen Size', 'lyquix_theme' ),
-		'section'    => 'lqx_responsiveness',
-		'settings'   => 'min_screen',
+		'type' => 'select',
+		'label' => __( 'Minimum Screen Size', 'lyquix_theme' ),
+		'section' => 'lqx_responsiveness',
+		'settings' => 'min_screen',
 		'choices' => array(
 			'0' => 'XS',
-			'1'  => 'SM',
+			'1' => 'SM',
 			'2' => 'MD',
-			'3'  => 'LG',
-			'4'  => 'XL',
+			'3' => 'LG',
+			'4' => 'XL',
 		),
 	) );
 	$wp_customize->add_setting( 'max_screen' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
-	    'default'     => '4',
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
+	    'default' => '4',
 	) );			
 	$wp_customize->add_control( 'max_screen', array(
-		'type'		 => 'select',
-		'label'        => __( 'Maximum Screen Size', 'lyquix_theme' ),
-		'section'    => 'lqx_responsiveness',
-		'settings'   => 'max_screen',
+		'type' => 'select',
+		'label' => __( 'Maximum Screen Size', 'lyquix_theme' ),
+		'section' => 'lqx_responsiveness',
+		'settings' => 'max_screen',
 		'choices' => array(
 			'0' => 'XS',
-			'1'  => 'SM',
+			'1' => 'SM',
 			'2' => 'MD',
-			'3'  => 'LG',
-			'4'  => 'XL',
+			'3' => 'LG',
+			'4' => 'XL',
 		),
 	) );
 	$wp_customize->add_setting( 'fluid_screen' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
-	    'default'     => 'none',
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
+	    'default' => 'none',
 	    'sanitize_callback' => 'lqx_sanitize_fluid_screens'
 	) );
 	$wp_customize->add_control(new lqx_Customize_Control_Checkbox_Multiple( $wp_customize, 'fluid_screen', array(
-		'label'        => __( 'Fluid Layout Screens', 'lyquix_theme' ),
-		'section'    => 'lqx_responsiveness',
-		'settings'   => 'fluid_screen',
+		'label' => __( 'Fluid Layout Screens', 'lyquix_theme' ),
+		'section' => 'lqx_responsiveness',
+		'settings' => 'fluid_screen',
 		'choices' => array(
 			'XS' => 'XS',
-			'SM'  =>'SM',
+			'SM' =>'SM',
 			'MD' => 'MD',
-			'LG'  => 'LG',
-			'XL'  => 'XL',
+			'LG' => 'LG',
+			'XL' => 'XL',
 		),
 	) ) );
 	$wp_customize->add_setting( 'fluid_device' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
 	) );	
 	$wp_customize->add_control( 'fluid_device', array(
-		'type'		 => 'radio',
-		'label'        => __( 'Fluid Layout Devices', 'lyquix_theme' ),
-		'section'    => 'lqx_responsiveness',
-		'settings'   => 'fluid_device',
+		'type' => 'radio',
+		'label' => __( 'Fluid Layout Devices', 'lyquix_theme' ),
+		'section' => 'lqx_responsiveness',
+		'settings' => 'fluid_device',
 		'choices' => array(
 			'any' => 'Any (Mobile and Desktop)',
-			'mobile'  => 'Mobile only',
+			'mobile' => 'Mobile only',
 			'phone' => 'Phones only',
-			'tablet'  => 'Tablets only',
+			'tablet' => 'Tablets only',
 		),
 	) );
 	$wp_customize->add_setting( 'jQuery' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
 	) );			
 	$wp_customize->add_control( 'jQuery', array(
-		'type'		 => 'radio',
-		'label'        => __( 'Enable jQuery', 'lyquix_theme' ),
-		'section'    => 'lqx_js',
-		'settings'   => 'jQuery',
+		'type' => 'radio',
+		'label' => __( 'Enable jQuery', 'lyquix_theme' ),
+		'section' => 'lqx_js',
+		'settings' => 'jQuery',
 		'choices' => array(
 			'0' => 'No',
-			'1'  => 'Yes',
+			'1' => 'Yes',
 		),
 	) );
 	$wp_customize->add_setting( 'jQuery_ui' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
 	) );			
 	$wp_customize->add_control( 'jQuery_ui', array(
-		'type'		 => 'radio',
-		'label'        => __( 'Enable jQuery UI', 'lyquix_theme' ),
-		'section'    => 'lqx_js',
-		'settings'   => 'jQuery_ui',
+		'type' => 'radio',
+		'label' => __( 'Enable jQuery UI', 'lyquix_theme' ),
+		'section' => 'lqx_js',
+		'settings' => 'jQuery_ui',
 		'choices' => array(
 			'0' => 'No',
-			'1'  => 'Core',
-			'2'  => 'Core + Sortable'
+			'1' => 'Core',
+			'2' => 'Core + Sortable'
 		),
 	) );
 	$wp_customize->add_setting( 'bootstrap' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
 	) );			
 	$wp_customize->add_control( 'bootstrap', array(
-		'type'		 => 'radio',
-		'label'        => __( 'Enable Bootstrap', 'lyquix_theme' ),
-		'section'    => 'lqx_js',
-		'settings'   => 'bootstrap',
+		'type' => 'radio',
+		'label' => __( 'Enable Bootstrap', 'lyquix_theme' ),
+		'section' => 'lqx_js',
+		'settings' => 'bootstrap',
 		'choices' => array(
 			'0' => 'No',
-			'1'  => 'Yes',
+			'1' => 'Yes',
 		),
 	) );
 	$wp_customize->add_setting( 'lqx_options' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
 	) );			
 	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'lqx_options', array(
-		'label'        => __( 'Lyquix Library Options', 'lyquix_theme' ),
-		'section'    => 'lqx_js',
-		'settings'   => 'lqx_options',
+		'label' => __( 'Lyquix Library Options', 'lyquix_theme' ),
+		'section' => 'lqx_js',
+		'settings' => 'lqx_options',
 	) ) );
 	$wp_customize->add_setting( 'add_css_libraries' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
 	) );			
 	$wp_customize->add_control( 'add_css_libraries', array(
-		'type'		 => 'textarea',
-		'label'        => __( 'Additional CSS Libraries', 'lyquix_theme' ),
-		'section'    => 'lqx_css',
-		'settings'   => 'add_css_libraries',
+		'type' => 'textarea',
+		'label' => __( 'Additional CSS Libraries', 'lyquix_theme' ),
+		'section' => 'lqx_css',
+		'settings' => 'add_css_libraries',
 	) );
 	$wp_customize->add_setting( 'non_min_js' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
 	) );			
 	$wp_customize->add_control( 'non_min_js', array(
-		'type'		 => 'radio',
-		'label'        => __( 'Use Original JS', 'lyquix_theme' ),
-		'section'    => 'lqx_js',
-		'settings'   => 'non_min_js',
+		'type' => 'radio',
+		'label' => __( 'Use Original JS', 'lyquix_theme' ),
+		'section' => 'lqx_js',
+		'settings' => 'non_min_js',
 		'choices' => array(
 			'0' => 'No',
-			'1'  => 'Yes',
+			'1' => 'Yes',
 		),
 	) );
 	$wp_customize->add_setting( 'lessjs' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
 	) );			
 	$wp_customize->add_control( 'lessjs', array(
-		'type'		 => 'radio',
-		'label'        => __( 'Use less.js', 'lyquix_theme' ),
-		'section'    => 'lqx_js',
-		'settings'   => 'lessjs',
+		'type' => 'radio',
+		'label' => __( 'Use less.js', 'lyquix_theme' ),
+		'section' => 'lqx_js',
+		'settings' => 'lessjs',
 		'choices' => array(
 			'0' => 'No',
-			'1'  => 'Yes',
+			'1' => 'Yes',
 		),
 	) );
 	$wp_customize->add_setting( 'angularjs' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
 	) );			
 	$wp_customize->add_control( 'angularjs', array(
-		'type'		 => 'radio',
-		'label'        => __( 'Load AngularJS Library', 'lyquix_theme' ),
-		'section'    => 'lqx_js',
-		'settings'   => 'angularjs',
+		'type' => 'radio',
+		'label' => __( 'Load AngularJS Library', 'lyquix_theme' ),
+		'section' => 'lqx_js',
+		'settings' => 'angularjs',
 		'choices' => array(
 			'0' => 'No',
-			'1'  => 'Yes',
+			'1' => 'Yes',
 		),
 	) );
 	$wp_customize->add_setting( 'lodash' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
 	) );			
 	$wp_customize->add_control( 'lodash', array(
-		'type'		 => 'radio',
-		'label'        => __( 'Use Lodash library', 'lyquix_theme' ),
-		'section'    => 'lqx_js',
-		'settings'   => 'lodash',
+		'type' => 'radio',
+		'label' => __( 'Use Lodash library', 'lyquix_theme' ),
+		'section' => 'lqx_js',
+		'settings' => 'lodash',
 		'choices' => array(
 			'0' => 'No',
-			'1'  => 'Yes',
+			'1' => 'Yes',
 		),
 	) );
 	$wp_customize->add_setting( 'smoothscroll' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
 	) );			
 	$wp_customize->add_control( 'smoothscroll', array(
-		'type'		 => 'radio',
-		'label'        => __( 'Use SmoothScroll library', 'lyquix_theme' ),
-		'section'    => 'lqx_js',
-		'settings'   => 'smoothscroll',
+		'type' => 'radio',
+		'label' => __( 'Use SmoothScroll library', 'lyquix_theme' ),
+		'section' => 'lqx_js',
+		'settings' => 'smoothscroll',
 		'choices' => array(
 			'0' => 'No',
-			'1'  => 'Yes',
+			'1' => 'Yes',
 		),
 	) );
 	$wp_customize->add_setting( 'add_js_libraries' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
 	) );			
 	$wp_customize->add_control( 'add_js_libraries', array(
-		'type'		 => 'textarea',
-		'label'        => __( 'Additional Javascript Libraries', 'lyquix_theme' ),
-		'section'    => 'lqx_js',
-		'settings'   => 'add_js_libraries',
+		'type' => 'textarea',
+		'label' => __( 'Additional Javascript Libraries', 'lyquix_theme' ),
+		'section' => 'lqx_js',
+		'settings' => 'add_js_libraries',
 	) );
 	$wp_customize->add_setting( 'analytics_account' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
 	) );			
 	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'analytics_account', array(
-		'label'        => __( 'Google Analytics Account', 'lyquix_theme' ),
-		'section'    => 'lqx_accounts',
-		'settings'   => 'analytics_account',
+		'label' => __( 'Google Analytics Account', 'lyquix_theme' ),
+		'section' => 'lqx_accounts',
+		'settings' => 'analytics_account',
 	) ) );
 	$wp_customize->add_setting( 'google_site_verification' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
 	) );			
 	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'google_site_verification', array(
-		'label'        => __( 'google-site-verification', 'lyquix_theme' ),
-		'section'    => 'lqx_accounts',
-		'settings'   => 'google_site_verification',
+		'label' => __( 'google-site-verification', 'lyquix_theme' ),
+		'section' => 'lqx_accounts',
+		'settings' => 'google_site_verification',
 	) ) );
 	$wp_customize->add_setting( 'msvalidate' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
 	) );			
 	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'msvalidate', array(
-		'label'        => __( 'msvalidate.01', 'lyquix_theme' ),
-		'section'    => 'lqx_accounts',
-		'settings'   => 'msvalidate',
+		'label' => __( 'msvalidate.01', 'lyquix_theme' ),
+		'section' => 'lqx_accounts',
+		'settings' => 'msvalidate',
 	) ) );
 	$wp_customize->add_setting( 'p_domain_verify' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
 	) );			
 	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'p_domain_verify', array(
-		'label'        => __( 'p:domain_verify', 'lyquix_theme' ),
-		'section'    => 'lqx_accounts',
-		'settings'   => 'p_domain_verify',
+		'label' => __( 'p:domain_verify', 'lyquix_theme' ),
+		'section' => 'lqx_accounts',
+		'settings' => 'p_domain_verify',
 	) ) );
 	$wp_customize->add_setting( 'mobiledetect_method' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
 	) );			
 	$wp_customize->add_control( 'mobiledetect_method', array(
-		'type'		 => 'radio',
-		'label'        => __( 'Mobile Detect Method', 'lyquix_theme' ),
-		'section'    => 'lqx_other',
-		'settings'   => 'mobiledetect_method',
+		'type' => 'radio',
+		'label' => __( 'Mobile Detect Method', 'lyquix_theme' ),
+		'section' => 'lqx_other',
+		'settings' => 'mobiledetect_method',
 		'choices' => array(
 			'php' => 'Server-Side (PHP)',
-			'js'  => 'Client-Side (JavaScript)',
+			'js' => 'Client-Side (JavaScript)',
 		),
 	) );
 	$wp_customize->add_setting( 'ie8_alert' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
 	) );			
 	$wp_customize->add_control( 'ie8_alert', array(
-		'type'		 => 'radio',
-		'label'        => __( 'Show IE8 upgrade alert', 'lyquix_theme' ),
-		'section'    => 'lqx_other',
-		'settings'   => 'ie8_alert',
+		'type' => 'radio',
+		'label' => __( 'Show IE8 upgrade alert', 'lyquix_theme' ),
+		'section' => 'lqx_other',
+		'settings' => 'ie8_alert',
 		'choices' => array(
 			'0' => 'No',
-			'1'  => 'Yes',
+			'1' => 'Yes',
 		),
 	) );
 	$wp_customize->add_setting( 'ie9_alert' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
 	) );			
 	$wp_customize->add_control( 'ie9_alert', array(
-		'type'		 => 'radio',
-		'label'        => __( 'Show IE9 upgrade alert', 'lyquix_theme' ),
-		'section'    => 'lqx_other',
-		'settings'   => 'ie9_alert',
+		'type' => 'radio',
+		'label' => __( 'Show IE9 upgrade alert', 'lyquix_theme' ),
+		'section' => 'lqx_other',
+		'settings' => 'ie9_alert',
 		'choices' => array(
 			'0' => 'No',
-			'1'  => 'Yes',
+			'1' => 'Yes',
 		),
 	) );
 }

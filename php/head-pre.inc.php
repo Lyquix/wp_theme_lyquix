@@ -1,4 +1,15 @@
 <?php
+/**
+ * head-pre.inc.php - Includes before the <head> tag
+ *
+ * @version     1.0.1
+ * @package     tpl_lyquix
+ * @author      Lyquix
+ * @copyright   Copyright (C) 2015 - 2017 Lyquix
+ * @license     GNU General Public License version 2 or later
+ * @link        https://github.com/Lyquix/tpl_lyquix
+ */
+ 
 // set some base vars
 $site_abs_url = get_site_url();
 $site_rel_url = wp_make_link_relative($site_abs_url);
