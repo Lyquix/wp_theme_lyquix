@@ -8,9 +8,9 @@ foreach($add_css_libraries as $cssurl) {
 }
 
 if(get_theme_mod('bootstrap', 0)):?>
-<link rel="stylesheet" href="<?php echo $cdnjs_url; ?>bootstrap/3.3.7/css/bootstrap<?php echo get_theme_mod('non_min_js') ? '' : '.min'; ?>.css">
-<link rel="stylesheet" href="<?php echo $cdnjs_url; ?>bootstrap/3.3.7/css/bootstrap-theme<?php echo get_theme_mod('non_min_js') ? '' : '.min'; ?>.css">
-<script src="<?php echo $cdnjs_url; ?>bootstrap/3.3.7/js/bootstrap<?php echo get_theme_mod('non_min_js') ? '' : '.min'; ?>.js"></script>
+<link rel="stylesheet" href="<?php echo $cdnjs_url; ?>twitter-bootstrap/3.3.7/css/bootstrap<?php echo get_theme_mod('non_min_js') ? '' : '.min'; ?>.css">
+<link rel="stylesheet" href="<?php echo $cdnjs_url; ?>twitter-bootstrap/3.3.7/css/bootstrap-theme<?php echo get_theme_mod('non_min_js') ? '' : '.min'; ?>.css">
+<script src="<?php echo $cdnjs_url; ?>twitter-bootstrap/3.3.7/js/bootstrap<?php echo get_theme_mod('non_min_js') ? '' : '.min'; ?>.js"></script>
 <?php endif; ?>
 
 <link href="<?php echo $tmpl_url; ?>/css/styles.<?php echo get_theme_mod('lessjs') ? 'less' : 'css'; ?>?v=<?php echo date("YmdHis", filemtime($tmpl_path . '/css/styles.' . (get_theme_mod('lessjs') ? 'less' : 'css'))); ?>" rel="stylesheet" <?php echo get_theme_mod('lessjs') ? 'type="text/less" ' : ''; ?>/>
