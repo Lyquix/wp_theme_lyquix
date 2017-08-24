@@ -10,7 +10,7 @@ else :
 ?><!DOCTYPE html>
 <html <?php language_attributes(); ?> >
 	<head>
-		<jdoc:include type="head" />
+		<?php wp_head(); ?>
 	</head>
 	<body>
 		File <span style="font-family: monospace;"><?php echo $tmp_url;?>/page-custom.php</span> not found.
