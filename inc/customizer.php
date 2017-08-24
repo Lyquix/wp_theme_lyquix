@@ -17,6 +17,8 @@ function lqx_customize_register( $wp_customize ) {
 	$wp_customize->get_setting( 'angularjs' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'lodash' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'smoothscroll' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'momentjs' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'dotdotdot' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'add_js_libraries' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'analytics_account' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'google_site_verification' )->transport = 'postMessage';
@@ -260,6 +262,34 @@ function lqx_customize_register( $wp_customize ) {
 		'label' => __( 'Use SmoothScroll library', 'lyquix_theme' ),
 		'section' => 'lqx_js',
 		'settings' => 'smoothscroll',
+		'choices' => array(
+			'0' => 'No',
+			'1' => 'Yes',
+		),
+	) );
+	$wp_customize->add_setting( 'momentjs' , array(
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
+	) );			
+	$wp_customize->add_control( 'momentjs', array(
+		'type' => 'radio',
+		'label' => __( 'Use moments.js library', 'lyquix_theme' ),
+		'section' => 'lqx_js',
+		'settings' => 'momentjs',
+		'choices' => array(
+			'0' => 'No',
+			'1' => 'Yes',
+		),
+	) );
+	$wp_customize->add_setting( 'dotdotdot' , array(
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
+	) );			
+	$wp_customize->add_control( 'dotdotdot', array(
+		'type' => 'radio',
+		'label' => __( 'Use DotDotDot library', 'lyquix_theme' ),
+		'section' => 'lqx_js',
+		'settings' => 'dotdotdot',
 		'choices' => array(
 			'0' => 'No',
 			'1' => 'Yes',
