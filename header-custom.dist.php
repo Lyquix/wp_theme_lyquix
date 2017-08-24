@@ -1,12 +1,4 @@
 <?php
-/**
- * Override for displaying the header
- *
- * Displays all of the head element and everything up until the "site-content" div.
- *
- */
-$tmpl_url = get_template_directory_uri();
-$tmpl_path = get_template_directory();
 include('php/head-pre.inc.php'); 
 ?><!DOCTYPE html>
 <html <?php language_attributes(); ?> class="no-js">
@@ -34,8 +26,6 @@ include('php/body-top.inc.php');
 ?>	
 <div id="page" class="site">
 	<div class="site-inner">
-		<!--<a class="skip-link screen-reader-text" href="#content"><?php _e( 'Skip to content', 'lqx' ); ?></a>-->
-
 		<header id="masthead" class="site-header" role="banner">
 			<div class="site-header-main">
 				<div class="site-branding">

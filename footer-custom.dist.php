@@ -39,8 +39,9 @@
 	</div><!-- .site-inner -->
 </div><!-- .site -->
 
-<?php wp_footer(); ?>
-<?php echo get_theme_mod('disqus_shortname') ? '<script src="//' . get_theme_mod('disqus_shortname') . '.disqus.com/embed.js"></script>' : ''; 
-include('php/body-bottom.inc.php');?>
+<?php 
+wp_footer();
+include('php/body-bottom.inc.php');
+?>
 </body>
 </html>
