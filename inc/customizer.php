@@ -1,27 +1,13 @@
 <?php
-/**
- * Twenty Sixteen Customizer functionality
- *
- * @package WordPress
- * @subpackage Twenty_Sixteen
- * @since Twenty Sixteen 1.0
- */
-
-/**
- * Sets up the WordPress core custom header and custom background features.
- *
- * @since Twenty Sixteen 1.0
- *
- * @see lqx_header_style()
- */
- 
+/*
+Theme customization options
+*/
 function lqx_customize_register( $wp_customize ) {
 	$wp_customize->get_setting( 'min_screen' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'max_screen' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'fluid_screen' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'fluid_device' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'add_css_libraries' )->transport = 'postMessage';
-	$wp_customize->get_setting( 'remove_css_libraries' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'jQuery' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'jQuery_ui' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'bootstrap' )->transport = 'postMessage';
@@ -30,13 +16,9 @@ function lqx_customize_register( $wp_customize ) {
 	$wp_customize->get_setting( 'lessjs' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'angularjs' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'lodash' )->transport = 'postMessage';
-	$wp_customize->get_setting( 'es5_shim' )->transport = 'postMessage';
-	$wp_customize->get_setting( 'es5_es6_shim' )->transport = 'postMessage';
-	$wp_customize->get_setting( 'json3' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'smoothscroll' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'add_js_libraries' )->transport = 'postMessage';
-	$wp_customize->get_setting( 'remove_js_libraries' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'analytics_account' )->transport = 'postMessage';
-	$wp_customize->get_setting( 'addthis_pubid' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'google_site_verification' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'msvalidate' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'p_domain_verify' )->transport = 'postMessage';
@@ -213,16 +195,6 @@ function lqx_customize_register( $wp_customize ) {
 		'section'    => 'lqx_css',
 		'settings'   => 'add_css_libraries',
 	) );
-		$wp_customize->add_setting( 'remove_css_libraries' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
-	) );			
-	$wp_customize->add_control( 'remove_css_libraries', array(
-		'type'		 => 'textarea',
-		'label'        => __( 'Remove CSS Libraries', 'lyquix_theme' ),
-		'section'    => 'lqx_css',
-		'settings'   => 'remove_css_libraries',
-	) );
 	$wp_customize->add_setting( 'non_min_js' , array(
 		'type'        => 'theme_mod',
 	    'transport'   => 'refresh',
@@ -279,43 +251,15 @@ function lqx_customize_register( $wp_customize ) {
 			'1'  => 'Yes',
 		),
 	) );
-	$wp_customize->add_setting( 'es5_shim' , array(
+	$wp_customize->add_setting( 'smoothscroll' , array(
 		'type'        => 'theme_mod',
 	    'transport'   => 'refresh',
 	) );			
-	$wp_customize->add_control( 'es5_shim', array(
+	$wp_customize->add_control( 'smoothscroll', array(
 		'type'		 => 'radio',
-		'label'        => __( 'Load ES5 shim library', 'lyquix_theme' ),
+		'label'        => __( 'Use SmoothScroll library', 'lyquix_theme' ),
 		'section'    => 'lqx_js',
-		'settings'   => 'es5_shim',
-		'choices' => array(
-			'0' => 'No',
-			'1'  => 'Yes',
-		),
-	) );
-	$wp_customize->add_setting( 'es5_es6_shim' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
-	) );			
-	$wp_customize->add_control( 'es5_es6_shim', array(
-		'type'		 => 'radio',
-		'label'        => __( 'Load ES5 + ES6 shim library', 'lyquix_theme' ),
-		'section'    => 'lqx_js',
-		'settings'   => 'es5_es6_shim',
-		'choices' => array(
-			'0' => 'No',
-			'1'  => 'Yes',
-		),
-	) );
-	$wp_customize->add_setting( 'json3' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
-	) );			
-	$wp_customize->add_control( 'json3', array(
-		'type'		 => 'radio',
-		'label'        => __( 'Load JSON3 library', 'lyquix_theme' ),
-		'section'    => 'lqx_js',
-		'settings'   => 'json3',
+		'settings'   => 'smoothscroll',
 		'choices' => array(
 			'0' => 'No',
 			'1'  => 'Yes',
@@ -331,16 +275,6 @@ function lqx_customize_register( $wp_customize ) {
 		'section'    => 'lqx_js',
 		'settings'   => 'add_js_libraries',
 	) );
-	$wp_customize->add_setting( 'remove_js_libraries' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
-	) );			
-	$wp_customize->add_control( 'remove_js_libraries', array(
-		'type'		 => 'textarea',
-		'label'        => __( 'Remove JS Libraries', 'lyquix_theme' ),
-		'section'    => 'lqx_js',
-		'settings'   => 'remove_js_libraries',
-	) );
 	$wp_customize->add_setting( 'analytics_account' , array(
 		'type'        => 'theme_mod',
 	    'transport'   => 'refresh',
@@ -349,15 +283,6 @@ function lqx_customize_register( $wp_customize ) {
 		'label'        => __( 'Google Analytics Account', 'lyquix_theme' ),
 		'section'    => 'lqx_accounts',
 		'settings'   => 'analytics_account',
-	) ) );
-	$wp_customize->add_setting( 'addthis_pubid' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
-	) );			
-	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'addthis_pubid', array(
-		'label'        => __( 'AddThis PubID', 'lyquix_theme' ),
-		'section'    => 'lqx_accounts',
-		'settings'   => 'addthis_pubid',
 	) ) );
 	$wp_customize->add_setting( 'google_site_verification' , array(
 		'type'        => 'theme_mod',
