@@ -36,7 +36,6 @@ function lqx_customize_register( $wp_customize ) {
 	$wp_customize->get_setting( 'add_js_libraries' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'remove_js_libraries' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'analytics_account' )->transport = 'postMessage';
-	$wp_customize->get_setting( 'disqus_shortname' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'addthis_pubid' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'google_site_verification' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'msvalidate' )->transport = 'postMessage';
@@ -350,15 +349,6 @@ function lqx_customize_register( $wp_customize ) {
 		'label'        => __( 'Google Analytics Account', 'lyquix_theme' ),
 		'section'    => 'lqx_accounts',
 		'settings'   => 'analytics_account',
-	) ) );
-	$wp_customize->add_setting( 'disqus_shortname' , array(
-		'type'        => 'theme_mod',
-	    'transport'   => 'refresh',
-	) );			
-	$wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'disqus_shortname', array(
-		'label'        => __( 'Disqus Shortname', 'lyquix_theme' ),
-		'section'    => 'lqx_accounts',
-		'settings'   => 'disqus_shortname',
 	) ) );
 	$wp_customize->add_setting( 'addthis_pubid' , array(
 		'type'        => 'theme_mod',
