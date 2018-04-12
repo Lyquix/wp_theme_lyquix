@@ -337,6 +337,12 @@ function lqx_load_customize_controls() {
 	
 }
 
+// Remove unnecessary wptexturize filter
+remove_filter( 'the_title', 'wptexturize' );
+remove_filter( 'the_content', 'wptexturize' );
+remove_filter( 'the_excerpt', 'wptexturize' );
+remove_filter( 'comment_text', 'wptexturize' );
+
  if(file_exists(get_template_directory() . '/functions-custom.php')) : include get_template_directory() . '/functions-custom.php'; 
  endif;
 ?>
