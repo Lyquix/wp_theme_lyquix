@@ -339,9 +339,10 @@ function lqx_load_customize_controls() {
 
 // Remove unnecessary wptexturize filter
 remove_filter( 'the_title', 'wptexturize' );
-remove_filter( 'the_content', 'wptexturize' );
-remove_filter( 'the_excerpt', 'wptexturize' );
-remove_filter( 'comment_text', 'wptexturize' );
+remove_filter( 'wp_title', 'wptexturize' );
+remove_filter( 'single_post_title', 'wptexturize' );
+remove_filter( 'single_cat_title', 'wptexturize' );
+remove_filter( 'single_tag_title', 'wptexturize' );
 
  if(file_exists(get_template_directory() . '/functions-custom.php')) : include get_template_directory() . '/functions-custom.php'; 
  endif;
