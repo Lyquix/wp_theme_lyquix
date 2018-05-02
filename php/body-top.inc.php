@@ -1,7 +1,10 @@
+<?php 
+	$site_abs_url = get_site_url();
+?>
 <script>
 lqx.bodyScreenSize();
 lqx.vars.siteURL = '<?php echo $site_abs_url; ?>';
-lqx.vars.tmplURL = '<?php echo $tmpl_url; ?>';
+lqx.vars.tmplURL = '<?php echo $site_abs_url."/wp-content/themes/lyquix/"; ?>';
 <?php 
 if(get_theme_mod('mobiledetect_method', 'php') == 'js') echo "lqx.mobileDetect = lqx.mobileDetect();\n"; 
 if(get_theme_mod('mobiledetect_method', 'php') == 'php'){
