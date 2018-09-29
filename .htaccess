@@ -1,0 +1,15 @@
+###
+#
+# .htaccess - Apache directory configuration
+#
+# @version     2.0.0
+# @package     wp_lyquix_theme
+# @author      lyquix
+# @copyright   Copyright (C) 2015 - 2018 Lyquix
+# @license     GNU General Public License version 2 or later
+# @link        https://github.com/lyquix/wp_lyquix_theme
+#
+###
+
+# Disable directory listing
+Options -Indexes
