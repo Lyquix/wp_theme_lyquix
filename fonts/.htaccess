@@ -1,0 +1,24 @@
+###
+#
+# .htaccess - Apache directory configuration
+#
+# @version     2.0.0
+# @package     wp_lyquix_theme
+# @author      lyquix
+# @copyright   Copyright (C) 2015 - 2018 Lyquix
+# @license     GNU General Public License version 2 or later
+# @link        https://github.com/lyquix/wp_lyquix_theme
+#
+###
+
+# Add MIME type for font files and enable compression
+AddType application/x-font-otf .otf
+AddType application/x-font-ttf .ttf
+AddType application/x-font-woff .woff
+AddType application/x-font-woff2 .woff2
+AddType application/vnd.ms-fontobject .eot
+AddOutputFilterByType DEFLATE application/x-font-ttf
+AddOutputFilterByType DEFLATE application/x-font-otf
+AddOutputFilterByType DEFLATE application/x-font-woff
+AddOutputFilterByType DEFLATE application/x-font-woff2
+AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
