@@ -1,0 +1,562 @@
+/**
+ * common.scss - Common CSS classes
+ *
+ * @version     2.0.0
+ * @package     wp_lyquix_theme
+ * @author      Lyquix
+ * @copyright   Copyright (C) 2015 - 2018 Lyquix
+ * @license     GNU General Public License version 2 or later
+ * @link        https://github.com/Lyquix/wp_lyquix_theme
+ */
+
+// Clear
+@mixin common-clear {
+	.clr,
+	.clear {
+		clear: both;
+	}
+
+	// Clear fix (clears after the element)
+	.cf,
+	.clearfix {
+		&:before,
+		&:after {
+			content: " ";
+			display: table;
+		}
+
+		&:after {
+			clear: both;
+		}
+
+		*zoom: 1;
+	}
+}
+
+// Float
+@mixin common-float {
+	.float-left {
+		float:left;
+
+		// add margins
+		&.margins {
+			margin-right: $blk-margin-right;
+			margin-bottom: $blk-margin-bottom;
+		}
+	}
+	.float-right {
+		float:right;
+
+		// add margins
+		&.margins {
+			margin-left: $blk-margin-left;
+			margin-bottom: $blk-margin-right;
+		}
+	}
+}
+
+// Hide & show classes
+@mixin common-hide-show {
+	.hide,
+	.off {
+		display: none;
+	}
+	.show,
+	.on {
+		display: unset;
+	}
+
+	// Hide & show for desktop
+	body:not(.mobile):not(.tablet):not(.phone) {
+		.desktop-hide {
+			display: none;
+		}
+		.desktop-show {
+			display: unset;
+		}
+	}
+
+	// Hide & show for mobile devices
+	body.mobile {
+		.mobile-hide,
+		.tablet-hide,
+		.phone-hide {
+			display: none;
+		}
+		.mobile-show,
+		.tablet-show,
+		.phone-show {
+			display: unset;
+		}
+	}
+
+	// Show and hide for devices, browsers, o/s, home
+	$show-hide-names: tablet phone msie firefox chrome safari windows macosx ios android home;
+	@each $n in $show-hide-names {
+		body.#{$n} {
+			.#{$n}-hide {
+				display: none;
+			}
+			.#{$n}-show {
+				display: unset;
+			}
+		}
+	}
+
+	// Hide & show for screen sizes
+	@each $s in $screen-sizes {
+		body[screen=#{$s}] {
+			.#{$s}-hide {
+				display: none;
+			}
+			.#{$s}-show {
+				display: unset;
+			}
+		}
+	}
+}
+
+@mixin common-font-text {
+	// Font family type
+	.font-serif { font-family: $font-serif; }
+	.font-sans-serif { font-family: $font-sans-serif; }
+	.font-monospace {
+		font-family: $font-monospace;
+		// set figures to fixed-width, lining (same height as caps), and slashed zero
+		font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "onum" 0, "pnum" 0, "dlig" 0, "tnum" 1,  "lnum" 1, "zero" 1;
+	}
+
+	// Font weight
+	.font-thin { font-weight:100; }
+	.font-extralight { font-weight:200; }
+	.font-light { font-weight:300; }
+	.font-normal { font-weight:400; }
+	.font-medium { font-weight:500; }
+	.font-demibold { font-weight:600; }
+	.font-bold { font-weight:700; }
+	.font-heavy { font-weight:800; }
+	.font-black { font-weight:900; }
+
+	// Text transformations
+	.text-smallcaps { font-variant: small-caps; }
+	.text-uppercase { text-transform: uppercase; }
+	.text-smallcaps,
+	.text-uppercase { font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "onum" 1, "pnum" 1, "dlig" 0, "tnum" 0,  "lnum" 0, "smcp" 1; }
+	.text-lowercase { text-transform: lowercase; }
+	.text-capitalize { text-transform: capitalize; }
+
+	// Letter spacing
+	.text-tighter { letter-spacing: -0.1em; }
+	.text-tight { letter-spacing: -0.05em; }
+	.text-loose { letter-spacing: 0.05em; }
+	.text-looser { letter-spacing: 0.1em; }
+
+	// Text alignment
+	.text-left { text-align: left; }
+	.text-center { text-align: center; }
+	.text-right { text-align: right; }
+	.text-justify { text-align: justify; }
+
+	// Text decoration
+	.text-underline { text-decoration: underline; }
+	.text-strikeout { text-decoration: line-through; }
+	.text-overline { text-decoration: overline; }
+
+	// Text direction
+	.text-rtl { direction: rtl; }
+	.text-ltr { direction: ltr; }
+
+	// Text wrapping
+	.text-wrap { white-space: normal; }
+	.text-nowrap { white-space: nowrap; }
+
+	// Text size shorthands
+	.font-tiny {
+		font-size: $font-size-small * 0.5;
+		line-height: $line-height-small * 1.1;
+	}
+	.font-small {
+		font-size: $font-size-small;
+		line-height: $line-height-small;
+	}
+	.font-big {
+		font-size: $font-size-big;
+		line-height: $line-height-big;
+	}
+	.font-huge {
+		font-size: $font-size-big * 2;
+		line-height: $line-height-big * 0.9;
+	}
+}
+
+@mixin common-color {
+	// Text color classes
+	.color-gray-darker { color: $gray-darker; }
+	.color-gray-dark { color: $gray-dark; }
+	.color-gray { color: $gray; }
+	.color-gray-light { color: $gray-light; }
+	.color-gray-lighter { color: $gray-lighter; }
+	.color-bg { color: $color-bg; }
+	.color-copy { color: $color-copy; }
+	.color-primary { color: $color-primary; }
+	.color-secondary { color: $color-secondary; }
+	.color-accent-1 { color: $color-accent-1; }
+	.color-accent-2 { color: $color-accent-2; }
+	.color-accent-3 { color: $color-accent-3; }
+	.color-accent-4 { color: $color-accent-4; }
+	.color-accent-5 { color: $color-accent-5; }
+}
+
+// Columns
+@mixin common-columns {
+	// Cycle through each screen size
+	@each $s in $screen-sizes {
+		// Index matching screen size array
+		$i: index($screen-sizes, $s);
+
+		@for $c from 1 through 10 {
+			body[screen=#{$s}] .columns-#{$c}-#{$s} {
+				column-count: #{$c};
+				column-gap: nth($blk-margin-left, $i) + nth($blk-border-left, $i) + nth($blk-padding-left, $i) + nth($blk-padding-right, $i) + nth($blk-border-right, $i) + nth($blk-margin-right, $i);
+			}
+		}
+	}
+}
+
+@mixin common-video {
+	// Responsive video container 16:9 (HD)
+	.video-16-9 {
+		position: relative;
+		padding-bottom: 56.25%;
+		height: 0;
+		overflow: hidden;
+
+		iframe, object, embed, video {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	// Responsive video container 4:3 (SD)
+	.video-4-3 {
+		position: relative;
+		padding-bottom: 75%;
+		height: 0;
+		overflow: hidden;
+
+		iframe, object, embed, video {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
+	}
+}
+
+// Font icons
+@mixin icon {
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	font-size: $font-size-icon;
+}
+
+@mixin common-icon {
+	.icon,
+	.icon-lg,
+	.icon-xl {
+		&:before {
+			@include icon;
+		}
+	}
+
+	.icon-lg:before {
+		font-size: $font-size-icon-lg;
+	}
+
+	.icon-xl:before {
+		font-size: $font-size-icon-xl;
+	}
+}
+
+@mixin common-rotate-scale {
+	// Rotate
+	@for $a from 0 through 24 {
+		.rotate-#{$a * 15} {transform: rotate(#{$a * 15}deg);}
+	}
+
+	// Rotate on hover
+	@for $a from 0 through 24 {
+		.rotate-#{$a * 15}-hover:hover {transform: rotate(#{$a * 15}deg);}
+	}
+
+	// Scale
+	@for $p from 0 through 40 {
+		.scale-#{$p * 5} {transform: scale(#{$p * 0.05});}
+	}
+
+	// Scale on hover
+	@for $p from 0 through 40 {
+		.scale-#{$p * 5}-hover:hover {transform: scale(#{$p * 0.05});}
+	}
+}
+
+@mixin common-filter {
+	// Filters
+	$filter-names: brightness contrast grayscale invert opacity sepia;
+	@each $f in $filter-names {
+		@for $p from 0 through 20 {
+			$pc: percentage($p * 0.05);
+			.#{$f}-#{$p * 5} {filter: #{$f + "(" + $pc + ")"};}
+		}
+		// On hover
+		@for $p from 0 through 20 {
+			$pc: percentage($p * 0.05);
+			.#{$f}-#{$p * 5}-hover:hover {filter: #{$f + "(" + $pc + ")"};}
+		}
+	}
+
+	// Saturate
+	@for $p from 0 through 40 {
+		$pc: percentage($p * 0.05);
+		.saturate-#{$p * 5} {filter: saturate($pc);}
+	}
+
+	// Saturate on hover
+	@for $p from 0 through 40 {
+		$pc: percentage($p * 0.05);
+		.saturate-#{$p * 5}-hover:hover {filter: saturate($pc);}
+	}
+
+	// Hue rotate
+	@for $a from 0 through 24 {
+		.hue-rotate-#{$a * 15} {filter: hue-rotate(#{$a * 15}deg);}
+	}
+
+	// Hue rotate on hover
+	@for $a from 0 through 24 {
+		.hue-rotate-#{$a * 15}-hover:hover {filter: hue-rotate(#{$a * 15}deg);}
+	}
+
+	// Duotone rotate
+	@for $a from 0 through 24 {
+		.duotone-#{$a * 15} {filter: sepia(100%) hue-rotate(#{$a * 15}deg);}
+	}
+
+	// Duotone rotate on hover
+	@for $a from 0 through 24 {
+		.duotone-#{$a * 15}-hover:hover {filter: sepia(100%) hue-rotate(#{$a * 15}deg);}
+	}
+}
+
+// Menu
+@mixin common-menu {
+	/**
+	 * Add classes to a parent of the menu <ul> element.
+	 * This system assumes that the menu element is ul.menu
+	 *
+	 * You must select one of the following orientations:
+	 * .horizontal  - top level items are arranged in a single row
+	 * .vertical    - top level items are stacked in a single column
+	 *
+	 * By default, sub-menus are hidden, to show them add classes:
+	 * .level-2  - enables the 2nd level menu items
+	 * .level-3  - enables the 3rd level menu items
+	 *
+	 * By default, sub-menus open down and right, to open left add class:
+	 * .open-left - open sub-menus to the left
+	 *
+	 * In vertical menus, to open sub-menus stacked (accordion), add class:
+	 * .stacked  - open sub-menus stacked, only for vertical menus
+	 *
+	 * Sub-menus open on hover for non-mobile devices. For mobile devices, they open on click.
+	 * JS for adding/removing .open class on click:
+	 *
+	 *	jQuery('html').on('click', 'body.mobile .menu .parent', function(e){
+	 *		e.stopPropagation();
+	 *		jQuery(e.target).toggleClass('open');
+	 *		jQuery(e.target).siblings().removeClass('open');
+	 *	});
+	 *
+	 * Demo: https://codepen.io/lyquix/pen/geOgQb
+	 *
+	 */
+
+	// Default <ul>, <li> and <a> styling
+	.horizontal,
+	.vertical {
+		ul {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+		}
+		li {
+			position: relative;
+			&.parent,
+			&.menu-item-has-children {
+				& > a {
+					margin-right: 2em;
+				}
+				&:after {
+					display: block;
+					content: "\25BC";
+					position: absolute;
+					right: 0.5em;
+					top: 0.5em;
+				}
+			}
+			ul {
+				position: absolute;
+			}
+		}
+		a {
+			display: block;
+		}
+	}
+
+	// Hide sub-menus by default
+	.horizontal,
+	.vertical {
+		ul.menu > li ul {
+			display: none;
+		}
+		&.level-2 {
+			ul.menu > li > ul {
+				& > li > ul {
+					display: none;
+				}
+			}
+		}
+	}
+
+	// Horizontal positioning
+	.horizontal {
+		ul.menu > li {
+			float: left;
+		}
+		&.level-3 {
+			ul.menu > li > ul > li > ul {
+				left: 100%;
+				top: 0;
+			}
+			&.open-left {
+				ul.menu > li > ul > li > ul {
+					left: auto;
+					right: 100%;
+				}
+			}
+		}
+	}
+
+	// Vertical positioning
+	.vertical {
+		&.level-2 {
+			ul.menu {
+				display: inline-block;
+				& > li > ul {
+					left: 100%;
+					top: 0;
+				}
+			}
+			&.open-left {
+				ul.menu > li > ul {
+					left: auto;
+					right: 100%;
+				}
+			}
+			&.level-3 {
+				ul.menu > li > ul > li > ul {
+					left: 100%;
+					top: 0;
+				}
+				&.open-left {
+					ul.menu > li > ul > li > ul {
+						left: auto;
+						right: 100%;
+					}
+				}
+			}
+		}
+		&.stacked {
+			&.level-2 {
+				ul.menu > li > ul {
+					position: static;
+				}
+				&.level-3 {
+					ul.menu > li > ul > li > ul {
+						position: static;
+					}
+				}
+			}
+		}
+	}
+
+	// In desktop use hover event to expand lower levels
+	body:not(.mobile) {
+		.level-2 {
+			ul.menu > li:hover > ul {
+				display: block;
+			}
+			&.level-3 {
+				ul.menu > li:hover > ul > li:hover > ul {
+					display: block;
+				}
+			}
+		}
+	}
+
+	// In mobile use the class .open (added on click with javascript) to expand lower levels
+	body.mobile {
+		.level-2 {
+			ul.menu > li.open > ul {
+				display: block;
+			}
+			&.level-3 {
+				ul.menu > li.open > ul > li.open > ul {
+					display: block;
+				}
+			}
+		}
+	}
+
+}
+
+// Tabs
+@mixin common-tabs {
+
+}
+
+// Accordions
+@mixin common-accordions {
+	// Base styles for accordions
+	.accordion {
+		overflow: hidden;
+		transition: height 0.5s;
+	}
+}
+
+// Object Fit & Object Position
+/**
+ * This mixin can be used to set the object-fit
+ * and object-position for IE11
+ * @include object-fit(ofval);
+ * where ofval is the object-fit value, or:
+ * @include object-fit(ofval, opval);
+ * where ofval is the object-fit value, and opval is object-position value
+ */
+@mixin object-fit($fit: fill, $position: null){
+	object-fit: $fit;
+	@if $position {
+		object-position: $position;
+		font-family: 'object-fit: #{$fit}; object-position: #{$position}';
+	} @else {
+		font-family: 'object-fit: #{$fit}';
+	}
+}
