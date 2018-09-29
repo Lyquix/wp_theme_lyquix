@@ -32,4 +32,4 @@ if(file_exists($tmpl_path . '/images/favicon/favicon-96x96.png')): ?>
 <?php endif;
 if(file_exists($tmpl_path . '/images/favicon/favicon-16x16.png')): ?>
 <link rel="icon" type="image/png" sizes="16x16" href="<?php echo $tmpl_url; ?>/images/favicon/favicon-16x16.png">
-<?php endif; ?>
+<?php endif;
