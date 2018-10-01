@@ -1,0 +1,89 @@
+# Installation and Setup
+
+`@version     2.0.0`
+
+### Pre-Requisites
+
+  * NodeJS and npm
+  * SASS, PostCSS, autoprefixer, UglifyCSS, Uglify-JS (use command `npm install -g *package*`)
+  * In Windows you may want to use git bash terminal to run [`css/css.sh`](../css/css.sh) and [`js/js.sh`](../js/js.sh), and you will need to download wget from https://eternallybored.org/misc/wget/ and copy it to `C:\Program Files\Git\mingw64\bin`.
+
+### First Install
+
+  1. Download the latest theme package from https://github.com/Lyquix/wp_lyquix_theme/releases/latest.
+  2. Install the package using WordPress theme installation functionality, or extract the folder `lyquix` to `/wp-content/themes`.
+
+### Initial Setup
+
+  1. Activate the Lyquix theme.
+  2. Copy or rename [`custom.dist.php`](../custom.dist.php) to `custom.php`.
+  3. Copy or rename [`css/styles.dist.scss`](../css/styles.dist.scss) to `css/styles.scss`.
+  4. Copy or rename [`css/custom/custom.dist.scss`](../css/custom/custom.dist.scss) to `css/custom/custom.scss`.
+  5. Copy or rename [`css/css.dist.sh`](../css/css.dist.sh) to `css/css.sh`.
+  6. Run `css/css.sh` to generate `css/styles.css`.
+  6. Copy or rename [`js/scripts.dist.scss`](../js/scripts.dist.scss) to `js/scripts.js`.
+  7. Copy or rename [`js/js.dist.sh`](../js/js.dist.sh) to `js/js.sh`.
+  8. Run `js/js.sh` to generate various custom scripts and Vue files.
+
+### Configuring theme Options
+
+In WordPress theme customizer you will find the following options for the theme.
+
+  * **Responsiveness**
+    * Minimum Screen Size: select the minimum screen size that the responsive module will allow.
+    * Maximum Screen Size: select the maximum screen size that the responsive module will allow.
+  * **CSS**
+    * Merge CSS: select what CSS files from extensions should be included in the merged CSS file.
+    * Use original CSS
+    * Load Animate.css
+    * Additional CSS Libraries: add one URL per line
+    * Remove CSS Libraries: add one URL per line
+  * **JavaScript**
+    * Enable jQuery
+    * Enable jQuery UI
+    * Merge JS: select what JS files from extensions should be included in the merged CSS file.
+    * Enable lqx debug: when enabled adds option `{debug: true}` to the Lyquix library options.
+    * Lyquix Library Options: add a JSON object with your custom options to extend and override the Lyquix library options.
+    * Use original JS
+    * Load polyfill.io
+    * Load LoDash library
+    * Load SmoothScroll library
+    * Load Moment.js library
+    * Load dotdotdot library
+    * Additional JS Libraries
+    * Remove JS Libraries
+  * **Accounts**
+    * Google Analytics Account
+    * google-site-verification
+    * msvalidate.01
+    * p:domain_verify
+  * **IE Alerts**
+    * IE9 alert
+    * IE10 alert
+    * IE11 alert
+
+### Customizing the Theme
+
+  * This theme has been developed to allow for complete customization to meet the needs of your project.
+  * Do not edit the files distributed in the theme, as they will be overwritten when you upgrade the theme with a newer release.
+  * **Custom Styles**:
+    * Customize your configuration variables, and control what mixins to import in `css/styles.scss`.
+    * If you need to make changes to the styles found in [`css/lib/`](../css/lib/), do not modify these files, instead make a copy to [`css/custom/`](../css/custom/).
+    * Create custom SCSS files in [`css/custom/`](../css/custom/) and import them in `css/custom/custom.scss`.
+  * **Custom Scripts**:
+    * Add common functions and minor functionality to `js/scripts.js`.
+    * Create custom Vue controllers and components and save them to [`js/custom/controllers/`](../js/custom/controllers/) and [`js/custom/components/`](../js/custom/components/).
+  * **Custom PHP**:
+    * You can edit `custom.php` as needed to meet the requirements of your project.
+    * You can control what PHP includes from [`php/`](../php/) folder to use.
+    * Create custom PHP includes in [`php/custom/`](../php/custom/).
+    * Create custom theme templates for single posts and archives and place them in [`php/custom/`](../php/custom/). Make sure you familiarize yourself with the [theme file structure](files.md) as this theme implements some changes from the default WordPress structure.
+  * You can do `npm install` and then `gulp` to have CSS and JS files automatically processed whenever there are any changes to SCSS and JS files.
+
+
+### Updating the Theme
+
+Follow the same steps as in the First Install:
+
+  1. Download the latest theme package from https://github.com/Lyquix/wp_lyquix_theme/releases/latest.
+  2. Install the package using WordPress theme installation functionality, or extract the folder `lyquix` to `/wp-content/themes`.
