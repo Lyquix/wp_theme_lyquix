@@ -45,6 +45,9 @@ dynamic_sidebar('head-scripts');
 require get_template_directory() . '/php/body.php';
 ?>
 <body class="<?php echo implode(' ', $body_classes); ?>">
+<?php
+// Skip header area for blank page template
+if($lqx_page_template != 'blank'): ?>
 <header>
 	<?php if(is_active_sidebar('header')) dynamic_sidebar('header'); ?>
 
@@ -72,11 +75,16 @@ require get_template_directory() . '/php/body.php';
 		<?php
 		if(is_active_sidebar('before')) dynamic_sidebar('before');
 
+		// End skip of header area for blank page template
+		endif;
+
 		// Template router
 		require get_template_directory() . '/php/router.php';
 
-		if(is_active_sidebar('after')) dynamic_sidebar('after');
-		?>
+		// Skip header area for blank page template
+		if($lqx_page_template != 'blank'):
+
+		if(is_active_sidebar('after')) dynamic_sidebar('after'); ?>
 	</article>
 
 	<?php if(is_active_sidebar('right')): ?>
@@ -105,6 +113,10 @@ require get_template_directory() . '/php/body.php';
 // Include IE alerts
 require get_template_directory() . '/php/ie-alert.php';
 ?>
-<?php if(is_active_sidebar('body-scripts')) dynamic_sidebar('body-scripts'); ?>
+<?php
+if(is_active_sidebar('body-scripts')) dynamic_sidebar('body-scripts');
+
+// End skip of header area for blank page template
+endif; ?>
 </body>
 </html>
