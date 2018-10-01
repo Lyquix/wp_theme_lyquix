@@ -14,7 +14,7 @@ global $wp_query;
 $tmpl_name = '';
 
 function tmpl_file_exists($tmpl_name) {
-	return file_exists(__DIR__ . '/custom/' . $tmpl_name . '.php');
+	return file_exists(get_template_directory() . '/php/custom/' . $tmpl_name . '.php');
 }
 
 // Home page
@@ -92,14 +92,14 @@ elseif(is_singular()) {
 	}
 }
 if($tmpl_name) {
-	require __DIR__ . '/custom/' . $tmpl_name;
+	require get_template_directory() . '/php/custom/' . $tmpl_name;
 }
 else {
 	if(is_home() || is_archive()) {
-		require __DIR__ . '/archive.php';
+		require get_template_directory() . '/php/archive.php';
 	}
 	elseif(is_singular()) {
-		require __DIR__ . '/singular.php';
+		require get_template_directory() . '/php/singular.php';
 	}
 	else {
 		echo "<pre><strong>Error:</strong> no suitable template has been found!\n\n";

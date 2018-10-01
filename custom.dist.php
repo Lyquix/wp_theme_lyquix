@@ -11,20 +11,20 @@
  */
 
 // Initialize variables
-require __DIR__ . '/php/vars.php';
+require get_template_directory() . '/php/vars.php';
 
 ?><!DOCTYPE html>
 <html <?php language_attributes(); ?> class="no-js">
 <head>
 <?php
 // Meta tags
-require __DIR__ . '/php/meta.php';
+require get_template_directory() . '/php/meta.php';
 
 // Prepare CSS
-require __DIR__ . '/php/css.php';
+require get_template_directory() . '/php/css.php';
 
 // Prepare JavaScript
-require __DIR__ . '/php/js.php';
+require get_template_directory() . '/php/js.php';
 
 // WordPress head
 wp_head();
@@ -34,7 +34,7 @@ lqx_render_css();
 lqx_render_js();
 
 // Favicons
-require __DIR__ . '/php/favicon.php';
+require get_template_directory() . '/php/favicon.php';
 
 // head-scripts widget area
 dynamic_sidebar('head-scripts');
@@ -42,7 +42,7 @@ dynamic_sidebar('head-scripts');
 </head>
 <?php
 // Prepare <body> classes
-require __DIR__ . '/php/body.php';
+require get_template_directory() . '/php/body.php';
 ?>
 <body class="<?php echo implode(' ', $body_classes); ?>">
 <header>
@@ -73,7 +73,7 @@ require __DIR__ . '/php/body.php';
 		if(is_active_sidebar('before')) dynamic_sidebar('before');
 
 		// Template router
-		require __DIR__ . '/php/router.php';
+		require get_template_directory() . '/php/router.php';
 
 		if(is_active_sidebar('after')) dynamic_sidebar('after');
 		?>
@@ -103,7 +103,7 @@ require __DIR__ . '/php/body.php';
 </footer>
 <?php
 // Include IE alerts
-require __DIR__ . '/php/ie-alert.php';
+require get_template_directory() . '/php/ie-alert.php';
 ?>
 <?php if(is_active_sidebar('body-scripts')) dynamic_sidebar('body-scripts'); ?>
 </body>
