@@ -11,33 +11,33 @@
  */
 
 function lqx_widgets() {
-	$widgets = array(
-		array(
+	$widgets = [
+		[
 			'name' => 'Head Scripts',
 			'naked' => true
-		),
-		array('name' => 'Header',),
-		array('name' => 'Utility'),
-		array('name' => 'Top'),
-		array('name' => 'Left'),
-		array('name' => 'Center'),
-		array('name' => 'Right'),
-		array('name' => 'Before'),
-		array('name' => 'After'),
-		array('name' => 'Aside'),
-		array('name' => 'Previous'),
-		array('name' => 'Next'),
-		array('name' => 'Footer'),
-		array('name' => 'Bottom'),
-		array('name' => 'Copyright'),
-		array(
+		],
+		['name' => 'Header',],
+		['name' => 'Utility'],
+		['name' => 'Top'],
+		['name' => 'Left'],
+		['name' => 'Center'],
+		['name' => 'Right'],
+		['name' => 'Before'],
+		['name' => 'After'],
+		['name' => 'Aside'],
+		['name' => 'Previous'],
+		['name' => 'Next'],
+		['name' => 'Footer'],
+		['name' => 'Bottom'],
+		['name' => 'Copyright'],
+		[
 			'name' => 'Body Scripts',
 			'naked' => true
-		)
-	);
+		]
+	];
 
 	foreach($widgets as $widget) {
-		register_sidebar(array(
+		register_sidebar([
 			'name' => __($widget['name'], 'lyquix'),
 			'id' => array_key_exists('id', $widget) ? $widget['id'] : str_replace(' ', '-', strtolower($widget['name'])),
 			'description' => '',
@@ -46,7 +46,7 @@ function lqx_widgets() {
 			'after_widget' => array_key_exists('naked', $widget) ? '' : '</section>',
 			'before_title' => array_key_exists('naked', $widget) ? '' : '<h2 class="widget-title">',
 			'after_title' => array_key_exists('naked', $widget) ? '' : '</h2>'
-		));
+		]);
 	}
 }
 

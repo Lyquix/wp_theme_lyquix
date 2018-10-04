@@ -18,15 +18,15 @@ foreach($wp_styles -> queue as $i => $css) {
 }
 
 // Array to store all stylesheets to be loaded
-$stylesheets = array();
+$stylesheets = [];
 
 /*
 // Process dependencies
-$stylesheet_handles = array();
+$stylesheet_handles = [];
 
 function lqx_get_style_dependencies($h) {
 	global $wp_styles;
-	$deps = array();
+	$deps = [];
 	if(count($wp_styles -> registered[$h] -> deps)) {
 		foreach($wp_styles -> registered[$h] -> deps as $d) {
 			$deps = array_merge($deps, lqx_get_style_dependencies($d));
@@ -48,7 +48,7 @@ foreach($stylesheet_handles as $stylesheet_handle) {
 	if(parse_url($stylesheet -> src, PHP_URL_SCHEME)) {
 		// Absolute URL
 		if(get_theme_mod('merge_css_remote')) {
-			$stylesheets[] = array('url' => $stylesheet -> src . ($stylesheet -> ver ? '?ver=' . $stylesheet -> ver : ''));
+			$stylesheets[] = ['url' => $stylesheet -> src . ($stylesheet -> ver ? '?ver=' . $stylesheet -> ver : '')];
 			wp_dequeue_style($stylesheet_handle);
 		}
 	}
@@ -60,10 +60,10 @@ foreach($stylesheet_handles as $stylesheet_handle) {
 			if(substr($url,0,1) != '/') $url = '/' . $url;
 			// Check if file exist
 			if(file_exists(ABSPATH . $url)) {
-				$stylesheets[] = array(
+				$stylesheets[] = [
 					'url' => $url,
 					'version' => date("YmdHis", filemtime(ABSPATH . $url))
-				);
+				];
 				wp_dequeue_style($stylesheet_handle);
 			}
 		}
@@ -76,7 +76,7 @@ $non_min_css = get_theme_mod('non_min_css');
 
 // Animte.css
 if(get_theme_mod('animatecss')) {
-	$stylesheets[] = array('url' => $cdnjs_url . 'animate.css/3.7.0/animate' . ($non_min_css ? '' : '.min') . '.css');
+	$stylesheets[] = ['url' => $cdnjs_url . 'animate.css/3.7.0/animate' . ($non_min_css ? '' : '.min') . '.css'];
 }
 
 // Additional CSS Libraries
@@ -87,7 +87,7 @@ foreach($add_css_libraries as $cssurl) {
 		// Check if stylesheet is local or remote
 		if(parse_url($cssurl, PHP_URL_SCHEME)) {
 			// Absolute URL
-			$stylesheets[] = array('url' => $cssurl);
+			$stylesheets[] = ['url' => $cssurl];
 		}
 		elseif (parse_url($cssurl, PHP_URL_PATH)) {
 			// Relative URL
@@ -95,7 +95,7 @@ foreach($add_css_libraries as $cssurl) {
 			if(substr($cssurl,0,1) != '/') $cssurl = '/' . $cssurl;
 			// Check if file exist
 			if(file_exists(ABSPATH . $cssurl)) {
-				$stylesheets[] = array('url' => $cssurl, 'version' => date("YmdHis", filemtime(get_home_path() . $cssurl)));
+				$stylesheets[] = ['url' => $cssurl, 'version' => date("YmdHis", filemtime(get_home_path() . $cssurl))];
 			}
 		}
 	}
@@ -103,10 +103,10 @@ foreach($add_css_libraries as $cssurl) {
 
 // Custom Project Styles
 if(file_exists($tmpl_path . '/css/styles' . ($non_min_css ? '' : '.min') . '.css')) {
-	$stylesheets[] = array(
+	$stylesheets[] = [
 		'url' => $tmpl_url . '/css/styles' . ($non_min_css ? '' : '.min') . '.css',
 		'version' => date("YmdHis", filemtime($tmpl_path . '/css/styles' . ($non_min_css ? '' : '.min') . '.css'))
-	);
+	];
 }
 
 // Unique filename based on stylesheets, last update, and order
