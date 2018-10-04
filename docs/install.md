@@ -10,7 +10,7 @@
 
 ### First Install
 
-  1. Download the latest theme package from https://github.com/Lyquix/wp_lyquix_theme/releases/latest.
+  1. Download the latest theme package from https://github.com/Lyquix/wp_theme_lyquix/releases/latest.
   2. Install the package using WordPress theme installation functionality, or extract the folder `lyquix` to `/wp-content/themes`.
 
 ### Initial Setup
@@ -85,5 +85,5 @@ In WordPress theme customizer you will find the following options for the theme.
 
 Follow the same steps as in the First Install:
 
-  1. Download the latest theme package from https://github.com/Lyquix/wp_lyquix_theme/releases/latest.
+  1. Download the latest theme package from https://github.com/Lyquix/wp_theme_lyquix/releases/latest.
   2. Install the package using WordPress theme installation functionality, or extract the folder `lyquix` to `/wp-content/themes`.

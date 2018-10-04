@@ -3,11 +3,11 @@
  * archive.php - Default template for archive pages
  *
  * @version     2.0.0
- * @package     wp_lyquix_theme
+ * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2017 Lyquix
  * @license     GNU General Public License version 2 or later
- * @link        https://github.com/Lyquix/wp_lyquix_theme
+ * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
 ?>
 <h1><?php the_archive_title(); ?></h1>
