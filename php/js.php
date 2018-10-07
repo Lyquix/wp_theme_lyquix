@@ -221,5 +221,5 @@ $lqx_options = array_replace_recursive($lqx_options, json_decode(get_theme_mod('
 
 function lqx_render_js() {
 	global $tmpl_url, $scripts_filename, $lqx_options;
-	echo '<script async src="' . $tmpl_url . '/dist/' . $scripts_filename . '" onload="lqx.ready(' . htmlentities(json_encode($lqx_options)) . ');"></script>' . "\n";
+	echo '<script defer src="' . $tmpl_url . '/dist/' . $scripts_filename . '" onload="lqx.ready(' . htmlentities(json_encode($lqx_options)) . ');"></script>' . "\n";
 }
