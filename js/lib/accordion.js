@@ -135,10 +135,13 @@ if(lqx && typeof lqx.accordion == 'undefined') {
 		};
 
 		var open = function(id) {
-			if(typeof id != 'undefined' && id.isInteger() && id >= 0 && id < vars.length) {
-				lqx.log('Opening accordion', a.elem);
+			if(typeof id == 'undefined') var id = null;
+			id = parseInt(id);
+			if(Number.isInteger(id) && id >= 0 && id < vars.length) {
 				// Get accordion data
 				var a = vars[id];
+
+				lqx.log('Opening accordion', a.elem);
 
 				// Open the accordion
 				a.elem.removeClass('closed').addClass('open');
@@ -177,7 +180,7 @@ if(lqx && typeof lqx.accordion == 'undefined') {
 
 					// Do not close self
 					group.eq(0).find('.accordion.open').not(a.elem).each(function(id, elem){
-						close(vars[jQuery(elem).attr('data-accordion')]);
+						close(jQuery(elem).attr('data-accordion'));
 					});
 				}
 			}
@@ -187,11 +190,13 @@ if(lqx && typeof lqx.accordion == 'undefined') {
 		};
 
 		var close = function(id) {
-			if(typeof id != 'undefined' && id.isInteger() && id >= 0 && id < vars.length) {
-				lqx.log('Closing accordion', a.elem);
-
+			if(typeof id == 'undefined') var id = null;
+			id = parseInt(id);
+			if(Number.isInteger(id) && id >= 0 && id < vars.length) {
 				// Get accordion data
 				var a = vars[id];
+
+				lqx.log('Closing accordion', a.elem);
 
 				// Close the accordion
 				a.elem.addClass('closed').removeClass('open');
@@ -205,7 +210,9 @@ if(lqx && typeof lqx.accordion == 'undefined') {
 		var update = function(id){
 			// Get the accordions to update
 			var elems = [];
-			if(typeof id != 'undefined' && id.isInteger() && id >= 0 && id < vars.length) {
+			if(typeof id == 'undefined') var id = null;
+			id = parseInt(id);
+			if(Number.isInteger(id) && id >= 0 && id < vars.length) {
 				elems[id] = vars[id];
 			}
 			else {
@@ -213,7 +220,7 @@ if(lqx && typeof lqx.accordion == 'undefined') {
 			}
 
 			// Update the accordions
-			elems.forEach(function(a, id){
+			elems.forEach(function(a){
 				// Keep original state of the accordion
 				var closed = a.elem.hasClass('closed');
 
@@ -243,7 +250,7 @@ if(lqx && typeof lqx.accordion == 'undefined') {
 				a.elem.css('transition', '');
 
 				// Update vars
-				vars[id] = a;
+				vars[a.elem.attr('data-accordion')] = a;
 			});
 		};
 
