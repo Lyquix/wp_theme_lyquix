@@ -102,6 +102,7 @@ function lqx_customizer_add($wp_customize) {
 				'default' => '0'
 			],
 			'lqx_options' => [
+				'type' => 'textarea',
 				'label' => 'Lyquix Library Options',
 			],
 			'polyfill' => [
