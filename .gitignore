@@ -16,7 +16,7 @@
 Thumbs.db
 Desktop.ini
 
-# gitignore for tpl_lyquix
+# gitignore for wp_theme_lyquix
 .sass-cache
 /dist/*.css
 /dist/*.js
