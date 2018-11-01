@@ -289,6 +289,10 @@ Refer to http://php.net/manual/en/function.sprintf.php for complete formatting o
 
 Appends a unique parameter to a URL in attribute `attrib` on the elements identified by selector `sel`. Useful with forms to bypass caching, e.g. `lqx.util.uniqueUrl('form', 'action')`.
 
+**`lqx.util.versionCompare(a, b)`**
+
+Compares software version strings. Returns 0 when versions are the same, 1 when a > b, and -1 when a < b. Assumes that the version strings are comprised of numbers (integers) separated by dots, e.g. `2.08.5`.
+
 **`lqx.warn(arg)`**
 
 Use instead of `console.warn` if you want to easily turn off all console messages when `debug` option is disabled. Accepts string or objects to be displayed in the console, only when the `debug` option is enabled.

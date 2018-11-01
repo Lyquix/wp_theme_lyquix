@@ -74,7 +74,7 @@ In WordPress theme customizer you will find the following options for the theme.
     * Add common functions and minor functionality to `js/scripts.js`.
     * Create custom Vue controllers and components and save them to [`js/custom/controllers/`](../js/custom/controllers/) and [`js/custom/components/`](../js/custom/components/).
   * **Custom PHP**:
-    * You can edit `custom.php` as needed to meet the requirements of your project.
+    * You can edit `custom.php` as needed to meet the requirements of your project. Note that there are differences in the file structure and functioning of this theme that are described in the [theme file structure](files.md) documentation.
     * You can control what PHP includes from [`php/`](../php/) folder to use.
     * Create custom PHP includes in [`php/custom/`](../php/custom/).
     * Create custom theme templates for single posts and archives and place them in [`php/custom/`](../php/custom/). Make sure you familiarize yourself with the [theme file structure](files.md) as this theme implements some changes from the default WordPress structure.

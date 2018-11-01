@@ -98,6 +98,7 @@ This theme is intended to be the foundation for developers that build custom the
   * [Widget Positions](docs/widgets.md)
   * [CSS](docs/css.md)
   * [JavaScript](docs/js.md)
+  * [Lyquix Options](docs/lqxoptions.md)
   * [Favicons](docs/favicons.md)
 
 ## To Do and Ideas
