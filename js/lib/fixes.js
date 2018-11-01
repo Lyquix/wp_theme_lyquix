@@ -9,7 +9,7 @@
  * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
 
-if(lqx && typeof lqx.fixes == 'undefined') {
+if(lqx && !('fixes' in lqx)) {
 	lqx.fixes = (function(){
 		var opts = {
 			// Control what specific fixes to apply

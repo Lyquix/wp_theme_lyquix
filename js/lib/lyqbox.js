@@ -9,7 +9,7 @@
  * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
 
-if(lqx && typeof lqx.lyqbox == 'undefined') {
+if(lqx && !('lyqbox' in lqx)) {
 	lqx.lyqbox = (function(){
 		/**
 		 * Lyquix lightbox functionality

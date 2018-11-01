@@ -9,7 +9,7 @@
  * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
 
-if(lqx && typeof lqx.menu == 'undefined') {
+if(lqx && !('menu' in lqx)) {
 	lqx.menu = (function(){
 		var opts = {
 			screens: ['xs', 'sm', 'md', 'lg', 'xl']

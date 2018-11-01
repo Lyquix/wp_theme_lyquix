@@ -9,7 +9,7 @@
  * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
 
-if(lqx && typeof lqx.autoresize == 'undefined') {
+if(lqx && !('autoresize' in lqx)) {
 	lqx.autoresize = (function(){
 		/**
 		 * Makes textarea, input and select elements to resize automatically

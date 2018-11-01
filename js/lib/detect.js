@@ -9,7 +9,7 @@
  * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
 
-if(lqx && typeof lqx.detect == 'undefined') {
+if(lqx && !('detect' in lqx)) {
 	lqx.detect = (function(){
 		var opts = {
 			// Control what specific detections to enable

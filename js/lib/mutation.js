@@ -9,7 +9,7 @@
  * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
 
-if(lqx && typeof lqx.mutation == 'undefined') {
+if(lqx && !('mutation' in lqx)) {
 	lqx.mutation = (function(){
 		var vars = {
 			observer: null,
