@@ -2,7 +2,7 @@
 /**
  * widgets.php - Setups the theme widget areas
  *
- * @version     2.0.0
+ * @version     2.1.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix
