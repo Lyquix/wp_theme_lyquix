@@ -18,7 +18,7 @@ remove_action('wp_head', 'wp_generator');
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <?php
 if(get_theme_mod('polyfill')): ?>
-<script src="https://cdn.polyfill.io/v2/polyfill<?php echo get_theme_mod('non_min_js') ? '' : '.min'; ?>.js"></script>
+<script src="https://cdn.polyfill.io/v2/polyfill<?php echo get_theme_mod('non_min_js') ? '' : '.min'; ?>.js?features=default,Math.imul"></script>
 <?php endif;
 // Adds search engine domain validation strings to home page only
 if($home) {
