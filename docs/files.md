@@ -34,7 +34,7 @@ Additionally, the various widget positions and menus are rendered only if they h
 
 The router `/php/router.php` recreates the logic similar to the WordPress template hierarchy that identifies the correct template to use based on the type of page that has been requested, as shown in the diagram below:
 
-![Lyquix WordPress Theme Router](https://raw.githubusercontent.com/Lyquix/wp_theme_lyquix/2.x/docs/router.svg)
+![Lyquix WordPress Theme Router](./router.svg)
 
 The fallback templates for archive and singular pages are included in this theme and located at `/php/archive.php` and `/php/singular.php`. All the other templates are expected to be located at `/php/custom/` directory.
 
