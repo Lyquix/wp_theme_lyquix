@@ -180,7 +180,7 @@ if(!file_exists($tmpl_path . '/dist/' . $stylesheet_filename)) {
 		}
 		elseif (array_key_exists('version', $stylesheet)) {
 			$stylesheet_data .= "/* Local stylesheet: " . $stylesheet['url'] . ", Version: " . $stylesheet['version'] . " */\n";
-			$tmp = file_get_contents(get_home_path() . $stylesheet['url']) . "\n";
+			$tmp = file_get_contents(ABSPATH . $stylesheet['url']) . "\n";
 			// Update URLs
 			preg_match_all($urlRegex, $tmp, $matches);
 			foreach($matches[1] as $rel) {
