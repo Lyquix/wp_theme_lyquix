@@ -92,7 +92,7 @@ elseif(is_singular()) {
 	}
 }
 if($tmpl_name) {
-	require get_template_directory() . '/php/custom/' . $tmpl_name;
+	require get_template_directory() . '/php/custom/' . $tmpl_name . '.php';
 }
 else {
 	if(is_home() || is_archive()) {
