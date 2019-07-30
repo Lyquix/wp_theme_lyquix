@@ -73,6 +73,7 @@
 			display: none;
 		}
 		.desktop-show {
+			display: inherit;
 			display: unset;
 		}
 	}
@@ -87,6 +88,7 @@
 		.mobile-show,
 		.tablet-show,
 		.phone-show {
+			display: inherit;
 			display: unset;
 		}
 	}
@@ -99,6 +101,7 @@
 				display: none;
 			}
 			.#{$n}-show {
+				display: inherit;
 				display: unset;
 			}
 		}
@@ -111,6 +114,7 @@
 				display: none;
 			}
 			.#{$s}-show {
+				display: inherit;
 				display: unset;
 			}
 		}
