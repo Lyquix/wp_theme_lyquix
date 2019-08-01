@@ -119,6 +119,11 @@ if(lqx && !('fixes' in lqx)) {
 						matchFix('cssGrid');
 						matchFix('objectFit');
 					});
+					
+					// Trigger functions on document loaded
+					lqx.vars.window.load(function() {
+						matchFix('objectFit');
+					});
 
 					// Trigger functions on screen changes (reside, rotation)
 					lqx.vars.window.on('screensizechange orientationchange', function() {
