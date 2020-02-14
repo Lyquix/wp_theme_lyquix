@@ -1,6 +1,6 @@
 # Lyquix WordPress Theme 2.x
 
-`@version     2.1.0`
+`@version     2.2.1`
 
 ## What is this?
 

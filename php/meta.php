@@ -2,7 +2,7 @@
 /**
  * meta.php - Includes meta tags
  *
- * @version     2.1.0
+ * @version     2.2.1
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2017 Lyquix

@@ -1,6 +1,6 @@
 # Menus
 
-`@version     2.1.0`
+`@version     2.2.1`
 
 The theme defines the following menus that you can use or ignore as needed.
 
