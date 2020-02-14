@@ -87,8 +87,7 @@ else {
 				// Get current screen width
 				var w = lqx.vars.window.width();
 				// Trigger only for width resize
-				if(!lqx.vars.resizeThrottle && w != lqx.vars.screenWidth) {
-					lqx.vars.screenWidth = w;
+				if(!lqx.vars.resizeThrottle && w == lqx.vars.screenWidth) {
 					lqx.vars.document.trigger('resizethrottle');
 					lqx.vars.resizeThrottle = true;
 					setTimeout(function () {
@@ -96,6 +95,7 @@ else {
 						lqx.vars.document.trigger('resizethrottle');
 					}, 15);
 				}
+				lqx.vars.screenWidth = w;
 			});
 
 			// On document ready
