@@ -1,7 +1,7 @@
 /**
  * util.js - Utility functions
  *
- * @version     2.2.1
+ * @version     2.2.2
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix

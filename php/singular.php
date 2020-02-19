@@ -2,7 +2,7 @@
 /**
  * singular.php - Default template for singular pages
  *
- * @version     2.2.1
+ * @version     2.2.2
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2017 Lyquix
