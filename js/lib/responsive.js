@@ -83,8 +83,8 @@ if(lqx && !('responsive' in lqx)) {
 			else if(w >= opts.breakPoints[4]) s = 4;
 
 			// Adjust calculated size to min and max range
-			if(s < opts.minIndex) s = opts.minIndex;
-			if(s > opts.maxIndex) s = opts.maxIndex;
+			if(s < lqx.opts.minIndex) s = opts.minIndex;
+			if(s > lqx.opts.maxIndex) s = opts.maxIndex;
 
 			// If different from previous screen size
 			if(opts.sizes[s] != vars.screen) {
@@ -105,7 +105,7 @@ if(lqx && !('responsive' in lqx)) {
 		// Sets the attribute "orientation" to the body tag that indicates the current orientation of the screen
 		var setOrientation = function() {
 			var o = window.screen.orientation.type;
-			if(o.indexOf(vars.orientation) != -1) {
+			if(o.indexOf(vars.orientation) == -1) {
 				switch (o) {
 					case 'portrait-primary':
 					case 'portrait-secondary':
