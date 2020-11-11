@@ -30,4 +30,6 @@ function lqx_setup() {
 		'footer-menu' => __('Footer Menu', 'lyquix'),
 		'hidden-menu' => __('Hidden Menu', 'lyquix'),
 	));
+	// Hide PHP upgrade alert from dashboard
+	add_action('admin_head', function(){echo '<style>#dashboard_php_nag {display:none;}</style>';});
 }
