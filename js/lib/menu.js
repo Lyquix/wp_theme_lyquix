@@ -1,7 +1,7 @@
 /**
  * menu.js - Menu functionality
  *
- * @version     2.2.2
+ * @version     2.3.1
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix
@@ -12,18 +12,25 @@
 if(lqx && !('menu' in lqx)) {
 	lqx.menu = (function(){
 		var opts = {
+			horizontalMenuSelector: '.horizontal',
+			verticalMenuSelector: '.vertical',
+			menuControlSelector: '.menu-control',
 			screens: ['xs', 'sm', 'md', 'lg', 'xl']
 		};
 
+		var vars = {};
+
 		var init = function(){
 			// Copy default opts and vars
-			jQuery.extend(lqx.opts.menu, opts);
+			jQuery.extend(true, lqx.opts.menu, opts);
 			opts = lqx.opts.menu;
+			jQuery.extend(true, lqx.vars.menu, vars);
+			vars = lqx.vars.menu;
 
 			// Initialize on lqxready
 			lqx.vars.window.on('lqxready', function() {
 				// Initialize only if enabled
-				if(lqx.opts.menu.enabled) {
+				if(opts.enabled) {
 					lqx.log('Initializing `menu`');
 
 					// Trigger setup on lqxready
@@ -36,18 +43,23 @@ if(lqx && !('menu' in lqx)) {
 				}
 			});
 
-			return lqx.menu.init = true;
+			// Run only once
+			lqx.menu.init = function(){
+				lqx.warn('lqx.menu.init already executed');
+			};
+
+			return true;
 		};
 
 		var setup = function() {
 			// Add listeners to <a> tags
-			lqx.vars.body.on('click', '.horizontal a, .vertical a', function(e){
+			lqx.vars.body.on('click', opts.horizontalMenuSelector + ' a,' + opts.verticalMenuSelector + ' a', function(e){
 				e.preventDefault();
 				click(this);
 			});
 
 			// Prevent propagation of clicks
-			lqx.vars.body.on('click', '.horizontal, .vertical', function(e){
+			lqx.vars.body.on('click', opts.horizontalMenuSelector + ', ' + opts.verticalMenuSelector, function(e){
 				// Do not propagate click events outside menus
 				e.stopPropagation();
 			});
@@ -64,8 +76,8 @@ if(lqx && !('menu' in lqx)) {
 			});
 
 			// When clicking outside the menus, hide the menus if visible and close the slide out menu if open
-			lqx.vars.body.click(function() {
-				jQuery('.horizontal, .vertical').find('.open').removeClass('open');
+			lqx.vars.body.on('click', function() {
+				jQuery(opts.horizontalMenuSelector + ', ' + opts.verticalMenuSelector).find('.open').removeClass('open');
 			});
 
 		};

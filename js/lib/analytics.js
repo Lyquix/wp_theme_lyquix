@@ -1,7 +1,7 @@
 /**
  * analytics.js - Analytics functionality
  *
- * @version     2.2.2
+ * @version     2.3.1
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix
@@ -29,24 +29,26 @@ if(lqx && !('analytics' in lqx)) {
 					'3gp','3g2','mkv','vob','ogv','ogg','webm','wma','m2v','m4v','mpg','mp2','mpeg','mpe','mpv','mov','avi','wmv','flv','f4v','swf','qt',
 					// Web code
 					'xml','js','json','jsonp','css','less','sass','scss'
-				]
+				],
+				hitType: 'pageview', // pageview or event
+				nonInteraction: false // for events only
 			},
 			errors: {
 				enabled: true,
-				maxErrors: 100
+				maxErrors: 100,
+				ieVersion: 11 // IE older than this version will be ignored
 			},
 			outbound: {
 				enabled: true,
-				exclude: [] // Array of domains to be excluded, not considered external sites
+				exclude: [], // Array of domains to be excluded, not considered external sites
+				nonInteraction: true
 			},
 			scrollDepth: {
 				enabled: true
 			},
-			lyqBox: {
-				enabled: true
-			},
 			video: {
-				enabled: true
+				enabled: true,
+				nonInteraction: false
 			},
 			userActive: {
 				enabled: true,
@@ -55,44 +57,61 @@ if(lqx && !('analytics' in lqx)) {
 				refresh: 250,	// refresh period (ms)
 				maxTime: 1800000 // max time when tracking stops (ms)
 			},
+			rageClicks: {
+				enabled: true,
+				minClicks: 3, // Look for 3 consecutive clicks or more...
+				maxTime: 5, // ... within 5 seconds...
+				maxDistance: 100 // within a 100x100 pixel area
+			},
 			// Google Analytics opts
+			usingGTM: false,		// set to true if Google Analytics is loaded via GTM
+			sendPageview: true,		// set to false if you don't want to send the Pageview (e.g. when sent via GTM)
 			createParams: null,			// example: {default: {trackingId: 'UA-XXXXX-Y', cookieDomain: 'auto', fieldsObject: {}}}, where "default" is the tracker name
 			setParams: null,			// example: {default: {dimension1: 'Age', metric1: 25}}
 			requireParams: null,		// example: {default: {pluginName: 'displayFeatures', pluginOptions: {cookieName: 'mycookiename'}}}
 			provideParams: null,		// example: {default: {pluginName: 'MyPlugin', pluginConstructor: myPluginFunc}}
 			customParamsFuncs: null,	// example: myFunctionName
-			abTestName: null,			// Set a test name to activate A/B Testing Dimension
-			abTestNameDimension: null,		// Set the Google Analytics dimension number to use for test name
-			abTestGroupDimension: null,		// Set the Google Analytics dimension number to use for group
+			abTest: {
+				name: null,			// Set a test name to activate A/B Testing Dimension
+				dimension: null,		// Set the Google Analytics dimension that will save the test name and assigned group
+				split: 0.5, 		// Sets the percentage of users that will be assigned to group A, default if 50%
+				removeNoMatch: true,		// Set to false to hide no-match elements instead of removing them from DOM
+				cookieDays: 30,		// How long should the group assignment be saved in cookie, default 30 days
+				displaySelector: '[data-abtest], [class*="abtest-"]', // Do not change
+			}
 		};
 
 		var vars = {
+			abTestGroup: null,
 			scrollDepthMax: null,
 			youTubeIframeAPIReady: false,
 			youTubeIframeAPIReadyAttempts: 0,
 			youtubePlayers: {},
 			vimeoPlayers: {},
 			userActive: null,
-			errorHashes: []
+			errorHashes: [],
+			clickEvents: []
 		};
 
 		var init = function(){
 			// Copy default opts and vars
-			jQuery.extend(lqx.opts.analytics, opts);
+			jQuery.extend(true, lqx.opts.analytics, opts);
 			opts = lqx.opts.analytics;
-			jQuery.extend(lqx.vars.analytics, vars);
+			jQuery.extend(true, lqx.vars.analytics, vars);
 			vars = lqx.vars.analytics;
 
 			// Initialize on lqxready
 			lqx.vars.window.on('lqxready', function() {
 				// Initialize only if enabled
-				if(lqx.opts.analytics.enabled) {
+				if(opts.enabled) {
 					lqx.log('Initializing `analytics`');
 
 					// Load Google Analytics
-					if(opts.createParams && opts.createParams.default && opts.createParams.default.trackingId) {
+					if(!opts.usingGTM && opts.createParams && opts.createParams.default && opts.createParams.default.trackingId) {
 						gaCode();
 					}
+					// Attempt to init custom Google Analytics tracking code when GA is loaded by other methods e.g. GTM
+					if(opts.usingGTM) checkGA();
 
 					// Set YouTube API callback function
 					window.onYouTubeIframeAPIReady = function(){
@@ -101,7 +120,18 @@ if(lqx && !('analytics' in lqx)) {
 				}
 			});
 
-			return lqx.analytics.init = true;
+			// Run only once
+			lqx.analytics.init = function(){
+				lqx.warn('lqx.analytics.init already executed');
+			};
+
+			return true;
+		};
+
+		var checkGA = function(count) {
+			if(count == undefined) count = 0;
+			if('GoogleAnalyticsObject' in window && typeof window.ga == 'function') initTracking();
+			else if(count < 600) setTimeout(function() {checkGA(count++);}, 100);
 		};
 
 		var gaCode = function() {
@@ -190,22 +220,29 @@ if(lqx && !('analytics' in lqx)) {
 					}
 
 					// A/B testing opts
-					if(opts.abTestName !== null && opts.abTestNameDimension !== null && opts.abTestGroupDimension !== null) {
-						lqx.log('abTest params', {abTestName: opts.abTestName, abTestNameDimension: opts.abTestNameDimension, abTestGroupDimension: opts.abTestGroupDimension});
+					if(opts.abTest.name !== null && opts.abTest.dimension !== null) {
+						lqx.log('abTest params', opts.abTest);
 						// get a/b test group cookie
-						var abTestGroup = lqx.utils.cookie('abTestGroup');
-						if(abTestGroup === null) {
+						vars.abTestGroup = lqx.utils.cookie('abTestGroup');
+						if(vars.abTestGroup === null) {
 							// set a/b test group
-							if(Math.random() < 0.5) abTestGroup = 'A';
-							else abTestGroup = 'B';
-							lqx.utils.cookie('abTestGroup', abTestGroup, {maxAge: 30*24*60*60, path: '/'});
+							if (Math.random() < opts.abTest.split)  {
+								vars.abTestGroup = opts.abTest.name + '-A';
+							} else {
+								vars.abTestGroup = opts.abTest.name + '-B';
+							}
 						}
+						lqx.util.cookie('abTestGroup', vars.abTestGroup, {maxAge: opts.abTest.cookieDays * 86400, path: '/'});
 						// Set body attribute that can be used by css and js
-						lqx.vars.body.attr('data-abtest', abTestGroup);
+						lqx.vars.body.attr('abtestgroup', vars.abTestGroup);
 
-						// Set the GA dimensions
-						ga('set', 'dimension' + opts.abTestNameDimension, opts.abTestName);
-						ga('set', 'dimension' + opts.abTestGroupDimension, abTestGroup);
+						// Set the GA dimension
+						ga('set', 'dimension' + opts.abTest.dimension, vars.abTestGroup);
+
+						// Show/hide elements based on their attributes and classes
+						abTestDisplay(jQuery(opts.abTest.displaySelector));
+						lqx.mutation.addHandler('addNode', opts.abTest.displaySelector, abTestDisplay);
+
 					}
 				},
 
@@ -222,9 +259,11 @@ if(lqx && !('analytics' in lqx)) {
 				},
 
 				function(){
-					lqx.log('Sending pageview event');
-					// Send pageview
-					ga('send', 'pageview');
+					if(opts.sendPageview) {
+						lqx.log('Sending pageview event');
+						// Send pageview
+						ga('send', 'pageview');
+					}
 					// Initialize tracking
 					initTracking();
 				}
@@ -252,10 +291,11 @@ if(lqx && !('analytics' in lqx)) {
 							// check if it has an href attribute, otherwise it is just a page anchor
 							if(elem.href) {
 								// check if it is an outbound link, track as event
-								if(opts.outbound.enabled && elem.host != location.host && opts.outbound.exclude.indexOf(elem.host) == -1) {
+								if(opts.outbound.enabled && elem.host != window.location.host && opts.outbound.exclude.indexOf(elem.host) == -1) {
 									lqx.log('Found outbound link to ' + elem.href);
-									jQuery(elem).click(function(e){
-										e.preventDefault();
+									jQuery(elem).on('click', function(e){
+										// determine if the link is opening in a new window
+										var newWindow = (elem.attr('target') && !elem.attr('target').match(/^_(self|parent|top)$/i)) || e.ctrlKey || e.shiftKey || e.metaKey;
 										var url = elem.href;
 										lqx.log('Outbound link to: ' + url);
 										var label = url;
@@ -263,20 +303,25 @@ if(lqx && !('analytics' in lqx)) {
 											label = jQuery(elem).attr('title') + ' [' + url + ']';
 										}
 										ga('send', {
-											'hitType': 'event',
-											'eventCategory': 'Outbound Links',
-											'eventAction': 'click',
-											'eventLabel': label,
-											'nonInteraction': true,
-											'hitCallback': function(){ window.location.href = url; } // Regarless of target value link will open in same window, otherwise it is blocked by browser
+											hitType:'event',
+											eventCategory: 'Outbound Links',
+											eventAction: 'click',
+											eventLabel: label,
+											nonInteraction: opts.outbound.nonInteraction,
+											hitCallback: newWindow ? null : function() {
+												window.location.href = url; // when opening in same window, wait for ga event to be sent
+											}
 										});
+
+										// when opening in new window, allow the link to proceed, otherwise wait for ga event
+										return newWindow;
 									});
 								}
 
 								// check if it is a download link (not a webpage) and track as pageview
 								else if(opts.downloads.enabled && elem.href.match(new RegExp('\.(' + opts.downloads.extensions.join('|') + ')$', 'i')) !== null) {
 									lqx.log('Found download link to ' + elem.href);
-									jQuery(elem).click(function(e){
+									jQuery(elem).on('click', function(e){
 										e.preventDefault();
 										var url = elem.href;
 										lqx.log('Download link to: ' + url);
@@ -286,13 +331,25 @@ if(lqx && !('analytics' in lqx)) {
 										if(jQuery(elem).attr('title')) {
 											title = jQuery(elem).attr('title');
 										}
-										ga('send', {
-											'hitType': 'pageview',
-											'location': loc,
-											'page': page,
-											'title': title,
-											'hitCallback': function(){ window.location.href = url; } // Regarless of target value link will open in same window, otherwise it is blocked by browser
-										});
+										if(opts.downloads.hitType == 'pageview') {
+											ga('send', {
+												hitType: 'pageview',
+												location: loc,
+												page: page,
+												title: title,
+												hitCallback: function(){ window.location.href = url; } // Regarless of target value link will open in same window, otherwise it is blocked by browser
+											});
+										}
+										if(opts.downloads.hitType == 'event') {
+											ga('send', {
+												hitType:'event',
+												eventCategory: 'Download Links',
+												eventAction: 'click',
+												eventLabel: page,
+												nonInteraction: opts.downloads.nonInteraction,
+												hitCallback: function(){ window.location.href = url; } // Regarless of target value link will open in same window, otherwise it is blocked by browser
+											});
+										}
 									});
 								}
 							}
@@ -308,7 +365,7 @@ if(lqx && !('analytics' in lqx)) {
 			}
 
 			// Track errors
-			if(opts.errors) {
+			if(opts.errors.enabled && lqx.detect.browser().type != 'msie' ? true : lqx.detect.browser().version >= opts.errors.ieVersion) {
 				// Add listener to window element for javascript errors
 				window.addEventListener('error', function(e) {
 					var errStr = e.message + ' [' + e.error + '] ' + e.filename + ':' + e.lineno + ':' + e.colno;
@@ -316,11 +373,11 @@ if(lqx && !('analytics' in lqx)) {
 					if(vars.errorHashes.indexOf(errHash) == -1 && vars.errorHashes.length < opts.errors.maxErrors) {
 						vars.errorHashes.push(errHash);
 						ga('send', {
-							'hitType' : 'event',
-							'eventCategory' : 'JavaScript Errors',
-							'eventAction' : 'error',
-							'eventLabel' : errStr,
-							'nonInteraction' : true
+							hitType: 'event',
+							eventCategory: 'JavaScript Errors',
+							eventAction: 'error',
+							eventLabel: errStr,
+							nonInteraction: true
 						});
 					}
 					return false;
@@ -345,17 +402,12 @@ if(lqx && !('analytics' in lqx)) {
 				// add listener to page unload
 				lqx.vars.window.on('beforeunload', function(){
 					ga('send', {
-						'hitType' : 'event',
-						'eventCategory' : 'Scroll Depth',
-						'eventAction' : vars.scrollDepthMax,
-						'nonInteraction' : true
+						hitType: 'event',
+						eventCategory: 'Scroll Depth',
+						eventAction: vars.scrollDepthMax,
+						nonInteraction: true
 					});
 				});
-			}
-
-			// Track LyqBox
-			if(opts.lyqBox.enabled){
-				// Do nothing here, all analytics will be handled in lyqbox.js
 			}
 
 			// Track video
@@ -396,28 +448,82 @@ if(lqx && !('analytics' in lqx)) {
 				// Add listener on page unload
 				lqx.vars.window.on('beforeunload', function(){
 					ga('send', {
-						'hitType' : 'event',
-						'eventCategory' : 'User Active Time',
-						'eventAction' : 'Percentage',
-						'eventValue' : parseInt(100 * vars.userActive.activeTime / (vars.userActive.activeTime + vars.userActive.inactiveTime)),
-						'nonInteraction' : true
+						hitType: 'event',
+						eventCategory: 'User Active Time',
+						eventAction: 'Percentage',
+						eventValue: parseInt(100 * vars.userActive.activeTime / (vars.userActive.activeTime + vars.userActive.inactiveTime)),
+						nonInteraction: true
 					});
 
 					ga('send', {
-						'hitType' : 'event',
-						'eventCategory' : 'User Active Time',
-						'eventAction' : 'Active Time (ms)',
-						'eventValue' : parseInt(vars.userActive.activeTime),
-						'nonInteraction' : true
+						hitType: 'event',
+						eventCategory: 'User Active Time',
+						eventAction: 'Active Time (ms)',
+						eventValue: parseInt(vars.userActive.activeTime),
+						nonInteraction: true
 					});
 
 					ga('send', {
-						'hitType' : 'event',
-						'eventCategory' : 'User Active Time',
-						'eventAction' : 'Inactive Time (ms)',
-						'eventValue' : parseInt(vars.userActive.inactiveTime),
-						'nonInteraction' : true
+						hitType: 'event',
+						eventCategory: 'User Active Time',
+						eventAction: 'Inactive Time (ms)',
+						eventValue: parseInt(vars.userActive.inactiveTime),
+						nonInteraction: true
 					});
+				});
+			}
+
+			// Track rage clicks
+			if(opts.rageClicks.enabled) {
+				jQuery('body').on('click', function(event){
+					// Save click event
+					vars.clickEvents.push({
+						event: event,
+						time: (new Date()).getTime() / 1000
+					});
+
+					// Are there at least minClicks in the array?
+					if(vars.clickEvents.length >= opts.rageClicks.minClicks) {
+						// Get index of last event
+						var totalClicks = vars.clickEvents.length;
+						var lastClick = totalClicks - 1;
+
+						// Check if clicks within maxTime
+						var timeDiff = vars.clickEvents[lastClick].time - vars.clickEvents[0].time;
+						if(timeDiff <= opts.rageClicks.maxTime) {
+							// Find the max and min x and y coordinates of all clicks
+							var minX = vars.clickEvents[0].event.clientX;
+							var maxX = vars.clickEvents[0].event.clientX;
+							var minY = vars.clickEvents[0].event.clientY;
+							var maxY = vars.clickEvents[0].event.clientY;
+							for(var i = 1; i <= lastClick; i++) {
+								var x = vars.clickEvents[i].event.clientX;
+								var y = vars.clickEvents[i].event.clientY;
+								if(x < minX) minX = x;
+								if(x > maxX) maxX = x;
+								if(y < minY) minY = y;
+								if(y > maxY) maxY = y;
+							}
+
+							// Check if clicks are within the maxDistance
+							if((maxX - minX <= opts.rageClicks.maxDistance) && (maxY - minY <= opts.rageClicks.maxDistance)) {
+								// Round area of first click to closest 50 pixels to avoid to many differing values in the event
+								minX = Math.floor(minX / 50) * 50;
+								maxX = Math.ceil(maxX / 50) * 50;
+								minY = Math.floor(minY / 50) * 50;
+								maxY = Math.ceil(maxY / 50) * 50;
+								ga('send', {
+									hitType: 'event',
+									eventCategory: 'Rage Click',
+									eventAction: 'click',
+									eventLabel: [minX, minY, maxX, maxY].join(','),
+									nonInteraction: true
+								});
+							}
+						}
+						// Remove used Clicks
+						vars.clickEvents.splice(0, totalClicks);
+					}
 				});
 			}
 		};
@@ -486,10 +592,10 @@ if(lqx && !('analytics' in lqx)) {
 					if(!('playerObj' in vars.youtubePlayers[playerId])) {
 						vars.youtubePlayers[playerId].playerObj = new YT.Player(playerId, {
 							events: {
-								'onReady': function(e){
+								onReady: function(e){
 									youtubePlayerReady(e, playerId);
 								},
-								'onStateChange': function(e){
+								onStateChange: function(e){
 									youtubePlayerStateChange(e, playerId);
 								}
 							}
@@ -500,7 +606,7 @@ if(lqx && !('analytics' in lqx)) {
 			else {
 				// keep track how many time we have attempted, retry unless it has been more than 30secs
 				vars.youTubeIframeAPIReadyAttempts++;
-				if(vars.youTubeIframeAPIReadyAttempts < 120) setTimeout(function(){
+				if(vars.youTubeIframeAPIReadyAttempts < 120) window.setTimeout(function(){
 					onYouTubeIframeAPIReady();
 				}, 250);
 			}
@@ -555,7 +661,7 @@ if(lqx && !('analytics' in lqx)) {
 				// video playing
 				if(vars.youtubePlayers[playerId].playerObj.getPlayerState() == 1) {
 					// recursively call this function in 1s to keep track of video progress
-					vars.youtubePlayers[playerId].timer = setTimeout(function(){youtubePlayerStateChange(e, playerId);}, 1000);
+					vars.youtubePlayers[playerId].timer = window.setTimeout(function(){youtubePlayerStateChange(e, playerId);}, 1000);
 
 					// if this is the first time we get the playing status, track it as start
 					if(!vars.youtubePlayers[playerId].start){
@@ -574,7 +680,7 @@ if(lqx && !('analytics' in lqx)) {
 							}
 
 							else {
-								clearTimeout(vars.youtubePlayers[playerId].timer);
+								window.clearTimeout(vars.youtubePlayers[playerId].timer);
 							}
 						}
 					}
@@ -583,7 +689,7 @@ if(lqx && !('analytics' in lqx)) {
 				// video buffering
 				if(vars.youtubePlayers[playerId].playerObj.getPlayerState() == 3) {
 					// recursively call this function in 1s to keep track of video progress
-					vars.youtubePlayers[playerId].timer = setTimeout(function(){youtubePlayerStateChange(e, playerId);}, 1000);
+					vars.youtubePlayers[playerId].timer = window.setTimeout(function(){youtubePlayerStateChange(e, playerId);}, 1000);
 				}
 
 				// send event to GA if label was set
@@ -595,7 +701,6 @@ if(lqx && !('analytics' in lqx)) {
 				// iframe no longer exists, remove it from array
 				delete vars.youtubePlayers[playerId];
 			}
-
 		};
 
 		var vimeoReceiveMessage = function(e){
@@ -604,7 +709,7 @@ if(lqx && !('analytics' in lqx)) {
 			if((/^https?:\/\/player.vimeo.com/).test(e.origin)) {
 				// parse the data
 				var data = JSON.parse(e.data);
-				player = vars.vimeoPlayers[data.player_id];
+				var player = vars.vimeoPlayers[data.player_id];
 				var label;
 
 				switch (data.event) {
@@ -650,11 +755,7 @@ if(lqx && !('analytics' in lqx)) {
 				if(label){
 					videoTrackingEvent(data.player_id, label, 'No title', player.progress * 10); // vimeo doesn't provide a mechanism for getting the video title
 				}
-
 			}
-
-
-
 		};
 
 		var vimeoSendMessage = function(playerId, origin, action, value){
@@ -669,11 +770,12 @@ if(lqx && !('analytics' in lqx)) {
 
 		var videoTrackingEvent = function(playerId, label, title, value) {
 			ga('send', {
-				'hitType': 'event',
-				'eventCategory' : 'Video',
-				'eventAction' : label,
-				'eventLabel' : title + ' (' + jQuery('#' + playerId).attr('src').split('?')[0] + ')',
-				'eventValue': value
+				hitType:'event',
+				eventCategory: 'Video',
+				eventAction: label,
+				eventLabel: title + ' (' + jQuery('#' + playerId).attr('src').split('?')[0] + ')',
+				eventValue: value,
+				nonInteraction: opts.video.nonInteraction
 			});
 		};
 
@@ -697,9 +799,9 @@ if(lqx && !('analytics' in lqx)) {
 			lqx.vars.window.on('focusout', function(){userInactive();});
 
 			// refresh active and inactive time counters
-			var timer = setInterval(function(){
+			var timer = window.setInterval(function(){
 				// Stop updating if maxTime is reached
-				if(vars.userActive.activeTime + vars.userActive.inactiveTime >= opts.userActive.maxTime) clearInterval(timer);
+				if(vars.userActive.activeTime + vars.userActive.inactiveTime >= opts.userActive.maxTime) window.clearInterval(timer);
 				// Update counters
 				else {
 					if(vars.userActive.active) {
@@ -724,7 +826,7 @@ if(lqx && !('analytics' in lqx)) {
 			// if no throttle
 			if(!vars.userActive.throttle) {
 				vars.userActive.throttle = true;
-				setTimeout(function(){vars.userActive.throttle = false;}, opts.userActive.throttle);
+				window.setTimeout(function(){vars.userActive.throttle = false;}, opts.userActive.throttle);
 				// when changing from being inactive
 				if(!vars.userActive.active) {
 					// set state to active
@@ -739,8 +841,8 @@ if(lqx && !('analytics' in lqx)) {
 				vars.userActive.active = true;
 
 				// after idle time turn inactive
-				clearTimeout(vars.userActive.timer);
-				vars.userActive.timer = setTimeout(function(){userInactive();}, opts.userActive.idleTime);
+				window.clearTimeout(vars.userActive.timer);
+				vars.userActive.timer = window.setTimeout(function(){userInactive();}, opts.userActive.idleTime);
 			}
 		};
 
@@ -749,11 +851,48 @@ if(lqx && !('analytics' in lqx)) {
 			// set state to inactive
 			vars.userActive.active = false;
 			// clear timer
-			clearTimeout(vars.userActive.timer);
+			window.clearTimeout(vars.userActive.timer);
 			// add active time
 			vars.userActive.activeTime += (new Date()).getTime() - vars.userActive.lastChangeTime;
 			// update last change time
 			vars.userActive.lastChangeTime = (new Date()).getTime();
+		};
+
+		// Show/hide element based on region
+		var abTestDisplay = function(elems) {
+			/**
+			 *
+			 * Checks for elements with attribute data-abtest with values 'testName-A' or 'testName-B',
+			 * or class names 'abtest-testName-a' or 'abtest-testName-b'
+			 *
+			 */
+			if(elems instanceof Node) {
+				// Not an array, convert to an array
+				elems = [elems];
+			}
+			else if(elems instanceof jQuery) {
+				// Convert jQuery to array
+				elems = elems.toArray();
+			}
+			if(elems.length) {
+				elems.forEach(function(elem){
+					elem = jQuery(elem);
+
+					var elemGroupMatch = false;
+
+					// Get attribute options first
+					if(elem.attr('data-abtest') === vars.abTestGroup) elemGroupMatch = true;
+
+					// Get classes
+					if(elem.hasClass('abtest-' + vars.abTestGroup)) elemGroupMatch = true;
+
+					// hide/remove element
+					if(!elemGroupMatch) {
+						if(opts.abTest.removeNoMatch) elem.remove();
+						else elem.css('display', 'none');
+					}
+				});
+			}
 		};
 
 		return {

@@ -1,7 +1,7 @@
 /**
  * autoresize.js - Automatically resize form elements to show contents
  *
- * @version     2.2.2
+ * @version     2.3.1
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix
@@ -28,6 +28,7 @@ if(lqx && !('autoresize' in lqx)) {
 		 */
 
 		var opts = {
+			autoresizeSelector: '.autoresize',
 			sel: [
 				'textarea',
 				'input[type=text]',
@@ -43,20 +44,20 @@ if(lqx && !('autoresize' in lqx)) {
 
 		var init = function(){
 			// Copy default opts and vars
-			jQuery.extend(lqx.opts.autoresize, opts);
+			jQuery.extend(true, lqx.opts.autoresize, opts);
 			opts = lqx.opts.autoresize;
-			jQuery.extend(lqx.vars.autoresize, vars);
+			jQuery.extend(true, lqx.vars.autoresize, vars);
 			vars = lqx.vars.autoresize;
 
 			// Initialize on lqxready
 			lqx.vars.window.on('lqxready', function() {
 				// Initialize only if enabled
-				if(lqx.opts.autoresize.enabled) {
+				if(opts.enabled) {
 					lqx.log('Initializing `autoresize`');
 
 					// Add the .autoresize class
 					opts.sel.forEach(function(sel, idx){
-						opts.sel[idx] = sel + '.autoresize';
+						opts.sel[idx] = sel + opts.autoresizeSelector;
 					});
 					// Process the sel option into a selector string
 					vars.sel = opts.sel.join(', ');
@@ -67,12 +68,17 @@ if(lqx && !('autoresize' in lqx)) {
 						setup(jQuery(vars.sel));
 
 						// Add a mutation handler for accordions added to the DOM
-						lqx.mutation.addHandler('addNode', opts.sel, setup);
+						lqx.mutation.addHandler('addNode', opts.sel.join(','), setup);
 					});
 				}
 			});
 
-			return lqx.autoresize.init = true;
+			// Run only once
+			lqx.autoresize.init = function(){
+				lqx.warn('lqx.autoresize.init already executed');
+			};
+
+			return true;
 		};
 
 		var setup = function(elems) {
@@ -140,7 +146,8 @@ if(lqx && !('autoresize' in lqx)) {
 		};
 
 		return {
-			init: init
+			init: init,
+			setup: setup
 		};
 	})();
 	lqx.autoresize.init();

@@ -1,7 +1,7 @@
 /**
  * util.js - Utility functions
  *
- * @version     2.2.2
+ * @version     2.3.1
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix
@@ -10,7 +10,34 @@
  */
 
 if(lqx && !('util' in lqx)) {
-	lqx.util = {
+	lqx.util = (function(){
+		var opts = {};
+
+		var vars = {};
+
+		var init = function(){
+			// Copy default opts
+			jQuery.extend(true, lqx.opts.util, opts);
+			opts = lqx.opts.util;
+			jQuery.extend(true, lqx.vars.util, vars);
+			vars = lqx.vars.util;
+
+			// Initialize on lqxready
+			lqx.vars.window.on('lqxready', function() {
+				// Initialize only if enabled
+				if(opts.enabled) {
+					lqx.log('Initializing `util`');
+				}
+			});
+
+			// Run only once
+			lqx.util.init = function(){
+				lqx.warn('lqx.util.init already executed');
+			};
+
+			return true;
+		};
+
 		// Function for handling cookies with ease
 		// inspired by https://github.com/js-cookie/js-cookie and https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie/Simple_document.cookie_framework
 		// lqx.util.cookie(name) to get value of cookie name
@@ -24,7 +51,7 @@ if(lqx && !('util' in lqx)) {
 		// domain: string
 		// secure: any non-false value
 		// httpOnly: any non-false value
-		cookie: function(name, value, attributes) {
+		var cookie = function(name, value, attributes) {
 			if(arguments.length === 0 || !name) return false;
 
 			// get cookie
@@ -44,36 +71,118 @@ if(lqx && !('util' in lqx)) {
 			// set cookie
 			document.cookie = c;
 			return true;
-		},
+		};
 
 		// Simple hash function
-		hash: function(str) {
+		var hash = function(str) {
 			for(var i = 0, h = 4641154056; i < str.length; i++) h = Math.imul(h + str.charCodeAt(i) | 0, 2654435761);
 			h = (h ^ h >>> 17) >>> 0;
 			return h.toString(36);
-		},
+		};
+
+		// Super simple XOR encrypt function
+		// Not secure!
+		// Based on https://gist.github.com/sukima/5613286
+		var encrypt = function(key, plaintext) {
+			let cyphertext = [];
+			// Convert to hex to properly handle UTF8
+			plaintext = Array.from(plaintext).map(function(c) {
+				if(c.charCodeAt(0) < 128) return c.charCodeAt(0).toString(16).padStart(2, '0');
+				else return encodeURIComponent(c).replace(/\%/g,'').toLowerCase();
+			}).join('');
+			// Convert each hex to decimal
+			plaintext = plaintext.match(/.{1,2}/g).map(x => parseInt(x, 16));
+			// Perform xor operation
+			for (let i = 0; i < plaintext.length; i++) {
+				cyphertext.push(plaintext[i] ^ key.charCodeAt(Math.floor(i % key.length)));
+			}
+			// Convert to hex
+			cyphertext = cyphertext.map(function(x) {
+				return x.toString(16).padStart(2, '0');
+			});
+			return cyphertext.join('');
+		};
+
+		// Super simple XOR decrypt function
+		// Not secure!
+		// Based on https://gist.github.com/sukima/5613286
+		var decrypt = function(key, cyphertext) {
+			try {
+				cyphertext = cyphertext.match(/.{1,2}/g).map(x => parseInt(x, 16));
+				let plaintext = [];
+				for (let i = 0; i < cyphertext.length; i++) {
+					plaintext.push((cyphertext[i] ^ key.charCodeAt(Math.floor(i % key.length))).toString(16).padStart(2, '0'));
+				}
+				return decodeURIComponent('%' + plaintext.join('').match(/.{1,2}/g).join('%'));
+			}
+			catch(e) {
+				return false;
+			}
+		};
+
+		// Generates an encryption key fromm a password
+		// Not secure!
+		var passwordDerivedKey = function(password, salt, iterations, len) {
+			if(!password) password = randomStr();
+			if(!salt) salt = '80ymb4oZ';
+			if(!iterations) iterations = 16;
+			if(!len) len = 256;
+			len = Math.ceil(len / 8);
+			var key = '';
+
+			while(key.length < len) {
+				var i = 0;
+				var intSalt = salt;
+				var intKey = '';
+				while(i < iterations) {
+					intKey = hash(password + intSalt);
+					var newSalt = '';
+					for(let j = 0; j < intSalt.length; j++) {
+						newSalt += (intSalt.charCodeAt(j) ^ intKey.charCodeAt(Math.floor(j % intKey.length))).toString(36);
+					}
+					intSalt = newSalt;
+					i++;
+				}
+				key = intKey + key;
+			}
+			return key.substring(0, len);
+		};
+
+		// Generates a random string of the specificed length
+		var randomStr = function(len) {
+			var str = parseInt(Math.random()*10e16).toString(36);
+			if(typeof len == 'undefined') return str;
+			else {
+				while(str.length < len) str += parseInt(Math.random()*10e16).toString(36);
+				return str.substring(0, len);
+			}
+		};
+
+		// Creates a pseudo-unique string using current time and random number
+		var uniqueStr = function() {
+			var d = new Date();
+			var dd = new Date(d.getFullYear() - 3,0,1);
+			return ((d.getTime() - dd.getTime()) * 1000 + d.getMilliseconds()).toString(36) + randomStr(3);
+		};
 
 		// add unique value to the query string of form's action URL, to avoid caching problem
-		uniqueUrl: function(sel, attrib) {
+		var uniqueUrl = function(sel, attrib) {
 			var elems = jQuery(sel);
 			if(elems.length) {
 				lqx.log('Setting unique URLs in ' + attrib + ' for ' + sel + ' ' + elems.length + ' elements');
-				var d = new Date();
-				var s = (d.getTime() * 1000 + d.getMilliseconds()).toString(36);
-
 				elems.each(function(){
 					var url = jQuery(this).attr(attrib);
 					if(typeof url != 'undefined') {
-						jQuery(this).attr(attrib, url + (url.indexOf('?') !== -1 ? '&' : '?') + s + parseInt(Math.random()*10e6).toString(36));
+						jQuery(this).attr(attrib, url + (url.indexOf('?') !== -1 ? '&' : '?') + uniqueStr());
 					}
 				});
 			}
-		},
+		};
 
 		// Enable swipe detection
 		// sel - element selector
 		// func - name of callback function, will receive selector and direction (up, dn, lt, rt)
-		swipe: function(sel, callback, options) {
+		var swipe = function(sel, callback, options) {
 			lqx.log('Setting up swipe detection for ' + sel);
 
 			var swp = {};
@@ -88,7 +197,7 @@ if(lqx && !('util' in lqx)) {
 			};
 
 			if(typeof options == 'object') {
-				jQuery.extend(opts, options);
+				jQuery.extend(true, opts, options);
 			}
 
 			lqx.vars.body.on('touchstart', sel, function(e) {
@@ -138,13 +247,13 @@ if(lqx && !('util' in lqx)) {
 					}
 				}
 			});
-		},
+		};
 
 		// Porting of sprintf function
 		// Returns a formatted string using provided format and data
 		// From https://github.com/kvz/locutus/blob/master/src/php/strings/sprintf.js
 		// Docs http://php.net/manual/en/function.sprintf.php
-		sprintf: function() {
+		var sprintf = function() {
 			var regex = /%%|%(?:(\d+)\$)?((?:[-+#0 ]|'[\s\S])*)(\d+)?(?:\.(\d*))?([\s\S])/g;
 			var args = arguments;
 			var i = 0;
@@ -310,14 +419,14 @@ if(lqx && !('util' in lqx)) {
 			catch (err) {
 				return false;
 			}
-		},
+		};
 
 		// Compares version strings
 		// Returns:
 		// 0: equal
 		// 1: a > b
 		// -1: a < b
-		versionCompare: function(a, b) {
+		var versionCompare = function(a, b) {
 			// If they are equal
 			if(a === b) return 0;
 
@@ -340,6 +449,22 @@ if(lqx && !('util' in lqx)) {
 
 			// Otherwise they are the same.
 			return 0;
-		}
-	};
+		};
+
+		return {
+			init: init,
+			cookie: cookie,
+			encrypt: encrypt,
+			decrypt: decrypt,
+			hash: hash,
+			passwordDerivedKey: passwordDerivedKey,
+			randomStr: randomStr,
+			uniqueStr: uniqueStr,
+			uniqueUrl: uniqueUrl,
+			swipe: swipe,
+			sprintf: sprintf,
+			versionCompare: versionCompare
+		};
+	})();
+	lqx.util.init();
 }

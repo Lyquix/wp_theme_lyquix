@@ -1,7 +1,7 @@
 /**
  * tabs.js - Functionality to handle tabs
  *
- * @version     2.2.2
+ * @version     2.3.1
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix
@@ -20,28 +20,54 @@ if(lqx && !('tabs' in lqx)) {
 		 *
 		**/
 
+		var opts = {
+			tabSelector: '.tab',
+			tabGroupSelector: '.tab-group',
+			tabPanelSelector: '.tab-panel',
+			tabContentClass: 'tab-content',
+			tabNavClass: 'tab-nav',
+			analytics: {
+				enabled: true,
+				nonInteraction: true
+			}
+		};
+
+		var vars = [];
+
 		var init = function(){
-			// Copy default opts and vars
-			vars = lqx.vars.tabs = [];
+			// Copy default opts
+			jQuery.extend(true, lqx.opts.tabs, opts);
+			opts = lqx.opts.tabs;
+			jQuery.extend(true, lqx.vars.tabs, vars);
+			vars = lqx.vars.tabs;
 
 			// Initialize on lqxready
 			lqx.vars.window.on('lqxready', function() {
 				// Initialize only if enabled
-				if(lqx.opts.tabs.enabled) {
+				if(opts.enabled) {
 					lqx.log('Initializing `tabs`');
+
+					// Disable analytics if the analytics module is not enabled
+					opts.analytics.enabled = lqx.opts.analytics.enabled ? opts.analytics.enabled : false;
+					if(opts.analytics.enabled) lqx.log('Setting tabs tracking');
 
 					// Trigger functions on document ready
 					lqx.vars.document.ready(function() {
 						// Setup tabss loaded initially on the page
-						setup(jQuery('.tab'));
+						setup(jQuery(opts.tabSelector));
 
 						// Add a mutation handler for tabss added to the DOM
-						lqx.mutation.addHandler('addNode', '.tab', setup);
+						lqx.mutation.addHandler('addNode', opts.tabSelector, setup);
 					});
 				}
 			});
 
-			return lqx.tabs.init = true;
+			// Run only once
+			lqx.tabs.init = function(){
+				lqx.warn('lqx.tabs.init already executed');
+			};
+
+			return true;
 		};
 
 		var setup = function(elems){
@@ -62,21 +88,21 @@ if(lqx && !('tabs' in lqx)) {
 					// Check if tab is already initialized
 					if(tab.attr('ready') === undefined) {
 						// Check if this .tab is part of .tab-group
-						var group = tab.parents('.tab-group');
+						var group = tab.parents(opts.tabGroupSelector);
 						if(group.length) {
 							// Check if it has a data-tab attribute
 							var tabName = tab.attr('data-tab');
 							if(tabName) {
 								// Check if there is a matching panel element
-								var panel = group.find('.tab-panel[data-tab="' + tabName + '"]');
+								var panel = group.find(opts.tabPanelSelector + '[data-tab="' + tabName + '"]');
 								if(panel.length) {
 									// Add the "ready" attribute
 									tab.attr('ready', '');
 
 									// Check if .tab-content exists, otherwise create it
-									var content = group.find('.tab-content');
+									var content = group.find('.' + opts.tabContentClass);
 									if(!content.length) {
-										content = jQuery('<div class="tab-content"></div>');
+										content = jQuery('<div class="' + opts.tabContentClass + '"></div>');
 										content.prependTo(group);
 									}
 
@@ -84,9 +110,9 @@ if(lqx && !('tabs' in lqx)) {
 									panel.appendTo(content);
 
 									// Check if .tab-nav exists, otherwise create it
-									var nav = group.find('.tab-nav');
+									var nav = group.find('.' + opts.tabNavClass);
 									if(!nav.length) {
-										nav = jQuery('<div class="tab-nav"></div>');
+										nav = jQuery('<div class="' + opts.tabNavClass + '"></div>');
 										nav.prependTo(group);
 									}
 
@@ -94,7 +120,7 @@ if(lqx && !('tabs' in lqx)) {
 									tab.appendTo(nav);
 
 									// If first tab in nav, mark it as open
-									if(nav.find('.tab').index(tab) == 0) {
+									if(nav.find(opts.tabSelector).index(tab) == 0) {
 										tab.addClass('open');
 										panel.addClass('open');
 									}
@@ -104,13 +130,25 @@ if(lqx && !('tabs' in lqx)) {
 									}
 
 									// Listener for click on tab
-									tab.click(function(){
+									tab.on('click', function(){
 										// Open clicked tab and matching panel
 										tab.removeClass('closed').addClass('open');
 										panel.removeClass('closed').addClass('open');
+
 										// Close all other tabs and panels in the group
-										nav.find('.tab').not(tab).removeClass('open').addClass('closed');
-										content.find('.tab-panel').not(panel).removeClass('open').addClass('closed');
+										nav.find(opts.tabSelector).not(tab).removeClass('open').addClass('closed');
+										content.find(opts.tabPanelSelector).not(panel).removeClass('open').addClass('closed');
+
+										// Send event for tab clicked
+										if(opts.analytics.enabled && typeof ga !== 'undefined') {
+											ga('send', {
+												'hitType': 'event',
+												'eventCategory': 'Tab',
+												'eventAction': 'Click',
+												'eventLabel': tab.text(),
+												'nonInteraction': opts.analytics.nonInteraction
+											});
+										}
 									});
 								}
 								// No matching panel found
@@ -120,7 +158,7 @@ if(lqx && !('tabs' in lqx)) {
 							}
 							// Element has no data-tab attribute
 							else {
-								lqx.error('No data-tab attribute for .tab element')
+								lqx.error('No data-tab attribute for .tab element');
 							}
 						}
 						// There is no tab group
@@ -133,7 +171,8 @@ if(lqx && !('tabs' in lqx)) {
 		};
 
 		return {
-			init: init
+			init: init,
+			setup: setup
 		};
 	})();
 	lqx.tabs.init();

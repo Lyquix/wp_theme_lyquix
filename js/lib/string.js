@@ -1,7 +1,7 @@
 /**
  * string.js - Added functionality to the String prototype
  *
- * @version     2.2.2
+ * @version     2.3.1
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix
@@ -34,15 +34,19 @@ if(lqx && !('string' in lqx)) {
 			],
 		};
 
+		var vars = {};
+
 		var init = function() {
 			// Copy default opts and vars
-			jQuery.extend(lqx.opts.string, opts);
+			jQuery.extend(true, lqx.opts.string, opts);
 			opts = lqx.opts.string;
+			jQuery.extend(true, lqx.vars.string, vars);
+			vars = lqx.vars.string;
 
 			// Initialize on lqxready
 			lqx.vars.window.on('lqxready', function() {
 				// Initialize only if enabled
-				if(lqx.opts.string.enabled) {
+				if(opts.enabled) {
 					lqx.log('Initializing `string`');
 
 					// Add functions to prototype
@@ -50,14 +54,19 @@ if(lqx && !('string' in lqx)) {
 					opts.funcs.forEach(function(func){
 						if(!(func in String.prototype)) {
 							String.prototype[func] = f[func];
-							added.push(func)
+							added.push(func);
 						}
 					});
 					lqx.log('Added new functions to String prototype', added);
 				}
 			});
 
-			return lqx.string.init = true;
+			// Run only once
+			lqx.string.init = function(){
+				lqx.warn('lqx.string.init already executed');
+			};
+
+			return true;
 		};
 
 		// A regular expression string matching whitespace
@@ -333,7 +342,7 @@ if(lqx && !('string' in lqx)) {
 				var str = this;
 
 				return r[key].test(str);
-			}
+			};
 		});
 
 		return {

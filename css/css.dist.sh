@@ -3,7 +3,7 @@
 #
 # css.dist.sh - Bash script to process SCSS files, run autoprefixer, and chunk files
 #
-# @version     2.1.0
+# @version     2.3.1
 # @package     wp_theme_lyquix
 # @author      Lyquix
 # @copyright   Copyright (C) 2015 - 2018 Lyquix

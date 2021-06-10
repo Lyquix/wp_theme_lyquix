@@ -1,7 +1,7 @@
 /**
  * gulpfile.js - Watch and automatically process CSS and JS
  *
- * @version     2.2.2
+ * @version     2.3.1
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix
@@ -25,7 +25,7 @@ gulp.task('process-css', function(){
 });
 
 gulp.task('process-js', function(){
-	return gulp.src(['js/scripts.js'])
+	return gulp.src(['js/scripts.core.js'])
 		.on('error', errorLog)
 		.pipe(shell(['bash ' + cwd + '/js/js.sh']));
 });
@@ -37,7 +37,7 @@ gulp.task('default', function () {
 		'./css/lib/*.scss'
 	], gulp.series('process-css'));
 	gulp.watch([
-		'./js/scripts.js',
+		'./js/scripts.core.js',
 		'./js/custom/*.js',
 		'./js/custom/components/*.js',
 		'./js/custom/controllers/*.js',

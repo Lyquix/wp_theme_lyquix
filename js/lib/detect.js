@@ -1,7 +1,7 @@
 /**
  * detect.js - Detection of device, browser and O/S
  *
- * @version     2.2.2
+ * @version     2.3.1
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix
@@ -34,15 +34,15 @@ if(lqx && !('detect' in lqx)) {
 
 		var init = function(){
 			// Copy default opts and vars
-			jQuery.extend(lqx.opts.detect, opts);
+			jQuery.extend(true, lqx.opts.detect, opts);
 			opts = lqx.opts.detect;
-			jQuery.extend(lqx.vars.detect, vars);
+			jQuery.extend(true, lqx.vars.detect, vars);
 			vars = lqx.vars.detect;
 
 			// Initialize on lqxready
 			lqx.vars.window.on('lqxready', function() {
 				// Initialize only if enabled
-				if(lqx.opts.detect.enabled) {
+				if(opts.enabled) {
 					lqx.log('Initializing `detect`');
 
 					if(opts.mobile) detectMobile();
@@ -54,7 +54,12 @@ if(lqx && !('detect' in lqx)) {
 				}
 			});
 
-			return lqx.detect.init = true;
+			// Run only once
+			lqx.detect.init = function(){
+				lqx.warn('lqx.detect.init already executed');
+			};
+
+			return true;
 		};
 
 		// Get functions
@@ -75,7 +80,7 @@ if(lqx && !('detect' in lqx)) {
 		};
 		var features = function() {
 			return vars.features;
-		}
+		};
 
 		// Uses the mobile-detect.js library to detect if the browser is a mobile device
 		// Adds the classes mobile, phone and tablet to the body tag if applicable
@@ -114,7 +119,7 @@ if(lqx && !('detect' in lqx)) {
 		// based on: https://github.com/ded/bowser
 		// list of user agen strings: http://www.webapps-online.com/online-tools/user-agent-strings/dv
 		var detectBrowser = function(){
-			var ua = navigator.userAgent, browser;
+			var ua = window.navigator.userAgent, browser;
 
 			// Helper functions to deal with common regex
 			function getFirstMatch(regex) {
@@ -199,7 +204,7 @@ if(lqx && !('detect' in lqx)) {
 		// Based on bowser: https://github.com/ded/bowser
 		// List of user agent strings: http://www.webapps-online.com/online-tools/user-agent-strings/dv
 		var detectOS = function() {
-			var ua = navigator.userAgent, os;
+			var ua = window.navigator.userAgent, os;
 
 			// Helper functions to deal with common regex
 			function getFirstMatch(regex) {

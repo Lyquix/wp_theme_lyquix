@@ -1,7 +1,7 @@
 /**
  * mutation.js - Mutation observer and handler
  *
- * @version     2.2.2
+ * @version     2.3.1
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix
@@ -11,6 +11,10 @@
 
 if(lqx && !('mutation' in lqx)) {
 	lqx.mutation = (function(){
+		var opts = {
+
+		};
+
 		var vars = {
 			observer: null,
 			addNode: [],
@@ -20,13 +24,15 @@ if(lqx && !('mutation' in lqx)) {
 
 		var init = function(){
 			// Copy default opts and vars
-			jQuery.extend(lqx.vars.mutation, vars);
+			jQuery.extend(true, lqx.opts.mutation, opts);
+			opts = lqx.opts.mutation;
+			jQuery.extend(true, lqx.vars.mutation, vars);
 			vars = lqx.vars.mutation;
 
 			// Initialize on lqxready
 			lqx.vars.window.on('lqxready', function() {
 				// Initialize only if enabled
-				if(lqx.opts.mutation.enabled) {
+				if(opts.enabled) {
 					lqx.log('Initializing `mutation`');
 
 					// Create observer
@@ -34,7 +40,12 @@ if(lqx && !('mutation' in lqx)) {
 				}
 			});
 
-			return lqx.mutation.init = true;
+			// Run only once
+			lqx.mutation.init = function(){
+				lqx.warn('lqx.mutation.init already executed');
+			};
+
+			return true;
 		};
 
 		// create a custom mutation observer that will trigger any needed functions
@@ -46,11 +57,6 @@ if(lqx && !('mutation' in lqx)) {
 			if (typeof mo !== 'undefined'){
 				vars.observer = new mo(handler);
 				vars.observer.observe(document, {childList: true, subtree: true, attributes: true});
-			}
-			else {
-				jQuery(document).on('DOMNodeInserted DOMNodeRemoved DOMAttrModified', function(e) {
-					handler(e);
-				});
 			}
 		};
 
@@ -81,49 +87,26 @@ if(lqx && !('mutation' in lqx)) {
 					case 'childList':
 						// Handle nodes added
 						if (mutRec.addedNodes.length > 0) {
-							Array.from(mutRec.addedNodes).forEach(function(e){
-								if(e.nodeType == Node.ELEMENT_NODE) {
-									vars.addNode.forEach(function(h){
-										if(e.matches(h.selector)) h.callback(e);
-									});
-								}
+							var nodes = nodesArray(mutRec.addedNodes)
+							nodes.forEach(function(e){
+								vars.addNode.forEach(function(h){
+									if(jQuery(e).is(h.selector)) h.callback(e);
+								});
 							});
 						}
 
 						// Handle nodes removed
 						if (mutRec.removedNodes.length > 0) {
-							Array.from(mutRec.removedNodes).forEach(function(e){
-								if(e.nodeType == Node.ELEMENT_NODE) {
-									vars.removeNode.forEach(function(h){
-										if(e.matches(h.selector)) h.callback(e);
-									});
-								}
+							var nodes = nodesArray(mutRec.removedNodes)
+							nodes.forEach(function(e){
+								vars.removeNode.forEach(function(h){
+									if(jQuery(e).is(h.selector)) h.callback(e);
+								});
 							});
 						}
 						break;
 
-					case 'DOMNodeInserted':
-					Array.from(mutRec.addedNodes).forEach(function(e){
-							if(e.nodeType == Node.ELEMENT_NODE) {
-								vars.addNode.forEach(function(h){
-									if(e.matches(h.selector)) h.callback(e);
-								});
-							}
-						});
-						break;
-
-					case 'DOMNodeRemoved':
-					Array.from(mutRec.removedNodes).forEach(function(e){
-							if(e.nodeType == Node.ELEMENT_NODE) {
-								vars.removeNode.forEach(function(h){
-									if(e.matches(h.selector)) h.callback(e);
-								});
-							}
-						});
-						break;
-
 					case 'attributes':
-					case 'DOMAttrModified':
 						vars.modAttrib.forEach(function(h){
 							if(mutRec.target.matches(h.selector)) h.callback(mutRec.target);
 						});
@@ -131,6 +114,17 @@ if(lqx && !('mutation' in lqx)) {
 				}
 			});
 		};
+
+		var nodesArray = function(nodes) {
+			var o = [];
+			for(var i = 0; i < nodes.length; i++) {
+				var n = jQuery(nodes[i]);
+				o.push(n);
+				var children = n.find('*').toArray();
+				if(children.length) o = o.concat(children);
+			}
+			return o;
+		}
 
 		return {
 			init: init,

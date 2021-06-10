@@ -1,8 +1,6 @@
 <?php
-/*
- * Template Name: Raw
- *
- * raw.php - page template outputs only the_content()
+/**
+ * config.dist.php - Configuration settings for ip2geo functionality
  *
  * @version     2.3.1
  * @package     wp_theme_lyquix
@@ -12,5 +10,7 @@
  * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
 
-the_post();
-echo get_the_content();
+$config = [
+	'maxmind_license_key' => '',
+	'max_db_age' => 90, // Maximum time allowed until updated database is downloaded, in days (default: 90)
+];

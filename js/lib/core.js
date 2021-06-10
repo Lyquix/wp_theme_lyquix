@@ -1,7 +1,7 @@
 /**
  * core.js - Lyquix JavaScript library
  *
- * @version     2.2.2
+ * @version     2.3.1
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix
@@ -9,30 +9,43 @@
  * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
 
+/* jshint browser: true, devel: true, esversion: 6, jquery: true, strict: true */
+/* globals ga, MobileDetect, YT, google */
+
+"use strict";
+
 if(typeof lqx !== 'undefined') {
-	console.error('`lqx` already exist!');
+	window.console.error('`lqx` already exist!');
 }
 else if(typeof jQuery == 'undefined') {
-	console.error('`jQuery` has not been loaded!');
+	window.console.error('`jQuery` has not been loaded!');
 }
 else {
 	var lqx = (function(){
 		// Default opts
 		var opts = {
 			debug: false,
-			siteURL: null,
-			tmplURL: null,
+			siteURL: window.location.protocol + '//' + window.location.hostname + (window.location.port != '' ? ':' + window.location.port : ''),
+			tmplURL: (function(){
+				let a = document.createElement("a");
+				a.href = jQuery('script[src*="js/lyquix.js"], script[src*="js/lyquix.min.js"]').attr('src');
+				return a.href.slice(0, a.href.indexOf('js/lyquix.'));
+			})(),
 			// Modules
 			accordion:  {enabled: true},
 			analytics:  {enabled: true},
 			autoresize: {enabled: true},
 			detect:     {enabled: true},
+			fittext:    {enabled: true},
 			fixes:      {enabled: true},
 			geolocate:  {enabled: true},
 			lyqbox:     {enabled: true},
+			map:        {enabled: true},
 			menu:       {enabled: true},
 			mutation:   {enabled: true},
+			popup:      {enabled: true},
 			responsive: {enabled: true},
+			store:      {enabled: true},
 			string:     {enabled: true},
 			tabs:       {enabled: true},
 			util:       {enabled: true}
@@ -41,16 +54,20 @@ else {
 		// Holds working data
 		var vars = {
 			// Modules
-			accordion:  {},
+			accordion:  [],
 			analytics:  {},
 			autoresize: {},
 			detect:     {},
+			fittext:    [],
 			fixes:      {},
 			geolocate:  {},
 			lyqbox:     {},
+			map:        {},
 			menu:       {},
 			mutation:   {},
+			popup:      {},
 			responsive: {},
+			store:      {},
 			string:     {},
 			tabs:       {},
 			util:       {},
@@ -74,7 +91,7 @@ else {
 				if(!lqx.vars.scrollThrottle) {
 					lqx.vars.document.trigger('scrollthrottle');
 					lqx.vars.scrollThrottle = true;
-					requestAnimationFrame(function() {
+					window.requestAnimationFrame(function() {
 						lqx.vars.scrollThrottle = false;
 						lqx.vars.document.trigger('scrollthrottle');
 					});
@@ -90,7 +107,7 @@ else {
 					lqx.vars.document.trigger('resizethrottle');
 					lqx.vars.resizeThrottle = true;
 					lqx.vars.resizeThrottleWidth = w;
-					requestAnimationFrame(function () {
+					window.requestAnimationFrame(function () {
 						lqx.vars.resizeThrottle = false;
 						lqx.vars.document.trigger('resizethrottle');
 					});
@@ -105,7 +122,12 @@ else {
 				}
 			});
 
-			return lqx.init = true;
+			// Run only once
+			lqx.init = function(){
+				lqx.warn('lqx.init already executed');
+			};
+
+			return true;
 		};
 
 		// Extends/updates the opts object
@@ -119,37 +141,50 @@ else {
 
 		// Triggers custom event 'lqxready'
 		var ready = function(opts) {
+			// Overide default options with passed options
 			if(typeof opts == 'object') lqx.options(opts);
+
+			// Overdide default and passed options with development options, if available
+			if(window.location.hostname.match(/^dev\.|\.dev$|\.test$/) !== null && typeof window.lqxDevOpts == 'object') lqx.options(window.lqxDevOpts);
+
+			// Get the body tag object
 			lqx.vars.body = jQuery(document.body);
+
+			// Trigger the lqxready event
 			lqx.log('lqxready event');
 			lqx.vars.window.trigger('lqxready');
 
-			return lqx.ready = true;
+			// Run only once
+			lqx.ready = function(){
+				lqx.warn('lqx.ready already executed');
+			};
+
+			return true;
 		};
 
 		// Internal console log/warn/error functions
 		// Use instead of console.log(), console.warn() and console.error(), use lqx.opts.debug to enable/disable
 		var log = function() {
 			if(opts.debug) {
-				for (var i = 0; i < arguments.length; i++) {
-					console.log(arguments[i]);
-				}
+				var args = [arguments.callee.name];
+				for(var i = 0; i < arguments.length; i++) args.push(arguments[i]);
+				window.console.log.apply(this, args);
 			}
 		};
 
 		var warn = function() {
 			if(opts.debug) {
-				for (var i = 0; i < arguments.length; i++) {
-					console.warn(arguments[i]);
-				}
+				var args = [arguments.callee.name];
+				for(var i = 0; i < arguments.length; i++) args.push(arguments[i]);
+				window.console.warn.apply(this, args);
 			}
 		};
 
 		var error = function() {
 			if(opts.debug) {
-				for (var i = 0; i < arguments.length; i++) {
-					console.error(arguments[i]);
-				}
+				var args = [arguments.callee.name];
+				for(var i = 0; i < arguments.length; i++) args.push(arguments[i]);
+				window.console.error.apply(this, args);
 			}
 		};
 
@@ -179,7 +214,7 @@ else {
 			}
 		};
 
-		var version = '2.1.0';
+		var version = '2.3.1';
 
 		return {
 			opts: opts,

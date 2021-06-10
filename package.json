@@ -3,7 +3,7 @@
 		"/**",
 		"* package.json - Minimal npm configuration, to enable gulp",
 		"*",
-		"* @version     2.1.0",
+		"* @version     2.3.1",
 		"* @package     wp_theme_lyquix",
 		"* @author      Lyquix",
 		"* @copyright   Copyright (C) 2015 - 2018 Lyquix",
@@ -22,10 +22,14 @@
 		"autoprefixer": "^9.7.3",
 		"gulp": "^4.0.2",
 		"gulp-shell": "^0.6.5",
+		"jshint": "^2.11.0",
 		"node-wget": "^0.4.3",
 		"postcss-cli": "^6.1.3",
 		"sass": "^1.24.2",
-		"terser": "^4.6.0",
 		"uglifycss": "0.0.29"
+	},
+	"dependencies": {
+		"babel-cli": "^6.26.0",
+		"babel-preset-env": "^1.7.0"
 	}
 }

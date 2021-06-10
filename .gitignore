@@ -21,4 +21,4 @@ Desktop.ini
 /dist/*.css
 /dist/*.js
 node_modules
-/php/ip2geo/GeoLite2-City.mmdb
+/php/ip2geo/GeoLite2-City.*
