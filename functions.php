@@ -10,6 +10,9 @@
  * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
 
+// Do not allow browsers to cache WordPress pages
+nocache_headers();
+
 require get_template_directory() . '/php/setup.php';
 add_action('after_setup_theme', 'lqx_setup');
 
