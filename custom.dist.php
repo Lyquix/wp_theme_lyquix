@@ -118,5 +118,6 @@ if(is_active_sidebar('body-scripts')) dynamic_sidebar('body-scripts');
 
 // End skip of header area for blank page template
 endif; ?>
+<?php wp_footer(); ?>
 </body>
 </html>
