@@ -169,5 +169,5 @@ if(!file_exists($tmpl_path . '/dist/' . $stylesheet_filename)) {
 
 function lqx_render_css() {
 	global $tmpl_url, $stylesheet_filename;
-	echo '<link href="' . $tmpl_url . '/dist/' . $stylesheet_filename . '" rel="preload" as="style" onload="this.rel=\'stylesheet\'" />' . "\n";
+	echo '<link href="' . $tmpl_url . '/dist/' . $stylesheet_filename . '" rel="stylesheet" />' . "\n";
 }
