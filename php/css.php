@@ -20,57 +20,6 @@ foreach($wp_styles -> queue as $i => $css) {
 // Array to store all stylesheets to be loaded
 $stylesheets = [];
 
-/*
-// Process dependencies
-$stylesheet_handles = [];
-
-function lqx_get_style_dependencies($h) {
-	global $wp_styles;
-	$deps = [];
-	if(count($wp_styles -> registered[$h] -> deps)) {
-		foreach($wp_styles -> registered[$h] -> deps as $d) {
-			$deps = array_merge($deps, lqx_get_style_dependencies($d));
-			$deps[] = $d;
-		}
-	}
-	return $deps;
-}
-
-foreach($wp_styles -> queue  as $stylesheet_handle) {
-	$stylesheet_handles = array_merge($stylesheet_handles, lqx_get_style_dependencies($stylesheet_handle));
-	$stylesheet_handles[] = $stylesheet_handle;
-}
-
-// Parse enqueued styles
-foreach($stylesheet_handles as $stylesheet_handle) {
-	$stylesheet = $wp_styles -> registered[$stylesheet_handle];
-	// Check if stylesheet is local or remote
-	if(parse_url($stylesheet -> src, PHP_URL_SCHEME)) {
-		// Absolute URL
-		if(get_theme_mod('merge_css_remote')) {
-			$stylesheets[] = ['url' => $stylesheet -> src . ($stylesheet -> ver ? '?ver=' . $stylesheet -> ver : '')];
-			wp_dequeue_style($stylesheet_handle);
-		}
-	}
-	elseif (parse_url($stylesheet -> src, PHP_URL_PATH)) {
-		// Relative URL
-		if(get_theme_mod('merge_css_local')) {
-			$url = $stylesheet -> src;
-			// Add leading / if missing
-			if(substr($url,0,1) != '/') $url = '/' . $url;
-			// Check if file exist
-			if(file_exists(ABSPATH . $url)) {
-				$stylesheets[] = [
-					'url' => $url,
-					'version' => date("YmdHis", filemtime(ABSPATH . $url))
-				];
-				wp_dequeue_style($stylesheet_handle);
-			}
-		}
-	}
-}
-*/
-
 // Use non minified version?
 $non_min_css = get_theme_mod('non_min_css', '0');
 

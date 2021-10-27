@@ -27,20 +27,6 @@ function lqx_customizer_add($wp_customize) {
 			]
 		],
 		'CSS' => [
-			/*
-			'merge_css_local' => [
-				'type' => 'checkbox',
-				'label' => 'Merge CSS: Local CSS Files'
-			],
-			'merge_css_remote' => [
-				'type' => 'checkbox',
-				'label' => 'Merge CSS: Remote CSS Files'
-			],
-			'merge_css_inline' => [
-				'type' => 'checkbox',
-				'label' => 'Merge CSS: Inline CSS Declarations'
-			],
-			*/
 			'non_min_css' => [
 				'type' => 'radio',
 				'label' => 'Use Original CSS',
@@ -75,20 +61,6 @@ function lqx_customizer_add($wp_customize) {
 				'choices' => ['0' => 'No', '1' => 'Core', '2' => 'Core + Sortable'],
 				'default' => '0'
 			],
-			/*
-			'merge_js_local' => [
-				'type' => 'checkbox',
-				'label' => 'Merge JS: Local JS Files'
-			],
-			'merge_js_remote' => [
-				'type' => 'checkbox',
-				'label' => 'Merge JS: Remote JS Files'
-			],
-			'merge_js_inline' => [
-				'type' => 'checkbox',
-				'label' => 'Merge JS: Inline JS Declarations'
-			],
-			*/
 			'lqx_debug' => [
 				'type' => 'radio',
 				'label' => 'Enable lqx debug',

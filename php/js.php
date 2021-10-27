@@ -38,57 +38,6 @@ else {
 // Array to store all scripts to be loaded
 $scripts = [];
 
-/*
-// Process dependencies
-$script_handles = [];
-
-function lqx_get_script_dependencies($h) {
-	global $wp_scripts;
-	$deps = [];
-	if(count($wp_scripts -> registered[$h] -> deps)) {
-		foreach($wp_scripts -> registered[$h] -> deps as $d) {
-			$deps = array_merge($deps, lqx_get_script_dependencies($d));
-			$deps[] = $d;
-		}
-	}
-	return $deps;
-}
-
-foreach($wp_scripts -> queue  as $script_handle) {
-	$script_handles = array_merge($script_handles, lqx_get_script_dependencies($script_handle));
-	$script_handles[] = $script_handle;
-}
-
-// Parse enqueued scripts
-foreach($script_handles as $script_handle) {
-	$script = $wp_scripts -> registered[$script_handle];
-	// Check if script is local or remote
-	if(parse_url($script -> src, PHP_URL_SCHEME)) {
-		// Absolute URL
-		if(get_theme_mod('merge_css_remote')) {
-			$scripts[] = ['url' => $script -> src . ($script -> ver ? '?ver=' . $script -> ver : '')];
-			wp_dequeue_script($script_handle);
-		}
-	}
-	elseif (parse_url($script -> src, PHP_URL_PATH)) {
-		// Relative URL
-		if(get_theme_mod('merge_css_local')) {
-			$url = $script -> src;
-			// Add leading / if missing
-			if(substr($url,0,1) != '/') $url = '/' . $url;
-			// Check if file exist
-			if(file_exists(ABSPATH . $url)) {
-				$scripts[] = [
-					'url' => $url,
-					'version' => date("YmdHis", filemtime(ABSPATH . $url))
-				];
-				wp_dequeue_script($script_handle);
-			}
-		}
-	}
-}
-*/
-
 // Use non minified version?
 $non_min_js = get_theme_mod('non_min_js', '0');
 
