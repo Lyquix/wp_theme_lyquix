@@ -160,7 +160,7 @@ else {
 		var options = function(o) {
 			if(typeof o == 'object') {
 				jQuery.extend(true, opts, o);
-				lqx.log('Options updated', opts);
+				$lqx.log('Options updated', opts);
 			}
 			return opts;
 		};
