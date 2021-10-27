@@ -96,10 +96,12 @@ if($tmpl_name) {
 }
 else {
 	if(is_home() || is_archive()) {
-		require get_template_directory() . '/php/archive.php';
+		if(tmpl_file_exists('archive')) require get_template_directory() . '/php/custom/archive.php';
+		else require get_template_directory() . '/php/archive.php';
 	}
 	elseif(is_singular()) {
-		require get_template_directory() . '/php/singular.php';
+		if(tmpl_file_exists('singular')) require get_template_directory() . '/php/custom/singular.php';
+		else require get_template_directory() . '/php/singular.php';
 	}
 	else {
 		echo "<pre><strong>Error:</strong> no suitable template has been found!\n\n";
