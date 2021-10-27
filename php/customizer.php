@@ -175,7 +175,7 @@ function lqx_customizer_add($wp_customize) {
 				'type' => 'radio',
 				'label' => 'IE11 alert',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
-				'default' => '0'
+				'default' => '1'
 			]
 		]
 	];
