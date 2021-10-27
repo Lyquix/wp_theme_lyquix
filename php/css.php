@@ -12,7 +12,7 @@
 
 // Prevent adding css libraries in wp_head()
 global $wp_styles;
-$remove_css_libraries = explode("\n", trim(get_theme_mod('remove_css_libraries')));
+$remove_css_libraries = explode("\n", trim(get_theme_mod('remove_css_libraries', '')));
 foreach($wp_styles -> queue as $i => $css) {
 	if(array_search(trim($css), $remove_css_libraries)) unset($wp_styles -> queue[$i]);
 }
@@ -72,10 +72,10 @@ foreach($stylesheet_handles as $stylesheet_handle) {
 */
 
 // Use non minified version?
-$non_min_css = get_theme_mod('non_min_css');
+$non_min_css = get_theme_mod('non_min_css', '0');
 
 // Animte.css
-if(get_theme_mod('animatecss')) {
+if(get_theme_mod('animatecss', '0')) {
 	$stylesheets[] = ['url' => $cdnjs_url . 'animate.css/3.7.0/animate' . ($non_min_css ? '' : '.min') . '.css'];
 }
 

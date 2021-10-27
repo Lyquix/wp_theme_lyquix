@@ -12,13 +12,13 @@
 
 // Prevent adding js libraries in wp_head()
 global $wp_scripts;
-$remove_js_libraries = explode("\n", trim(get_theme_mod('remove_js_libraries')));
+$remove_js_libraries = explode("\n", trim(get_theme_mod('remove_js_libraries', '')));
 foreach($wp_scripts -> queue as $i => $js) {
 	if(array_search(trim($js), $remove_js_libraries)) unset($wp_scripts -> queue[$i]);
 }
 
 // Enable jQuery
-if(get_theme_mod('enable_jquery')) {
+if(get_theme_mod('enable_jquery', '1')) {
 	wp_enqueue_script('jquery');
 }
 else {
@@ -26,7 +26,7 @@ else {
 }
 
 // Enable jQuery UI
-if(get_theme_mod('enable_jquery_ui')) {
+if(get_theme_mod('enable_jquery_ui', '0')) {
 	wp_enqueue_script('jquery-ui-core');
 	if(get_theme_mod('enable_jquery_ui') == 2) wp_enqueue_script('jquery-ui-sortable');
 }
@@ -90,25 +90,25 @@ foreach($script_handles as $script_handle) {
 */
 
 // Use non minified version?
-$non_min_js = get_theme_mod('non_min_js');
+$non_min_js = get_theme_mod('non_min_js', '0');
 
 // LoDash
-if(get_theme_mod('lodash')) {
+if(get_theme_mod('lodash', '0')) {
 	$scripts[] = ['url' => $cdnjs_url . 'lodash.js/4.17.4/lodash' . ($non_min_js ? '' : '.min') . '.js'];
 }
 
 // SmoothScroll
-if(get_theme_mod('smoothscroll')) {
+if(get_theme_mod('smoothscroll', '0')) {
 	$scripts[] = ['url' => $cdnjs_url . 'smoothscroll/1.4.6/SmoothScroll' . ($non_min_js ? '' : '.min') . '.js'];
 }
 
 // MomentJS
-if(get_theme_mod('momentjs')) {
+if(get_theme_mod('momentjs', '0')) {
 	$scripts[] = ['url' => $cdnjs_url . 'moment.js/2.18.1/moment' . ($non_min_js ? '' : '.min') . '.js'];
 }
 
 // DotDotDot
-if(get_theme_mod('dotdotdot')) {
+if(get_theme_mod('dotdotdot', '0')) {
 	$scripts[] = ['url' => $cdnjs_url . 'jQuery.dotdotdot/1.7.4/jquery.dotdotdot' . ($non_min_js ? '' : '.min') . '.js'];
 }
 
@@ -194,18 +194,18 @@ if(!file_exists($tmpl_path . '/dist/' . $scripts_filename)) {
 // Set lqx options
 $lqx_options = [
 	'responsive' => [
-		'minIndex' => get_theme_mod('min_screen'),
-		'maxIndex' => get_theme_mod('max_screen')
+		'minIndex' => get_theme_mod('min_screen', '0'),
+		'maxIndex' => get_theme_mod('max_screen', '4')
 	],
 	'siteURL' => $site_abs_url,
 	'tmplURL' => $tmpl_url
 ];
 
-if(get_theme_mod('lqx_debug')) {
+if(get_theme_mod('lqx_debug', '0')) {
 	$lqx_options['debug'] = true;
 }
 
-if(get_theme_mod('ga_account')) {
+if(get_theme_mod('ga_account', '')) {
 	$lqx_options['analytics'] = [
 		'createParams' => [
 			'default' => [
