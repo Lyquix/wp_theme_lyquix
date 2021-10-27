@@ -124,6 +124,21 @@ function lqx_customizer_add($wp_customize) {
 			'ga_account' => [
 				'label' => 'Google Analytics Account',
 			],
+			'ga_pageview' => [
+				'type' => 'radio',
+				'label' => 'Send Google Analytics Pageview',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'ga_via_gtm' => [
+				'type' => 'radio',
+				'label' => 'Google Analytics via GTM',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '0'
+			],
+			'gtm_account' => [
+				'label' => 'Google Tag Manager Account',
+			],
 			'google_site_verification' => [
 				'label' => 'google-site-verification',
 			],

@@ -165,6 +165,10 @@ if(get_theme_mod('ga_account', '')) {
 	];
 }
 
+if(!get_theme_mod('ga_pageview', '1')) $lqx_options['analytics']['sendPageview'] = false;
+
+if(get_theme_mod('ga_via_gtm', '0')) $lqx_options['analytics']['usingGTM'] = true;
+
 // Merge with options from template settings
 $lqx_options = array_replace_recursive($lqx_options, json_decode(get_theme_mod('lqx_options', '{}'), true));
 $scripts_options = array_replace_recursive([], json_decode(get_theme_mod('scripts_options', '{}'), true));
@@ -172,4 +176,17 @@ $scripts_options = array_replace_recursive([], json_decode(get_theme_mod('script
 function lqx_render_js() {
 	global $tmpl_url, $scripts_filename, $lqx_options;
 	echo '<script defer src="' . $tmpl_url . '/dist/' . $scripts_filename . '" onload="lqx.ready(' . htmlentities(json_encode($lqx_options)) . '); $lqx.ready(' . htmlentities(json_encode($scripts_options)) . ');"></script>' . "\n";
+
+	// Load GTM head code
+	if(get_theme_mod('gtm_account', '')) {
+		echo "<script>" .
+			"(function(w, d, s, l, i){".
+			"w[l] = w[l] || [];" .
+			"w[l].push({'gtm.start': new Date().getTime(), event: 'gtm.js'});" .
+			"var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';" .
+			"j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;" .
+			"f.parentNode.insertBefore(j, f);" .
+			"})(window, document, 'script', 'dataLayer', '" . get_theme_mod('gtm_account') . "');" .
+			"</script>";
+	}
 }

@@ -112,6 +112,8 @@ if($lqx_page_template != 'blank'): ?>
 <?php
 // Include IE alerts
 require get_template_directory() . '/php/ie-alert.php';
+// Add body closing tag code
+require get_template_directory() . '/php/body-bottom.php';
 ?>
 <?php
 if(is_active_sidebar('body-scripts')) dynamic_sidebar('body-scripts');
