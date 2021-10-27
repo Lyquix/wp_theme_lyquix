@@ -166,9 +166,10 @@ if(get_theme_mod('ga_account', '')) {
 }
 
 // Merge with options from template settings
-$lqx_options = array_replace_recursive($lqx_options, json_decode(get_theme_mod('lqx_options') ? get_theme_mod('lqx_options') : '{}', true));
+$lqx_options = array_replace_recursive($lqx_options, json_decode(get_theme_mod('lqx_options', '{}'), true));
+$scripts_options = array_replace_recursive([], json_decode(get_theme_mod('scripts_options', '{}'), true));
 
 function lqx_render_js() {
 	global $tmpl_url, $scripts_filename, $lqx_options;
-	echo '<script defer src="' . $tmpl_url . '/dist/' . $scripts_filename . '" onload="lqx.ready(' . htmlentities(json_encode($lqx_options)) . ');"></script>' . "\n";
+	echo '<script defer src="' . $tmpl_url . '/dist/' . $scripts_filename . '" onload="lqx.ready(' . htmlentities(json_encode($lqx_options)) . '); $lqx.ready(' . htmlentities(json_encode($scripts_options)) . ');"></script>' . "\n";
 }

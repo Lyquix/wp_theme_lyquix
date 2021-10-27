@@ -77,6 +77,10 @@ function lqx_customizer_add($wp_customize) {
 				'type' => 'textarea',
 				'label' => 'Lyquix Library Options',
 			],
+			'scripts_options' => [
+				'type' => 'textarea',
+				'label' => 'Scripts Options',
+			],
 			'polyfill' => [
 				'type' => 'radio',
 				'label' => 'Use polyfill.io',
