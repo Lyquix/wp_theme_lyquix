@@ -2,7 +2,7 @@
 /**
  * body.php - Prepares body classes
  *
- * @version     2.3.1
+ * @version     2.3.2
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2017 Lyquix
