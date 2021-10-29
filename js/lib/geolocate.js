@@ -1,7 +1,7 @@
 /**
  * geolocate.js - geolocate functionality
  *
- * @version     2.3.2
+ * @version     2.3.3
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix

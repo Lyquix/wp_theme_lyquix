@@ -2,7 +2,7 @@
  * fixes.js - Browser fixes
  *
  * @package     wp_theme_lyquix
- * @version     2.3.2
+ * @version     2.3.3
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix
  * @license     GNU General Public License version 2 or later
