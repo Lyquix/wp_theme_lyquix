@@ -1,7 +1,7 @@
 /**
  * lyqbox.js - LyqBox - Lyquix lightbox functionality
  *
- * @version     2.1.0
+ * @version     2.3.3
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix
@@ -9,7 +9,7 @@
  * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
 
-if(lqx && !('lyqbox' in lqx)) {
+ if(lqx && !('lyqbox' in lqx)) {
 	lqx.lyqbox = (function(){
 		/**
 		 * Lyquix lightbox functionality
@@ -49,6 +49,7 @@ if(lqx && !('lyqbox' in lqx)) {
 		 *
 		 */
 		var opts = {
+			lyqboxId: '#lyqbox',
 			html:
 				'<div id="lyqbox">' +
 					'<div class="content-wrapper">' +
@@ -79,7 +80,10 @@ if(lqx && !('lyqbox' in lqx)) {
 					'<div class="thumbnails"></div>' +
 					'<div class="loading"></div>' +
 				'</div>',
-			analytics: true
+			analytics: {
+				enabled: true,
+				nonInteraction: true
+			}
 		};
 
 		var vars = {
@@ -106,20 +110,20 @@ if(lqx && !('lyqbox' in lqx)) {
 
 		var init = function(){
 			// Copy default opts and vars
-			jQuery.extend(lqx.opts.lyqbox, opts);
+			jQuery.extend(true, lqx.opts.lyqbox, opts);
 			opts = lqx.opts.lyqbox;
-			jQuery.extend(lqx.vars.lyqbox, vars);
+			jQuery.extend(true, lqx.vars.lyqbox, vars);
 			vars = lqx.vars.lyqbox;
 
 			// Initialize on lqxready
 			lqx.vars.window.on('lqxready', function() {
 				// Initialize only if enabled
-				if(lqx.opts.lyqbox.enabled) {
+				if(opts.enabled) {
 					lqx.log('Initializing `lyqbox`');
 
 					// Disable analytics if the analytics module is not enabled
-					if(!lqx.opts.analytics.enabled || !lqx.opts.analytics.lyqBox) opts.analytics = false;
-					if(opts.analytics) lqx.log('Setting LyqBox tracking');
+					opts.analytics.enabled = lqx.opts.analytics.enabled ? opts.analytics.enabled : false;
+					if(opts.analytics.enabled) lqx.log('Setting LyqBox tracking');
 
 					// Initialize on document ready
 					lqx.vars.window.ready(function() {
@@ -135,12 +139,17 @@ if(lqx && !('lyqbox' in lqx)) {
 				}
 			});
 
-			return lqx.lyqbox.init = true;
+			// Run only once
+			lqx.lyqbox.init = function(){
+				lqx.warn('lqx.lyqbox.init already executed');
+			};
+
+			return true;
 		};
 
 		var setup = function() {
 			// Append HTML structure
-			if(jQuery('#lyqbox').length) {
+			if(jQuery(opts.lyqboxId).length) {
 				lqx.error('There is an existing #lyqbox element!');
 				return false;
 			}
@@ -149,20 +158,20 @@ if(lqx && !('lyqbox' in lqx)) {
 			}
 
 			// Get jQuery elements
-			vars.overlay = jQuery('#lyqbox');
-			vars.closeElem = jQuery('#lyqbox .close');
-			vars.nextElem = jQuery('#lyqbox .next');
-			vars.prevElem = jQuery('#lyqbox .prev');
-			vars.zoomInElem = jQuery('#lyqbox .zoom-in');
-			vars.zoomOutElem = jQuery('#lyqbox .zoom-out');
-			vars.thumbsElem = jQuery('#lyqbox .thumbnails');
-			vars.loadingElem  = jQuery('#lyqbox .loading');
-			vars.titleElem  = jQuery('#lyqbox .info .title');
-			vars.captionElem  = jQuery('#lyqbox .info .caption');
-			vars.creditElem  = jQuery('#lyqbox .info .credit');
-			vars.counterElem  = jQuery('#lyqbox .counter');
-			vars.counterCurrElem  = jQuery('#lyqbox .counter .current');
-			vars.counterTotalElem  = jQuery('#lyqbox .counter .total');
+			vars.overlay = jQuery(opts.lyqboxId);
+			vars.closeElem = jQuery(opts.lyqboxId + ' .close');
+			vars.nextElem = jQuery(opts.lyqboxId + ' .next');
+			vars.prevElem = jQuery(opts.lyqboxId + ' .prev');
+			vars.zoomInElem = jQuery(opts.lyqboxId + ' .zoom-in');
+			vars.zoomOutElem = jQuery(opts.lyqboxId + ' .zoom-out');
+			vars.thumbsElem = jQuery(opts.lyqboxId + ' .thumbnails');
+			vars.loadingElem  = jQuery(opts.lyqboxId + ' .loading');
+			vars.titleElem  = jQuery(opts.lyqboxId + ' .info .title');
+			vars.captionElem  = jQuery(opts.lyqboxId + ' .info .caption');
+			vars.creditElem  = jQuery(opts.lyqboxId + ' .info .credit');
+			vars.counterElem  = jQuery(opts.lyqboxId + ' .counter');
+			vars.counterCurrElem  = jQuery(opts.lyqboxId + ' .counter .current');
+			vars.counterTotalElem  = jQuery(opts.lyqboxId + ' .counter .total');
 
 			// Assign active content container to the first .content box
 			vars.containerActive = vars.overlay.find('.content-wrapper').first().addClass('active');
@@ -198,7 +207,7 @@ if(lqx && !('lyqbox' in lqx)) {
 			});
 
 			// Add swipe event handler, only on images and videos
-			lqx.util.swipe('#lyqbox .content.image, #lyqbox .content.video', function(swp){
+			lqx.util.swipe(opts.lyqboxId + ' .content.image, ' + opts.lyqboxId + ' .content.video', function(swp){
 				if(swp.dir.indexOf('l') != -1) next(); // Swipe to the left equals right arrow
 				if(swp.dir.indexOf('r') != -1) prev(); // Swipe to the right equals left arrow
 			});
@@ -302,11 +311,12 @@ if(lqx && !('lyqbox' in lqx)) {
 			lqx.log('Open LyqBox', elem);
 
 			// Send event for lightbox opened
-			if(opts.analytics && typeof ga !== 'undefined') {
+			if(opts.analytics.enabled && typeof ga !== 'undefined') {
 				ga('send', {
 					'hitType': 'event',
 					'eventCategory': 'LyqBox',
-					'eventAction': 'Open'
+					'eventAction': 'Open',
+					'nonInteraction': opts.analytics.nonInteraction
 				});
 			}
 
@@ -453,7 +463,7 @@ if(lqx && !('lyqbox' in lqx)) {
 			}
 
 			// Send event for load
-			if(opts.analytics && typeof ga !== 'undefined') {
+			if(opts.analytics.enabled && typeof ga !== 'undefined') {
 			// Set the analytics event label
 				var eventLabel = vars.album[index].type +
 					(vars.album[index].albumId ? ':' + vars.album[index].albumId : '') +
@@ -464,7 +474,8 @@ if(lqx && !('lyqbox' in lqx)) {
 					'hitType': 'event',
 					'eventCategory': 'LyqBox',
 					'eventAction': 'Load Slide',
-					'eventLabel': eventLabel
+					'eventLabel': eventLabel,
+					'nonInteraction': opts.analytics.nonInteraction
 				});
 			}
 		};
@@ -482,7 +493,7 @@ if(lqx && !('lyqbox' in lqx)) {
 				// Hide loader
 				vars.loadingElem.addClass('hide');
 			}
-		}
+		};
 
 		var updateContent = function(content, index, type) {
 			// Add onload event to hide loader for image and videos
@@ -578,7 +589,7 @@ if(lqx && !('lyqbox' in lqx)) {
 				else {
 					hash = '';
 				}
-				if(hash) history.replaceState(null, null, hash);
+				if(hash) window.history.replaceState(null, null, hash);
 			}
 		};
 
@@ -624,16 +635,17 @@ if(lqx && !('lyqbox' in lqx)) {
 			vars.overlay.removeClass('open');
 
 			// Remove hash
-			history.replaceState(null, null, '');
+			window.history.replaceState(null, null, '');
 
 			lqx.log('Close LyqBox');
 
 			// Send event for lightbox opened
-			if(opts.analytics && typeof ga !== 'undefined') {
+			if(opts.analytics.enabled && typeof ga !== 'undefined') {
 				ga('send', {
 					'hitType': 'event',
 					'eventCategory': 'LyqBox',
-					'eventAction': 'Close'
+					'eventAction': 'Close',
+					'nonInteraction': opts.analytics.nonInteraction
 				});
 			}
 		};
