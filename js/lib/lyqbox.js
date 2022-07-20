@@ -1,7 +1,7 @@
 /**
  * lyqbox.js - LyqBox - Lyquix lightbox functionality
  *
- * @version     2.3.3
+ * @version     2.1.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix
@@ -49,7 +49,6 @@ if(lqx && !('lyqbox' in lqx)) {
 		 *
 		 */
 		var opts = {
-			lyqboxId: '#lyqbox',
 			html:
 				'<div id="lyqbox">' +
 					'<div class="content-wrapper">' +
@@ -80,10 +79,7 @@ if(lqx && !('lyqbox' in lqx)) {
 					'<div class="thumbnails"></div>' +
 					'<div class="loading"></div>' +
 				'</div>',
-			analytics: {
-				enabled: true,
-				nonInteraction: true
-			}
+			analytics: true
 		};
 
 		var vars = {
@@ -110,20 +106,20 @@ if(lqx && !('lyqbox' in lqx)) {
 
 		var init = function(){
 			// Copy default opts and vars
-			jQuery.extend(true, lqx.opts.lyqbox, opts);
+			jQuery.extend(lqx.opts.lyqbox, opts);
 			opts = lqx.opts.lyqbox;
-			jQuery.extend(true, lqx.vars.lyqbox, vars);
+			jQuery.extend(lqx.vars.lyqbox, vars);
 			vars = lqx.vars.lyqbox;
 
 			// Initialize on lqxready
 			lqx.vars.window.on('lqxready', function() {
 				// Initialize only if enabled
-				if(opts.enabled) {
+				if(lqx.opts.lyqbox.enabled) {
 					lqx.log('Initializing `lyqbox`');
 
 					// Disable analytics if the analytics module is not enabled
-					opts.analytics.enabled = lqx.opts.analytics.enabled ? opts.analytics.enabled : false;
-					if(opts.analytics.enabled) lqx.log('Setting LyqBox tracking');
+					if(!lqx.opts.analytics.enabled || !lqx.opts.analytics.lyqBox) opts.analytics = false;
+					if(opts.analytics) lqx.log('Setting LyqBox tracking');
 
 					// Initialize on document ready
 					lqx.vars.window.ready(function() {
@@ -139,17 +135,12 @@ if(lqx && !('lyqbox' in lqx)) {
 				}
 			});
 
-			// Run only once
-			lqx.lyqbox.init = function(){
-				lqx.warn('lqx.lyqbox.init already executed');
-			};
-
-			return true;
+			return lqx.lyqbox.init = true;
 		};
 
 		var setup = function() {
 			// Append HTML structure
-			if(jQuery(opts.lyqboxId).length) {
+			if(jQuery('#lyqbox').length) {
 				lqx.error('There is an existing #lyqbox element!');
 				return false;
 			}
@@ -158,20 +149,20 @@ if(lqx && !('lyqbox' in lqx)) {
 			}
 
 			// Get jQuery elements
-			vars.overlay = jQuery(opts.lyqboxId);
-			vars.closeElem = jQuery(opts.lyqboxId + ' .close');
-			vars.nextElem = jQuery(opts.lyqboxId + ' .next');
-			vars.prevElem = jQuery(opts.lyqboxId + ' .prev');
-			vars.zoomInElem = jQuery(opts.lyqboxId + ' .zoom-in');
-			vars.zoomOutElem = jQuery(opts.lyqboxId + ' .zoom-out');
-			vars.thumbsElem = jQuery(opts.lyqboxId + ' .thumbnails');
-			vars.loadingElem  = jQuery(opts.lyqboxId + ' .loading');
-			vars.titleElem  = jQuery(opts.lyqboxId + ' .info .title');
-			vars.captionElem  = jQuery(opts.lyqboxId + ' .info .caption');
-			vars.creditElem  = jQuery(opts.lyqboxId + ' .info .credit');
-			vars.counterElem  = jQuery(opts.lyqboxId + ' .counter');
-			vars.counterCurrElem  = jQuery(opts.lyqboxId + ' .counter .current');
-			vars.counterTotalElem  = jQuery(opts.lyqboxId + ' .counter .total');
+			vars.overlay = jQuery('#lyqbox');
+			vars.closeElem = jQuery('#lyqbox .close');
+			vars.nextElem = jQuery('#lyqbox .next');
+			vars.prevElem = jQuery('#lyqbox .prev');
+			vars.zoomInElem = jQuery('#lyqbox .zoom-in');
+			vars.zoomOutElem = jQuery('#lyqbox .zoom-out');
+			vars.thumbsElem = jQuery('#lyqbox .thumbnails');
+			vars.loadingElem  = jQuery('#lyqbox .loading');
+			vars.titleElem  = jQuery('#lyqbox .info .title');
+			vars.captionElem  = jQuery('#lyqbox .info .caption');
+			vars.creditElem  = jQuery('#lyqbox .info .credit');
+			vars.counterElem  = jQuery('#lyqbox .counter');
+			vars.counterCurrElem  = jQuery('#lyqbox .counter .current');
+			vars.counterTotalElem  = jQuery('#lyqbox .counter .total');
 
 			// Assign active content container to the first .content box
 			vars.containerActive = vars.overlay.find('.content-wrapper').first().addClass('active');
@@ -207,7 +198,7 @@ if(lqx && !('lyqbox' in lqx)) {
 			});
 
 			// Add swipe event handler, only on images and videos
-			lqx.util.swipe(opts.lyqboxId + ' .content.image, ' + opts.lyqboxId + ' .content.video', function(swp){
+			lqx.util.swipe('#lyqbox .content.image, #lyqbox .content.video', function(swp){
 				if(swp.dir.indexOf('l') != -1) next(); // Swipe to the left equals right arrow
 				if(swp.dir.indexOf('r') != -1) prev(); // Swipe to the right equals left arrow
 			});
@@ -311,12 +302,11 @@ if(lqx && !('lyqbox' in lqx)) {
 			lqx.log('Open LyqBox', elem);
 
 			// Send event for lightbox opened
-			if(opts.analytics.enabled && typeof ga !== 'undefined') {
+			if(opts.analytics && typeof ga !== 'undefined') {
 				ga('send', {
 					'hitType': 'event',
 					'eventCategory': 'LyqBox',
-					'eventAction': 'Open',
-					'nonInteraction': opts.analytics.nonInteraction
+					'eventAction': 'Open'
 				});
 			}
 
@@ -335,6 +325,7 @@ if(lqx && !('lyqbox' in lqx)) {
 					class: elem.attr('data-lyqbox-class'),
 					alias: elem.attr('data-lyqbox-alias'),
 					html: elem.attr('data-lyqbox-html'),
+					pdf: elem.attr('data-lyqbox-pdf'),
 					thumb: elem.attr('data-lyqbox-thumb'),
 					dismiss: elem.attr('data-lyqbox-alert-dismiss'),
 					expire: elem.attr('data-lyqbox-alert-expire')
@@ -425,6 +416,9 @@ if(lqx && !('lyqbox' in lqx)) {
 				case 'video':
 					updateContent('<iframe src="' + vars.album[index].link + '"></iframe>', index, vars.album[index].type);
 					break;
+				case 'pdf':
+					updateContent('<embed src="' + vars.album[index].link + '" />', index, vars.album[index].type);
+					break;
 
 				case 'html':
 				case 'alert':
@@ -459,7 +453,7 @@ if(lqx && !('lyqbox' in lqx)) {
 			}
 
 			// Send event for load
-			if(opts.analytics.enabled && typeof ga !== 'undefined') {
+			if(opts.analytics && typeof ga !== 'undefined') {
 			// Set the analytics event label
 				var eventLabel = vars.album[index].type +
 					(vars.album[index].albumId ? ':' + vars.album[index].albumId : '') +
@@ -470,8 +464,7 @@ if(lqx && !('lyqbox' in lqx)) {
 					'hitType': 'event',
 					'eventCategory': 'LyqBox',
 					'eventAction': 'Load Slide',
-					'eventLabel': eventLabel,
-					'nonInteraction': opts.analytics.nonInteraction
+					'eventLabel': eventLabel
 				});
 			}
 		};
@@ -489,11 +482,11 @@ if(lqx && !('lyqbox' in lqx)) {
 				// Hide loader
 				vars.loadingElem.addClass('hide');
 			}
-		};
+		}
 
 		var updateContent = function(content, index, type) {
 			// Add onload event to hide loader for image and videos
-			if(type == 'image' || type == 'video') {
+			if(type == 'image' || type == 'video' || type == 'pdf') {
 				content = jQuery(content);
 				content.on('load', function(){
 					// Hide loader
@@ -585,7 +578,7 @@ if(lqx && !('lyqbox' in lqx)) {
 				else {
 					hash = '';
 				}
-				if(hash) window.history.replaceState(null, null, hash);
+				if(hash) history.replaceState(null, null, hash);
 			}
 		};
 
@@ -631,17 +624,16 @@ if(lqx && !('lyqbox' in lqx)) {
 			vars.overlay.removeClass('open');
 
 			// Remove hash
-			window.history.replaceState(null, null, '');
+			history.replaceState(null, null, '');
 
 			lqx.log('Close LyqBox');
 
 			// Send event for lightbox opened
-			if(opts.analytics.enabled && typeof ga !== 'undefined') {
+			if(opts.analytics && typeof ga !== 'undefined') {
 				ga('send', {
 					'hitType': 'event',
 					'eventCategory': 'LyqBox',
-					'eventAction': 'Close',
-					'nonInteraction': opts.analytics.nonInteraction
+					'eventAction': 'Close'
 				});
 			}
 		};
