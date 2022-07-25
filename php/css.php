@@ -49,7 +49,6 @@ $stylesheets = [];
 /*
 // Process dependencies
 $stylesheet_handles = [];
-
 function lqx_get_style_dependencies($h) {
 	global $wp_styles;
 	$deps = [];
@@ -61,12 +60,10 @@ function lqx_get_style_dependencies($h) {
 	}
 	return $deps;
 }
-
 foreach($wp_styles -> queue  as $stylesheet_handle) {
 	$stylesheet_handles = array_merge($stylesheet_handles, lqx_get_style_dependencies($stylesheet_handle));
 	$stylesheet_handles[] = $stylesheet_handle;
 }
-
 // Parse enqueued styles
 foreach($stylesheet_handles as $stylesheet_handle) {
 	$stylesheet = $wp_styles -> registered[$stylesheet_handle];
@@ -98,10 +95,10 @@ foreach($stylesheet_handles as $stylesheet_handle) {
 */
 
 // Use non minified version?
-$non_min_css = get_theme_mod('non_min_css');
+$non_min_css = get_theme_mod('non_min_css', '0');
 
 // Animte.css
-if(get_theme_mod('animatecss')) {
+if(get_theme_mod('animatecss', '0')) {
 	$stylesheets[] = ['url' => $cdnjs_url . 'animate.css/3.7.0/animate' . ($non_min_css ? '' : '.min') . '.css'];
 }
 
@@ -188,7 +185,7 @@ if(!file_exists($tmpl_path . '/dist/' . $stylesheet_filename)) {
 	// Regular expression to find url in files
 	$urlRegex = '/url\(\s*[\"\\\']?([^\"\\\'\)]+)[\"\\\']?\s*\)/';
 	// Regular expression to find @import rules in files
-	$importRegex = '/(@import\s+[^;]*;)/';
+	$importRegex = '/(@import.*?["\'][^"\']+["\'].*?;)/';
 	// Prepare file
 	$stylesheet_data = "/* " . $stylesheet_filename . " */\n";
 	$stylesheet_imports = "/* @import rules moved to the top of the document */\n";
@@ -246,6 +243,5 @@ if(!file_exists($tmpl_path . '/dist/' . $stylesheet_filename)) {
 
 function lqx_render_css() {
 	global $tmpl_url, $stylesheet_filename;
-	echo '<style>/* FOUC workaround */body {opacity:0;}</style>' . "\n";
-	echo '<link href="' . $tmpl_url . '/dist/' . $stylesheet_filename . '" rel="preload" as="style" onload="this.rel=\'stylesheet\'" />' . "\n";
+	echo '<link href="' . $tmpl_url . '/dist/' . $stylesheet_filename . '" rel="stylesheet" />' . "\n";
 }
