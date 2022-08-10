@@ -10,12 +10,39 @@
  * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
 
-// Prevent adding css libraries in wp_head()
-global $wp_styles;
-$remove_css_libraries = explode("\n", trim(get_theme_mod('remove_css_libraries', '')));
-foreach($wp_styles -> queue as $i => $css) {
-	if(array_search(trim($css), $remove_css_libraries)) unset($wp_styles -> queue[$i]);
+
+if(!function_exists('absUrl')) {
+	// Convert relative URLs to absolute URLs
+	function absUrl($rel, $base) {
+		if (parse_url($rel, PHP_URL_SCHEME) != '') return $rel;
+		if ($rel[0] == '#' || $rel[0] == '?') return $base . $rel;
+		extract(parse_url($base));
+		$path = preg_replace('#/[^/]*$#', '', $path);
+		if ($rel[0] == '/') $path = '';
+		$abs = $host . $path . '/' .$rel;
+		$re = ['#(/\.?/)#', '#/(?!\.\.)[^/]+/\.\./#'];
+		for($n = 1; $n > 0; $abs = preg_replace($re, '/', $abs, -1, $n)) {}
+		return $scheme . '://' . $abs;
+	}
 }
+
+// Prevent adding css libraries in wp_head()
+function remove_css_libraries() {
+	global $wp_styles;
+
+	// Get styles to remove
+	$remove_css_libraries = explode("\n", trim(get_theme_mod('remove_css_libraries', '')));
+	foreach($remove_css_libraries as $i => $url) $remove_css_libraries[$i] = absUrl($url, get_site_url());
+
+	// Dequeue matching styles
+	if(count($remove_css_libraries)) {
+		foreach($wp_styles -> registered as $css_code => $x) {
+			$css_url = absUrl($wp_styles -> registered[$css_code] -> src, get_site_url());
+			if(in_array($css_url, $remove_css_libraries)) wp_dequeue_style($css_code);
+		}
+	}
+}
+add_action('wp_enqueue_scripts', 'remove_css_libraries', 100);
 
 // Array to store all stylesheets to be loaded
 $stylesheets = [];
