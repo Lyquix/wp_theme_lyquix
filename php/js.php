@@ -154,11 +154,12 @@ if(get_theme_mod('lqx_debug', '0')) {
 	$lqx_options['debug'] = true;
 }
 
-if(get_theme_mod('ga_account', '')) {
+if(get_theme_mod('ga_account', '') || get_theme_mod('ga4_account', '')) {
 	$lqx_options['analytics'] = [
 		'createParams' => [
 			'default' => [
 				'trackingId' => get_theme_mod('ga_account'),
+				'measurementId' => get_theme_mod('ga4_account'),
 				'cookieDomain' => 'auto'
 			]
 		]
@@ -188,5 +189,10 @@ function lqx_render_js() {
 			"f.parentNode.insertBefore(j, f);" .
 			"})(window, document, 'script', 'dataLayer', '" . get_theme_mod('gtm_account') . "');" .
 			"</script>";
+	}
+
+	// Load GA4 head code
+	if(get_theme_mod('ga4_account', '')) {
+		echo '<script async src="https://www.googletagmanager.com/gtag/js?id=' . get_theme_mod('ga4_account') . '"></script>'
 	}
 }
