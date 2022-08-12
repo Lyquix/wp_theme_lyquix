@@ -154,11 +154,12 @@ if(get_theme_mod('lqx_debug', '0')) {
 	$lqx_options['debug'] = true;
 }
 
-if(get_theme_mod('ga_account', '')) {
+if(get_theme_mod('ga_account', '') || get_theme_mod('ga4_account', '')) {
 	$lqx_options['analytics'] = [
 		'createParams' => [
 			'default' => [
 				'trackingId' => get_theme_mod('ga_account'),
+				'measurementId' => get_theme_mod('ga4_account'),
 				'cookieDomain' => 'auto'
 			]
 		]

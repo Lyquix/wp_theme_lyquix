@@ -124,6 +124,9 @@ function lqx_customizer_add($wp_customize) {
 			'ga_account' => [
 				'label' => 'Google Analytics Account',
 			],
+			'ga4_account' => [
+				'label' => 'Google Analytics 4 Account',
+			],
 			'ga_pageview' => [
 				'type' => 'radio',
 				'label' => 'Send Google Analytics Pageview',
