@@ -106,11 +106,11 @@ if(lqx && !('analytics' in lqx)) {
 				if(opts.enabled) {
 					lqx.log('Initializing `analytics`');
 
-					// Load only Google Analytics 4
-					if(!opts.usingGTM && opts.createParams && opts.createParams.default && !opts.createParams.default.trackingId && opts.createParams.default.measurementId) {
+					// Load Google Analytics 4
+					if(!opts.usingGTM && opts.createParams && opts.createParams.default && opts.createParams.default.measurementId) {
 						ga4Code();
 					}
-					// Load Google Analytics and/or Google Analytics 4
+					// Load Google Analytics
 					if(!opts.usingGTM && opts.createParams && opts.createParams.default && opts.createParams.default.trackingId) {
 						gaCode();
 					}
@@ -141,13 +141,21 @@ if(lqx && !('analytics' in lqx)) {
 		var ga4Code = function() {
 			lqx.log('Loading Google Analytics 4 code');
 
+			var params = opts.createParams;
+			lqx.log('createParams', params);
+
+			// DOM Manipulation to add GA4 code to head
+			var ga4Script = document.createElement('script');
+			var firstScript = document.getElementsByTagName('script')[0];
+			var headElement = document.getElementsByTagName('head')[0];
+			ga4Script.async = 1;
+			ga4Script.src = 'https://www.googletagmanager.com/gtag/js?id=' + params.default.measurementId;
+			headElement.insertBefore(ga4Script, firstScript);
+
 			// Google Analytics 4 code
 			window.dataLayer = window.dataLayer || [];
 			function gtag(){dataLayer.push(arguments);}
 			gtag('js', new Date());
-
-			var params = opts.createParams;
-			lqx.log('createParams', params);
 
 			gtag('config', params.default.measurementId);
 
@@ -169,19 +177,9 @@ if(lqx && !('analytics' in lqx)) {
 				m.parentNode.insertBefore(a, m);
 			})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
+			// Create commands
 			var params = opts.createParams;
 			lqx.log('createParams', params);
-
-			// Google Analytics 4 code
-			if (params.default.measurementId) {
-				window.dataLayer = window.dataLayer || [];
-				function gtag(){dataLayer.push(arguments);}
-				gtag('js', new Date());
-
-				gtag('config', params.default.measurementId);
-			}
-
-			// Create commands
 			ga('create', params.default.trackingId, params.default.cookieDomain, params.default.fieldsObject);
 			Object.keys(params).forEach(function(tracker){
 				if(tracker != 'default') {
