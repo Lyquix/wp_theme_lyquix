@@ -190,9 +190,4 @@ function lqx_render_js() {
 			"})(window, document, 'script', 'dataLayer', '" . get_theme_mod('gtm_account') . "');" .
 			"</script>";
 	}
-
-	// Load GA4 head code
-	if(get_theme_mod('ga4_account', '')) {
-		echo '<script async src="https://www.googletagmanager.com/gtag/js?id=' . get_theme_mod('ga4_account') . '"></script>';
-	}
 }
