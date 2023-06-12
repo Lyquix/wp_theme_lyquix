@@ -133,6 +133,12 @@ function lqx_customizer_add($wp_customize) {
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
 			],
+			'ga_use_analytics_js' => [
+				'type' => 'radio',
+				'label' => 'Use analytics.js for Universal Analytics',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
 			'ga_via_gtm' => [
 				'type' => 'radio',
 				'label' => 'Google Analytics via GTM',

@@ -160,19 +160,13 @@ if(get_theme_mod('lqx_debug', '0')) {
 
 if(get_theme_mod('ga_account', '') || get_theme_mod('ga4_account', '')) {
 	$lqx_options['analytics'] = [
-		'createParams' => [
-			'default' => [
-				'trackingId' => get_theme_mod('ga_account'),
-				'measurementId' => get_theme_mod('ga4_account'),
-				'cookieDomain' => 'auto'
-			]
-		]
+		'trackingId' => get_theme_mod('ga_account'),
+		'measurementId' => get_theme_mod('ga4_account'),
+		'sendPageview' => get_theme_mod('ga_pageview', '1') ? true : false,
+		'useAnalyticsJS' => get_theme_mod('ga_use_analytics_js', '1') ? true : false,
+		'usingGTM' => get_theme_mod('ga_via_gtm', '0') ? true : false
 	];
 }
-
-if(!get_theme_mod('ga_pageview', '1')) $lqx_options['analytics']['sendPageview'] = false;
-
-if(get_theme_mod('ga_via_gtm', '0')) $lqx_options['analytics']['usingGTM'] = true;
 
 // Merge with options from template settings
 $lqx_options = array_replace_recursive($lqx_options, json_decode(get_theme_mod('lqx_options', '{}'), true));
