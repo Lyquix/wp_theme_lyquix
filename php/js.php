@@ -80,7 +80,7 @@ foreach($add_js_libraries as $jsurl) {
 			if(substr($jsurl,0,1) != '/') $jsurl = '/' . $jsurl;
 			// Check if file exist
 			if(file_exists(ABSPATH . $jsurl)) {
-				$scripts[] = ['url' => $jsurl, 'version' => date("YmdHis", filemtime(get_home_path() . $jsurl))];
+				$scripts[] = ['url' => $jsurl, 'version' => date("YmdHis", filemtime(ABSPATH . $jsurl))];
 			}
 		}
 	}
