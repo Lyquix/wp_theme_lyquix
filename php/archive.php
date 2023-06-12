@@ -2,7 +2,7 @@
 /**
  * archive.php - Default template for archive pages
  *
- * @version     2.3.3
+ * @version     2.4.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2017 Lyquix

@@ -1,7 +1,7 @@
 /**
  * core.js - Lyquix JavaScript library
  *
- * @version     2.3.3
+ * @version     2.4.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix
@@ -214,7 +214,7 @@ else {
 			}
 		};
 
-		var version = '2.3.3';
+		var version = '2.4.0';
 
 		return {
 			opts: opts,
