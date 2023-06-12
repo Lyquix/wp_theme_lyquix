@@ -1,21 +1,21 @@
 /**
  * 06-common-paragraph.less - Common CSS classes to apply typographic styles paragraphs <p>
  *
- * @version     1.0.1
- * @package     tpl_lyquix
+ * @version     1.0.12
+ * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2017 Lyquix
  * @license     GNU General Public License version 2 or later
- * @link        https://github.com/Lyquix/tpl_lyquix
+ * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
 
 // Drop caps
 .drop-caps p:first-child:first-letter {
-	float: left; 
-	font-size: 2.6em; 
+	float: left;
+	font-size: 2.6em;
 	line-height: 0;
-	padding-top: 0.55em; 
-	padding-right: 0.2em; 
+	padding-top: 0.55em;
+	padding-right: 0.2em;
 	.font-uppercase();
 	.font-serif();
 }
@@ -32,7 +32,7 @@
 // no paragraph break, insert block
 .no-p-break p {
 	display: inline;
-	
+
 	&:after {
 		content:'\25a0';
 		margin-right: 0.1em;

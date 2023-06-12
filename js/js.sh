@@ -2,12 +2,12 @@
 #
 # js.sh - Shell script to concatenate and minify lyquix Javascript library, and vue components/controllers
 #
-# @version     1.0.10
+# @version     1.0.12
 # @package     wp_theme_lyquix
 # @author      lyquix
 # @copyright   Copyright (C) 2015 - 2018 Lyquix
 # @license     GNU General Public License version 2 or later
-# @link        https://github.com/lyquix/wp_theme_lyquix
+# @link        https://github.com/Lyquix/wp_theme_lyquix
 #
 ###
 

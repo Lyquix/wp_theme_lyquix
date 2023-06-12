@@ -1,19 +1,19 @@
 /**
  * lyquix.js - Lyquix JavaScript library
  *
- * @version     1.0.3
- * @package     tpl_lyquix
+ * @version     1.0.12
+ * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2017 Lyquix
  * @license     GNU General Public License version 2 or later
- * @link        https://github.com/Lyquix/tpl_lyquix
+ * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
 
 // ***********************************
 // BEGIN Lyquix global object
 // Includes Lyquix common function library and default settings
 var lqx = lqx || {
-	
+
 	// default settings
 	settings : {
 		debug: false,
@@ -23,6 +23,7 @@ var lqx = lqx || {
 		},
 		tracking: {
 			downloads: true,
+			errors: true,
 			outbound: true,
 			scrolldepth: true,
 			photogallery: true,
@@ -79,7 +80,7 @@ var lqx = lqx || {
 										'<span class="current"></span>' +
 										' of <span class="total"></span>' +
 									'</div>' +
-								'</div>',	        		
+								'</div>',
 		},
 		userActive: {
 			idleTime: 5000,	// idle time (ms) before user is set to inactive
@@ -88,7 +89,7 @@ var lqx = lqx || {
 			maxTime: 1800000 // max time when tracking stops (ms)
 		},
 		ga: {
-			createParams: null,			// example: {default: {trackingId: 'UA-XXXXX-Y', cookieDomain: 'auto', fieldsObject: {}}}, where "default" is the tracker name
+			createParams: null,			// example: {default: {trackingId: 'UA-XXXXX-Y', measurementId: 'G-XXXXXXXX' cookieDomain: 'auto', fieldsObject: {}}}, where "default" is the tracker name
 			setParams: null,			// example: {default: {dimension1: 'Age', metric1: 25}}
 			requireParams: null,		// example: {default: {pluginName: 'displayFeatures', pluginOptions: {cookieName: 'mycookiename'}}}
 			provideParams: null,		// example: {default: {pluginName: 'MyPlugin', pluginConstructor: myPluginFunc}}
@@ -97,6 +98,7 @@ var lqx = lqx || {
 			abTestNameDimension: null,		// Set the Google Analytics dimension number to use for test name
 			abTestGroupDimension: null,		// Set the Google Analytics dimension number to use for group
 		},
+		usingGTM: false,
 		geoLocation: {
 			enable: false,	// perform geolocation
 			gps: false,		// request gps data for precise lat/lon
@@ -115,15 +117,17 @@ var lqx = lqx || {
 			selector: 'form', // define a specific jQuery selector to use when choosing what forms to edit
 		},
 	},
-	
+
 	// holds working data
 	vars: {
 		resizeThrottle: false,  // saves current status of resizeThrottle
 		scrollThrottle: false,  // saves current status of scrollThrottle
 		youTubeIframeAPIReady: false,
-		youTubeIframeAPIReadyAttempts: 0
+		youTubeIframeAPIReadyAttempts: 0,
+		urlParams: {},
+		errorHashes: []
 	},
-	
+
 	// setOptions
 	// a function for setting options for lqx (instead of manually rewriting lqx.settings)
 	setOptions : function(opts) {
@@ -132,7 +136,7 @@ var lqx = lqx || {
 		}
 		return lqx.settings;
 	},
-	
+
 	// internal console log/warn/error functions
 	// use instead of console.log, console.warn, console.error, and control with lqx.settings.debug
 	log : function() {
@@ -155,30 +159,29 @@ var lqx = lqx || {
 			});
 		}
 	},
-	
+
 	// addLoggingToNamespace: adds function logging to a namespace (for global functions use "window")
 	addLoggingToNamespace : function(nameSpace){
-		
-		if(nameSpace == 'window') {
-			namespaceObject = window;
-		}
-		else {
+
+		var namespaceObject = window;
+
+		if(nameSpace != 'window') {
 			namespaceObject = window[nameSpace];
 		}
-		
+
 		Object.keys(namespaceObject).forEach(function(potentialFunction, name){
 			if(Object.prototype.toString.call(potentialFunction) === '[object Function]'){
 				namespaceObject[name] = lqx.getLoggableFunction(potentialFunction, name, nameSpace);
 			}
 		});
 	},
-	
+
 	getLoggableFunction : function(func, name, nameSpace) {
 		return function() {
-			
+
 			console.log('LOG: executing ' + nameSpace + '.' + name + ' with arguments:' );
 			console.log(arguments);
-			
+
 			return func.apply(this, arguments);
 		};
 	},
@@ -198,7 +201,6 @@ var lqx = lqx || {
 	// secure: any non-false value
 	// httpOnly: any non-false value
 	cookie: function(name, value, attributes) {
-		var result;
 		if(arguments.length === 0 || !name) return false;
 
 		// get cookie
@@ -219,7 +221,7 @@ var lqx = lqx || {
 		document.cookie = c;
 		return true;
 	},
-	
+
 	// bodyScreenSize
 	// adds an attribute "screen" to the body tag that indicates the current size of the screen
 	bodyScreenSize : function() {
@@ -262,6 +264,17 @@ var lqx = lqx || {
 		}
 	},
 
+	// bodyURLparts
+	// adds attributes domain, path and hash to the body tag
+	bodyURLparts : function() {
+		jQuery('body').attr('domain', window.location.hostname);
+		jQuery('body').attr('path', window.location.pathname);
+		jQuery('body').attr('hash', window.location.hash.substring(1));
+		jQuery(window).on('hashchange',function(){
+			jQuery('body').attr('hash', window.location.hash.substring(1));
+		});
+	},
+
 	// geoLocate
 	// attempts to locate position of user by means of gps or ip address
 	geoLocate : function() {
@@ -284,6 +297,11 @@ var lqx = lqx || {
 					if(lqx.vars.geoLocation.country) jQuery('body').attr('country', lqx.vars.geoLocation.country);
 					if(lqx.vars.geoLocation.continent) jQuery('body').attr('continent', lqx.vars.geoLocation.continent);
 					if(lqx.vars.geoLocation.time_zone) jQuery('body').attr('time-zone', lqx.vars.geoLocation.time_zone);
+					if(lqx.vars.geoLocation.lat) jQuery('body').attr('latitude', lqx.vars.geoLocation.lat);
+					if(lqx.vars.geoLocation.lon) jQuery('body').attr('longitude', lqx.vars.geoLocation.lon);
+					if(lqx.vars.geoLocation.radius) jQuery('body').attr('radius', lqx.vars.geoLocation.radius);
+					// trigger custom event 'geolocateready'
+					jQuery(document).trigger('geolocateready');
 				},
 				dataType: 'json',
 				error: function(){
@@ -305,7 +323,56 @@ var lqx = lqx || {
 			});
 		}
 	},
-	
+
+	inCircle : function(test, center, radius) {
+		/** Accepts:
+		 * test: location to test, object with keys lat and lon
+		 * center: circle center point, object with keys lat and lon
+		 * radius: circle radius in kilometers
+		 */
+		var deg2rad = function(deg) {return deg * Math.PI / 180;};
+		var dLat = deg2rad(test.lat - center.lat);
+		var dLon = deg2rad(test.lon - center.lon);
+		var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+			Math.cos(deg2rad(center.lat)) * Math.cos(deg2rad(test.lat)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+		var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+		var d = 6371 * c; // Distance in km
+		return (d <= radius && true) || false;
+	},
+
+	inSquare : function(test, corner1, corner2) {
+		/** Accepts:
+		 * test: location to test, object with keys lat and lon
+		 * corner1: a corner of the square, object with keys lat and lon
+		 * corner2: opposite corner of the square, object with keys lat and lon
+		 * Known limitation: doesn't handle squares that cross the poles or the international date line
+		 */
+		return test.lat <= Math.max(corner1.lat, corner2.lat) &&
+			test.lat >= Math.min(corner1.lat, corner2.lat) &&
+			test.lon <= Math.max(corner1.lon, corner2.lon) &&
+			test.lon >= Math.min(corner1.lon, corner2.lon);
+	},
+
+	inPolygon : function(test, poly) {
+		/** Accepts:
+		 * test: location to test, object with keys lat and lon
+		 * poly: defines the polygon, array of objects, each with keys lat and lon
+		 * Based on http://alienryderflex.com/polygon/
+		 * Known limitation: doesn't handle polygons that cross the poles or the international date line
+		 */
+		var i, j = poly.length - 1, oddNodes = false;
+
+		for(i=0; i < poly.length; i++) {
+			if(poly[i].lat < test.lat && poly[j].lat >= test.lat ||  poly[j].lat < test.lat && poly[i].lat >= test.lat) {
+				if(poly[i].lon + (test.lat - poly[i].lat) / (poly[j].lat - poly[i].lat) * (poly[j].lon - poly[i].lon) < test.lon) {
+					oddNodes =! oddNodes;
+				}
+			}
+			j = i;
+		}
+		return oddNodes;
+	},
+
 	// uses the mobile-detect.js library to detect if the browser is a mobile device
 	// add the classes mobile, phone and tablet to the body tag if applicable
 	mobileDetect : function() {
@@ -325,7 +392,7 @@ var lqx = lqx || {
 		}
 		return r;
 	},
-	
+
 	// returns the browser name, type and version, and sets body classes
 	// detects major browsers: IE, Edge, Firefox, Chrome, Safari, Opera, Android
 	// based on: https://github.com/ded/bowser
@@ -490,7 +557,7 @@ var lqx = lqx || {
 
 		return os;
 	}()),
-	
+
 	// browserFixes
 	// implements some general browser fixes
 	browserFixes : function(){
@@ -506,9 +573,19 @@ var lqx = lqx || {
 					newimg.src = img.attr('src');
 				}
 			});
-			// fix for google fonts not rendering in IE10/11
+
 			if(lqx.getBrowser.version >= 10) {
-				jQuery('<style>html, sup, sub, samp, td, th, h1, h2, h3, .font-monospace, .font-smallcaps, .font-uppercase {font-feature-settings: normal;}</style>').appendTo('head');
+				// fix for google fonts not rendering in IE10/11
+				jQuery('<style>*, :before, :after {font-feature-opts: normal !important;}</style>').appendTo('head');
+				// CSS grid fix
+				lqx.cssGridFix();
+				// object-fit polyfill
+				lqx.objectFit();
+				// Update CSS grid and object-fit on screen/orientation change
+				jQuery(window).on('screensizechange orientationchange', function() {
+					lqx.cssGridFix();
+					lqx.updateObjectFit();
+				});
 			}
 			// replace svg images for pngs in IE 8 and older
 			if(lqx.getBrowser.version <= 8) {
@@ -521,7 +598,126 @@ var lqx = lqx || {
 			}
 		}
 	},
-	
+
+	// Fix for CSS grid: add column/row position and span if not specified
+	cssGridFix: function() {
+		var gridElems = jQuery('*').filter(function() {
+			if (jQuery(this).css('display') == '-ms-grid') {
+				return true;
+			}
+		});
+
+		if(gridElems.length) {
+			gridElems.each(function(){
+				var gridElem = jQuery(this);
+				var colCount = gridElem.css('-ms-grid-columns').split(' ').length;
+				var row = 1;
+				var col = 1;
+				gridElem.children().each(function(){
+					jQuery(this).css({'-ms-grid-column': col, '-ms-grid-column-span': '1', '-ms-grid-row': row, '-ms-grid-row-span': '1'});
+					col++;
+					if (col > colCount) {
+						row++;
+						col = 1;
+					}
+				});
+			});
+		}
+
+		lqx.log('CSS grid fix for IE');
+	},
+
+	// Object-fit polyfill for IE11 - sets image as background image
+	// and obtains the object-fit and object-position properties from the value of the
+	// CSS font-family property, e.g. font-family: 'object-fit: cover; object-position: right bottom;';
+	// Supports only cover and contain
+	objectFit: function() {
+		// Check all images
+		jQuery('img').each(function(){
+			lqx.fixObjectFit(this);
+		});
+	},
+
+	parseObjectFitStyles: function(img) {
+		var fontFamilyStr = jQuery(img).css('font-family');
+		var styles = {};
+		if(fontFamilyStr) {
+			// Parse font-family property for object-fit and object-position
+			var re = /(([\w-]+)\s*:\s*([\w\s-%#\/\(\)\.']+);*)/g;
+			var styles = {};
+			fontFamilyStr.replace(/(^"|"$)/g,'').replace(re, function(match, g1, property, value) {
+				if(property == 'object-fit' && (value == 'cover' || value == 'contain')) {
+					styles[property] = value;
+				}
+				if(property == 'object-position') {
+					styles[property] = value;
+				}
+			});
+		}
+		return styles;
+	},
+
+	setBackgroundStyles: function(img, styles) {
+		var src = img.attr('data-src');
+
+		// Replace image with transparent 1x1 gif
+		img.attr('src', 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==');
+
+		// Assign image to backrgound, add styling
+		img.css({
+			'background-image': 'url(' + src +')',
+			'background-repeat': 'no-repeat',
+			'background-origin': 'content-box',
+			'background-size': styles['object-fit'],
+			'background-position': 'center'
+		});
+
+		// Assign object-position if available
+		if('object-position' in styles) {
+			img.css('background-position', styles['object-position']);
+		}
+	},
+
+	fixObjectFit: function(img) {
+		img = jQuery(img);
+		// Get and parse font-family computed style
+		var styles = lqx.parseObjectFitStyles(img);
+
+		if('object-fit' in styles) {
+			// Copy original URL into data-object-fit (this will be used later for updates)
+			var src = img.attr('src');
+			img.attr('data-src', src);
+
+			// Set image to background and add styling
+			lqx.setBackgroundStyles(img, styles);
+
+			// Add attribute for later updates
+			img.attr('data-object-fit', true);
+		}
+	},
+
+	updateObjectFit: function() {
+		jQuery('[data-object-fit]').each(function(){
+			var img = jQuery(this);
+			// Get and parse font-family computed style
+			var styles = lqx.parseObjectFitStyles(img);
+
+			if('object-fit' in styles) {
+				lqx.setBackgroundStyles(img, styles);
+			}
+			else {
+				// Revert image back
+				img.attr('src', img.attr('data-src'));
+
+				// Revert background image
+				img.css({
+					'background-image': 'none',
+				});
+			}
+
+		});
+	},
+
 	// init equalHeightRows
 	// add an "loaderror" attribute to images that fail to load
 	initEqualHeightRows : function() {
@@ -542,15 +738,15 @@ var lqx = lqx || {
 		// run equal height rows
 		lqx.equalHeightRows();
 	},
-	
+
 	// equalHeightRows
 	// makes all elements in a row to be the same height
 	equalHeightRows : function(opts) {
-		
+
 		// get default settings and override with custom opts
 		var s = lqx.settings.equalHeightRows;
 		if(typeof opts == 'object') jQuery.extend(true, s, opts);
-		
+
 		if(s.refreshElems || typeof lqx.vars.equalHeightRowElems == 'undefined') {
 			if(lqx.settings.equalHeightRows.onlyVisible) {
 				lqx.vars.equalHeightRowElems = jQuery('.equalheightrow:visible');
@@ -560,7 +756,7 @@ var lqx = lqx || {
 			}
 			lqx.vars.equalHeightRowImgs = lqx.vars.equalHeightRowElems.find('img');
 		}
-		
+
 		var elemsCount = lqx.vars.equalHeightRowElems.length;
 
 		// execute the following in specific order
@@ -581,13 +777,13 @@ var lqx = lqx || {
 				currRowHeight = 0;
 
 				lqx.vars.equalHeightRowElems.each(function(i){
-					
+
 					// current element and its top
 					currElem = jQuery(this);
 					currElemTop = currElem.offset().top;
 					currElemHeight = currElem.height();
-          var j = 0;
-					
+					var j = 0;
+
 					if(currElemTop != currRowTop) {
 						// new row has started, set the height for the previous row if it has more than one element
 						if(currRowElems.length > 1) {
@@ -632,11 +828,11 @@ var lqx = lqx || {
 			}
 		).resolve();
 	},
-	
+
 	// hangingPunctuation
 	// fixes punctuation marks that are the beggining or end of paragraphs
 	hangingPunctuation : function(){
-		
+
 		lqx.vars.hangingMarks = {
 			'\u201c': 'medium',     // “ - &ldquo; - left smart double quote
 			'\u2018': 'small',      // ‘ - &lsquo; - left smart single quote
@@ -647,18 +843,18 @@ var lqx = lqx || {
 			'\u201E': 'medium',     // „ - &bdquo; - left smart double low quote
 			'\u201A': 'small',      // ‚ - &sbquo; - left smart single low quote
 		};
-		
+
 		// lops over the P descendants of the elements with class hanging-punctuation
 		jQuery('.hanging-punctuation').find('p').each(function(idx, elem){
 			lqx.hangPunctuation(elem);
 		});
-		
+
 	},
-	
+
 	hangPunctuation : function(elem){
-		
+
 		var plaintext = elem.innerText || elem.textContent;
-		
+
 		for(var mark in lqx.vars.hangingMarks) {
 			if(plaintext.indexOf(mark) === 0 ){
 				// we found one of the marks at the beginning of the paragraph
@@ -669,9 +865,9 @@ var lqx = lqx || {
 				jQuery('#hangingMark').remove();
 			}
 		}
-		
+
 	},
-	
+
 	// adds a text caption using image alt property
 	imageCaption : function(){
 		jQuery('.image.caption img').each(function(idx,elem){
@@ -681,22 +877,22 @@ var lqx = lqx || {
 			}
 		});
 	},
-	
+
 	// shows a line break symbol before br elements
 	lineBreakSymbol : function(){
 		jQuery('.show-line-break p br').each(function(idx,elem){
 			jQuery(elem).before(String.fromCharCode(0x21B2));
 		});
 	},
-	
+
 	shadeColor : function(){
-		
+
 		// cycle through the various properties
 		['color', 'bg', 'border'].forEach(function(i) {
-			
+
 			// cycle through the various shades
 			['lighter', 'light', 'dark', 'darker'].forEach(function(j) {
-				
+
 				// set the css class
 				var c = '.' + i + '-' + j;
 
@@ -713,12 +909,12 @@ var lqx = lqx || {
 						prop = 'border-color';
 						break;
 				}
-				
+
 				// cycle through all elements
 				jQuery(c).each(function(idx, elem){
 					// get the color for the element
 					var color = jQuery(elem).css(prop);
-					
+
 					// if color is in hex use shadeHex, otherwise use shadeRGB
 					if(color.charAt(0) == '#'){
 						color = lqx.shadeHex(color, lqx.settings.shadeColorPercent[j]);
@@ -726,30 +922,30 @@ var lqx = lqx || {
 					else {
 						color = lqx.shadeRGB(color, lqx.settings.shadeColorPercent[j]);
 					}
-					
+
 					// update color for element
 					jQuery(elem).css(prop, color);
 				});
-				
+
 			});
-			
+
 		});
-		
+
 	},
-	
+
 	// returns a HEX color lighter or darker by percentage
 	shadeHex : function(color, percent) {
-		var 	num = parseInt(color.slice(1),16),
+		var num = parseInt(color.slice(1),16),
 			amt = Math.round(2.55 * percent),
 			R = (num >> 16) + amt,
 			G = (num >> 8 & 0x00FF) + amt,
 			B = (num & 0x0000FF) + amt;
 		return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 + ( G < 255 ? G < 1 ? 0 : G : 255) * 0x100 + (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
 	},
-	
+
 	// returns a RBG color lighter or darker by percentage
 	shadeRGB : function(color, percent) {
-		var 	f = color.split(','),
+		var f = color.split(','),
 			t = percent < 0 ? 0 : 255,
 			p = percent < 0 ? percent * -1 : percent,
 			R = parseInt(f[0].slice(4)),
@@ -757,20 +953,32 @@ var lqx = lqx || {
 			B = parseInt(f[2]);
 		return 'rgb(' + (Math.round((t - R) * p) + R) + ',' + (Math.round((t - G) * p ) + G) + ',' + (Math.round((t - B) * p) + B) + ')';
 	},
-	
+
+	initAnalytics: function() {
+		// Load Google Analytics 4
+		if(!lqx.settings.usingGTM && lqx.settings.ga.createParams && lqx.settings.ga.createParams.default && lqx.settings.ga.createParams.default.measurementId) {
+			lqx.ga4Code();
+		}
+		// Load Google Analytics
+		if(!lqx.settings.usingGTM && lqx.settings.ga.createParams && lqx.settings.ga.createParams.default && lqx.settings.ga.createParams.default.trackingId) {
+			lqx.gaCode();
+		}
+		// Attempt to init custom Google Analytics tracking code when GA is loaded by other methods e.g. GTM
+		if(lqx.settings.usingGTM) lqx.checkGA();
+	},
+
 	// initialize google analytics tracking
 	initTracking : function() {
-		
 		// NOTE: this function is triggered by lqx.gaReady
-			
+
 		// track downloads and outbound links
-		if(lqx.settings.tracking.outbound || lqx.settings.tracking.download){
+		if(lqx.settings.tracking.outbound || lqx.settings.tracking.downloads){
 			// find all a tags and cycle through them
 			jQuery('a').each(function(){
 				var elem = this;
 				// check if it has an href attribute, otherwise it is just a page anchor
 				if(elem.href) {
-					
+
 					// check if it is an outbound link, track as event
 					if(lqx.settings.tracking.outbound && elem.host != location.host) {
 
@@ -781,7 +989,7 @@ var lqx = lqx || {
 							if(jQuery(elem).attr('title')) {
 								label = jQuery(elem).attr('title') + ' [' + url + ']';
 							}
-							ga('send', {
+							lqx.gaSend({
 								'hitType' : 'event',
 								'eventCategory' : 'Outbound Links',
 								'eventAction' : 'click',
@@ -791,9 +999,17 @@ var lqx = lqx || {
 							});
 						});
 					}
-					
+
 					// check if it is a download link (not a webpage) and track as pageview
-					else if(lqx.settings.tracking.downloads && elem.pathname.match(/\.(htm|html|php)$/i)[1] === null ) {
+					else if(lqx.settings.tracking.downloads && (
+						elem.href.match(/\.(gif|png|jpg|jpeg|tif|tiff|svg|webp|bmp)$/i) !== null ||
+						elem.href.match(/\.(zip|rar|gzip|gz|7z|tar)$/i) !== null ||
+						elem.href.match(/\.(exe|msi|dmg)$/i) !== null ||
+						elem.href.match(/\.(txt|pdf|rtf|doc|docx|dot|dotx|xls|xlsx|xlt|xltx|ppt|pptx|pot|potx)$/i) !== null ||
+						elem.href.match(/\.(aac|aiff|mp3|mp4|m4a|m4p|wav|wma)$/i) !== null ||
+						elem.href.match(/\.(3gp|3g2|mkv|vob|ogv|ogg|webm|wma|m2v|m4v|mpg|mp2|mpeg|mpe|mpv|mov|avi|wmv|flv|f4v|swf|qt)$/i) !== null ||
+						elem.href.match(/\.(xml|js|json|css|less|sass)$/i) !== null
+					) && !elem.hasAttribute('data-featherlight-image') && !elem.hasAttribute('data-featherlight')) {
 						jQuery(elem).click(function(e){
 							e.preventDefault();
 							var url = elem.href;
@@ -803,7 +1019,7 @@ var lqx = lqx || {
 							if(jQuery(elem).attr('title')) {
 								title = jQuery(elem).attr('title');
 							}
-							ga('send', {
+							lqx.gaSend({
 								'hitType': 'pageview',
 								'location' : loc,
 								'page' : page,
@@ -814,16 +1030,36 @@ var lqx = lqx || {
 					}
 				}
 			});
-			
+
 		}
-		
-	
+
+		// Track errors
+		if(lqx.settings.tracking.errors) {
+			// Add listener to window element for javascript errors
+			window.addEventListener('error', function(e){
+				var errStr = e.message + ' [' + e.error + '] ' + e.filename + ':' + e.lineno + ':' + e.colno;
+				var errHash = lqx.strHash(errStr);
+				if(lqx.vars.errorHashes.indexOf(errHash) == -1 && lqx.vars.errorHashes.length < 100) {
+					lqx.vars.errorHashes.push(errHash);
+					lqx.gaSend({
+						'hitType' : 'event',
+						'eventCategory' : 'JavaScript Errors',
+						'eventAction' : 'error',
+						'eventLabel' : errStr,
+						'nonInteraction' : true
+					});
+				}
+				return false;
+			});
+		}
+
+
 		// track scroll depth
 		if(lqx.settings.tracking.scrolldepth){
-			
+
 			// get the initial scroll position
 			lqx.vars.scrollDepthMax = Math.ceil(((jQuery(window).scrollTop() + jQuery(window).height()) / jQuery(document).height()) * 10) * 10;
-			
+
 			// add listener to scrollthrottle event
 			jQuery(window).on('scrollthrottle', function(){
 				// capture the hightest scroll point, stop calculating once reached 100
@@ -832,56 +1068,56 @@ var lqx = lqx || {
 					if(lqx.vars.scrollDepthMax > 100) lqx.vars.scrollDepthMax = 100;
 				}
 			});
-			
-			// add listener to page unload
-			jQuery(window).on('unload', function(){
-				
-				ga('send', {
+
+			// add listener to page beforeunload
+			jQuery(window).on('beforeunload', function(){
+
+				lqx.gaSend({
 					'hitType' : 'event',
 					'eventCategory' : 'Scroll Depth',
 					'eventAction' : lqx.vars.scrollDepthMax,
 					'nonInteraction' : true
-				});				
-				
-			});					
-			
+				});
+
+			});
+
 		}
-		
+
 		// track photo galleries
 		if(lqx.settings.tracking.photogallery){
 			jQuery('html').on('click', 'a[rel^=lightbox], area[rel^=lightbox], a[data-lightbox], area[data-lightbox]', function(){
 				// send event for gallery opened
-				ga('send', {
+				lqx.gaSend({
 					'hitType': 'event',
 					'eventCategory' : 'Photo Gallery',
 					'eventAction' : 'Open'
 				});
-			
+
 			});
-			
+
 			jQuery('html').on('load', 'img.lb-image', function(){
 				// send event for image displayed
-				ga('send', {
+				lqx.gaSend({
 					'hitType': 'event',
 					'eventCategory' : 'Photo Gallery',
 					'eventAction' : 'Display',
 					'eventLabel' : jQuery(this).attr('src')
 				});
-			
+
 			});
 
 		}
-		
+
 		// track video
 		if(lqx.settings.tracking.video){
-			
+
 			// load youtube iframe api
 			var tag = document.createElement('script');
 			tag.src = 'https://www.youtube.com/iframe_api';
 			tag.onload = function(){lqx.vars.youTubeIframeAPIReady = true;};
 			var firstScriptTag = document.getElementsByTagName('script')[0];
 			firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-			
+
 			// set listeners for vimeo videos
 			if (window.addEventListener) {
 				window.addEventListener('message', lqx.vimeoReceiveMessage, false);
@@ -889,51 +1125,51 @@ var lqx = lqx || {
 			else {
 				window.attachEvent('onmessage', lqx.vimeoReceiveMessage, false);
 			}
-			
+
 			// initialize lqx players objects
 			lqx.vars.youtubePlayers = {};
 			lqx.vars.vimeoPlayers = {};
-			
+
 			// detect if there are any youtube or vimeo videos, activate js api and add id
 			jQuery('iframe').each(function(){
-				
+
 				var elem = jQuery(this);
 				// init js api for video player
 				lqx.initVideoPlayerAPI(elem);
-											
+
 			});
 
 		}
 
 		// track active time
 		if(lqx.settings.tracking.activetime) {
-			// add listener to page unload
-			jQuery(window).on('unload', function(){
-				
-				ga('send', {
+			// add listener to page beforeunload
+			jQuery(window).on('beforeunload', function(){
+
+				lqx.gaSend({
 					'hitType' : 'event',
 					'eventCategory' : 'User Active Time',
 					'eventAction' : 'Percentage',
 					'eventValue' : parseInt(100 * lqx.vars.userActive.activeTime / (lqx.vars.userActive.activeTime + lqx.vars.userActive.inactiveTime)),
 					'nonInteraction' : true
 				});
-				
-				ga('send', {
+
+				lqx.gaSend({
 					'hitType' : 'event',
 					'eventCategory' : 'User Active Time',
 					'eventAction' : 'Active Time (ms)',
 					'eventValue' : parseInt(lqx.vars.userActive.activeTime),
 					'nonInteraction' : true
 				});
-				
-				ga('send', {
+
+				lqx.gaSend({
 					'hitType' : 'event',
 					'eventCategory' : 'User Active Time',
 					'eventAction' : 'Inactive Time (ms)',
 					'eventValue' : parseInt(lqx.vars.userActive.inactiveTime),
 					'nonInteraction' : true
 				});
-				
+
 			});
 		}
 
@@ -941,19 +1177,19 @@ var lqx = lqx || {
 
 	// handle video players added dynamically
 	videoPlayerMutationHandler : function(mutRec) {
-		
+
 		jQuery(mutRec.addedNodes).each(function(){
-			
+
 			var elem = jQuery(this);
 			if (typeof elem.prop('tagName') !== 'undefined'){
 				var tag = elem.prop('tagName').toLowerCase();
 				if (tag == 'iframe') {
 					// init js api for video player
 					lqx.initVideoPlayerAPI(elem);
-				}	    		
+				}
 			}
 		});
-		
+
 	},
 
 	// initialize the js api for youtube and vimeo players
@@ -962,7 +1198,7 @@ var lqx = lqx || {
 		var src = elem.attr('src');
 		var playerId = elem.attr('id');
 		var urlconn;
-		
+
 		if(typeof src != 'undefined') {
 			// check youtube players
 			if (src.indexOf('youtube.com/embed/') != -1) {
@@ -971,7 +1207,7 @@ var lqx = lqx || {
 					playerId = 'youtubePlayer' + (Object.keys(lqx.vars.youtubePlayers).length);
 					elem.attr('id', playerId);
 				}
-				
+
 				// reload with API support enabled
 				if (src.indexOf('enablejsapi=1') == -1) {
 					urlconn = '&';
@@ -984,12 +1220,12 @@ var lqx = lqx || {
 				// add to list of players
 				if(typeof lqx.vars.youtubePlayers[playerId] == 'undefined') {
 					lqx.vars.youtubePlayers[playerId] = {};
-					
+
 					// add event callbacks to player
 					onYouTubeIframeAPIReady();
 				}
 			}
-			
+
 			// check vimeo players
 			if(src.indexOf('player.vimeo.com/video/') != -1) {
 				// add id if it doesn't have one
@@ -997,7 +1233,7 @@ var lqx = lqx || {
 					playerId = 'vimeoPlayer' + (Object.keys(lqx.vars.vimeoPlayers).length);
 					elem.attr('id', playerId);
 				}
-				
+
 				// reload with API support enabled
 				if (src.indexOf('api=1') == -1) {
 					urlconn = '&';
@@ -1011,11 +1247,11 @@ var lqx = lqx || {
 				if(typeof lqx.vars.vimeoPlayers[playerId] == 'undefined') {
 					lqx.vars.vimeoPlayers[playerId] = {};
 				}
-				
+
 			}
 		}
 	},
-	
+
 	youtubePlayerReady : function(e, playerId){
 		// check if iframe still exists
 		if(jQuery('#' + playerId).length) {
@@ -1055,37 +1291,37 @@ var lqx = lqx || {
 			// 3 (buffering)
 			// 5 (video cued / video ready)
 			var label;
-			
+
 			// video ended, make sure we track the complete event just once
 			if(lqx.vars.youtubePlayers[playerId].playerObj.getPlayerState() === 0 && !lqx.vars.youtubePlayers[playerId].complete) {
 				label = 'Complete';
 				lqx.vars.youtubePlayers[playerId].complete = true;
 			}
-			
+
 			// video playing
 			if(lqx.vars.youtubePlayers[playerId].playerObj.getPlayerState() == 1) {
-				
+
 				// recursively call this function in 1s to keep track of video progress
 				lqx.vars.youtubePlayers[playerId].timer = setTimeout(function(){lqx.youtubePlayerStateChange(e, playerId);}, 1000);
-				
+
 				// if this is the first time we get the playing status, track it as start
 				if(!lqx.vars.youtubePlayers[playerId].start){
 					label = 'Start';
 					lqx.vars.youtubePlayers[playerId].start = true;
 				}
-				
+
 				else {
-					
-					currentTime = lqx.vars.youtubePlayers[playerId].playerObj.getCurrentTime();
+
+					var currentTime = lqx.vars.youtubePlayers[playerId].playerObj.getCurrentTime();
 
 					if(Math.ceil( Math.ceil( (currentTime / lqx.vars.youtubePlayers[playerId].duration) * 100 ) / 10 ) - 1 > lqx.vars.youtubePlayers[playerId].progress){
-						
+
 						lqx.vars.youtubePlayers[playerId].progress = Math.ceil( Math.ceil( (currentTime / lqx.vars.youtubePlayers[playerId].duration) * 100 ) / 10 ) - 1;
-						
+
 						if(lqx.vars.youtubePlayers[playerId].progress != 10){
 							label = (lqx.vars.youtubePlayers[playerId].progress * 10) + '%';
 						}
-						
+
 						else {
 							clearTimeout(lqx.vars.youtubePlayers[playerId].timer);
 						}
@@ -1098,7 +1334,7 @@ var lqx = lqx || {
 				// recursively call this function in 1s to keep track of video progress
 				lqx.vars.youtubePlayers[playerId].timer = setTimeout(function(){lqx.youtubePlayerStateChange(e, playerId);}, 1000);
 			}
-			
+
 			// send event to GA if label was set
 			if(label){
 				lqx.videoTrackingEvent(playerId, label, lqx.vars.youtubePlayers[playerId].title, lqx.vars.youtubePlayers[playerId].progress * 10);
@@ -1110,75 +1346,75 @@ var lqx = lqx || {
 		}
 
 	},
-	
+
 	vimeoReceiveMessage : function(e){
-		
+
 		// check message is coming from vimeo
 		if((/^https?:\/\/player.vimeo.com/).test(e.origin)) {
 			// parse the data
 			var data = JSON.parse(e.data);
 			player = lqx.vars.vimeoPlayers[data.player_id];
 			var label;
-			
+
 			switch (data.event) {
-				
+
 				case 'ready':
 					// set player object variables
 					player.progress = 0;
 					player.start = false;
 					player.complete = false;
-					
+
 					// set the listeners
 					lqx.vimeoSendMessage(data.player_id, e.origin, 'addEventListener', 'play');
 					lqx.vimeoSendMessage(data.player_id, e.origin, 'addEventListener', 'finish');
 					lqx.vimeoSendMessage(data.player_id, e.origin, 'addEventListener', 'playProgress');
-					
+
 					break;
-				
+
 				case 'play':
 					// if this is the first time we get the playing status, track it as start
 					if(!player.start){
 						label = 'Start';
 						player.start = true;
 					}
-					
+
 					break;
-					
+
 				case 'playProgress':
-					
+
 					if(Math.ceil( Math.ceil( (data.data.percent) * 100 ) / 10 ) - 1 > player.progress) {
-						
+
 						player.progress = Math.ceil( Math.ceil( (data.data.percent) * 100 ) / 10 ) - 1;
-						
+
 						if(player.progress != 10){
 							label = (player.progress * 10) + '%';
 						}
-						
+
 					}
-					
+
 					break;
-					
+
 				case 'finish':
 					// make sure we capture finish event just once
 					if(!player.complete) {
 						label = 'Complete';
 						player.complete = true;
 					}
-					
+
 			}
-			
+
 			if(label){
 				lqx.videoTrackingEvent(data.player_id, label, 'No title', player.progress * 10); // vimeo doesn't provide a mechanism for getting the video title
 			}
-			
+
 		}
-		
-		
-		
+
+
+
 	},
-	
+
 	vimeoSendMessage : function(playerId, origin, action, value){
-		
+
 		var data = {
 			method: action
 		};
@@ -1188,11 +1424,11 @@ var lqx = lqx || {
 		}
 
 		document.getElementById(playerId).contentWindow.postMessage(JSON.stringify(data), origin);
-		
+
 	},
-	
+
 	videoTrackingEvent : function(playerId, label, title, value) {
-		ga('send', {
+		lqx.gaSend({
 			'hitType': 'event',
 			'eventCategory' : 'Video',
 			'eventAction' : label,
@@ -1203,7 +1439,7 @@ var lqx = lqx || {
 	},
 
 	initMobileMenu : function() {
-		
+
 		// add listeners to A tags in mobile menu
 		jQuery('body').on('click', '.horizontal ul.menu a, .vertical ul.menu a, .slide-out ul.menu a', function(e){
 			// prevent links to work until we
@@ -1235,7 +1471,7 @@ var lqx = lqx || {
 		});
 
 	},
-	
+
 	mobileMenu : function(elem) {
 		/*
 		 * keep in mind the various joomla classes for menu items:
@@ -1246,14 +1482,21 @@ var lqx = lqx || {
 		 * .current - is applied only to the specific menu item of the current page
 		 *
 		 */
-		
+
 		var li = jQuery(elem).parent();
 		var url = elem.href;
 		var target = (elem.target && !elem.target.match(/^_(self|parent|top)$/i)) ? elem.target : false;
-		var go = function(){ target ? window.open(url, target) : window.location.href = url; };
-		
+		var go = function(){
+			if(target){
+				window.open(url, target);
+			}
+			else {
+				window.location.href = url;
+			}
+		};
+
 		// check if there is a deeper menu
-		if(jQuery.inArray(lqx.vars.lastScreenSize, lqx.settings.mobileMenu.screens) != -1) {		
+		if(jQuery.inArray(lqx.vars.lastScreenSize, lqx.settings.mobileMenu.screens) != -1) {
 			if(jQuery(li).hasClass('deeper')) {
 				if(jQuery(li).hasClass('open')) {
 					// it is already open, follow the link
@@ -1271,7 +1514,7 @@ var lqx = lqx || {
 				go();
 			}
 		}	else {
-		
+
 			go();
 		}
 	},
@@ -1279,14 +1522,14 @@ var lqx = lqx || {
 	resetMobileMenus: function() {
 		if(jQuery.inArray(lqx.vars.lastScreenSize, lqx.settings.mobileMenu.screens) == -1) {
 			jQuery('.nav .parent').removeClass('open');
-		}		
+		}
 	},
-	
+
 	// create a custom mutation observer that will trigger any needed functions
 	initMutationObserver : function(){
 		// handle videos that may be loaded dynamically
 		var mo = window.MutationObserver || window.WebKitMutationObserver;
-		
+
 		// check for mutationObserver support , if exists, user the mutation observer object, if not use the listener method.
 		if (typeof mo !== 'undefined'){
 			lqx.mutationObserver = new mo(lqx.mutationHandler);
@@ -1302,14 +1545,14 @@ var lqx = lqx || {
 
 		}
 	},
-	
+
 	// mutation observer handler
 	mutationHandler : function(mutRecs) {
 		mutRecs.forEach(function(mutRec){
-			
+
 			// handle type of mutation
 			switch(mutRec.type) {
-				
+
 				case 'childList':
 					// handle addedNodes
 					if (mutRec.addedNodes.length > 0) {
@@ -1317,23 +1560,23 @@ var lqx = lqx || {
 						lqx.videoPlayerMutationHandler(mutRec);
 						lqx.imageMutationHandler(mutRec);
 					}
-					
+
 					// handle removedNodes
 					if (mutRec.removedNodes.length > 0) {}
 					break;
-					
+
 				case 'attributes':
-					
+
 					break;
-				
+
 				case 'characterData':
-					
+
 					break;
 			}
-			
+
 		});
 	},
-	
+
 	// image load error and complete attributes
 	initImgLoadAttr : function() {
 		jQuery('img').each(function(){
@@ -1366,18 +1609,18 @@ var lqx = lqx || {
 
 	// handle images added dynamically
 	imageMutationHandler : function(mutRec) {
-		
+
 		jQuery(mutRec.addedNodes).each(function(){
-			
+
 			var elem = jQuery(this);
 			if (typeof elem.prop('tagName') !== 'undefined'){
 				var tag = elem.prop('tagName').toLowerCase();
 				if (tag == 'img') {
 					lqx.imgLoadAttr(elem[0]);
-				}	    		
+				}
 			}
 		});
-		
+
 	},
 
 	// lyqbox: functionality for lightbox, galleries, and alerts
@@ -1466,7 +1709,7 @@ var lqx = lqx || {
 
 			// assign the html container class to namespace variable
 			lqx.lyqBox.overlay = jQuery('.lyqbox');
-			
+
 			// assign active content container to the first .content box
 			lqx.lyqBox.containerActive = lqx.lyqBox.overlay.find('.content-wrapper').first().addClass('active');
 
@@ -1514,7 +1757,7 @@ var lqx = lqx || {
             }
         },
 
-        
+
 		// Show overlay and lightbox. If the image is part of a set, add siblings to album array.
 		start: function(data) {
 			lqx.lyqBox.album = [];
@@ -1595,7 +1838,7 @@ var lqx = lqx || {
 						lqx.lyqBox.addHash();
 
 						// important line of code to make sure opacity is computed and applied as a starting value to the element so that the css transition works.
-						window.getComputedStyle(image[0]).opacity;
+						window.getComputedStyle(image[0]).opacity();
 					};
 
 					break;
@@ -1773,7 +2016,7 @@ var lqx = lqx || {
 		// add listener to common user action events
 		jQuery(window).on('orientationchange resize focusin', function(){lqx.userActive();});
 		jQuery(document).on('mousedown mousemove mouseup wheel keydown keypress keyup touchstart touchmove touchend', function(){lqx.userActive();});
-		
+
 		// add listener for window on focus out, become inactive immediately
 		jQuery(window).on('focusout', function(){lqx.userInactive();});
 
@@ -1795,7 +2038,7 @@ var lqx = lqx || {
 				lqx.vars.userActive.lastChangeTime = (new Date()).getTime();
 			}
 		}, lqx.settings.userActive.refresh);
-		
+
 		// initialize active state
 		lqx.userActive();
 
@@ -1838,89 +2081,145 @@ var lqx = lqx || {
 		lqx.vars.userActive.lastChangeTime = (new Date()).getTime();
 	},
 
+	ga4Code: function() {
+		var params = lqx.settings.ga.createParams;
+
+		// DOM Manipulation to add GA4 code to head
+		var ga4Script = document.createElement('script');
+		var firstScript = document.getElementsByTagName('script')[0];
+		var headElement = document.getElementsByTagName('head')[0];
+		ga4Script.async = 1;
+		ga4Script.src = 'https://www.googletagmanager.com/gtag/js?id=' + params.default.measurementId;
+		headElement.insertBefore(ga4Script, firstScript);
+
+		// Google Analytics 4 code
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', params.default.measurementId);
+
+		lqx.initTracking();
+	},
+
+	gaCode: function() {
+		(function (i, s, o, g, r, a, m) {
+			i.GoogleAnalyticsObject = r;
+			i[r] = i[r] || function() {
+				(i[r].q = i[r].q || []).push(arguments);
+			};
+			i[r].l = 1 * new Date();
+			a = s.createElement(o);
+			m = s.getElementsByTagName(o)[0];
+			a.async = 1;
+			a.src = g;
+			m.parentNode.insertBefore(a, m);
+		})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+		// Create commands
+		var params = lqx.settings.ga.createParams;
+		ga('create', params.default.trackingId, params.default.cookieDomain , params.default.fieldsObject);
+		Object.keys(params).forEach(function(tracker){
+			if(tracker != 'default') {
+				ga('create', params[tracker].trackingId, params[tracker].cookieDomain, tracker, params[tracker].fieldsObject);
+			}
+		});
+		ga(lqx.gaReady);
+	},
+
+	checkGA: function(count) {
+		if(count == undefined) count = 0;
+		if('GoogleAnalyticsObject' in window && typeof window.ga == 'function') lqx.initTracking();
+		else if(count < 6000) setTimeout(function() {lqx.checkGA(count++);}, 250);
+	},
+
 	// handles the google analytics page view event, setting first custom parameters
 	gaReady : function(tracker) {
 		// execute functions to set custom parameters
-		jQuery.Deferred().done(
-			function(){
-				// create commands
-				if(lqx.settings.ga.createParams && typeof lqx.settings.ga.createParams == 'object') {
-					var params = lqx.settings.ga.createParams;
-					Object.keys(params).forEach(function(tracker){
-						if(tracker == 'default') ga('create', params[tracker].trackingId, params[tracker].cookieDomain, params[tracker].fieldsObject);
-						else ga('create', params[tracker].trackingId, params[tracker].cookieDomain, tracker, params[tracker].fieldsObject);
-					});
-				}
-			},
-			function(){
-				var params;
-				// set commands
-				if(lqx.settings.ga.setParams && typeof lqx.settings.ga.setParams == 'object') {
-					params = lqx.settings.ga.setParams;
-					Object.keys(params).forEach(function(tracker){
-						var cmd = 'set';
-						if(tracker != 'default') cmd = tracker + '.set';
-						Object.keys(params[tracker]).forEach(function(fieldName){
-							ga(cmd, fieldName, params[tracker][fieldName]);
-						});
-					});
-				}
-				// require commands
-				if(lqx.settings.ga.requireParams && typeof lqx.settings.ga.requireParams == 'object') {
-					params = lqx.settings.ga.requireParams;
-					Object.keys(params).forEach(function(tracker){
-						var cmd = 'require';
-						if(tracker != 'default') cmd = tracker + '.require';
-						params[tracker].forEach(function(elem){
-							ga(cmd, elem.pluginName, elem.pluginOptions);
-						});
-					});
-				}
-				// provide commands
-				if(lqx.settings.ga.provideParams && typeof lqx.settings.ga.provideParams == 'object') {
-					params = lqx.settings.ga.provideParams;
-					Object.keys(params).forEach(function(tracker){
-						var cmd = 'provide';
-						if(tracker != 'default') cmd = tracker + '.provide';
-						params[tracker].forEach(function(elem){
-							ga(cmd, elem.pluginName, elem.pluginConstructor);
-						});
-					});
-				}
-				// a/b testing settings
-				if(lqx.settings.ga.abTestName !== null && lqx.settings.ga.abTestNameDimension !== null && lqx.settings.ga.abTestGroupDimension !== null) {
-					// get a/b test group cookie
-					var abTestGroup = lqx.cookie('abTestGroup');
-					if(abTestGroup === null) {
-						// set a/b test group
-						if(Math.random() < 0.5) abTestGroup = 'A';
-						else abTestGroup = 'B';
-						lqx.cookie('abTestGroup', abTestGroup, {maxAge: 30*24*60*60, path: '/'});
-					}
-					// set body attribute that can be used by css and js
-					jQuery('body').attr('data-abtest', abTestGroup);
-					// set the GA dimensions
-					ga('set', 'dimension' + lqx.settings.ga.abTestNameDimension, lqx.settings.ga.abTestName);
-					ga('set', 'dimension' + lqx.settings.ga.abTestGroupDimension, abTestGroup);
-				}
-			},
-			function(){
-				if(typeof lqx.settings.ga.customParamsFuncs == 'function') {
-					try {
-						lqx.settings.ga.customParamsFuncs();
-					}
-					catch(e) {
-						console.log(e);
-					}
-				}
-			},
-			function(){
-				// send pageview
-				ga('send', 'pageview');
-				// initialize analytics tracking
-				lqx.initTracking();
+		jQuery.Deferred(function(){
+			// create commands
+			if(lqx.settings.ga.createParams && typeof lqx.settings.ga.createParams == 'object') {
+				var params = lqx.settings.ga.createParams;
+				Object.keys(params).forEach(function(tracker){
+					if(tracker == 'default') ga('create', params[tracker].trackingId, params[tracker].cookieDomain, params[tracker].fieldsObject);
+					else ga('create', params[tracker].trackingId, params[tracker].cookieDomain, tracker, params[tracker].fieldsObject);
+				});
 			}
-		).resolve();
+		}).then(jQuery.Deferred(function(){
+			var params;
+			// set commands
+			if(lqx.settings.ga.setParams && typeof lqx.settings.ga.setParams == 'object') {
+				params = lqx.settings.ga.setParams;
+				Object.keys(params).forEach(function(tracker){
+					var cmd = 'set';
+					if(tracker != 'default') cmd = tracker + '.set';
+					Object.keys(params[tracker]).forEach(function(fieldName){
+						ga(cmd, fieldName, params[tracker][fieldName]);
+					});
+				});
+			}
+			// require commands
+			if(lqx.settings.ga.requireParams && typeof lqx.settings.ga.requireParams == 'object') {
+				params = lqx.settings.ga.requireParams;
+				Object.keys(params).forEach(function(tracker){
+					var cmd = 'require';
+					if(tracker != 'default') cmd = tracker + '.require';
+					params[tracker].forEach(function(elem){
+						ga(cmd, elem.pluginName, elem.pluginOptions);
+					});
+				});
+			}
+			// provide commands
+			if(lqx.settings.ga.provideParams && typeof lqx.settings.ga.provideParams == 'object') {
+				params = lqx.settings.ga.provideParams;
+				Object.keys(params).forEach(function(tracker){
+					var cmd = 'provide';
+					if(tracker != 'default') cmd = tracker + '.provide';
+					params[tracker].forEach(function(elem){
+						ga(cmd, elem.pluginName, elem.pluginConstructor);
+					});
+				});
+			}
+			// a/b testing settings
+			if(lqx.settings.ga.abTestName !== null && lqx.settings.ga.abTestNameDimension !== null && lqx.settings.ga.abTestGroupDimension !== null) {
+				// get a/b test group cookie
+				var abTestGroup = lqx.cookie('abTestGroup');
+				if(abTestGroup === null) {
+					// set a/b test group
+					if(Math.random() < 0.5) abTestGroup = 'A';
+					else abTestGroup = 'B';
+					lqx.cookie('abTestGroup', abTestGroup, {maxAge: 30*24*60*60, path: '/'});
+				}
+				// set body attribute that can be used by css and js
+				jQuery('body').attr('data-abtest', abTestGroup);
+				// set the GA dimensions
+				ga('set', 'dimension' + lqx.settings.ga.abTestNameDimension, lqx.settings.ga.abTestName);
+				ga('set', 'dimension' + lqx.settings.ga.abTestGroupDimension, abTestGroup);
+			}
+		})).then(jQuery.Deferred(function(){
+			if(typeof lqx.settings.ga.customParamsFuncs == 'function') {
+				try {
+					lqx.settings.ga.customParamsFuncs();
+				}
+				catch(e) {
+					console.log(e);
+				}
+			}
+		})).then(jQuery.Deferred(function(){
+			// send pageview
+			lqx.gaSend('pageview');
+			// initialize analytics tracking
+			lqx.initTracking();
+		}));
+	},
+
+	gaSend: function(event) {
+		if(lqx.settings.usingGTM) {
+			ga.getAll()[0].send(event);
+		}
+		else {
+			ga('send', event);
+		}
 	},
 
 	// parses URL parameters into lqx.vars.urlParams
@@ -1954,7 +2253,7 @@ var lqx = lqx || {
 			link.type = 'text/css';
 			link.rel = 'stylesheet';
 			document.getElementsByTagName('head')[0].appendChild(link);
-		}		
+		}
 	},
 
 	// enable swipe detection
@@ -1969,14 +2268,14 @@ var lqx = lqx || {
 			dir: '',
 			opts: lqx.settings.detectSwipe
 		};
-		elem = jQuery(sel);
+		var elem = jQuery(sel);
 		elem.on('touchstart', function(e) {
 			var t = e.originalEvent.touches[0];
 			swp.sX = t.clientX;
 			swp.sY = t.clientY;
 		});
 		elem.on('touchmove', function(e) {
-			e.preventDefault();
+			if (!e.is('.content-wrapper .content.html')) e.preventDefault();
 			var t = e.originalEvent.touches[0];
 			swp.eX = t.clientX;
 			swp.eY = t.clientY;
@@ -2002,7 +2301,7 @@ var lqx = lqx || {
 			}
 
 			if (swp.dir && typeof callback == 'function') callback(sel, swp.dir);
-			
+
 			swp.dir = '';
 			swp.sX = 0;
 			swp.sY = 0;
@@ -2022,11 +2321,18 @@ var lqx = lqx || {
 				forms.each(function(){
 					var action = jQuery(this).attr('action');
 					if(typeof action != 'undefined') {
-						jQuery(this).attr('action',action + (action.indexOf('?') !== -1 ? '&' : '?') + s)
+						jQuery(this).attr('action',action + (action.indexOf('?') !== -1 ? '&' : '?') + s);
 					}
 				});
 			}
 		}
+	},
+
+	// Simple string hash function
+	strHash: function(str) {
+		for(var i = 0, h = 4641154056; i < str.length; i++) h = Math.imul(h + str.charCodeAt(i) | 0, 2654435761);
+		h = (h ^ h >>> 17) >>> 0;
+		return h.toString(36);
 	},
 
 	// self initialization function
@@ -2037,6 +2343,10 @@ var lqx = lqx || {
 			lqx.bodyScreenSize();
 			// update orientation attribute in body tag
 			lqx.bodyScreenOrientation();
+			// update URL parts attributes in body tag
+			lqx.bodyURLparts();
+			// start analytics
+			lqx.initAnalytics();
 			// geo locate
 			lqx.geoLocate();
 			// add image attributes for load error and load complete
@@ -2044,7 +2354,7 @@ var lqx = lqx || {
 			// execute some browser fixes
 			lqx.browserFixes();
 			// enable function logging
-			lqx.initLogging();	
+			lqx.initLogging();
 			// initialize mobile menu functionality
 			lqx.initMobileMenu();
 			// set equal height rows
@@ -2088,7 +2398,7 @@ var lqx = lqx || {
 
 				// throttling is now on
 				lqx.vars.scrollThrottle = true;
-				
+
 				// set time out to turn throttling on and check screen size once more
 				setTimeout(function () {
 					// trigger custom event 'scrollthrottle'
@@ -2109,7 +2419,7 @@ var lqx = lqx || {
 
 				// throttling is now on
 				lqx.vars.resizeThrottle = true;
-				
+
 				// set time out to turn throttling on and check screen size once more
 				setTimeout(function () {
 					// trigger custom event 'resizethrottle'
@@ -2141,7 +2451,7 @@ var lqx = lqx || {
 
 		// Trigger on custom event scrollthrottle
 		jQuery(window).on('scrollthrottle', function() {
-			
+
 		});
 
 		// Trigger on custom event resizethrottle
@@ -2157,7 +2467,7 @@ var lqx = lqx || {
 		// callback function called by iframe youtube players when they are ready
 		window.onYouTubeIframeAPIReady = function(){
 			if(lqx.vars.youTubeIframeAPIReady && (typeof YT !== 'undefined') && YT && YT.Player) {
-				lqx.vars.youtubePlayers.forEach(function(playerId) {
+				Object.keys(lqx.vars.youtubePlayers).forEach(function(playerId) {
 					if(typeof lqx.vars.youtubePlayers[playerId].playerObj == 'undefined') {
 						lqx.vars.youtubePlayers[playerId].playerObj = new YT.Player(playerId, {
 							events: {

@@ -1,12 +1,12 @@
 /**
  * 07-effects-hover-focus.less - CSS3 effects, animations on hover and focus
  *
- * @version     1.0.1
- * @package     tpl_lyquix
+ * @version     1.0.12
+ * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2017 Lyquix
  * @license     GNU General Public License version 2 or later
- * @link        https://github.com/Lyquix/tpl_lyquix
+ * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
 
 // effects on hover and focus
@@ -15,14 +15,14 @@
 	.transition-fast();
 	&:hover {
 		.box-glow();
-	}	
+	}
 }
 
 .box-shadow-hover {
 	.transition-fast();
 	&:hover {
 		.box-shadow();
-	}	
+	}
 }
 
 .box-tint-hover {
@@ -298,27 +298,27 @@
 	img {
 		.transition-normal();
 	}
-	
+
 	// animates the image to zoom in/out on hover
 	// need to fix the width/height of .image container for overflow to work
-	
+
 	&.zoom-in {
 		overflow: hidden;
-		
+
 		&:hover img {
 			.enlarge();
 		}
 	}
-	
+
 	&.zoom-out {
 		overflow: hidden;
-		
+
 		&:hover img {
 			transform: scale(1);
 		}
-		
+
 		img {
-			.enlarge();			
+			.enlarge();
 		}
 	}
 }

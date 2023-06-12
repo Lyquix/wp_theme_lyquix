@@ -2,12 +2,12 @@
 /**
  * index.php - Uses client IP address to obtain client location, responds with a JSON object
  *
- * @version     1.0.1
- * @package     tpl_lyquix
+ * @version     1.0.12
+ * @package     wp_theme_lyquix
  * @author      Lyquix
- * @copyright   Copyright (C) 2015 - 2017 Lyquix
+ * @copyright   Copyright (C) 2015 - 2018 Lyquix
  * @license     GNU General Public License version 2 or later
- * @link        https://github.com/Lyquix/tpl_lyquix
+ * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
 
 header('Content-Type: application/json');

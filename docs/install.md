@@ -1,7 +1,7 @@
 #Installation and Setup
 
 ###First Install
-  1. Download the latest template package from https://github.com/Lyquix/tpl_lyquix/releases
+  1. Download the latest template package from https://github.com/Lyquix/wp_theme_lyquix/releases
   2. Install the package using Joomla extension manager
   3. Set the Lyquix template as the default template for your site
 

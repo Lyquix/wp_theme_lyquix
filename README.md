@@ -12,9 +12,9 @@ The objectives of this template are:
 
 ##Is this template for you?##
 
-This is intended for advanced developers, or those looking to learn advanced template development. 
+This is intended for advanced developers, or those looking to learn advanced template development.
 
-If you are looking for a "one-click & go" template, this is not for you. After you first install this template you will probably see a blank page with an error message. 
+If you are looking for a "one-click & go" template, this is not for you. After you first install this template you will probably see a blank page with an error message.
 
 This is intended to be the foundation for developers that build custom templates from scratch. This is not a pre-made template that looks pretty and you tweak to fit your design.
 
@@ -107,7 +107,7 @@ The template implements a grid layout and responsive framework. Think Bootstrap 
   * Displays outdated browser warning for IE8 and IE9 users
 
 ###Tracking with Google Analytics###
-  
+
   * Loads Google Analytics universal tracking code when UA- account is set in template settings
   * Implements parameter-driven Google Analytics configuration, as well as custom function
   * Tracking of outbound links as events
@@ -124,10 +124,10 @@ Since this started as an internal project, the documentation was initially devel
 
 We are slowly moving the documentation into this repo:
 
-  * [Installation and basic setup](https://github.com/Lyquix/tpl_lyquix/blob/master/docs/install.md)
-  * [Files, positions, configuration: templateDetails.xml](https://github.com/Lyquix/tpl_lyquix/blob/master/docs/xml.md)
-  * [Base template files: index.php, component.php](https://github.com/Lyquix/tpl_lyquix/blob/master/docs/template.md)
-  * [JavaScript functionality](https://github.com/Lyquix/tpl_lyquix/blob/master/docs/js.md)
+  * [Installation and basic setup](https://github.com/Lyquix/wp_theme_lyquix/blob/master/docs/install.md)
+  * [Files, positions, configuration: templateDetails.xml](https://github.com/Lyquix/wp_theme_lyquix/blob/master/docs/xml.md)
+  * [Base template files: index.php, component.php](https://github.com/Lyquix/wp_theme_lyquix/blob/master/docs/template.md)
+  * [JavaScript functionality](https://github.com/Lyquix/wp_theme_lyquix/blob/master/docs/js.md)
 
 ##To Do and Ideas##
 
