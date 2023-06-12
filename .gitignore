@@ -3,7 +3,7 @@
 Thumbs.db
 Desktop.ini
 
-# gitignore for tpl_lyquix
+# gitignore for wp_theme_lyquix
 /*.log
 /*-custom.php
 /css/*
@@ -26,3 +26,4 @@ Desktop.ini
 /js/scripts.min.js
 !/js/scripts.dist.js
 /php/ip2geo/GeoLite2-City.mmdb
+node_modules
