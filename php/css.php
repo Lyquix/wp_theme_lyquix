@@ -71,7 +71,7 @@ foreach($add_css_libraries as $cssurl) {
 			if(substr($cssurl,0,1) != '/') $cssurl = '/' . $cssurl;
 			// Check if file exist
 			if(file_exists(ABSPATH . $cssurl)) {
-				$stylesheets[] = ['url' => $cssurl, 'version' => date("YmdHis", filemtime(get_home_path() . $cssurl))];
+				$stylesheets[] = ['url' => $cssurl, 'version' => date("YmdHis", filemtime(ABSPATH . $cssurl))];
 			}
 		}
 	}
