@@ -1,7 +1,7 @@
 /**
  * lyquix.js - Lyquix JavaScript library
  *
- * @version     1.0.12
+ * @version     1.1.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2017 Lyquix

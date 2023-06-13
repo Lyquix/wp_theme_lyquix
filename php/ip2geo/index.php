@@ -2,7 +2,7 @@
 /**
  * index.php - Uses client IP address to obtain client location, responds with a JSON object
  *
- * @version     1.0.12
+ * @version     1.1.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix

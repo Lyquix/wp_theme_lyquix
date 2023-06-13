@@ -480,6 +480,6 @@ function lqx_customize_partial_blogdescription() {
 }
 
 function lqx_customize_preview_js() {
-	wp_enqueue_script( 'lqx-customize-preview', get_template_directory_uri() . '/js/customize-preview.js', array( 'customize-preview' ), '20160412', true );
+	wp_enqueue_script( 'lqx-customize-preview', get_template_directory_uri() . '/js/customize-preview.js', array( 'customize-preview' ), '201.1.0', true );
 }
 add_action( 'customize_preview_init', 'lqx_customize_preview_js' );
