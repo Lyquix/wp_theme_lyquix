@@ -43,25 +43,21 @@ foreach($add_js_libraries as $jsurl) {
 
 // Set lqx options
 $lqx_options = [
-    'bodyScreenSize' => [
-        'min' => get_theme_mod('min_screen', 0),
-        'max' => get_theme_mod('max_screen', 4)
-    ]
+	'bodyScreenSize' => [
+		'min' => get_theme_mod('min_screen', 0),
+		'max' => get_theme_mod('max_screen', 4)
+	]
 ];
 
 if(get_theme_mod('analytics_account', '') || get_theme_mod('ga4_account', '')) {
-    $lqx_options['ga'] = [
-        'createParams' => [
-            'default' => [
-                'trackingId' => get_theme_mod('analytics_account'),
-                'measurementId' => get_theme_mod('ga4_account'),
-                'cookieDomain' => 'auto'
-            ]
-        ]
-    ];
+	$lqx_options['ga'] = [
+		'trackingId' => get_theme_mod('analytics_account'),
+		'measurementId' => get_theme_mod('ga4_account'),
+		'sendPageview' => get_theme_mod('ga_pageview', '1') ? true : false,
+		'useAnalyticsJS' => get_theme_mod('ga_use_analytics_js', '1') ? true : false,
+		'usingGTM' => get_theme_mod('ga_via_gtm', '0') ? true : false
+	];
 }
-
-if(get_theme_mod('using_gtm', 0)) $lqx_options['usingGTM'] = true;
 
 // Merge with options from template settings
 $lqx_options = array_replace_recursive($lqx_options, json_decode(get_theme_mod('lqx_options', '{}'), true));

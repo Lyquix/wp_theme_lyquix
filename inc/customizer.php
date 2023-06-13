@@ -21,6 +21,9 @@ function lqx_customize_register( $wp_customize ) {
 	$wp_customize->get_setting( 'dotdotdot' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'add_js_libraries' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'analytics_account' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'ga4_account' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'ga_pageview' )->transport = 'postMessage';
+	$wp_customize->get_setting( 'ga_use_analytics_js' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'using_gtm' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'gtm_account' )->transport = 'postMessage';
 	$wp_customize->get_setting( 'google_site_verification' )->transport = 'postMessage';
@@ -325,6 +328,34 @@ function lqx_customize_register( $wp_customize ) {
 		'section' => 'lqx_accounts',
 		'settings' => 'ga4_account',
 	) ) );
+	$wp_customize->add_setting( 'ga_pageview' , array(
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
+	) );
+	$wp_customize->add_control( 'ga_pageview', array(
+		'type' => 'radio',
+		'label' => __( 'Send Google Analytics Pageview', 'lyquix_theme' ),
+		'section' => 'lqx_accounts',
+		'settings' => 'ga_pageview',
+		'choices' => array(
+			'0' => 'No',
+			'1' => 'Yes',
+		),
+	) );
+	$wp_customize->add_setting( 'ga_use_analytics_js' , array(
+		'type' => 'theme_mod',
+	    'transport' => 'refresh',
+	) );
+	$wp_customize->add_control( 'ga_use_analytics_js', array(
+		'type' => 'radio',
+		'label' => __( 'Use analytics.js for Universal Analytics', 'lyquix_theme' ),
+		'section' => 'lqx_accounts',
+		'settings' => 'ga_use_analytics_js',
+		'choices' => array(
+			'0' => 'No',
+			'1' => 'Yes',
+		),
+	) );
 	$wp_customize->add_setting( 'using_gtm' , array(
 		'type' => 'theme_mod',
 	    'transport' => 'refresh',
