@@ -169,8 +169,12 @@ if(get_theme_mod('ga_account', '') || get_theme_mod('ga4_account', '')) {
 }
 
 // Merge with options from template settings
-$lqx_options = array_replace_recursive($lqx_options, json_decode(get_theme_mod('lqx_options', '{}'), true));
-$scripts_options = array_replace_recursive([], json_decode(get_theme_mod('scripts_options', '{}'), true));
+$theme_lqx_options = json_decode(get_theme_mod('lqx_options'), true);
+if(!$theme_lqx_options) $theme_lqx_options = [];
+$lqx_options = array_replace_recursive($lqx_options, $theme_lqx_options);
+$theme_script_options = json_decode(get_theme_mod('scripts_options'), true);
+if(!$theme_script_options) $theme_script_options = [];
+$scripts_options = array_replace_recursive([], $theme_script_options);
 
 function lqx_render_js() {
 	global $tmpl_url, $scripts_filename, $lqx_options;
