@@ -17,6 +17,9 @@ if(@!is_array($body_classes)) {
 if($home) {
 	$body_classes[] = 'home';
 }
+if(is_user_logged_in()) {
+	$body_classes[] = 'logged-in';
+}
 foreach(array('404', 'search', 'home', 'category',
 	'post_type_archive', 'tax', 'tag', 'author', 'date',
 	'single', 'page', 'attachment') as $type) {
