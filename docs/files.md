@@ -1,6 +1,6 @@
 # File Structure
 
-`@version     2.4.0`
+`@version     2.4.1`
 
 This theme introduces some important changes in terms of file structure, compared to the standard WordPress theme structure. You should familiarize yourself first with [WordPress template hierarchy](https://developer.wordpress.org/themes/basics/template-hierarchy/).
 
