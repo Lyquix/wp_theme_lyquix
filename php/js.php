@@ -177,7 +177,7 @@ if(!$theme_script_options) $theme_script_options = [];
 $scripts_options = array_replace_recursive([], $theme_script_options);
 
 function lqx_render_js() {
-	global $tmpl_url, $scripts_filename, $lqx_options;
+	global $tmpl_url, $scripts_filename, $lqx_options, $scripts_options;
 	echo '<script defer src="' . $tmpl_url . '/dist/' . $scripts_filename . '" onload="lqx.ready(' . htmlentities(json_encode($lqx_options)) . '); $lqx.ready(' . htmlentities(json_encode($scripts_options)) . ');"></script>' . "\n";
 
 	// Load GTM head code

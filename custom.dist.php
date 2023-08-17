@@ -47,6 +47,7 @@ require get_template_directory() . '/php/body.php';
 <body class="<?php echo implode(' ', $body_classes); ?>">
 <?php
 // Skip header area for blank page template
+$lqx_page_template = basename(get_page_template());
 if($lqx_page_template != 'blank'): ?>
 <header>
 	<?php if(is_active_sidebar('header')) dynamic_sidebar('header'); ?>

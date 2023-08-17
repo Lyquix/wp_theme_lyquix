@@ -48,7 +48,7 @@ foreach(array('404', 'search', 'home', 'category',
 				break;
 			case 'page':
 				$body_classes[] = $type;
-				$body_classes[] = $type . '-' . $wp_query -> query['pagename'];
+				if(array_key_exists('pagename', $wp_query -> query)) $body_classes[] = $type . '-' . $wp_query -> query['pagename'];
 				break;
 			case 'attachment':
 				$body_classes[] = $type;
