@@ -30,7 +30,8 @@ elseif(is_archive()) {
 	// Custom post type archive
 	if(is_post_type_archive()) {
 		if(tmpl_file_exists('archive-' . get_post_type())) $tmpl_name = 'archive-' . get_post_type();
-		elseif(tmpl_file_exists('archive')) $tmpl_name = 'archive';
+        elseif ($wp_query->query['post_type'] == 'tribe_events' && tmpl_file_exists('archive-tribe_events')) $tmpl_name = 'archive-tribe_events';
+        elseif(tmpl_file_exists('archive')) $tmpl_name = 'archive';
 	}
 	// Category archive
 	elseif(is_category()) {
@@ -75,13 +76,19 @@ elseif(is_singular()) {
 	// Blog post or custom post type
 	if(is_single()) {
 		if(tmpl_file_exists(get_post_type() . '-' . $wp_query -> query['name'])) $tmpl_name = get_post_type() . '-' . $wp_query -> query['name'];
-		elseif(tmpl_file_exists(get_post_type())) $tmpl_name = get_post_type();
+        elseif($wp_query->query['post_type'] == 'tribe_events' && tmpl_file_exists('single-tribe_events')) $tmpl_name = 'single-tribe_events';
+        elseif(tmpl_file_exists(get_post_type())) $tmpl_name = get_post_type();
 	}
 	// Page
 	elseif(is_page()) {
 		if(tmpl_file_exists('page-' . $wp_query -> query['pagename'])) $tmpl_name = 'page-' . $wp_query -> query['pagename'];
 		elseif(tmpl_file_exists('page')) $tmpl_name = 'page';
 	}
+    // Woocommerce
+    elseif (is_woocommerce()) {
+        if (tmpl_file_exists('page-' . $wp_query->query['pagename'])) $tmpl_name = 'page-' . $wp_query->query['pagename'];
+        elseif (tmpl_file_exists('page')) $tmpl_name = 'page';
+    }
 	// Attachment
 	elseif(is_attachment()) {
 		$mime_type = explode('/', get_post_mime_type());
@@ -89,6 +96,12 @@ elseif(is_singular()) {
 		elseif(tmpl_file_exists($mime_type[0] . '-' . $mime_type[1])) $tmpl_name = $mime_type[0] . '-' . $mime_type[1];
 		elseif(tmpl_file_exists($mime_type[0])) $tmpl_name = $mime_type[0];
 		elseif(tmpl_file_exists('attachment')) $tmpl_name = 'attachment';
+	}
+} elseif (is_woocommerce()) {
+	// Woocommerce
+	if (is_page()) {
+		if (tmpl_file_exists('page-' . $wp_query->query['pagename'])) $tmpl_name = 'page-' . $wp_query->query['pagename'];
+		elseif (tmpl_file_exists('page')) $tmpl_name = 'page';
 	}
 }
 if($tmpl_name) {
@@ -102,8 +115,9 @@ else {
 	elseif(is_singular()) {
 		if(tmpl_file_exists('singular')) require get_template_directory() . '/php/custom/singular.php';
 		else require get_template_directory() . '/php/singular.php';
-	}
-	else {
+	} elseif (is_404()) {
+		require get_template_directory() . '/php/404.php';
+	} else {
 		echo "<pre><strong>Error:</strong> no suitable template has been found!\n\n";
 		if(WP_DEBUG) {
 			foreach(array(
