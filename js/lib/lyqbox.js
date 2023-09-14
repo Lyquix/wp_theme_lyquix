@@ -157,6 +157,8 @@ if(lqx && !('lyqbox' in lqx)) {
 				jQuery(opts.html).appendTo(lqx.vars.body);
 			}
 
+			jQuery(opts.lyqboxId).addClass(jQuery('[data-lyqbox]').data('lyqboxClass'))
+
 			// Get jQuery elements
 			vars.overlay = jQuery(opts.lyqboxId);
 			vars.closeElem = jQuery(opts.lyqboxId + ' .close');
@@ -458,6 +460,14 @@ if(lqx && !('lyqbox' in lqx)) {
 					break;
 			}
 
+			jQuery('#lyqbox .controls .prev-custom').on('click', function() {
+				prev();
+			});
+
+			jQuery('#lyqbox .controls .next-custom').on('click', function() {
+				next();
+			});
+
 			// Send event for load
 			if(opts.analytics.enabled && typeof ga !== 'undefined') {
 			// Set the analytics event label
@@ -647,7 +657,8 @@ if(lqx && !('lyqbox' in lqx)) {
 		};
 
 		return {
-			init: init
+			init: init,
+			start: start
 		};
 	})();
 	lqx.lyqbox.init();
