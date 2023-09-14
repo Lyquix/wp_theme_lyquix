@@ -115,7 +115,7 @@ else {
 	elseif(is_singular()) {
 		if(tmpl_file_exists('singular')) require get_template_directory() . '/php/custom/singular.php';
 		else require get_template_directory() . '/php/singular.php';
-	} elseif (is_404()) {
+	} elseif (is_404() && file_exists(get_template_directory() . '/php/404.php')) {
 		require get_template_directory() . '/php/404.php';
 	} else {
 		echo "<pre><strong>Error:</strong> no suitable template has been found!\n\n";
