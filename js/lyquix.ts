@@ -1,7 +1,7 @@
 /**
  * lyquix.ts - Main file for lqx library
  *
- * @version     2.3.3
+ * @version     3.0.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix
@@ -33,7 +33,7 @@ import { util } from './lib/lyquix/util';
 
 declare const lqx;
 
-const version = '2.3.3';
+const version = '3.0.0';
 
 const init = (customCfg) => {
 	// Run only once

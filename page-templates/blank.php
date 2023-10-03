@@ -4,7 +4,7 @@
  *
  * blank.php - page template outputs <head> and the_content()
  *
- * @version     2.3.3
+ * @version     3.0.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix

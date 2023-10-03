@@ -1,6 +1,6 @@
 # Widget Positions
 
-`@version     2.3.3`
+`@version     3.0.0`
 
 The theme includes several widget positions that you can use or ignore as needed. Below is the list with its recommended placement:
 
