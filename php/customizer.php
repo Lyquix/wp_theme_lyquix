@@ -1,4 +1,5 @@
 <?php
+
 /**
  * customizer.php - Set fields for theme customizer
  *
@@ -10,7 +11,20 @@
  * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
 
-function lqx_customizer_add($wp_customize) {
+//    .d8888b. 88888888888 .d88888b.  8888888b.   888
+//   d88P  Y88b    888    d88P" "Y88b 888   Y88b  888
+//   Y88b.         888    888     888 888    888  888
+//    "Y888b.      888    888     888 888   d88P  888
+//       "Y88b.    888    888     888 8888888P"   888
+//         "888    888    888     888 888         Y8P
+//   Y88b  d88P    888    Y88b. .d88P 888          "
+//    "Y8888P"     888     "Y88888P"  888         888
+//
+//  DO NOT MODIFY THIS FILE!
+
+namespace lqx;
+
+function customizer_add($wp_customize) {
 	$add_settings = [
 		'Responsiveness' => [
 			'min_screen' => [
@@ -30,12 +44,6 @@ function lqx_customizer_add($wp_customize) {
 			'non_min_css' => [
 				'type' => 'radio',
 				'label' => 'Use Original CSS',
-				'choices' => ['0' => 'No', '1' => 'Yes'],
-				'default' => '0'
-			],
-			'animatecss' => [
-				'type' => 'radio',
-				'label' => 'Load Animate.css',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '0'
 			],
@@ -64,7 +72,7 @@ function lqx_customizer_add($wp_customize) {
 			'lqx_debug' => [
 				'type' => 'radio',
 				'label' => 'Enable lqx debug',
-				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'choices' => ['0' => 'None', '1' => 'Errors', '2' => 'Warnings', '3' => 'Info'],
 				'default' => '0'
 			],
 			'non_min_js' => [
@@ -81,33 +89,9 @@ function lqx_customizer_add($wp_customize) {
 				'type' => 'textarea',
 				'label' => 'Scripts Options',
 			],
-			'polyfill' => [
+			'dayjs' => [
 				'type' => 'radio',
-				'label' => 'Use polyfill.io',
-				'choices' => ['0' => 'No', '1' => 'Yes'],
-				'default' => '1'
-			],
-			'lodash' => [
-				'type' => 'radio',
-				'label' => 'LoDash library',
-				'choices' => ['0' => 'No', '1' => 'Yes'],
-				'default' => '0'
-			],
-			'smoothscroll' => [
-				'type' => 'radio',
-				'label' => 'SmoothScroll library',
-				'choices' => ['0' => 'No', '1' => 'Yes'],
-				'default' => '0'
-			],
-			'momentjs' => [
-				'type' => 'radio',
-				'label' => 'Moment.js library',
-				'choices' => ['0' => 'No', '1' => 'Yes'],
-				'default' => '0'
-			],
-			'dotdotdot' => [
-				'type' => 'radio',
-				'label' => 'dotdotdot library',
+				'label' => 'Day.js library',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '0'
 			],
@@ -120,12 +104,9 @@ function lqx_customizer_add($wp_customize) {
 				'label' => 'Remove JS Libraries'
 			]
 		],
-		'Accounts' => [
-			'ga_account' => [
-				'label' => 'Google Analytics Account',
-			],
+		'Analytics' => [
 			'ga4_account' => [
-				'label' => 'Google Analytics 4 Account',
+				'label' => 'Google Analytics 4 Measurement ID',
 			],
 			'ga_pageview' => [
 				'type' => 'radio',
@@ -135,13 +116,18 @@ function lqx_customizer_add($wp_customize) {
 			],
 			'ga_via_gtm' => [
 				'type' => 'radio',
-				'label' => 'Google Analytics via GTM',
+				'label' => 'Google Analytics loaded via GTM',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '0'
 			],
 			'gtm_account' => [
 				'label' => 'Google Tag Manager Account',
 			],
+			'clarity_account' => [
+				'label' => 'Microsoft Clarity Project ID',
+			],
+		],
+		'Accounts' => [
 			'google_site_verification' => [
 				'label' => 'google-site-verification',
 			],
@@ -152,40 +138,34 @@ function lqx_customizer_add($wp_customize) {
 				'label' => 'p:domain_verify',
 			]
 		],
-		'IE' => [
-			'ie9_alert' => [
+		'Browser Alert' => [
+			'browser_alert' => [
 				'type' => 'radio',
-				'label' => 'IE9 alert',
+				'label' => 'Enable Browser Alert',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
 			],
-			'ie10_alert' => [
+			'accepted_browser_versions' => [
 				'type' => 'radio',
-				'label' => 'IE10 alert',
-				'choices' => ['0' => 'No', '1' => 'Yes'],
-				'default' => '1'
-			],
-			'ie11_alert' => [
-				'type' => 'radio',
-				'label' => 'IE11 alert',
-				'choices' => ['0' => 'No', '1' => 'Yes'],
-				'default' => '1'
+				'label' => 'Acceptable Browser Versions',
+				'choices' => ['1' => 'Only Lastest', '2' => 'Last 2', '3' => 'Last 3', '4' => 'Last 4', '5' => 'Last 5'],
+				'default' => '3'
 			]
 		]
 	];
 
-	foreach($add_settings as $section => $setting) {
-		$wp_customize -> add_section('lqx_' . strtolower($section), [
+	foreach ($add_settings as $section => $setting) {
+		$wp_customize->add_section('lqx_' . strtolower($section), [
 			'title' => __($section, 'lyquix'),
 			'priority' => 30,
 		]);
-		foreach($setting as $name => $options) {
-			$wp_customize -> add_setting($name , [
+		foreach ($setting as $name => $options) {
+			$wp_customize->add_setting($name, [
 				'type' => 'theme_mod',
 				'transport' => 'refresh',
 				'default' => array_key_exists('default', $options) ? $options['default'] : null
 			]);
-			$wp_customize -> add_control($name, [
+			$wp_customize->add_control($name, [
 				'type' => array_key_exists('type', $options) ? $options['type'] : null,
 				'label' => __($options['label'], 'lyquix'),
 				'section' => 'lqx_' . strtolower($section),
@@ -196,4 +176,4 @@ function lqx_customizer_add($wp_customize) {
 	}
 }
 
-/* DO NOT MODIFY THIS FILE! If you need custom functions, add them to /php/custom/functions.php */
+add_action('customize_register', 'lqx\customizer_add');

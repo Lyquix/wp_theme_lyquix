@@ -1,7 +1,7 @@
 <?php
 
 /**
- * singular.php - Default template for singular pages
+ * livereload.php - Loads the Livereload functionality
  *
  * @version     2.3.3
  * @package     wp_theme_lyquix
@@ -21,13 +21,7 @@
 //    "Y8888P"     888     "Y88888P"  888         888
 //
 //  DO NOT MODIFY THIS FILE!
-//  Instead create a file called singular.php in /php/custom/ and add your code there
 
-the_post();
-?>
-<h1><?php the_title(); ?></h1>
-<p><span class="created"><?php the_time('F jS, Y') ?></span><br>
-	<span class="author"><?php the_author() ?></span>
-</p>
-<div class="content"><?php the_content(); ?></div>
-<?php
+if (substr($_SERVER['HTTP_HOST'], -5) === '.test') : ?>
+	<script src="http://localhost:35729/livereload.js?snipver=1"></script>
+<?php endif;
