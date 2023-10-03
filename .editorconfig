@@ -1,0 +1,24 @@
+#
+# .editorconfig - EditorConfig file
+#
+# @version     2.3.3
+# @package     wp_theme_lyquix
+# @author      Lyquix
+# @copyright   Copyright (C) 2015 - 2018 Lyquix
+# @license     GNU General Public License version 2 or later
+# @link        https://github.com/Lyquix/wp_theme_lyquix
+#
+
+# top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+end_of_line = lf
+insert_final_newline = true
+charset = utf-8
+indent_style = tab
+indent_size = 2
+tab_width = 2
+trim_trailing_whitespace = true
+max_line_length = 120
