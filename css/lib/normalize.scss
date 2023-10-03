@@ -1,15 +1,26 @@
-/**
- * normalize.scss - Normalize CSS styles for consistent cross-browser experience
- *
- * Loosely based on https://github.com/necolas/normalize.css
- *
- * @version     2.3.3
- * @package     wp_theme_lyquix
- * @author      Lyquix
- * @copyright   Copyright (C) 2015 - 2018 Lyquix
- * @license     GNU General Public License version 2 or later
- * @link        https://github.com/Lyquix/wp_theme_lyquix
- */
+//
+// normalize.css - Normalize CSS styles for consistent cross-browser experience
+//
+// Loosely based on https://github.com/necolas/normalize.css
+//
+// @version     2.3.3
+// @package     wp_theme_lyquix
+// @author      Lyquix
+// @copyright   Copyright (C) 2015 - 2018 Lyquix
+// @license     GNU General Public License version 2 or later
+// @link        https://github.com/Lyquix/wp_theme_lyquix
+//
+
+//    .d8888b. 88888888888 .d88888b.  8888888b.   888
+//   d88P  Y88b    888    d88P" "Y88b 888   Y88b  888
+//   Y88b.         888    888     888 888    888  888
+//    "Y888b.      888    888     888 888   d88P  888
+//       "Y88b.    888    888     888 8888888P"   888
+//         "888    888    888     888 888         Y8P
+//   Y88b  d88P    888    Y88b. .d88P 888          "
+//    "Y8888P"     888     "Y88888P"  888         888
+
+//  DO NOT MODIFY THIS FILE!
 
 html {
 	// Set default font to sans-serif
@@ -19,8 +30,7 @@ html {
 	line-height: 1.15;
 
 	// Prevent font size adjustement
-	-ms-text-size-adjust: 100%;
-	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
 }
 
 body {
@@ -66,8 +76,9 @@ template {
 a {
 	// Remove the gray background color from active links in IE 10.
 	background-color: transparent;
+
 	// Remove gaps in links underline in iOS 8+ and Safari 8+.
-	-webkit-text-decoration-skip: objects;
+	text-decoration-skip: objects;
 }
 
 a:active,
@@ -87,14 +98,10 @@ b,
 strong {
 	// Prevent the duplicate application of `bolder` by the next rule in Safari 6.
 	font-weight: inherit;
-}
 
-b,
-strong {
 	// Set to `bolder` in Firefox 4+, Safari, and Chrome.
 	font-weight: bolder;
 }
-
 
 dfn {
 	// Styling not present in Safari and Chrome.
@@ -144,6 +151,7 @@ svg:not(:root) {
 audio:not([controls]) {
 	// Prevent modern browsers from displaying `audio` without controls.
 	display: none;
+
 	// Remove excess height in iOS 5 devices.
 	height: 0;
 }
@@ -153,10 +161,10 @@ figure {
 	margin: 1em 40px;
 }
 
-
 hr {
 	// Correct styling in Firefox, show overflow in IE/Edge
 	height: 0;
+	box-sizing: content-box;
 	overflow: visible;
 }
 
@@ -168,8 +176,10 @@ samp {
 	overflow: auto;
 	white-space: pre-wrap;
 	word-wrap: break-word;
+
 	// Correct inheritance and scaling of font in all browsers
-	font-family: monospace, monospace;
+	font-family: monospace;
+
 	// Correct `em` sizing in all browser
 	font-size: 1em;
 }
@@ -183,6 +193,7 @@ textarea {
 	font-family: inherit;
 	font-size: 100%;
 	line-height: 1.15em;
+
 	// Remove margin in Firefox and Safari
 	margin: 0;
 }
@@ -206,7 +217,7 @@ html [type="button"],
 [type="submit"] {
 	// Avoid WebKit bug in Android 4.0.* where destroys native `audio` and `video` controls.
 	// Correct inability to style clickable `input` types in iOS.
-	-webkit-appearance: button;
+	appearance: button;
 }
 
 button::-moz-focus-inner,
@@ -214,7 +225,7 @@ button::-moz-focus-inner,
 [type="reset"]::-moz-focus-inner,
 [type="submit"]::-moz-focus-inner {
 	// Remove the inner border and padding in Firefox.
- 	border-style: none;
+	border-style: none;
 	padding: 0;
 }
 
@@ -245,7 +256,8 @@ input {
 
 [type="search"] {
 	// Correct the odd appearance in Chrome and Safari
-	-webkit-appearance: textfield;
+	appearance: textfield;
+
 	// Correct the outline style in Safari
 	outline-offset: -2px;
 }
@@ -253,7 +265,7 @@ input {
 [type="search"]::-webkit-search-cancel-button,
 [type="search"]::-webkit-search-decoration {
 	// Remove the inner padding and cancel buttons in Chrome and Safari on macOS
-	-webkit-appearance: none;
+	appearance: none;
 }
 
 fieldset {
@@ -266,10 +278,12 @@ fieldset {
 legend {
 	// Correct the color inheritance from `fieldset` elements in IE.
 	color: inherit;
+
 	// Correct text wrapping in IE/Edge
 	display: table;
 	max-width: 100%;
 	white-space: normal;
+
 	// Remove unnecessary padding
 	padding: 0;
 }
@@ -277,6 +291,7 @@ legend {
 progress {
 	// Correct `inline-block` display for elements in IE 9
 	display: inline-block;
+
 	// Add the correct vertical alignment in Chrome, Firefox, and Opera.
 	vertical-align: baseline;
 }
@@ -293,7 +308,8 @@ optgroup {
 
 ::-webkit-file-upload-button {
 	// Correct the inability to style clickable types in iOS and Safari
-	-webkit-appearance: button;
+	appearance: button;
+
 	// Change font properties to `inherit` in Safari
 	font: inherit;
 }

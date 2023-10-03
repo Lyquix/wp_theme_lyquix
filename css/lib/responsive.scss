@@ -1,0 +1,117 @@
+//
+// responsive.scss - Mixins for screen size, aspect ratio, and orientation
+//
+// @version     2.3.3
+// @package     wp_theme_lyquix
+// @author      Lyquix
+// @copyright   Copyright (C) 2015 - 2018 Lyquix
+// @license     GNU General Public License version 2 or later
+// @link        https://github.com/Lyquix/wp_theme_lyquix
+//
+
+//    .d8888b. 88888888888 .d88888b.  8888888b.   888
+//   d88P  Y88b    888    d88P" "Y88b 888   Y88b  888
+//   Y88b.         888    888     888 888    888  888
+//    "Y888b.      888    888     888 888   d88P  888
+//       "Y88b.    888    888     888 8888888P"   888
+//         "888    888    888     888 888         Y8P
+//   Y88b  d88P    888    Y88b. .d88P 888          "
+//    "Y8888P"     888     "Y88888P"  888         888
+
+//  DO NOT MODIFY THIS FILE!
+
+@mixin screen($min-screen, $max-screen: null) {
+	$min-screen-width: map-get($breakpoints, $min-screen);
+
+	@if $min-screen == xl or $max-screen == xl {
+		@media only screen and (min-width: $min-screen-width) {
+			@content;
+		}
+	}
+	@else {
+		// Set max width
+		$max-screen-width: 0;
+
+		@if not $max-screen {
+			$max-screen-width: map-get(
+				$breakpoints,
+				nth(
+					map-keys($breakpoints),
+					index(map-keys($breakpoints), $min-screen) + 1
+				)
+			);
+		}
+		@else {
+			$max-screen-width: map-get(
+				$breakpoints,
+				nth(
+					map-keys($breakpoints),
+					index(map-keys($breakpoints), $max-screen) + 1
+				)
+			);
+		}
+
+		// Create media queries
+		@if $min-screen == xs {
+			@media only screen and (max-width: #{$max-screen-width - 1px}) {
+				@content;
+			}
+		}
+		@else {
+			@media only screen and (min-width: $min-screen-width) and (max-width: #{$max-screen-width - 1px}) {
+				@content;
+			}
+		}
+	}
+}
+
+@mixin aspectratio($min-aspectratio-name, $max-aspectratio-name: null) {
+	$min-aspectratio: map-get($aspectratios, $min-aspectratio-name);
+
+	@if $min-aspectratio-name == ultrawide or $max-aspectratio-name == ultrawide {
+		@media only screen and (min-aspect-ratio: $min-aspectratio) {
+			@content;
+		}
+	}
+	@else {
+		// Set max width
+		$max-aspectratio: 0;
+
+		@if not $max-aspectratio-name {
+			$max-aspectratio: map-get(
+				$aspectratios,
+				nth(
+					map-keys($aspectratios),
+					index(map-keys($aspectratios), $min-aspectratio-name) + 1
+				)
+			);
+		}
+		@else {
+			$max-aspectratio: map-get(
+				$aspectratios,
+				nth(
+					map-keys($aspectratios),
+					index(map-keys($aspectratios), $max-aspectratio-name) + 1
+				)
+			);
+		}
+
+		// Create media queries
+		@if $min-aspectratio-name == xs {
+			@media only screen and (max-aspect-ratio: #{$max-aspectratio}) {
+				@content;
+			}
+		}
+		@else {
+			@media only screen and (min-aspect-ratio: $min-aspectratio) and (max-aspect-ratio: #{$max-screen-width}) {
+				@content;
+			}
+		}
+	}
+}
+
+@mixin orientation($orientation) {
+	@media screen and (orientation: $orientation) {
+		@content;
+	}
+}

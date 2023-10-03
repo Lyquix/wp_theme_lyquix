@@ -1,18 +1,29 @@
-/**
- * base.scss - Sets sizes, colors, typography and other styles for base tags
- *
- * @version     2.3.3
- * @package     wp_theme_lyquix
- * @author      Lyquix
- * @copyright   Copyright (C) 2015 - 2018 Lyquix
- * @license     GNU General Public License version 2 or later
- * @link        https://github.com/Lyquix/wp_theme_lyquix
- */
+//
+//  base.scss - Sets sizes, colors, typography and other styles for base tags
+//
+//  @version     2.3.3
+//  @package     wp_theme_lyquix
+//  @author      Lyquix
+//  @copyright   Copyright (C) 2015 - 2018 Lyquix
+//  @license     GNU General Public License version 2 or later
+//  @link        https://github.com/Lyquix/wp_theme_lyquix
+//
+
+//    .d8888b. 88888888888 .d88888b.  8888888b.   888
+//   d88P  Y88b    888    d88P" "Y88b 888   Y88b  888
+//   Y88b.         888    888     888 888    888  888
+//    "Y888b.      888    888     888 888   d88P  888
+//       "Y88b.    888    888     888 8888888P"   888
+//         "888    888    888     888 888         Y8P
+//   Y88b  d88P    888    Y88b. .d88P 888          "
+//    "Y8888P"     888     "Y88888P"  888         888
+
+//  DO NOT MODIFY THIS FILE!
 
 // Set box-sizing property to inherit
 *,
-*:before,
-*:after {
+*::before,
+*::after {
 	box-sizing: inherit;
 }
 
@@ -29,27 +40,23 @@ html {
 
 	// Set box-sizing to border-box
 	box-sizing: border-box;
-
-	// OpenType feature settings:
-	// enable: kerning, basic ligatures (liga), contextual-alternate (calt), old-style figures (onum), proportional figures (pnum)
-	// disable: discretionary ligatures (dlig), tabular figures (tnum), lining figures (lnum)
-	// ref: https://www.microsoft.com/typography/otspec/featurelist.htm
-	font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "onum" 1, "pnum" 1, "dlig" 0, "tnum" 0,  "lnum" 0;
-
-	// Set default font-size to 10px, then use rem units for the rest of the stylesheet
-	font-size: 10px;
 }
 
 body {
-	background-color: $color-bg;
+	background-color: var(--color-bg);
 	font-family: $font-copy;
-	font-size: $font-size-base;
 	font-weight: $font-weight-base;
-	color: $color-copy;
-	line-height: $line-height-base;
+	color: var(--color-copy);
+
+	@each $key, $value in $breakpoints {
+		$i: index(map-keys($breakpoints), $key);
+
+		@include screen($key) {
+			font-size: nth($font-size-base, $i);
+			line-height: nth($line-height-base, $i);
+		}
+	}
 }
-body[screen=sm] {font-size: $font-size-base-sm;}
-body[screen=xs] {font-size: $font-size-base-xs;}
 
 p {
 	margin: $elem-margin-base 0;
@@ -60,7 +67,6 @@ kbd,
 pre,
 samp {
 	font-family: $font-monospace;
-	font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "onum" 0, "pnum" 0, "dlig" 0, "tnum" 1,  "lnum" 1, "zero" 1;
 }
 
 a {
@@ -78,81 +84,96 @@ img {
 	max-width: 100%;
 }
 
-h1 {
+.h1 {
 	font-family: $font-h1;
 	color: $color-h1;
-	font-size: $font-size-h1;
 	font-weight: $font-weight-h1;
-	line-height: $line-height-heading;
 	margin: $elem-margin-heading 0;
 }
-body[screen=sm] h1 {font-size: $font-size-h1-sm;}
-body[screen=xs] h1 {font-size: $font-size-h1-xs;}
 
-h2 {
+.h2 {
 	font-family: $font-h2;
 	color: $color-h2;
-	font-size: $font-size-h2;
 	font-weight: $font-weight-h2;
-	line-height: $line-height-heading;
 	margin: $elem-margin-heading 0;
 }
-body[screen=sm] h2 {font-size: $font-size-h2-sm;}
-body[screen=xs] h2 {font-size: $font-size-h2-xs;}
 
-h3 {
+.h3 {
 	font-family: $font-h3;
 	color: $color-h3;
-	font-size: $font-size-h3;
 	font-weight: $font-weight-h3;
-	line-height: $line-height-heading;
 	margin: $elem-margin-heading 0;
 }
-body[screen=sm] h3 {font-size: $font-size-h3-sm;}
-body[screen=xs] h3 {font-size: $font-size-h3-xs;}
 
-h4 {
+.h4 {
 	font-family: $font-h4;
 	color: $color-h4;
-	font-size: $font-size-h4;
 	font-weight: $font-weight-h4;
-	line-height: $line-height-heading;
 	margin: $elem-margin-heading 0;
+}
+
+.h5 {
+	font-family: $font-h5;
+	color: $color-h5;
+	font-weight: $font-weight-h5;
+	margin: $elem-margin-heading 0;
+}
+
+.h6 {
+	font-family: $font-h6;
+	color: $color-h6;
+	font-weight: $font-weight-h6;
+	margin: $elem-margin-heading 0;
+}
+
+@each $key, $value in $breakpoints {
+	$i: index(map-keys($breakpoints), $key);
+
+	@include screen($key) {
+		@each $h in $headings {
+			$j: index($headings, $h);
+			.#{$h} {
+				font-size: nth(nth($font-size-headings, $j), $i);
+				line-height: nth(nth($line-height-headings, $j), $i);
+			}
+		}
+	}
+}
+
+/* stylelint-disable scss/at-extend-no-missing-placeholder */
+
+h1 {
+	@extend .h1;
+}
+
+h2 {
+	@extend .h2;
+}
+
+h3 {
+	@extend .h3;
+}
+
+h4 {
+	@extend .h4;
 }
 
 h5 {
-	font-family :$font-h5;
-	color: $color-h5;
-	font-size: $font-size-h5;
-	font-weight: $font-weight-h5;
-	line-height: $line-height-heading;
-	margin: $elem-margin-heading 0;
+	@extend .h5;
 }
 
 h6 {
-	font-family:$font-h6;
-	color: $color-h6;
-	font-size: $font-size-h6;
-	font-weight: $font-weight-h6;
-	line-height: $line-height-heading;
-	margin: $elem-margin-heading 0;
+	@extend .h6;
 }
 
-h1,
-h2,
-h3 {
-	// Add discretionary ligatures
-	font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "onum" 1, "pnum" 1, "dlig" 1, "tnum" 0,  "lnum" 0;
-}
+/* stylelint-enable scss/at-extend-no-missing-placeholder */
 
 sup {
-	// Add superscript font feature
-	font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "onum" 1, "pnum" 1, "dlig" 0, "tnum" 0,  "lnum" 0, "sups" 1;
+	font-variant-position: super;
 }
 
 sub {
-	// Add subscript font feature
-	font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "onum" 1, "pnum" 1, "dlig" 0, "tnum" 0,  "lnum" 0, "subs" 1;
+	font-variant-position: sub;
 }
 
 input,
@@ -167,23 +188,23 @@ select {
 	border: 1px solid $color-input-border;
 }
 
-input[type=checkbox],
-input[type=file],
-input[type=image],
-input[type=radio] {
-	background-color:transparent;
+input[type="checkbox"],
+input[type="file"],
+input[type="image"],
+input[type="radio"] {
+	background-color: transparent;
 	border-color: transparent;
 }
 
 input:disabled,
 textarea:disabled,
 select:disabled {
-	background-color: $gray-lighter;
+	background-color: var(--gray);
 }
 
-input[type=submit],
-input[type=button],
-input[type=reset],
+input[type="submit"],
+input[type="button"],
+input[type="reset"],
 button {
 	background-color: $color-button-bg;
 	color: $color-button;
@@ -195,56 +216,26 @@ button {
 
 	&:hover {
 		text-decoration: none;
-		background-color: lighten($color-button-bg,10%);
-		color: $color-bg;
+		background-color: $color-button-bg-hover;
+		color: var(--color-bg);
 	}
 }
 
-input[type=submit]:disabled,
-input[type=button]:disabled,
-input[type=reset]:disabled,
+input[type="submit"]:disabled,
+input[type="button"]:disabled,
+input[type="reset"]:disabled,
 button:disabled {
-	background-color: $gray;
+	background-color: var(--gray);
 	color: $color-button;
 
 	&:hover {
-		background-color: $gray-light;
+		background-color: var(--gray);
 	}
 }
 
 label {
 	font-family: $font-label;
 	color: $color-label;
-}
-
-blockquote {
-	font-family: $font-blockquote;
-	color: $color-blockquote;
-	margin: $elem-margin-base 0;
-	padding: 0 2em;
-	font-size: $font-size-big;
-	line-height: $line-height-big;
-	quotes: "\201C""\201D""\2018""\2019";
-	position: relative;
-
-	&:before {
-		font-family: Georgia, serif;
-		content: open-quote;
-		font-size: 4em;
-		position: absolute;
-		top: 0.2em;
-		left: 0;
-	}
-
-	&:after {
-		font-family: Georgia, serif;
-		content: close-quote;
-		font-size: 4em;
-		line-height: 0;
-		position: absolute;
-		bottom: -0.2em;
-		right: 0;
-	}
 }
 
 hr {
@@ -265,7 +256,6 @@ th {
 	text-align: left;
 	padding: 0.5em;
 	vertical-align: top;
-	font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "onum" 0, "pnum" 0, "dlig" 0, "tnum" 1,  "lnum" 1, "zero" 1;
 }
 
 th {

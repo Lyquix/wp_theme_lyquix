@@ -1,13 +1,24 @@
-/**
- * print.scss - Common CSS classes to apply for print version
- *
- * @version     2.3.3
- * @package     wp_theme_lyquix
- * @author      Lyquix
- * @copyright   Copyright (C) 2015 - 2018 Lyquix
- * @license     GNU General Public License version 2 or later
- * @link        https://github.com/Lyquix/wp_theme_lyquix
- */
+//
+// print.scss - Common CSS classes to apply for print version
+//
+// @version     2.3.3
+// @package     wp_theme_lyquix
+// @author      Lyquix
+// @copyright   Copyright (C) 2015 - 2018 Lyquix
+// @license     GNU General Public License version 2 or later
+// @link        https://github.com/Lyquix/wp_theme_lyquix
+//
+
+//    .d8888b. 88888888888 .d88888b.  8888888b.   888
+//   d88P  Y88b    888    d88P" "Y88b 888   Y88b  888
+//   Y88b.         888    888     888 888    888  888
+//    "Y888b.      888    888     888 888   d88P  888
+//       "Y88b.    888    888     888 8888888P"   888
+//         "888    888    888     888 888         Y8P
+//   Y88b  d88P    888    Y88b. .d88P 888          "
+//    "Y8888P"     888     "Y88888P"  888         888
+
+//  DO NOT MODIFY THIS FILE!
 
 // Normalize print styles
 @media print {
@@ -51,30 +62,52 @@
 	h6 {
 		page-break-after: avoid;
 	}
-
 }
 
 // Page break classes
-.page-break-before-always { page-break-before: always; }
-.page-break-before-avoid { page-break-before: avoid; }
+.page-break-before-always {
+	page-break-before: always;
+}
 
-.page-break-after-always { page-break-after: always; }
-.page-break-after-avoid { page-break-after: avoid; }
+.page-break-before-avoid {
+	page-break-before: avoid;
+}
 
-.page-break-inside-avoid { page-break-inside: avoid; }
+.page-break-after-always {
+	page-break-after: always;
+}
+
+.page-break-after-avoid {
+	page-break-after: avoid;
+}
+
+.page-break-inside-avoid {
+	page-break-inside: avoid;
+}
 
 // Hide in print
 .print-hide {
 	@media print {
-		&, *, *:before, *:after, *:first-letter, *:first-line {
+		&,
+		*,
+		*::before,
+		*::after,
+		*::first-letter,
+		*::first-line {
 			display: none !important;
 		}
 	}
 }
+
 // Remove background color and images
 .print-no-background {
 	@media print {
-		&, *, *:before, *:after, *:first-letter, *:first-line {
+		&,
+		*,
+		*::before,
+		*::after,
+		*::first-letter,
+		*::first-line {
 			background: transparent !important;
 			background-image: none !important;
 		}
@@ -84,7 +117,12 @@
 // Force text to full black
 .print-text-color-black {
 	@media print {
-		&, *, *:before, *:after, *:first-letter, *:first-line {
+		&,
+		*,
+		*::before,
+		*::after,
+		*::first-letter,
+		*::first-line {
 			color: #000 !important;
 		}
 	}
@@ -93,7 +131,12 @@
 // Remove box shadow
 .print-no-box-shadow {
 	@media print {
-		&, *, *:before, *:after, *:first-letter, *:first-line {
+		&,
+		*,
+		*::before,
+		*::after,
+		*::first-letter,
+		*::first-line {
 			box-shadow: none !important;
 		}
 	}
@@ -102,24 +145,31 @@
 // Remove text shadow
 .print-no-text-shadow {
 	@media print {
-		&, *, *:before, *:after, *:first-letter, *:first-line {
+		&,
+		*,
+		*::before,
+		*::after,
+		*::first-letter,
+		*::first-line {
 			text-shadow: none !important;
 		}
 	}
 }
 
-
 // Appends the URL after links (except anchors and javascript)
 .print-links-href {
 	@media print {
-		&, a {
-			&:after, &:visited:after {
+		&,
+		a {
+			&::after,
+			&:visited::after {
 				content: " (" attr(href) ")";
 			}
 
 			&[href^="#"],
 			&[href^="javascript:"] {
-				&:after, &:visited:after {
+				&::after,
+				&:visited::after {
 					content: "";
 				}
 			}
@@ -130,8 +180,9 @@
 // Appends title after abbreviations
 .print-abbr-title {
 	@media print {
-		&, abbr {
-			&:after {
+		&,
+		abbr {
+			&::after {
 				content: " (" attr(title) ")";
 			}
 		}

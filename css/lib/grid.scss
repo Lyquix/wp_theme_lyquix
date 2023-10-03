@@ -1,126 +1,90 @@
-/**
- * grid.scss - Common classes for CSS Grid
- *
- * @version     2.3.3
- * @package     wp_theme_lyquix
- * @author      Lyquix
- * @copyright   Copyright (C) 2015 - 2018 Lyquix
- * @license     GNU General Public License version 2 or later
- * @link        https://github.com/Lyquix/wp_theme_lyquix
- */
+//
+// grid.scss - Common classes for CSS Grid
+//
+// @version     2.3.3
+// @package     wp_theme_lyquix
+// @author      Lyquix
+// @copyright   Copyright (C) 2015 - 2018 Lyquix
+// @license     GNU General Public License version 2 or later
+// @link        https://github.com/Lyquix/wp_theme_lyquix
+//
+
+//    .d8888b. 88888888888 .d88888b.  8888888b.   888
+//   d88P  Y88b    888    d88P" "Y88b 888   Y88b  888
+//   Y88b.         888    888     888 888    888  888
+//    "Y888b.      888    888     888 888   d88P  888
+//       "Y88b.    888    888     888 8888888P"   888
+//         "888    888    888     888 888         Y8P
+//   Y88b  d88P    888    Y88b. .d88P 888          "
+//    "Y8888P"     888     "Y88888P"  888         888
+
+//  DO NOT MODIFY THIS FILE!
 
 // Container
 .grid-container {
 	display: grid;
 	justify-items: stretch;
 	align-items: stretch;
-	grid-column-gap: $grid-column-gap;
-	grid-row-gap: $grid-row-gap;
-}
 
-@mixin grid-template {
-	// Column classes
-	@for $c from 1 through 10 {
-		.grid-cols-#{$c} {grid-template-columns: repeat(#{$c}, auto);}
-	}
-	// Screen-specific column classes
-	@each $s in $screen-sizes {
-		@for $c from 1 through 10 {
-			body[screen=#{$s}] .grid-cols-#{$c}-#{$s} {grid-template-columns: repeat(#{$c}, auto);}
+	@each $screen-name, $value in $breakpoints {
+		$i: index(map-keys($breakpoints), $screen-name);
+
+		@include screen($screen-name) {
+			grid-gap: nth($grid-row-gap, $i) nth($grid-column-gap, $i);
 		}
 	}
 }
 
+@mixin grid-column-classes($screen-name) {
+	@if $screen-name != '' {
+		$screen-name: '-' + $screen-name;
+	}
+
+	// Column classes
+	@for $cols from 1 through 10 {
+		.grid-cols-#{$cols}#{$screen-name} {
+			grid-template-columns: repeat(#{$cols}, auto);
+		}
+	}
+}
+
+@mixin grid-alignment-classes($screen-name) {
+	@if $screen-name != '' {
+		$screen-name: '-' + $screen-name;
+	}
+
+	// Alignment classes
+	$grid-properties: justify align;
+	$grid-items-values: start end center stretch;
+	$grid-content-values: space-around space-between space-evenly;
+
+	@each $grid-property in $grid-properties {
+		@each $value in $grid-items-values {
+			.grid-#{$grid-property}-items-#{$value}#{$screen-name} {
+				#{$grid-property}-items: #{$value};
+			}
+		}
+
+		@each $value in $grid-content-values {
+			.grid-#{$grid-property}-content-#{$value}#{$screen-name} {
+				#{$grid-property}-content: #{$value};
+			}
+		}
+	}
+}
+
+@mixin grid-template {
+	@include grid-column-classes('');
+	@include grid-alignment-classes('');
+
+	// Responsive classes
+	@each $screen-name, $value in $breakpoints {
+		@include screen($screen-name) {
+			@include grid-column-classes($screen-name);
+			@include grid-alignment-classes($screen-name);
+		}
+	}
+
+}
+
 @include grid-template;
-
-// Justify items
-.grid-justify-start {
-	justify-items: start;
-}
-
-.grid-justify-end {
-	justify-items: end;
-}
-
-.grid-justify-center {
-	justify-items: center;
-}
-
-.grid-justify-stretch {
-	justify-items: stretch;
-}
-
-// Align items
-.grid-align-start {
-	align-items: start;
-}
-
-.grid-align-end {
-	align-items: end;
-}
-
-.grid-align-center {
-	align-items: center;
-}
-
-.grid-align-stretch {
-	align-items: stretch;
-}
-
-// Justify content
-.grid-justify-start {
-	justify-content: start;
-}
-
-.grid-justify-end {
-	justify-content: end;
-}
-
-.grid-justify-center {
-	justify-content: center;
-}
-
-.grid-justify-stretch {
-	justify-content: stretch;
-}
-
-.grid-justify-space-around {
-	justify-content: space-around;
-}
-
-.grid-justify-space-between {
-	justify-content: space-between;
-}
-
-.grid-justify-space-evenly {
-	justify-content: space-evenly;
-}
-
-// Align content
-.grid-align-start {
-	align-content: start;
-}
-
-.grid-align-end {
-	align-content: end;
-}
-
-.grid-align-center {
-	align-content: center;
-}
-
-.grid-align-stretch {
-	align-content: stretch;
-}
-
-.grid-align-space-around {
-	align-content: space-around;
-}
-
-.grid-align-space-between {
-	align-content: space-between;
-}
-
-.grid-align-space-evenly {
-	align-content: space-evenly;
-}

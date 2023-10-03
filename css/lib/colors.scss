@@ -1,5 +1,5 @@
 //
-// container.scss - Width and margin for main container
+// colors.scss - Color utilities
 //
 // @version     2.3.3
 // @package     wp_theme_lyquix
@@ -20,13 +20,14 @@
 
 //  DO NOT MODIFY THIS FILE!
 
-.container {
-	@each $key, $value in $breakpoints {
-		$i: index(map-keys($breakpoints), $key);
+@mixin generate-color-shades($name, $color) {
+	@for $i from 10 through 1 {
+		--#{$name}-lighter-#{$i}: #{lighten($color, $i * 4%)};
+	}
 
-		@include screen($key) {
-			margin: 0 nth($container-margin, $i);
-			max-width: nth($container-max-width, $i);
-		}
+	--#{$name}: #{$color};
+
+	@for $i from 1 through 10 {
+		--#{$name}-darker-#{$i}: #{darken($color, $i * 4%)};
 	}
 }
