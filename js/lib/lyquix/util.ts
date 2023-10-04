@@ -183,6 +183,124 @@ export const util = (() => {
 		return urlParams;
 	};
 
+
+	const validateData = (data: object, schema: object) => {
+		const missing: string[] = [];
+		const mistyped: string[] = [];
+		const fixed: string[] = [];
+		let isValid: boolean = true;
+		let isFixed: boolean = false;
+
+		for (const key in schema) {
+			const config = schema[key];
+
+			// Check if the key exists in the received data
+			if (!(key in data)) {
+				// If the key is required, add it to the missing array
+				if (config.required) {
+					missing.push(key);
+
+					// Attempt to fix by using the default value if available
+					if (config.default !== undefined) {
+						data[key] = config.default;
+						fixed.push(key);
+						isFixed = true;
+					} else {
+						isValid = false;
+						continue;
+					}
+				}
+			}
+
+			// Check if the received data type matches the expected type
+			if (typeof data[key] !== config.type) {
+				// Add the key to the mistyped array
+				mistyped.push(key);
+
+				// Attempt to fix by using the default value if available
+				if (config.default !== undefined) {
+					data[key] = config.default;
+					fixed.push(key);
+					isFixed = true;
+				} else {
+					isValid = false;
+					continue;
+				}
+			}
+
+			// Check if the received data is an array
+			if (config.type === 'array') {
+				// Handle arrays of primitive types
+				if (config.itemsType !== undefined) {
+					// Check if the array is a list
+					if (!Array.isArray(data[key]) || !data[key].every(item => typeof item === config.itemsType)) {
+						mistyped.push(key);
+
+						// Attempt to fix by using the default value if available
+						if (config.default !== undefined) {
+							data[key] = config.default;
+							fixed.push(key);
+							isFixed = true;
+						} else {
+							isValid = false;
+							continue;
+						}
+					}
+				}
+				// Handle associative arrays
+				else if (config.schema !== undefined) {
+					// Check if the array is a list
+					if (Array.isArray(data[key])) {
+						mistyped.push(key);
+
+						// Attempt to fix by using the default value if available
+						if (config.default !== undefined) {
+							data[key] = config.default;
+							fixed.push(key);
+							isFixed = true;
+						} else {
+							isValid = false;
+							continue;
+						}
+					}
+
+					// Handle nested associative arrays by calling validateData recursively
+					const nestedResult = validateData(data[key], config.schema);
+
+					if (nestedResult.missing.length > 0) {
+						nestedResult.missing.forEach(f => missing.push(`${key}/${f}`));
+					}
+
+					if (nestedResult.mistyped.length > 0) {
+						nestedResult.mistyped.forEach(f => mistyped.push(`${key}/${f}`));
+					}
+
+					if (nestedResult.fixed.length > 0) {
+						nestedResult.fixed.forEach(f => fixed.push(`${key}/${f}`));
+					}
+
+					if (nestedResult.isValid) {
+						if (nestedResult.isFixed) {
+							isFixed = true;
+							data[key] = nestedResult.data;
+						}
+					} else {
+						isValid = false;
+					}
+				}
+			}
+		}
+
+		return {
+			isValid,
+			isFixed,
+			missing,
+			mistyped,
+			fixed,
+			data
+		};
+	};
+
 	return {
 		init,
 		cookie,
@@ -192,7 +310,8 @@ export const util = (() => {
 		uniqueStr,
 		uniqueUrl,
 		versionCompare,
-		parseUrlParams
+		parseUrlParams,
+		validateData
 	};
 
 })();
