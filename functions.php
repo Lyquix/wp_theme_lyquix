@@ -35,6 +35,9 @@ nocache_headers();
 // Utility Functions
 require_once get_template_directory() . '/php/util.php';
 
+// Remove comments
+require_once get_template_directory() . '/php/comments.php';
+
 // Theme setup
 require_once get_template_directory() . '/php/setup.php';
 
