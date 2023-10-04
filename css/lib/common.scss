@@ -1,13 +1,24 @@
-/**
- * common.scss - Common CSS classes
- *
- * @version     2.3.3
- * @package     wp_theme_lyquix
- * @author      Lyquix
- * @copyright   Copyright (C) 2015 - 2018 Lyquix
- * @license     GNU General Public License version 2 or later
- * @link        https://github.com/Lyquix/wp_theme_lyquix
- */
+//
+// common.scss - Common CSS classes
+//
+// @version     3.0.0
+// @package     wp_theme_lyquix
+// @author      Lyquix
+// @copyright   Copyright (C) 2015 - 2018 Lyquix
+// @license     GNU General Public License version 2 or later
+// @link        https://github.com/Lyquix/wp_theme_lyquix
+//
+
+//    .d8888b. 88888888888 .d88888b.  8888888b.   888
+//   d88P  Y88b    888    d88P" "Y88b 888   Y88b  888
+//   Y88b.         888    888     888 888    888  888
+//    "Y888b.      888    888     888 888   d88P  888
+//       "Y88b.    888    888     888 8888888P"   888
+//         "888    888    888     888 888         Y8P
+//   Y88b  d88P    888    Y88b. .d88P 888          "
+//    "Y8888P"     888     "Y88888P"  888         888
+
+//  DO NOT MODIFY THIS FILE!
 
 // Clear
 @mixin common-clear {
@@ -19,13 +30,13 @@
 	// Clear fix (clears after the element)
 	.cf,
 	.clearfix {
-		&:before,
-		&:after {
+		&::before,
+		&::after {
 			content: " ";
 			display: table;
 		}
 
-		&:after {
+		&::after {
 			clear: both;
 		}
 
@@ -36,21 +47,22 @@
 // Float
 @mixin common-float {
 	.float-left {
-		float:left;
+		float: left;
 
 		// add margins
 		&.margins {
-			margin-right: $blk-margin-right;
-			margin-bottom: $blk-margin-bottom;
+			margin-right: $blk-margin-left-right;
+			margin-bottom: $blk-margin-top-bottom;
 		}
 	}
+
 	.float-right {
-		float:right;
+		float: right;
 
 		// add margins
 		&.margins {
-			margin-left: $blk-margin-left;
-			margin-bottom: $blk-margin-right;
+			margin-left: $blk-margin-left-right;
+			margin-bottom: $blk-margin-top-bottom;
 		}
 	}
 }
@@ -61,6 +73,7 @@
 	.off {
 		display: none;
 	}
+
 	.show,
 	.on {
 		display: inherit;
@@ -68,10 +81,11 @@
 	}
 
 	// Hide & show for desktop
-	body:not(.mobile):not(.tablet):not(.phone) {
+	body:not(.mobile, .tablet, .phone) {
 		.desktop-hide {
 			display: none;
 		}
+
 		.desktop-show {
 			display: inherit;
 			display: unset;
@@ -85,6 +99,7 @@
 		.phone-hide {
 			display: none;
 		}
+
 		.mobile-show,
 		.tablet-show,
 		.phone-show {
@@ -94,7 +109,9 @@
 	}
 
 	// Show and hide for devices, browsers, o/s, home
-	$show-hide-names: tablet phone msie firefox chrome safari windows macosx ios android home;
+	$show-hide-names: tablet phone msie firefox chrome safari windows macosx ios
+		android home;
+
 	@each $n in $show-hide-names {
 		body.#{$n} {
 			.#{$n}-hide {
@@ -108,12 +125,12 @@
 	}
 
 	// Hide & show for screen sizes
-	@each $s in $screen-sizes {
-		body[screen=#{$s}] {
-			.#{$s}-hide {
+	@each $screen-name, $value in $breakpoints {
+		@include screen($screen-name) {
+			.#{$screen-name}-hide {
 				display: none;
 			}
-			.#{$s}-show {
+			.#{$screen-name}-show {
 				display: inherit;
 				display: unset;
 			}
@@ -123,106 +140,262 @@
 
 @mixin common-font-text {
 	// Font family type
-	.font-serif { font-family: $font-serif; }
-	.font-sans-serif { font-family: $font-sans-serif; }
+	.font-serif {
+		font-family: $font-serif;
+	}
+
+	.font-sans-serif {
+		font-family: $font-sans-serif;
+	}
+
 	.font-monospace {
 		font-family: $font-monospace;
-		// set figures to fixed-width, lining (same height as caps), and slashed zero
-		font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "onum" 0, "pnum" 0, "dlig" 0, "tnum" 1,  "lnum" 1, "zero" 1;
 	}
 
 	// Font weight
-	.font-thin { font-weight:100; }
-	.font-extralight { font-weight:200; }
-	.font-light { font-weight:300; }
-	.font-normal { font-weight:400; }
-	.font-medium { font-weight:500; }
-	.font-demibold { font-weight:600; }
-	.font-bold { font-weight:700; }
-	.font-heavy { font-weight:800; }
-	.font-black { font-weight:900; }
+	.font-thin {
+		font-weight: 100;
+	}
 
-	// Text transformations
-	.text-smallcaps { font-variant: small-caps; }
-	.text-uppercase { text-transform: uppercase; }
-	.text-smallcaps,
-	.text-uppercase { font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "onum" 1, "pnum" 1, "dlig" 0, "tnum" 0,  "lnum" 0, "smcp" 1; }
-	.text-lowercase { text-transform: lowercase; }
-	.text-capitalize { text-transform: capitalize; }
+	.font-extralight {
+		font-weight: 200;
+	}
+
+	.font-light {
+		font-weight: 300;
+	}
+
+	.font-normal {
+		font-weight: 400;
+	}
+
+	.font-medium {
+		font-weight: 500;
+	}
+
+	.font-demibold {
+		font-weight: 600;
+	}
+
+	.font-bold {
+		font-weight: 700;
+	}
+
+	.font-heavy {
+		font-weight: 800;
+	}
+
+	.font-black {
+		font-weight: 900;
+	}
+
+	.text-uppercase {
+		text-transform: uppercase;
+	}
+
+	.text-lowercase {
+		text-transform: lowercase;
+	}
+
+	.text-capitalize {
+		text-transform: capitalize;
+	}
 
 	// Letter spacing
-	.text-tighter { letter-spacing: -0.1em; }
-	.text-tight { letter-spacing: -0.05em; }
-	.text-loose { letter-spacing: 0.05em; }
-	.text-looser { letter-spacing: 0.1em; }
+	.text-tighter {
+		letter-spacing: -0.1em;
+	}
+
+	.text-tight {
+		letter-spacing: -0.05em;
+	}
+
+	.text-loose {
+		letter-spacing: 0.05em;
+	}
+
+	.text-looser {
+		letter-spacing: 0.1em;
+	}
 
 	// Text alignment
-	.text-left { text-align: left; }
-	.text-center { text-align: center; }
-	.text-right { text-align: right; }
-	.text-justify { text-align: justify; }
+	.text-left {
+		text-align: left;
+	}
+
+	.text-center {
+		text-align: center;
+	}
+
+	.text-right {
+		text-align: right;
+	}
+
+	.text-justify {
+		text-align: justify;
+	}
 
 	// Text decoration
-	.text-underline { text-decoration: underline; }
-	.text-strikeout { text-decoration: line-through; }
-	.text-overline { text-decoration: overline; }
+	.text-underline {
+		text-decoration: underline;
+	}
+
+	.text-strikeout {
+		text-decoration: line-through;
+	}
+
+	.text-overline {
+		text-decoration: overline;
+	}
 
 	// Text direction
-	.text-rtl { direction: rtl; }
-	.text-ltr { direction: ltr; }
+	.text-rtl {
+		direction: rtl;
+	}
+
+	.text-ltr {
+		direction: ltr;
+	}
 
 	// Text wrapping
-	.text-wrap { white-space: normal; }
-	.text-nowrap { white-space: nowrap; }
+	.text-wrap {
+		white-space: normal;
+	}
 
-	// Text size shorthands
-	.font-tiny {
-		font-size: $font-size-small * 0.5;
-		line-height: $line-height-small * 1.1;
+	.text-nowrap {
+		white-space: nowrap;
 	}
-	.font-small {
-		font-size: $font-size-small;
-		line-height: $line-height-small;
+
+	.font-historical-forms {
+		font-variant-alternates: historical-forms;
 	}
-	.font-big {
-		font-size: $font-size-big;
-		line-height: $line-height-big;
+
+	.font-small-caps {
+		font-variant-caps: small-caps;
 	}
-	.font-huge {
-		font-size: $font-size-big * 2;
-		line-height: $line-height-big * 0.9;
+
+	.font-all-small-caps {
+		font-variant-caps: all-small-caps;
 	}
+
+	.font-petite-caps {
+		font-variant-caps: petite-caps;
+	}
+
+	.font-all-petite-caps {
+		font-variant-caps: all-petite-caps;
+	}
+
+	.font-unicase {
+		font-variant-caps: unicase;
+	}
+
+	.font-tilting-caps {
+		font-variant-caps: titling-caps;
+	}
+
+	.font-ordinal {
+		font-variant-numeric: ordinal;
+	}
+
+	.font-slashed-zero {
+		font-variant-numeric: slashed-zero;
+	}
+
+	.font-oldstyle-nums {
+		font-variant-numeric: oldstyle-nums;
+	}
+
+	.font-tabular-nums {
+		font-variant-numeric: tabular-nums;
+	}
+
+	.font-diagonal-fractions {
+		font-variant-numeric: diagonal-fractions;
+	}
+
+	.font-stacked-fractions {
+		font-variant-numeric: stacked-fractions;
+	}
+
+	.font-superscript {
+		font-variant-position: super;
+	}
+
+	.font-subscript {
+		font-variant-position: sub;
+	}
+
+	.font-ligatures {
+		font-variant-ligatures: normal;
+	}
+
+	.font-common-ligatures {
+		font-variant-ligatures: common-ligatures;
+	}
+
+	.font-discretionary-ligatures {
+		font-variant-ligatures: discretionary-ligatures;
+	}
+
+	.font-historical-ligatures {
+		font-variant-ligatures: historical-ligatures;
+	}
+
+	.font-ligatures-contextual {
+		font-variant-ligatures: contextual;
+	}
+
+	.font-kerning {
+		font-kerning: normal;
+	}
+
 }
 
 @mixin common-color {
+	$colors: color-primary color-secondary color-accent-1 color-accent-2 color-accent-3 color-accent-4 color-accent-5 gray;
+	$class-props: (
+		text: color,
+		bg: background-color,
+		border: border-color
+	);
+
 	// Text color classes
-	.color-gray-darker { color: $gray-darker; }
-	.color-gray-dark { color: $gray-dark; }
-	.color-gray { color: $gray; }
-	.color-gray-light { color: $gray-light; }
-	.color-gray-lighter { color: $gray-lighter; }
-	.color-bg { color: $color-bg; }
-	.color-copy { color: $color-copy; }
-	.color-primary { color: $color-primary; }
-	.color-secondary { color: $color-secondary; }
-	.color-accent-1 { color: $color-accent-1; }
-	.color-accent-2 { color: $color-accent-2; }
-	.color-accent-3 { color: $color-accent-3; }
-	.color-accent-4 { color: $color-accent-4; }
-	.color-accent-5 { color: $color-accent-5; }
+	@each $class-name, $prop-name in $class-props {
+		@each $color in $colors {
+			#{'.' + $class-name + '-' + $color} {
+				#{$prop-name}: var(#{'--' + $color});
+			}
+
+			@for $s from 1 through 10 {
+				#{'.' + $class-name + '-' + $color + '-lighter-' + $s} {
+					#{$prop-name}: var(#{'--' + $color + '-lighter-' + $s});
+				}
+				#{'.' + $class-name + '-' + $color + '-darker-' + $s} {
+					#{$prop-name}: var(#{'--' + $color + '-darker-' + $s});
+				}
+			}
+		}
+	}
 }
 
 // Columns
 @mixin common-columns {
-	// Cycle through each screen size
-	@each $s in $screen-sizes {
-		// Index matching screen size array
-		$i: index($screen-sizes, $s);
+	@for $c from 1 through 10 {
+		.columns-#{$c} {
+			column-count: #{$c};
+		}
+	}
 
-		@for $c from 1 through 10 {
-			body[screen=#{$s}] .columns-#{$c}-#{$s} {
-				column-count: #{$c};
-				column-gap: nth($blk-margin-left, $i) + nth($blk-border-left, $i) + nth($blk-padding-left, $i) + nth($blk-padding-right, $i) + nth($blk-border-right, $i) + nth($blk-margin-right, $i);
+	@each $screen-name, $value in $breakpoints {
+		$i: index(map-keys($breakpoints), $screen-name);
+
+		@include screen($screen-name) {
+			@for $c from 1 through 10 {
+				.columns-#{$c}-#{$screen-name} {
+					column-count: #{$c};
+					column-gap: 2 * (nth($blk-margin-left-right, $i) + nth($blk-border-left-right, $i) + nth($blk-padding-left-right, $i));
+				}
 			}
 		}
 	}
@@ -236,7 +409,10 @@
 		height: 0;
 		overflow: hidden;
 
-		iframe, object, embed, video {
+		iframe,
+		object,
+		embed,
+		video {
 			position: absolute;
 			top: 0;
 			left: 0;
@@ -252,7 +428,10 @@
 		height: 0;
 		overflow: hidden;
 
-		iframe, object, embed, video {
+		iframe,
+		object,
+		embed,
+		video {
 			position: absolute;
 			top: 0;
 			left: 0;
@@ -262,306 +441,121 @@
 	}
 }
 
-// Font icons
-@mixin icon {
-	speak: none;
-	font-style: normal;
-	font-weight: normal;
-	font-variant: normal;
-	text-transform: none;
-	line-height: 1;
-	font-size: $font-size-icon;
-}
-
-@mixin common-icon {
-	.icon,
-	.icon-lg,
-	.icon-xl {
-		&:before {
-			@include icon;
+@mixin common-rotate-scale {
+	// Rotate
+	@for $a from 0 through 72 {
+		.rotate-#{$a * 5} {
+			transform: rotate(#{$a * 15}deg);
 		}
 	}
 
-	.icon-lg:before {
-		font-size: $font-size-icon-lg;
-	}
-
-	.icon-xl:before {
-		font-size: $font-size-icon-xl;
-	}
-}
-
-@mixin common-rotate-scale {
-	// Rotate
-	@for $a from 0 through 24 {
-		.rotate-#{$a * 15} {transform: rotate(#{$a * 15}deg);}
-	}
-
 	// Rotate on hover
-	@for $a from 0 through 24 {
-		.rotate-#{$a * 15}-hover:hover {transform: rotate(#{$a * 15}deg);}
+	@for $a from 0 through 72 {
+		.rotate-#{$a * 5}-hover:hover {
+			transform: rotate(#{$a * 15}deg);
+		}
 	}
 
 	// Scale
 	@for $p from 0 through 40 {
-		.scale-#{$p * 5} {transform: scale(#{$p * 0.05});}
+		.scale-#{$p * 5} {
+			transform: scale(#{$p * 0.05});
+		}
 	}
 
 	// Scale on hover
 	@for $p from 0 through 40 {
-		.scale-#{$p * 5}-hover:hover {transform: scale(#{$p * 0.05});}
+		.scale-#{$p * 5}-hover:hover {
+			transform: scale(#{$p * 0.05});
+		}
 	}
 }
 
 @mixin common-filter {
 	// Filters
 	$filter-names: brightness contrast grayscale invert opacity sepia;
+
 	@each $f in $filter-names {
 		@for $p from 0 through 20 {
 			$pc: percentage($p * 0.05);
-			.#{$f}-#{$p * 5} {filter: #{$f + "(" + $pc + ")"};}
+			.#{$f}-#{$p * 5} {
+				filter: #{$f + "(" + $pc + ")"};
+			}
 		}
+
 		// On hover
 		@for $p from 0 through 20 {
 			$pc: percentage($p * 0.05);
-			.#{$f}-#{$p * 5}-hover:hover {filter: #{$f + "(" + $pc + ")"};}
+			.#{$f}-#{$p * 5}-hover:hover {
+				filter: #{$f + "(" + $pc + ")"};
+			}
 		}
 	}
 
 	// Saturate
 	@for $p from 0 through 40 {
 		$pc: percentage($p * 0.05);
-		.saturate-#{$p * 5} {filter: saturate($pc);}
+		.saturate-#{$p * 5} {
+			filter: saturate($pc);
+		}
 	}
 
 	// Saturate on hover
 	@for $p from 0 through 40 {
 		$pc: percentage($p * 0.05);
-		.saturate-#{$p * 5}-hover:hover {filter: saturate($pc);}
+		.saturate-#{$p * 5}-hover:hover {
+			filter: saturate($pc);
+		}
 	}
 
 	// Hue rotate
 	@for $a from 0 through 24 {
-		.hue-rotate-#{$a * 15} {filter: hue-rotate(#{$a * 15}deg);}
+		.hue-rotate-#{$a * 15} {
+			filter: hue-rotate(#{$a * 15}deg);
+		}
 	}
 
 	// Hue rotate on hover
 	@for $a from 0 through 24 {
-		.hue-rotate-#{$a * 15}-hover:hover {filter: hue-rotate(#{$a * 15}deg);}
+		.hue-rotate-#{$a * 15}-hover:hover {
+			filter: hue-rotate(#{$a * 15}deg);
+		}
 	}
 
 	// Duotone rotate
 	@for $a from 0 through 24 {
-		.duotone-#{$a * 15} {filter: sepia(100%) hue-rotate(#{$a * 15}deg);}
+		.duotone-#{$a * 15} {
+			filter: sepia(100%) hue-rotate(#{$a * 15}deg);
+		}
 	}
 
 	// Duotone rotate on hover
 	@for $a from 0 through 24 {
-		.duotone-#{$a * 15}-hover:hover {filter: sepia(100%) hue-rotate(#{$a * 15}deg);}
+		.duotone-#{$a * 15}-hover:hover {
+			filter: sepia(100%) hue-rotate(#{$a * 15}deg);
+		}
 	}
 }
 
-// Menu
-@mixin common-menu {
-	/**
-	 * Add classes to a parent of the menu <ul> element.
-	 * This system assumes that the menu element is ul.menu
-	 *
-	 * You must select one of the following orientations:
-	 * .horizontal  - top level items are arranged in a single row
-	 * .vertical    - top level items are stacked in a single column
-	 *
-	 * By default, sub-menus are hidden, to show them add classes:
-	 * .level-2  - enables the 2nd level menu items
-	 * .level-3  - enables the 3rd level menu items
-	 *
-	 * By default, sub-menus open down and right, to open left add class:
-	 * .open-left - open sub-menus to the left
-	 *
-	 * In vertical menus, to open sub-menus stacked (accordion), add class:
-	 * .stacked  - open sub-menus stacked, only for vertical menus
-	 *
-	 * Sub-menus open on hover for non-mobile devices. For mobile devices, they open on click.
-	 * JS for adding/removing .open class on click:
-	 *
-	 *	jQuery('html').on('click', 'body.mobile .menu .parent', function(e){
-	 *		e.stopPropagation();
-	 *		jQuery(e.target).toggleClass('open');
-	 *		jQuery(e.target).siblings().removeClass('open');
-	 *	});
-	 *
-	 * Demo: https://codepen.io/lyquix/pen/geOgQb
-	 *
-	 */
+@mixin common-image-cover($background) {
+	position: relative;
+	z-index: 0;
 
-	// Default <ul>, <li> and <a> styling
-	.horizontal,
-	.vertical {
-		ul {
-			list-style: none;
-			padding: 0;
-			margin: 0;
-		}
-		li {
-			position: relative;
-			&.parent,
-			&.menu-item-has-children {
-				& > a {
-					margin-right: 2em;
-				}
-				&:after {
-					display: block;
-					content: "\25BC";
-					position: absolute;
-					right: 0.5em;
-					top: 0.5em;
-				}
-			}
-			ul {
-				position: absolute;
-			}
-		}
-		a {
-			display: block;
-		}
-	}
-
-	// Hide sub-menus by default
-	.horizontal,
-	.vertical {
-		ul.menu > li ul {
-			display: none;
-		}
-		&.level-2 {
-			ul.menu > li > ul {
-				& > li > ul {
-					display: none;
-				}
-			}
-		}
-	}
-
-	// Horizontal positioning
-	.horizontal {
-		ul.menu > li {
-			float: left;
-		}
-		&.level-3 {
-			ul.menu > li > ul > li > ul {
-				left: 100%;
-				top: 0;
-			}
-			&.open-left {
-				ul.menu > li > ul > li > ul {
-					left: auto;
-					right: 100%;
-				}
-			}
-		}
-	}
-
-	// Vertical positioning
-	.vertical {
-		&.level-2 {
-			ul.menu {
-				display: inline-block;
-				& > li > ul {
-					left: 100%;
-					top: 0;
-				}
-			}
-			&.open-left {
-				ul.menu > li > ul {
-					left: auto;
-					right: 100%;
-				}
-			}
-			&.level-3 {
-				ul.menu > li > ul > li > ul {
-					left: 100%;
-					top: 0;
-				}
-				&.open-left {
-					ul.menu > li > ul > li > ul {
-						left: auto;
-						right: 100%;
-					}
-				}
-			}
-		}
-		&.stacked {
-			&.level-2 {
-				ul.menu > li > ul {
-					position: static;
-				}
-				&.level-3 {
-					ul.menu > li > ul > li > ul {
-						position: static;
-					}
-				}
-			}
-		}
-	}
-
-	// In desktop use hover event to expand lower levels
-	body:not(.mobile) {
-		.level-2 {
-			ul.menu > li:hover > ul {
-				display: block;
-			}
-			&.level-3 {
-				ul.menu > li:hover > ul > li:hover > ul {
-					display: block;
-				}
-			}
-		}
-	}
-
-	// In mobile use the class .open (added on click with javascript) to expand lower levels
-	body.mobile {
-		.level-2 {
-			ul.menu > li.open > ul {
-				display: block;
-			}
-			&.level-3 {
-				ul.menu > li.open > ul > li.open > ul {
-					display: block;
-				}
-			}
-		}
-	}
-
-}
-
-// Tabs
-@mixin common-tabs {
-
-}
-
-// Accordions
-@mixin common-accordions {
-	// Base styles for accordions
-	.accordion {
-		overflow: hidden;
-		transition: height 0.5s;
+	&::after {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: $background;
+		z-index: 1;
 	}
 }
 
-// Object Fit & Object Position
-/**
- * This mixin can be used to set the object-fit
- * and object-position for IE11
- * @include object-fit(ofval);
- * where ofval is the object-fit value, or:
- * @include object-fit(ofval, opval);
- * where ofval is the object-fit value, and opval is object-position value
- */
-@mixin object-fit($fit: fill, $position: null){
-	object-fit: $fit;
-	@if $position {
-		object-position: $position;
-		font-family: 'object-fit: #{$fit}; object-position: #{$position}';
-	} @else {
-		font-family: 'object-fit: #{$fit}';
-	}
+@mixin common-ellipsis($max-lines) {
+	display: box;
+	-webkit-line-clamp: $max-lines;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
 }

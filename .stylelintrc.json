@@ -1,0 +1,14 @@
+{
+	"extends": [
+		"stylelint-config-standard",
+		"stylelint-config-standard-scss"
+	],
+	"rules": {
+		"indentation": "tab",
+		"no-invalid-position-at-import-rule": null,
+		"scss/comment-no-empty": null,
+		"scss/no-global-function-names": null,
+		"scss/at-if-closing-brace-newline-after": null,
+		"scss/at-if-closing-brace-space-after": null
+	}
+}
