@@ -59,3 +59,6 @@ if (file_exists(get_template_directory() . '/php/custom/functions.php')) {
 if (file_exists(get_template_directory() . '/php/custom/shortcodes.php')) {
 	require_once get_template_directory() . '/php/custom/shortcodes.php';
 }
+
+// Updates checker
+require_once get_template_directory() . '/php/update.php';
