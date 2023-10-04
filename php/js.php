@@ -144,10 +144,6 @@ function render_lyquix_options() {
 	// Set lqx options
 	$lqx_options = [
 		'debug' => get_theme_mod('lqx_debug', '0'),
-		'responsive' => [
-			'minIndex' => get_theme_mod('min_screen', '0'),
-			'maxIndex' => get_theme_mod('max_screen', '4')
-		],
 		'siteURL' => $site_abs_url,
 		'tmplURL' => $tmpl_url
 	];

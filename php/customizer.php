@@ -26,20 +26,6 @@ namespace lqx\customizer;
 
 function customizer_add($wp_customize) {
 	$add_settings = [
-		'Responsiveness' => [
-			'min_screen' => [
-				'type' => 'select',
-				'label' => 'Minimum Screen Size',
-				'choices' => ['0' => 'XS', '1' => 'SM', '2' => 'MD', '3' => 'LG', '4' => 'XL'],
-				'default' => '0'
-			],
-			'max_screen' => [
-				'type' => 'select',
-				'label' => 'Maximum Screen Size',
-				'choices' => ['0' => 'XS', '1' => 'SM', '2' => 'MD', '3' => 'LG', '4' => 'XL'],
-				'default' => '4'
-			]
-		],
 		'CSS' => [
 			'non_min_css' => [
 				'type' => 'radio',

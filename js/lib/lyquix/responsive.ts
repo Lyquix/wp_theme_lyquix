@@ -40,9 +40,7 @@ export const responsive = (() => {
 		cfg.responsive = {
 			enabled: true,
 			sizes: ['xs', 'sm', 'md', 'lg', 'xl'],
-			breakPoints: [320, 640, 960, 1280, 1600],
-			minIndex: 0,
-			maxIndex: 4
+			breakPoints: [320, 640, 960, 1280, 1600]
 		};
 
 		if (customCfg) cfg.responsive = jQuery.extend(true, cfg.responsive, customCfg);
@@ -98,10 +96,6 @@ export const responsive = (() => {
 
 	const setScreen = (s: number) => {
 		if (cfg.responsive.sizes[s] != vars.responsive.screen) {
-			// Adjust calculated size to min and max range
-			if (s < cfg.responsive.minIndex) s = cfg.responsive.minIndex;
-			if (s > cfg.responsive.maxIndex) s = cfg.responsive.maxIndex;
-
 			// Change the body screen attribute
 			vars.body.attr('screen', cfg.responsive.sizes[s]);
 
