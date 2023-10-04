@@ -182,30 +182,24 @@ function validateData($data, $schema) {
 				}
 
 				// Handle nested associative arrays by calling validateData recursively
-				$a = validateData($data[$key], $config['schema']);
+				$nestedResult = validateData($data[$key], $config['schema']);
 
-				if (isset($a['missing'])) {
-					foreach ($a['missing'] as $f) {
-						$missing[] = $key . '/' . $f;
-					}
+				foreach ($nestedResult['missing'] as $f) {
+					$missing[] = $key . '/' . $f;
 				}
 
-				if (isset($a['mistyped'])) {
-					foreach ($a['mistyped'] as $f) {
-						$mistyped[] = $key . '/' . $f;
-					}
+				foreach ($nestedResult['mistyped'] as $f) {
+					$mistyped[] = $key . '/' . $f;
 				}
 
-				if (isset($a['fixed'])) {
-					foreach ($a['fixed'] as $f) {
-						$fixed[] = $key . '/' . $f;
-					}
+				foreach ($nestedResult['fixed'] as $f) {
+					$fixed[] = $key . '/' . $f;
 				}
 
-				if ($a['isValid']) {
-					if ($a['isFixed']) {
+				if ($nestedResult['isValid']) {
+					if ($nestedResult['isFixed']) {
 						$isFixed = true;
-						$data[$key] = $a['data'];
+						$data[$key] = $nestedResult['data'];
 					}
 				} else {
 					$isValid = false;
@@ -222,5 +216,4 @@ function validateData($data, $schema) {
 		'fixed' => $fixed,
 		'data' => $data
 	];
-
 }
