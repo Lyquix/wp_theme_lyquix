@@ -46,6 +46,9 @@ require get_template_directory() . '/php/widgets.php';
 // Theme customizer
 require get_template_directory() . '/php/customizer.php';
 
+// Site Options
+require get_template_directory() . '/php/options.php';
+
 // Custom functions.php
 if (file_exists(get_template_directory() . '/php/custom/functions.php')) {
 	require get_template_directory() . '/php/custom/functions.php';
