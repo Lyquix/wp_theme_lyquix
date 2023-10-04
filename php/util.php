@@ -24,23 +24,6 @@
 
 namespace lqx\util;
 
-// Function to compare software version strings
-function version_compare($v1, $v2) {
-	$v1 = explode('.', $v1);
-	$v2 = explode('.', $v2);
-
-	$v1 = array_pad($v1, max(count($v1), count($v2)), 0);
-	$v2 = array_pad($v2, max(count($v1), count($v2)), 0);
-
-	for ($i = 0; $i < count($v1); $i++) {
-		if ($v1[$i] > $v2[$i]) return 1; // Version 1 > Version 2
-		elseif ($v1[$i] < $v2[$i]) return -1; // Version 1 < Version 2
-	}
-
-	// Versions 1 = Version
-	return 0;
-}
-
 if (PHP_VERSION_ID < 80100) { // PHP 8.1.0
 	function array_is_list(array $arr) {
 		if ($arr === []) return true;
