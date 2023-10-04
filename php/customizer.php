@@ -113,7 +113,7 @@ function customizer_add($wp_customize) {
 				'label' => 'Microsoft Clarity Project ID',
 			],
 		],
-		'Accounts' => [
+		'Meta Tags' => [
 			'google_site_verification' => [
 				'label' => 'google-site-verification',
 			],
@@ -122,6 +122,10 @@ function customizer_add($wp_customize) {
 			],
 			'p_domain_verify' => [
 				'label' => 'p:domain_verify',
+			],
+			'add_meta_tags' => [
+				'type' => 'textarea',
+				'label' => 'Additional Meta Tags'
 			]
 		],
 		'Browser Alert' => [
