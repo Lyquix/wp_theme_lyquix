@@ -22,7 +22,7 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-namespace lqx;
+namespace lqx\customizer;
 
 function customizer_add($wp_customize) {
 	$add_settings = [
@@ -176,4 +176,4 @@ function customizer_add($wp_customize) {
 	}
 }
 
-add_action('customize_register', 'lqx\customizer_add');
+add_action('customize_register', 'lqx\customizer\customizer_add');

@@ -22,7 +22,7 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-namespace lqx;
+namespace lqx\js;
 
 function enqueue_scripts() {
 	// Prevent adding js libraries in wp_head()
@@ -135,7 +135,7 @@ function enqueue_scripts() {
 		wp_enqueue_script($js_url['handle'], $js_url['url'], [], array_key_exists('version', $js_url) ? $js_url['version'] : null, true);
 	}
 }
-add_action('wp_enqueue_scripts', 'lqx\enqueue_scripts', 100);
+add_action('wp_enqueue_scripts', 'lqx\js\enqueue_scripts', 100);
 
 
 function render_lyquix_options() {

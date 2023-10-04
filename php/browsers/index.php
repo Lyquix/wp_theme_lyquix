@@ -214,7 +214,7 @@ function get_browser_version($browser) {
 	}
 
 	// Sort the versions array using the version_compare function
-	usort($versions, 'lqx\version_compare');
+	usort($versions, 'lqx\util\version_compare');
 
 	// Reverse order
 	$versions = array_reverse($versions);

@@ -29,32 +29,30 @@
 //	- blocks, use /php/custom/blocks.php
 //	- site option pages, use /php/custom/options.php
 
-namespace lqx;
-
 // Do not allow browsers to cache WordPress pages
 nocache_headers();
 
 // Theme setup
-require get_template_directory() . '/php/setup.php';
+require_once get_template_directory() . '/php/setup.php';
 
 // Menu positions
-require get_template_directory() . '/php/menus.php';
+require_once get_template_directory() . '/php/menus.php';
 
 // Widget positions
-require get_template_directory() . '/php/widgets.php';
+require_once get_template_directory() . '/php/widgets.php';
 
 // Theme customizer
-require get_template_directory() . '/php/customizer.php';
+require_once get_template_directory() . '/php/customizer.php';
 
 // Site Options
-require get_template_directory() . '/php/options.php';
+require_once get_template_directory() . '/php/options.php';
 
 // Custom functions.php
 if (file_exists(get_template_directory() . '/php/custom/functions.php')) {
-	require get_template_directory() . '/php/custom/functions.php';
+	require_once get_template_directory() . '/php/custom/functions.php';
 }
 
 // Shortcodes
 if (file_exists(get_template_directory() . '/php/custom/shortcodes.php')) {
-	require get_template_directory() . '/php/custom/shortcodes.php';
+	require_once get_template_directory() . '/php/custom/shortcodes.php';
 }
