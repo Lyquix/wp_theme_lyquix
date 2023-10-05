@@ -74,3 +74,16 @@ foreach ([
 		}
 	}
 }
+
+// Set feature flags
+if (file_exists(get_template_directory() . '/php/custom/features.php')) {
+	require get_template_directory() . '/php/custom/features.php';
+
+	if(count($feature_flags)) {
+		foreach($feature_flags as $code => $title) {
+			if (get_theme_mod('feature-' . $code, '0') == '1') {
+				$body_classes[] = 'feature-' . $code;
+			}
+		}
+	}
+}
