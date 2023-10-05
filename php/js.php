@@ -206,3 +206,11 @@ function render_gtm_body_code() {
 <?
 	}
 }
+
+function render_page_custom_js() {
+	// Render page custom CSS and JS
+	if(function_exists('get_field')) {
+		$custom_js = get_field('custom_js');
+		if($custom_js) echo "<script>\n" . $custom_js . "\n</script>";
+	}
+}
