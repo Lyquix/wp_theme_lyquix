@@ -40,28 +40,26 @@ if (function_exists('acf_add_options_page') && function_exists('acf_add_options_
 		'parent_slug'   => 'site-options',
 	));
 
-	$sub_pages = [];
-
 	/**
-	 * Add custom sub-ages in /php/custom/options.php
-	 * Example:
-	 * $sub_pages[] = [
-	 *    'page_title' => 'Sub Page Settings',
-	 *    'menu_title' => 'Sub Page'
-	 * ];
+	 * TODO
+	 * Alert bar
+	 * Filters
+	 * Popups
 	 */
 
 	// Add option pages to $site_options array
 	if (file_exists(get_template_directory() . '/php/custom/options.php')) {
 		require get_template_directory() . '/php/custom/options.php';
-	}
 
-	// Add custom option pages
-	foreach($sub_pages as $sub_page) {
-		acf_add_options_sub_page(array(
-			'page_title'    => $sub_page['page_title'],
-			'menu_title'    => $sub_page['menu_title'],
-			'parent_slug'   => 'site-options',
-		));
+		if(count($sub_pages)) {
+			// Add custom option pages
+			foreach($sub_pages as $sub_page) {
+				acf_add_options_sub_page(array(
+					'page_title'    => $sub_page['page_title'],
+					'menu_title'    => $sub_page['menu_title'],
+					'parent_slug'   => 'site-options',
+				));
+			}
+		}
 	}
 }
