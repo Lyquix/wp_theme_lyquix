@@ -144,6 +144,23 @@ function customizer_add($wp_customize) {
 		]
 	];
 
+	// Add custom menu positions to $menus array
+	if (file_exists(get_template_directory() . '/php/custom/features.php')) {
+		require get_template_directory() . '/php/custom/features.php';
+
+		if(count($feature_flags)) {
+			$add_settings['Feature Flags'] = [];
+			foreach($feature_flags as $code => $title) {
+				$add_settings['Feature Flags']['feature-' . $code] = [
+					'type' => 'radio',
+					'label' => $title,
+					'choices' => ['0' => 'No', '1' => 'Yes'],
+					'default' => '0'
+				];
+			}
+		}
+	}
+
 	foreach ($add_settings as $section => $setting) {
 		$wp_customize->add_section('lqx_' . strtolower($section), [
 			'title' => __($section, 'lyquix'),
