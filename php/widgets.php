@@ -27,7 +27,7 @@
 namespace lqx\widgets;
 
 function add_widget_positions() {
-	$widgets = [
+	$widget_positions = [
 		'Head Scripts',
 		'Header',
 		'Utility',
@@ -49,9 +49,13 @@ function add_widget_positions() {
 	// Add custom widget positions to $widgets array
 	if (file_exists(get_template_directory() . '/php/custom/widgets.php')) {
 		require get_template_directory() . '/php/custom/widgets.php';
+
+		if(count($custom_widget_positions)) {
+			$widget_positions = array_merge($widget_positions, $custom_widget_positions);
+		}
 	}
 
-	foreach ($widgets as $widget) {
+	foreach ($widget_positions as $widget) {
 		register_sidebar([
 			'name' => __($widget, 'lyquix'),
 			'id' => preg_replace('/[^a-z0-9]+/', '-', strtolower($widget)),
