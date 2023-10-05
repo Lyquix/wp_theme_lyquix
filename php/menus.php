@@ -24,9 +24,9 @@
 //  Instead create a file called menus.php in /php/custom/ and add custom
 //  menus to the $menus array in that file
 
-namespace lqx;
+namespace lqx\menus;
 
-function menus() {
+function add_menu_positions() {
 	// Array of menu locations
 	$menus = [
 		// Header Menus
@@ -59,4 +59,4 @@ function menus() {
 	}
 }
 
-add_action('after_setup_theme', 'lqx\menus');
+add_action('after_setup_theme', 'lqx\menus\add_menu_positions');

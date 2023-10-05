@@ -42,7 +42,7 @@ require get_template_directory() . '/php/vars.php';
 	require get_template_directory() . '/php/js.php';
 
 	// Render GTM head code
-	lqx\render_gtm_head_code();
+	lqx\js\render_gtm_head_code();
 
 	// WordPress head
 	wp_head();
@@ -62,7 +62,7 @@ require get_template_directory() . '/php/body.php';
 <body class="<?php echo implode(' ', $body_classes); ?>">
 	<?php
 	// Render GTM body code
-	lqx\render_gtm_body_code();
+	lqx\js\render_gtm_body_code();
 
 	// Skip header area for blank page template
 	if ($lqx_page_template != 'blank') : ?>
@@ -173,7 +173,7 @@ require get_template_directory() . '/php/body.php';
 	wp_footer();
 
 	// Render Lyquix and Scripts options
-	lqx\render_lyquix_options();
+	lqx\js\render_lyquix_options();
 
 	// LiveReload library
 	require get_template_directory() . '/php/livereload.php';

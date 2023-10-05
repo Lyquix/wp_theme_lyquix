@@ -24,9 +24,9 @@
 //  If you need to add custom widget positions, use /php/custom/widgets.php
 //  to add entries to the $widgets array
 
-namespace lqx;
+namespace lqx\widgets;
 
-function widgets() {
+function add_widget_positions() {
 	$widgets = [
 		'Head Scripts',
 		'Header',
@@ -65,4 +65,4 @@ function widgets() {
 	}
 }
 
-add_action('widgets_init', 'lqx\widgets');
+add_action('widgets_init', 'lqx\widgets\add_widget_positions');

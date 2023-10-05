@@ -22,7 +22,7 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-namespace lqx;
+namespace lqx\css;
 
 // Convert relative URLs to absolute URLs
 function abs_url($rel, $base) {
@@ -102,4 +102,4 @@ function enqueue_styles() {
 	}
 }
 
-add_action('wp_enqueue_scripts', 'lqx\enqueue_styles', 100);
+add_action('wp_enqueue_scripts', 'lqx\css\enqueue_styles', 100);

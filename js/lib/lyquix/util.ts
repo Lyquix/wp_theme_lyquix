@@ -183,6 +183,177 @@ export const util = (() => {
 		return urlParams;
 	};
 
+	/**
+	 * Validates and processes data based on a provided schema.
+	 *
+	 * This function checks whether the given data conforms to the specified schema
+	 * and performs fixes when possible. It can be used to ensure that incoming data
+	 * adheres to expected formats and requirements.
+	 *
+	 * @param array $data    The data to be validated and processed. Must be an associative array.
+	 * @param array $schema  The schema defines the expected structure and validation rules for the incoming data.
+	 *
+	 *              It should be an associative array where each key corresponds to a field in the incoming data,
+	 *              and the corresponding value is an array containing configuration options for that field.
+	 *
+	 *              The structure of each field configuration is as follows:
+	 *
+	 *              - 'type' (string, required): Specifies the expected data type for the field. It can be one of the following types:
+	 *                - 'string': A string data type.
+	 *                - 'integer': An integer data type.
+	 *                - 'float': A floating-point number data type.
+	 *                - 'boolean': A boolean data type (true or false).
+	 *                - 'object': An object data type. To distinguish between arrays and keyed objects see the 'itemsType' and 'schema'
+	 *                   options below.
+	 *
+	 *              - 'required' (bool, optional): Indicates whether the field is required. If set to true, the field must exist in the
+	 *                incoming data, or it will be considered missing. Default is false.
+	 *
+	 *              - 'default' (mixed, optional): Provides a default value for the field if it's missing in the incoming data or
+	 *                the value is of the wrong type.
+	 *
+	 *              - 'itemsType' (string, optional): Applicable only if 'type' is 'object'. Specifies the expected data type for elements
+	 *                in the array. It can have the same data type options as 'type' (e.g., 'string', 'integer', 'boolean', etc.).
+	 *
+	 *              - 'schema' (object, optional): Applicable only if 'type' is 'object'. Defines a nested schema for elements within the object.
+	 *                This nested schema follows the same structure as the main `schema` and is used to validate the elements within the object.
+	 *
+	 * @return array An array containing the validation results and possibly fixed data.
+	 *               - 'isValid': A boolean indicating whether the data is valid according to the schema.
+	 *               - 'isFixed': A boolean indicating whether any fixes were applied to the data.
+	 *               - 'missing': An array listing keys that are missing in the data but required by the schema.
+	 *               - 'mistyped': An array listing keys whose data types do not match the schema.
+	 *               - 'fixed': An array listing keys for which fixes were applied.
+	 *               - 'data': The processed data, which may include fixes if 'isFixed' is true.
+	 */
+
+	const validateData = (data: object, schema: object) => {
+		const missing: string[] = [];
+		const mistyped: string[] = [];
+		const fixed: string[] = [];
+		let isValid: boolean = true;
+		let isFixed: boolean = false;
+
+		for (const key in schema) {
+			const config = schema[key];
+
+			// Check if the key exists in the received data
+			if (!(key in data)) {
+				// If the key is required, add it to the missing array
+				if (config.required) {
+					missing.push(key);
+
+					// Attempt to fix by using the default value if available
+					if (config.default !== undefined) {
+						data[key] = config.default;
+						fixed.push(key);
+						isFixed = true;
+					} else {
+						isValid = false;
+						continue;
+					}
+				}
+			}
+
+			// Check if the received data type matches the expected type
+			if (typeof data[key] !== config.type) {
+				// Add the key to the mistyped array
+				mistyped.push(key);
+
+				// Attempt to fix by using the default value if available
+				if (config.default !== undefined) {
+					data[key] = config.default;
+					fixed.push(key);
+					isFixed = true;
+				} else {
+					isValid = false;
+					continue;
+				}
+			}
+
+			// Check if the received data is an array
+			if (config.type === 'object') {
+				// Handle arrays of primitive types
+				if (config.itemsType !== undefined) {
+					// Check if the array is a list
+					if (!Array.isArray(data[key])) {
+						mistyped.push(key);
+
+						// Attempt to fix by using the default value if available
+						if (config.default !== undefined) {
+							data[key] = config.default;
+							fixed.push(key);
+							isFixed = true;
+						} else {
+							isValid = false;
+							continue;
+						}
+					}
+
+					// Handle arrays of primitive types
+					for (let i = 0; i < data[key].length; i++) {
+						if (typeof data[key][i] !== config.itemsType) {
+							mistyped.push(`${key}[${i}]`);
+
+							// Attempt to fix by using the default value if available
+							if (config.default !== undefined) {
+								data[key][i] = config.default;
+								fixed.push(`${key}[${i}]`);
+								isFixed = false;
+								isValid = false;
+								continue;
+							}
+						}
+					}
+				}
+				// Handle associative arrays
+				else if (config.schema !== undefined) {
+					// Check if the array is a list
+					if (Array.isArray(data[key])) {
+						mistyped.push(key);
+
+						// Attempt to fix by using the default value if available
+						if (config.default !== undefined) {
+							data[key] = config.default;
+							fixed.push(key);
+							isFixed = true;
+						} else {
+							isValid = false;
+							continue;
+						}
+					}
+
+					// Handle nested associative arrays by calling validateData recursively
+					const nestedResult = validateData(data[key], config.schema);
+
+					nestedResult.missing.forEach(f => missing.push(`${key}/${f}`));
+
+					nestedResult.mistyped.forEach(f => mistyped.push(`${key}/${f}`));
+
+					nestedResult.fixed.forEach(f => fixed.push(`${key}/${f}`));
+
+					if (nestedResult.isValid) {
+						if (nestedResult.isFixed) {
+							isFixed = true;
+							data[key] = nestedResult.data;
+						}
+					} else {
+						isValid = false;
+					}
+				}
+			}
+		}
+
+		return {
+			isValid,
+			isFixed,
+			missing,
+			mistyped,
+			fixed,
+			data
+		};
+	};
+
 	return {
 		init,
 		cookie,
@@ -192,7 +363,8 @@ export const util = (() => {
 		uniqueStr,
 		uniqueUrl,
 		versionCompare,
-		parseUrlParams
+		parseUrlParams,
+		validateData
 	};
 
 })();

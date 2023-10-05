@@ -22,9 +22,9 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-namespace lqx;
+namespace lqx\setup;
 
-function setup() {
+function theme_setup() {
 	// Theme Features Support
 	add_theme_support('automatic-feed-links');
 	add_theme_support('title-tag');
@@ -59,4 +59,4 @@ function setup() {
 	remove_filter( 'the_excerpt', 'wpautop' );
 }
 
-add_action('after_setup_theme', 'lqx\setup');
+add_action('after_setup_theme', 'lqx\setup\theme_setup');

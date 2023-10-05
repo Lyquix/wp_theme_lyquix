@@ -22,24 +22,10 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-namespace lqx;
+namespace lqx\customizer;
 
 function customizer_add($wp_customize) {
 	$add_settings = [
-		'Responsiveness' => [
-			'min_screen' => [
-				'type' => 'select',
-				'label' => 'Minimum Screen Size',
-				'choices' => ['0' => 'XS', '1' => 'SM', '2' => 'MD', '3' => 'LG', '4' => 'XL'],
-				'default' => '0'
-			],
-			'max_screen' => [
-				'type' => 'select',
-				'label' => 'Maximum Screen Size',
-				'choices' => ['0' => 'XS', '1' => 'SM', '2' => 'MD', '3' => 'LG', '4' => 'XL'],
-				'default' => '4'
-			]
-		],
 		'CSS' => [
 			'non_min_css' => [
 				'type' => 'radio',
@@ -127,7 +113,7 @@ function customizer_add($wp_customize) {
 				'label' => 'Microsoft Clarity Project ID',
 			],
 		],
-		'Accounts' => [
+		'Meta Tags' => [
 			'google_site_verification' => [
 				'label' => 'google-site-verification',
 			],
@@ -136,6 +122,10 @@ function customizer_add($wp_customize) {
 			],
 			'p_domain_verify' => [
 				'label' => 'p:domain_verify',
+			],
+			'add_meta_tags' => [
+				'type' => 'textarea',
+				'label' => 'Additional Meta Tags'
 			]
 		],
 		'Browser Alert' => [
@@ -176,4 +166,4 @@ function customizer_add($wp_customize) {
 	}
 }
 
-add_action('customize_register', 'lqx\customizer_add');
+add_action('customize_register', 'lqx\customizer\customizer_add');

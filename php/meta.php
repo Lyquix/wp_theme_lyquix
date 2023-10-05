@@ -34,6 +34,7 @@ if ($home) {
 	echo get_theme_mod('msvalidate', '') ? '<meta name="msvalidate.01" content="' . get_theme_mod('msvalidate', '') . '" />' . "\n" : '';
 	echo get_theme_mod('p_domain_verify', '') ? '<meta name="p:domain_verify" content="' . get_theme_mod('p_domain_verify', '') . '"/>' . "\n" : '';
 }
+if(get_theme_mod('add_meta_tags', '')) echo get_theme_mod('add_meta_tags', '') . "\n";
 ?>
 <script>
 	(function(html) {
