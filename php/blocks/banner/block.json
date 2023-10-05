@@ -1,0 +1,20 @@
+{
+	"name": "lqx/banner",
+	"title": "Banner",
+	"description": "A banner block",
+	"style": [
+		"file:./banner.css"
+	],
+	"category": "formatting",
+	"icon": "admin-comments",
+	"keywords": [
+		"banner"
+	],
+	"acf": {
+		"mode": "edit",
+		"renderTemplate": "banner.php"
+	},
+	"supports": {
+		"anchor": true
+	}
+}
