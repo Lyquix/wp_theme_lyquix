@@ -175,6 +175,10 @@ require get_template_directory() . '/php/body.php';
 	// Render Lyquix and Scripts options
 	lqx\js\render_lyquix_options();
 
+	// Render page custom CSS and JS
+	lqx\css\render_page_custom_css();
+	lqx\js\render_page_custom_js();
+
 	// LiveReload library
 	require get_template_directory() . '/php/livereload.php';
 	?>
