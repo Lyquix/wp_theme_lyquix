@@ -1,30 +1,32 @@
-//
-//  base.scss - Sets sizes, colors, typography and other styles for base tags
-//
-//  @version     3.0.0
-//  @package     wp_theme_lyquix
-//  @author      Lyquix
-//  @copyright   Copyright (C) 2015 - 2018 Lyquix
-//  @license     GNU General Public License version 2 or later
-//  @link        https://github.com/Lyquix/wp_theme_lyquix
-//
+/**
+ * editor.css - Styles for WordPress editor
+ *
+ * @version     3.0.0
+ * @package     wp_theme_lyquix
+ * @author      Lyquix
+ * @copyright   Copyright (C) 2015 - 2018 Lyquix
+ * @license     GNU General Public License version 2 or later
+ * @link        https://github.com/Lyquix/wp_theme_lyquix
+ */
 
-//    .d8888b. 88888888888 .d88888b.  8888888b.   888
-//   d88P  Y88b    888    d88P" "Y88b 888   Y88b  888
-//   Y88b.         888    888     888 888    888  888
-//    "Y888b.      888    888     888 888   d88P  888
-//       "Y88b.    888    888     888 8888888P"   888
-//         "888    888    888     888 888         Y8P
-//   Y88b  d88P    888    Y88b. .d88P 888          "
-//    "Y8888P"     888     "Y88888P"  888         888
+/*
+    .d8888b. 88888888888 .d88888b.  8888888b.   888
+   d88P  Y88b    888    d88P" "Y88b 888   Y88b  888
+   Y88b.         888    888     888 888    888  888
+    "Y888b.      888    888     888 888   d88P  888
+       "Y88b.    888    888     888 8888888P"   888
+         "888    888    888     888 888         Y8P
+   Y88b  d88P    888    Y88b. .d88P 888          "
+    "Y8888P"     888     "Y88888P"  888         888
 
-//  DO NOT MODIFY THIS FILE!
+  DO NOT MODIFY THIS FILE!
+*/
+
+@import "../custom/editor.css";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-$headings: h1 h2 h3 h4 h5 h6;
 
 @layer base {
 	body {
@@ -59,12 +61,29 @@ $headings: h1 h2 h3 h4 h5 h6;
 		@apply mx-0 my-base font-headings font-w-headings leading-normal text-headings;
 	}
 
-	@each $h in $headings {
-		$j: index($headings, $h);
-		#{$h} {
-			@apply text-#{$h};
-		}
-	}
+	h1 {
+    @apply text-h1
+  }
+
+	h2 {
+    @apply text-h2
+  }
+
+	h3 {
+    @apply text-h3
+  }
+
+	h4 {
+    @apply text-h4
+  }
+
+	h5 {
+    @apply text-h5
+  }
+
+	h6 {
+    @apply text-h6
+  }
 
 	sup {
 		font-variant-position: super;
@@ -78,13 +97,6 @@ $headings: h1 h2 h3 h4 h5 h6;
 	textarea,
 	select {
 		@apply mx-input my-0 border border-solid border-input-border bg-input-bg p-input font-input text-input outline-none;
-	}
-
-	input[type="checkbox"],
-	input[type="file"],
-	input[type="image"],
-	input[type="radio"] {
-		@apply border-transparent bg-transparent;
 	}
 
 	input:disabled,
@@ -140,4 +152,20 @@ $headings: h1 h2 h3 h4 h5 h6;
 	li {
 		@apply mx-0 my-[.67em];
 	}
+}
+
+.acf-innerblocks-container.block-editor-block-list__layout {
+	@apply contents
+}
+
+.editor-styles-wrapper .wp-block {
+	@apply mx-0
+}
+
+.wp-block-lqx-container {
+	@apply container
+}
+
+html :where(.wp-block) {
+	@apply max-w-none transition
 }

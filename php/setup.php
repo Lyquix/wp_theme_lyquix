@@ -33,6 +33,7 @@ function theme_setup() {
 	add_theme_support('customize-selective-refresh-widgets');
 
 	// Load theme styles into editor
+	add_theme_support('editor-styles');
 	add_editor_style('css/editor.css');
 
 	// Remove unnecessary wptexturize filter
