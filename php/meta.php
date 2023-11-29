@@ -21,6 +21,7 @@
 //    "Y8888P"     888     "Y88888P"  888         888
 //
 //  DO NOT MODIFY THIS FILE!
+//  Instead use the Meta Tags field in the theme customizer
 
 // Remove WordPress generator meta tag
 remove_action('wp_head', 'wp_generator');
