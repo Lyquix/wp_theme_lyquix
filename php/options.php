@@ -26,19 +26,19 @@
 
 if (function_exists('acf_add_options_page') && function_exists('acf_add_options_sub_page')) {
 	// Add Site Options page
-	acf_add_options_page(array(
+	acf_add_options_page([
 		'page_title'    => 'Site Options',
 		'menu_title'    => 'Site Options',
 		'menu_slug'     => 'site-options',
 		'capability'    => 'edit_posts',
 		'redirect'      => false
-	));
+	]);
 
-	acf_add_options_sub_page(array(
+	acf_add_options_sub_page([
 		'page_title'    => 'Modules - Site Settings',
 		'menu_title'    => 'Modules',
 		'parent_slug'   => 'site-options',
-	));
+	]);
 
 	/**
 	 * TODO
@@ -54,11 +54,11 @@ if (function_exists('acf_add_options_page') && function_exists('acf_add_options_
 		if(count($sub_pages)) {
 			// Add custom option pages
 			foreach($sub_pages as $sub_page) {
-				acf_add_options_sub_page(array(
+				acf_add_options_sub_page([
 					'page_title'    => $sub_page['page_title'],
 					'menu_title'    => $sub_page['menu_title'],
 					'parent_slug'   => 'site-options',
-				));
+				]);
 			}
 		}
 	}

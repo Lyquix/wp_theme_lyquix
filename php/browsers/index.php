@@ -171,7 +171,7 @@ function get_browser_version($browser) {
 	// Initialize curl
 	$curl = curl_init();
 
-	curl_setopt_array($curl, array(
+	curl_setopt_array($curl, [
 		CURLOPT_URL => 'https://query.wikidata.org/bigdata/namespace/wdq/sparql?format=json&query=' . urlencode($query),
 		CURLOPT_RETURNTRANSFER => true,
 		CURLOPT_ENCODING => '',
@@ -183,7 +183,7 @@ function get_browser_version($browser) {
 		CURLOPT_HTTPHEADER => [
 			'User-Agent: ' . $_SERVER['HTTP_USER_AGENT']
 		]
-	));
+	]);
 
 	// Get response
 	$res = curl_exec($curl);

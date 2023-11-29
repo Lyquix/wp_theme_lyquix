@@ -71,25 +71,25 @@ require get_template_directory() . '/php/body.php';
 
 			<?php if (has_nav_menu('top-menu')) : ?>
 				<nav class="menu top">
-					<?php wp_nav_menu(array('menu' => 'top-menu')); ?>
+					<?php wp_nav_menu(['menu' => 'top-menu']); ?>
 				</nav>
 			<?php endif; ?>
 
 			<?php if (has_nav_menu('main-menu')) : ?>
 				<nav class="menu main">
-					<?php wp_nav_menu(array('menu' => 'top-main')); ?>
+					<?php wp_nav_menu(['menu' => 'top-main']); ?>
 				</nav>
 			<?php endif; ?>
 
 			<?php if (has_nav_menu('utility-menu')) : ?>
 				<nav class="menu utility">
-					<?php wp_nav_menu(array('menu' => 'utility-menu')); ?>
+					<?php wp_nav_menu(['menu' => 'utility-menu']); ?>
 				</nav>
 			<?php endif; ?>
 
 			<?php if (has_nav_menu('logged-in-menu')) : ?>
 				<nav class="menu logged-in">
-					<?php wp_nav_menu(array('menu' => 'logged-in-menu')); ?>
+					<?php wp_nav_menu(['menu' => 'logged-in-menu']); ?>
 				</nav>
 			<?php endif; ?>
 
@@ -149,13 +149,13 @@ require get_template_directory() . '/php/body.php';
 
 			<?php if (has_nav_menu('bottom-menu')) : ?>
 				<nav class="menu bottom">
-					<?php wp_nav_menu(array('menu' => 'bottom-menu')); ?>
+					<?php wp_nav_menu(['menu' => 'bottom-menu']); ?>
 				</nav>
 			<?php endif; ?>
 
 			<?php if (has_nav_menu('footer-menu')) : ?>
 				<nav class="menu footer">
-					<?php wp_nav_menu(array('menu' => 'footer-menu')); ?>
+					<?php wp_nav_menu(['menu' => 'footer-menu']); ?>
 				</nav>
 			<?php endif; ?>
 

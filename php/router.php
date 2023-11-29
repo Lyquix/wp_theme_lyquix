@@ -143,7 +143,7 @@ else {
 	else {
 		echo "<pre><strong>Error:</strong> no suitable template has been found!\n\n";
 		if (WP_DEBUG) {
-			foreach (array(
+			foreach ([
 				'is_front_page',
 				'is_home',
 				'is_404',
@@ -165,7 +165,7 @@ else {
 				'is_page',
 				'is_attachment',
 				'get_post_mime_type'
-			) as $f) {
+			] as $f) {
 				echo $f . ': ' . print_r($f(), true) . "\n";
 			}
 			echo "\n" . print_r($wp_query, true);
