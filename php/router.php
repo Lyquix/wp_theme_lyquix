@@ -22,12 +22,6 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-// Custom router logic
-if (file_exists(get_template_directory() . '/php/custom/router.php')):
-	require get_template_directory() . '/php/custom/router.php';
-
-else:
-
 global $wp_query;
 $tmpl_name = '';
 
@@ -94,6 +88,11 @@ elseif (is_archive()) {
 		}
 		if (!$tmpl_name && tmpl_file_exists('date')) $tmpl_name = 'date';
 	}
+
+	// Custom router logic
+	elseif (file_exists(get_template_directory() . '/php/custom/router.php')) {
+		require get_template_directory() . '/php/custom/router.php';
+	}
 }
 
 // Singular post
@@ -117,6 +116,11 @@ elseif (is_singular()) {
 		elseif (tmpl_file_exists($mime_type[0] . '-' . $mime_type[1])) $tmpl_name = $mime_type[0] . '-' . $mime_type[1];
 		elseif (tmpl_file_exists($mime_type[0])) $tmpl_name = $mime_type[0];
 		elseif (tmpl_file_exists('attachment')) $tmpl_name = 'attachment';
+	}
+
+	// Custom router logic
+	elseif (file_exists(get_template_directory() . '/php/custom/router.php')) {
+		require get_template_directory() . '/php/custom/router.php';
 	}
 }
 
@@ -169,5 +173,3 @@ else {
 		echo '</pre>';
 	}
 }
-
-endif;
