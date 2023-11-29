@@ -1,0 +1,85 @@
+{
+    "key": "group_655d0ff13192c",
+    "title": "Block: Reel",
+    "fields": [
+        {
+            "key": "field_655d0ff1c031a",
+            "label": "space",
+            "name": "tailwind_reel-l_space-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Control the space between child elements.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "reel-l_space-",
+            "append": ""
+        },
+        {
+            "key": "field_655d101ec031c",
+            "label": "item-w",
+            "name": "tailwind_reel-l_item-w-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Set an explicit width for each child element (as opposed to intrinsic width).",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "reel-l_item-w-",
+            "append": ""
+        },
+        {
+            "key": "field_655d1034c031d",
+            "label": "h",
+            "name": "tailwind_reel-l_h-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Set an explicit height for the container.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "reel-l_h-",
+            "append": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "block",
+                "operator": "==",
+                "value": "lqx\/reel"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "modified": 1700597840
+}

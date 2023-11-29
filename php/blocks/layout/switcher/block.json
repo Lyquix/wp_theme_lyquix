@@ -1,0 +1,24 @@
+{
+	"name": "lqx/switcher",
+	"title": "Lyquix Switcher",
+	"description": "A Switcher block",
+	"category": "lqx-layout-blocks",
+	"icon": "image-rotate-left",
+	"keywords": [
+		"switcher"
+	],
+	"acf": {
+		"mode": "preview",
+		"renderTemplate": "switcher.php",
+		"supports": {
+			"align": true,
+			"mode": false,
+			"jsx": true
+		}
+	},
+	"supports": {
+		"anchor": false,
+		"jsx": true,
+		"mode": false
+	}
+}

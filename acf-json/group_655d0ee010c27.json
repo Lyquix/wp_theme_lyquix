@@ -1,0 +1,87 @@
+{
+    "key": "group_655d0ee010c27",
+    "title": "Block: Cover",
+    "fields": [
+        {
+            "key": "field_655d0ee03707d",
+            "label": "space",
+            "name": "tailwind_cover-l_space-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Control the minimum space between and around all child elements.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "cover-l_space-",
+            "append": ""
+        },
+        {
+            "key": "field_655d0f063707e",
+            "label": "min-h",
+            "name": "tailwind_cover-l_min-h-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Control the minimum height of the container element.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "cover-l_min-h-",
+            "append": ""
+        },
+        {
+            "key": "field_655d0f213707f",
+            "label": "no-pad",
+            "name": "no-pad",
+            "aria-label": "",
+            "type": "button_group",
+            "instructions": "Remove padding from the container element.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "tailwind_cover-l_no-pad": "cover-l_no-pad"
+            },
+            "default_value": "",
+            "return_format": "value",
+            "allow_null": 1,
+            "layout": "horizontal"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "block",
+                "operator": "==",
+                "value": "lqx\/cover"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "modified": 1700597598
+}

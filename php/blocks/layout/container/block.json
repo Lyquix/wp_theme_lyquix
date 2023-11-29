@@ -1,0 +1,24 @@
+{
+	"name": "lqx/container",
+	"title": "Lyquix Container",
+	"description": "A Container block",
+	"category": "lqx-layout-blocks",
+	"icon": "align-full-width",
+	"keywords": [
+		"container"
+	],
+	"acf": {
+		"mode": "preview",
+		"renderTemplate": "container.php",
+		"supports": {
+			"align": true,
+			"mode": false,
+			"jsx": true
+		}
+	},
+	"supports": {
+		"anchor": false,
+		"jsx": true,
+		"mode": false
+	}
+}

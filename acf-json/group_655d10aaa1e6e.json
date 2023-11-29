@@ -1,0 +1,107 @@
+{
+    "key": "group_655d10aaa1e6e",
+    "title": "Block: Icon",
+    "fields": [
+        {
+            "key": "field_655d10aaece8a",
+            "label": "size",
+            "name": "tailwind_icon-l_size-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Control the size of the icon.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "icon-l_size-",
+            "append": ""
+        },
+        {
+            "key": "field_655d10e4ece8b",
+            "label": "space",
+            "name": "tailwind_icon-l_space-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Control the space between the icon and text (if any).",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "icon-l_space-",
+            "append": ""
+        },
+        {
+            "key": "field_655d10f6ece8c",
+            "label": "nudge",
+            "name": "tailwind_icon-l_nudge-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Fine-tune the position of the icon.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "icon-l_nudge-",
+            "append": ""
+        },
+        {
+            "key": "field_655d110cece8d",
+            "label": "vertical",
+            "name": "vertical",
+            "aria-label": "",
+            "type": "button_group",
+            "instructions": "Align the icon vertically with the text.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "tailwind_icon-l_vertical": "icon-l_vertical"
+            },
+            "default_value": "",
+            "return_format": "value",
+            "allow_null": 1,
+            "layout": "horizontal"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "block",
+                "operator": "==",
+                "value": "lqx\/icon"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "modified": 1700598071
+}

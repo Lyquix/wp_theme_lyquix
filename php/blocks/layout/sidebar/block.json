@@ -1,0 +1,24 @@
+{
+	"name": "lqx/sidebar",
+	"title": "Lyquix Sidebar",
+	"description": "A Sidebar block",
+	"category": "lqx-layout-blocks",
+	"icon": "align-pull-left",
+	"keywords": [
+		"sidebar"
+	],
+	"acf": {
+		"mode": "preview",
+		"renderTemplate": "sidebar.php",
+		"supports": {
+			"align": true,
+			"mode": false,
+			"jsx": true
+		}
+	},
+	"supports": {
+		"anchor": false,
+		"jsx": true,
+		"mode": false
+	}
+}

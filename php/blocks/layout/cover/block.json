@@ -1,0 +1,24 @@
+{
+	"name": "lqx/cover",
+	"title": "Lyquix Cover",
+	"description": "A Cover block",
+	"category": "lqx-layout-blocks",
+	"icon": "align-wide",
+	"keywords": [
+		"cover"
+	],
+	"acf": {
+		"mode": "preview",
+		"renderTemplate": "cover.php",
+		"supports": {
+			"align": true,
+			"mode": false,
+			"jsx": true
+		}
+	},
+	"supports": {
+		"anchor": false,
+		"jsx": true,
+		"mode": false
+	}
+}

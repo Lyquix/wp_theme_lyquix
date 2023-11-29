@@ -1,0 +1,24 @@
+{
+	"name": "lqx/icon",
+	"title": "Lyquix Icon",
+	"description": "A Icon block",
+	"category": "lqx-layout-blocks",
+	"icon": "no",
+	"keywords": [
+		"icon"
+	],
+	"acf": {
+		"mode": "preview",
+		"renderTemplate": "icon.php",
+		"supports": {
+			"align": true,
+			"mode": false,
+			"jsx": true
+		}
+	},
+	"supports": {
+		"anchor": false,
+		"jsx": true,
+		"mode": false
+	}
+}

@@ -1,0 +1,24 @@
+{
+	"name": "lqx/stack",
+	"title": "Lyquix Stack",
+	"description": "A Stack block",
+	"category": "lqx-layout-blocks",
+	"icon": "editor-justify",
+	"keywords": [
+		"stack"
+	],
+	"acf": {
+		"mode": "preview",
+		"renderTemplate": "stack.php",
+		"supports": {
+			"align": true,
+			"mode": false,
+			"jsx": true
+		}
+	},
+	"supports": {
+		"anchor": false,
+		"jsx": true,
+		"mode": false
+	}
+}

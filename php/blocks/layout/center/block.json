@@ -1,0 +1,24 @@
+{
+	"name": "lqx/center",
+	"title": "Lyquix Center",
+	"description": "A Center block",
+	"category": "lqx-layout-blocks",
+	"icon": "align-center",
+	"keywords": [
+		"center"
+	],
+	"acf": {
+		"mode": "preview",
+		"renderTemplate": "center.php",
+		"supports": {
+			"align": true,
+			"mode": false,
+			"jsx": true
+		}
+	},
+	"supports": {
+		"anchor": false,
+		"jsx": true,
+		"mode": false
+	}
+}

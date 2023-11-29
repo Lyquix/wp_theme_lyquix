@@ -1,0 +1,24 @@
+{
+	"name": "lqx/grid",
+	"title": "Lyquix Grid",
+	"description": "A Grid block",
+	"category": "lqx-layout-blocks",
+	"icon": "grid-view",
+	"keywords": [
+		"grid"
+	],
+	"acf": {
+		"mode": "preview",
+		"renderTemplate": "grid.php",
+		"supports": {
+			"align": true,
+			"mode": false,
+			"jsx": true
+		}
+	},
+	"supports": {
+		"anchor": false,
+		"jsx": true,
+		"mode": false
+	}
+}

@@ -1,0 +1,24 @@
+{
+	"name": "lqx/luster",
+	"title": "Lyquix Cluster",
+	"description": "A Cluster block",
+	"category": "lqx-layout-blocks",
+	"icon": "layout",
+	"keywords": [
+		"cluster"
+	],
+	"acf": {
+		"mode": "preview",
+		"renderTemplate": "cluster.php",
+		"supports": {
+			"align": true,
+			"mode": false,
+			"jsx": true
+		}
+	},
+	"supports": {
+		"anchor": false,
+		"jsx": true,
+		"mode": false
+	}
+}

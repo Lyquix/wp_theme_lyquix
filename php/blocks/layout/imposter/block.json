@@ -1,0 +1,24 @@
+{
+	"name": "lqx/imposter",
+	"title": "Lyquix Imposter",
+	"description": "A Imposter block",
+	"category": "lqx-layout-blocks",
+	"icon": "block-default",
+	"keywords": [
+		"imposter"
+	],
+	"acf": {
+		"mode": "preview",
+		"renderTemplate": "imposter.php",
+		"supports": {
+			"align": true,
+			"mode": false,
+			"jsx": true
+		}
+	},
+	"supports": {
+		"anchor": false,
+		"jsx": true,
+		"mode": false
+	}
+}

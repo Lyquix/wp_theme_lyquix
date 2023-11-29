@@ -1,0 +1,24 @@
+{
+	"name": "lqx/frame",
+	"title": "Lyquix Frame",
+	"description": "A Frame block",
+	"category": "lqx-layout-blocks",
+	"icon": "editor-contract",
+	"keywords": [
+		"frame"
+	],
+	"acf": {
+		"mode": "preview",
+		"renderTemplate": "frame.php",
+		"supports": {
+			"align": true,
+			"mode": false,
+			"jsx": true
+		}
+	},
+	"supports": {
+		"anchor": false,
+		"jsx": true,
+		"mode": false
+	}
+}

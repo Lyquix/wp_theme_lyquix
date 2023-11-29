@@ -1,0 +1,109 @@
+{
+    "key": "group_655d0ab52067c",
+    "title": "Block: Center",
+    "fields": [
+        {
+            "key": "field_655d0ab522a44",
+            "label": "max-w",
+            "name": "tailwind_center-l_max-w-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Control the maximum width of the centered column.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "center-l_max-w-",
+            "append": ""
+        },
+        {
+            "key": "field_655d0b4822a45",
+            "label": "gutters",
+            "name": "tailwind_center-l_gutters-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Control the width of gutters around the centered column.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "center-l_gutters-",
+            "append": ""
+        },
+        {
+            "key": "field_655d0b6522a46",
+            "label": "text",
+            "name": "text",
+            "aria-label": "",
+            "type": "button_group",
+            "instructions": "Also center the text.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "tailwind_center-l_text": "center-l_text"
+            },
+            "default_value": "",
+            "return_format": "value",
+            "allow_null": 1,
+            "layout": "horizontal"
+        },
+        {
+            "key": "field_655d0bb222a47",
+            "label": "intrinsic",
+            "name": "intrinsic",
+            "aria-label": "",
+            "type": "button_group",
+            "instructions": "Center according to the intrinsic width of the content instead of the parent.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "tailwind_center-l_intrinsic": "center-l_intrinsic"
+            },
+            "default_value": "",
+            "return_format": "value",
+            "allow_null": 1,
+            "layout": "horizontal"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "block",
+                "operator": "==",
+                "value": "lqx\/center"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "modified": 1700596827
+}

@@ -1,0 +1,65 @@
+{
+    "key": "group_655d0f65022cf",
+    "title": "Block: Grid",
+    "fields": [
+        {
+            "key": "field_655d0f65e0829",
+            "label": "space",
+            "name": "tailwind_grid-l_space-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Control the space between child elements.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "grid-l_space-",
+            "append": ""
+        },
+        {
+            "key": "field_655d0f83e082a",
+            "label": "item-min-w",
+            "name": "tailwind_grid-l_item-min-w-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Control the minimum allowed width of a child element.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "grid-l_item-min-w-",
+            "append": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "block",
+                "operator": "==",
+                "value": "lqx\/grid"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "modified": 1700597664
+}

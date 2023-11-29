@@ -1,0 +1,45 @@
+{
+    "key": "group_655d0fa8c0025",
+    "title": "Block: Frame",
+    "fields": [
+        {
+            "key": "field_655d0fa8cca5c",
+            "label": "aspect",
+            "name": "tailwind_frame-l_aspect-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Control the aspect ratio of the container.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "frame-l_aspect-",
+            "append": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "block",
+                "operator": "==",
+                "value": "lqx\/frame"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "modified": 1700597720
+}

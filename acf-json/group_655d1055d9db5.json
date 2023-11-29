@@ -1,0 +1,67 @@
+{
+    "key": "group_655d1055d9db5",
+    "title": "Block: Imposter",
+    "fields": [
+        {
+            "key": "field_655d10567f1f2",
+            "label": "m",
+            "name": "tailwind_imposter-l_m-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Control the margin between the imposter and the positioning container.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "imposter-l_m-",
+            "append": ""
+        },
+        {
+            "key": "field_655d10837f1f3",
+            "label": "fixed",
+            "name": "fixed",
+            "aria-label": "",
+            "type": "button_group",
+            "instructions": "Positions the imposter relative to the viewport instead of a positioning container.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "tailwind_imposter-l_fixed": "imposter-l_fixed"
+            },
+            "default_value": "",
+            "return_format": "value",
+            "allow_null": 1,
+            "layout": "horizontal"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "block",
+                "operator": "==",
+                "value": "lqx\/imposter"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "modified": 1700597927
+}
