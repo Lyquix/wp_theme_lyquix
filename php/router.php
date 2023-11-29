@@ -22,6 +22,12 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
+// Custom router logic
+if (file_exists(get_template_directory() . '/php/custom/router.php')):
+	require get_template_directory() . '/php/custom/router.php';
+
+else:
+
 global $wp_query;
 $tmpl_name = '';
 
@@ -163,3 +169,5 @@ else {
 		echo '</pre>';
 	}
 }
+
+endif;
