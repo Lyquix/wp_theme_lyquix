@@ -26,7 +26,7 @@ const { tailwindLayouts, defaultOptions } = require('tailwind-layouts');
 
 module.exports = {
 	presets: [require('./presets.js')],
-	content: ['./whitelist.html'],
+	content: ['./css/tailwind/whitelist.html'],
 	theme: require('./theme.js'),
 	corePlugins: {
 		// Disable Preflight base styles in CSS targeting the editor.

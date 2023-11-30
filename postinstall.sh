@@ -38,5 +38,8 @@ fi
 if [ ! -f css/custom/editor.css ]; then
 	touch css/custom/editor.css
 fi
+if [ ! -f css/tailwind/theme.js ]; then
+	cp css/tailwind/theme.dist.js css/tailwind/theme.js
+fi
 
 cd ${CURRDIR}

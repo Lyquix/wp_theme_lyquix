@@ -53,6 +53,12 @@ require_once get_template_directory() . '/php/customizer.php';
 // Site Options
 require_once get_template_directory() . '/php/options.php';
 
+// Blocks
+require_once get_template_directory() . '/php/blocks.php';
+
+// Tailwind
+require_once get_template_directory() . '/php/tailwind.php';
+
 // Custom functions.php
 if (file_exists(get_template_directory() . '/php/custom/functions.php')) {
 	require_once get_template_directory() . '/php/custom/functions.php';
