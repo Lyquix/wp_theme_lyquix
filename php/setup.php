@@ -56,8 +56,13 @@ function theme_setup() {
 	});
 
 	// Disable wpautop
-	remove_filter( 'the_content', 'wpautop' );
-	remove_filter( 'the_excerpt', 'wpautop' );
+	remove_filter('the_content', 'wpautop');
+	remove_filter('the_excerpt', 'wpautop');
+
+	// Load Global WordPress Styles
+	add_action('wp_head', function () {
+		wp_enqueue_style('global-styles');
+	});
 }
 
 add_action('after_setup_theme', 'lqx\setup\theme_setup');
