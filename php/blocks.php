@@ -27,7 +27,7 @@
 namespace lqx\blocks;
 
 /**
- * Register a new blocks categories
+ * Register new blocks categories
  */
 
 add_filter('block_categories_all', function ($categories) {
@@ -44,6 +44,8 @@ add_filter('block_categories_all', function ($categories) {
 	return $categories;
 });
 
+// Load Lyquix blocks common functions
+require_once(get_stylesheet_directory() . '/php/blocks/layout/layout.php');
 /**
  * Register ACF blocks
  */
