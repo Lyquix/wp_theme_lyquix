@@ -102,7 +102,7 @@ function enqueue_styles() {
 	}
 }
 
-add_action('wp_enqueue_scripts', 'lqx\css\enqueue_styles', 100);
+add_action('wp_enqueue_scripts', '\lqx\css\enqueue_styles', 100);
 
 function render_page_custom_css() {
 	// Render page custom CSS

@@ -69,4 +69,4 @@ function add_widget_positions() {
 	}
 }
 
-add_action('widgets_init', 'lqx\widgets\add_widget_positions');
+add_action('widgets_init', '\lqx\widgets\add_widget_positions');

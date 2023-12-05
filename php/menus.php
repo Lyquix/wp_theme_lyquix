@@ -59,4 +59,4 @@ function add_menu_positions() {
 	}
 }
 
-add_action('after_setup_theme', 'lqx\menus\add_menu_positions');
+add_action('after_setup_theme', '\lqx\menus\add_menu_positions');

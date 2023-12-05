@@ -65,4 +65,4 @@ function theme_setup() {
 	});
 }
 
-add_action('after_setup_theme', 'lqx\setup\theme_setup');
+add_action('after_setup_theme', '\lqx\setup\theme_setup');

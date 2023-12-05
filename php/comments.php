@@ -34,27 +34,27 @@ function disable_comments_post_type_support() {
 		}
 	}
 }
-add_action('init', 'lqx\comments\disable_comments_post_type_support');
+add_action('init', '\lqx\comments\disable_comments_post_type_support');
 
 // Remove comments from the admin menu and admin bar
 function remove_comments_admin_menu() {
 	remove_menu_page('edit-comments.php');
 	remove_submenu_page('options-general.php', 'options-discussion.php');
 }
-add_action('admin_menu', 'lqx\comments\remove_comments_admin_menu');
+add_action('admin_menu', '\lqx\comments\remove_comments_admin_menu');
 
 function remove_comments_admin_bar() {
 	if (is_admin_bar_showing()) {
 		remove_action('admin_bar_menu', 'wp_admin_bar_comments_menu', 60);
 	}
 }
-add_action('wp_before_admin_bar_render', 'lqx\comments\remove_comments_admin_bar');
+add_action('wp_before_admin_bar_render', '\lqx\comments\remove_comments_admin_bar');
 
 // Remove comments from the "Right Now" dashboard widget
 function remove_comments_dashboard_widget() {
 	remove_meta_box('dashboard_recent_comments', 'dashboard', 'normal');
 }
-add_action('wp_dashboard_setup', 'lqx\comments\remove_comments_dashboard_widget');
+add_action('wp_dashboard_setup', '\lqx\comments\remove_comments_dashboard_widget');
 
 // Disable comment-related REST API endpoints
 function disable_comments_rest_api_endpoints($endpoints) {
@@ -66,7 +66,7 @@ function disable_comments_rest_api_endpoints($endpoints) {
 	}
 	return $endpoints;
 }
-add_filter('rest_endpoints', 'lqx\comments\disable_comments_rest_api_endpoints');
+add_filter('rest_endpoints', '\lqx\comments\disable_comments_rest_api_endpoints');
 
 // Disable XML-RPC methods related to comments
 function disable_xmlrpc_comment_methods($methods) {
@@ -77,13 +77,13 @@ function disable_xmlrpc_comment_methods($methods) {
 	unset($methods['wp.newComment']);
 	return $methods;
 }
-add_filter('xmlrpc_methods', 'lqx\comments\disable_xmlrpc_comment_methods');
+add_filter('xmlrpc_methods', '\lqx\comments\disable_xmlrpc_comment_methods');
 
 // Disable comments RSS feed
 function disable_comments_rss() {
 	wp_die('No comments are available.');
 }
-add_action('do_feed_comments', 'lqx\comments\disable_comments_rss', 1);
+add_action('do_feed_comments', '\lqx\comments\disable_comments_rss', 1);
 
 // Disable comments in the admin
 function disable_comments_admin() {
@@ -95,4 +95,4 @@ function disable_comments_admin() {
 	remove_post_type_support('post', 'comments');
 	remove_post_type_support('page', 'comments');
 }
-add_action('admin_init', 'lqx\comments\disable_comments_admin');
+add_action('admin_init', '\lqx\comments\disable_comments_admin');

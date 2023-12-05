@@ -183,4 +183,4 @@ function customizer_add($wp_customize) {
 	}
 }
 
-add_action('customize_register', 'lqx\customizer\customizer_add');
+add_action('customize_register', '\lqx\customizer\customizer_add');
