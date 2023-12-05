@@ -1,10 +1,10 @@
 {
     "key": "group_651d94db438f5",
-    "title": "Advanced",
+    "title": "Custom CSS & JS",
     "fields": [
         {
             "key": "field_651d974e0a687",
-            "label": "Custom CSS",
+            "label": "CSS",
             "name": "",
             "aria-label": "",
             "type": "tab",
@@ -17,7 +17,8 @@
                 "id": ""
             },
             "placement": "top",
-            "endpoint": 1
+            "endpoint": 1,
+            "acfe_permissions": ""
         },
         {
             "key": "field_651d94db713ae",
@@ -48,7 +49,7 @@
         },
         {
             "key": "field_651d97a666df5",
-            "label": "Custom JS",
+            "label": "JS",
             "name": "",
             "aria-label": "",
             "type": "tab",
@@ -61,7 +62,8 @@
                 "id": ""
             },
             "placement": "top",
-            "endpoint": 0
+            "endpoint": 0,
+            "acfe_permissions": ""
         },
         {
             "key": "field_651d977c0a688",
@@ -101,7 +103,7 @@
         ]
     ],
     "menu_order": 0,
-    "position": "normal",
+    "position": "side",
     "style": "default",
     "label_placement": "top",
     "instruction_placement": "label",
@@ -113,9 +115,8 @@
     "acfe_autosync": [
         "json"
     ],
-    "acfe_permissions": "",
     "acfe_form": 1,
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1696439405
+    "modified": 1701457849
 }
