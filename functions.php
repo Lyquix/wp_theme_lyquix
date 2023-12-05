@@ -50,9 +50,6 @@ require_once get_template_directory() . '/php/widgets.php';
 // Theme customizer
 require_once get_template_directory() . '/php/customizer.php';
 
-// Site Options
-require_once get_template_directory() . '/php/options.php';
-
 // Blocks
 require_once get_template_directory() . '/php/blocks.php';
 
