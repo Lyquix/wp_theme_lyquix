@@ -46,6 +46,8 @@ add_filter('block_categories_all', function ($categories) {
 
 // Load Lyquix blocks common functions
 require_once(get_stylesheet_directory() . '/php/blocks/layout/layout.php');
+require_once(get_stylesheet_directory() . '/php/blocks/module/module.php');
+
 /**
  * Register ACF blocks
  */
@@ -71,4 +73,34 @@ add_filter('acf/blocks/wrap_frontend_innerblocks', function ($wrap, $name) {
 	}
 	return true;
 }, 10, 2);
+
+
+/**
+ * Set the Style Preset values for the Lyquix Modules
+ */
+add_filter('acf/load', function ($field) {
+	$field_keys = [
+		[ // Accordion Style Presets
+			'user' => 'field_656c9b99e9e1f',
+			'choice' => 'field_656e7cb6b285f'
+		],
+		[ // Accordion Settings Presets
+			'user' => 'field_656c9bb1e9e20',
+			'choice' => 'field_656d01578aa30'
+		]
+	];
+
+	foreach ($field_keys as $k) {
+		if ($field['key'] == $k['user']) {
+			$choice_field = get_field_object($k['choice']);
+			error_log(json_encode([$field, $choice_field], JSON_PRETTY_PRINT), 3, __DIR__ . '/blocks.log');
+			while (have_rows($choice_field['parent'], 'option')) {
+				the_row();
+				$value = get_sub_field($k['choice'], 'option');
+				$field['choices'][$value] = $value;
+			}
+		}
+	}
+	return $field;
+});
 

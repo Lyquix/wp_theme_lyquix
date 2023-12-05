@@ -21,6 +21,8 @@
 //  DO NOT MODIFY THIS FILE!
 
 import { vars, cfg, log, warn, error } from './lib/lyquix/core';
+
+// JS modules
 import { analytics } from './lib/lyquix/analytics';
 import { detect } from './lib/lyquix/detect';
 import { geolocate } from './lib/lyquix/geolocate';
@@ -30,6 +32,11 @@ import { swipe } from './lib/lyquix/swipe';
 import { responsive } from './lib/lyquix/responsive';
 import { theme } from './lib/lyquix/theme';
 import { util } from './lib/lyquix/util';
+
+// Gutenberg blocks
+import { accordion } from './lib/lyquix/accordion';
+import { tabs } from './lib/lyquix/tabs';
+
 
 declare const lqx;
 
@@ -52,6 +59,9 @@ const init = (customCfg) => {
 		'geolocate',
 		'swipe',
 		'theme',
+		// Gutenberg blocks
+		'accordion',
+		'tabs'
 	];
 
 	// Initialize core config
@@ -87,7 +97,7 @@ const expObj = Object.defineProperties({
 	log,
 	warn,
 	error,
-	/* Modules */
+	/* JS Modules */
 	analytics,
 	detect,
 	geolocate,
@@ -96,7 +106,10 @@ const expObj = Object.defineProperties({
 	store,
 	swipe,
 	util,
-	theme
+	theme,
+	/* Gutenberg blocks */
+	accordion,
+	tabs
 }, {
 	// Set the cfg and vars properties as read-only
 	cfg: {
