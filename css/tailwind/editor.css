@@ -48,10 +48,6 @@
 		@apply text-link;
 	}
 
-	img {
-		@apply max-w-full;
-	}
-
 	h1,
 	h2,
 	h3,
@@ -91,66 +87,6 @@
 
 	sub {
 		font-variant-position: sub;
-	}
-
-	input,
-	textarea,
-	select {
-		@apply mx-input my-0 border border-solid border-input-border bg-input-bg p-input font-input text-input outline-none;
-	}
-
-	input:disabled,
-	textarea:disabled,
-	select:disabled {
-		@apply bg-gray-500;
-	}
-
-	input[type="submit"],
-	input[type="button"],
-	input[type="reset"],
-	button {
-		@apply mx-input my-0 border-none bg-button-bg px-[2em] py-[.5em] font-button font-bold text-base-bg text-button hover:bg-button-bg-hover hover:no-underline;
-	}
-
-	input[type="submit"]:disabled,
-	input[type="button"]:disabled,
-	input[type="reset"]:disabled,
-	button:disabled {
-		@apply bg-gray-500 text-button hover:bg-gray-500;
-	}
-
-	label {
-		@apply font-label text-label;
-	}
-
-	hr {
-		@apply mx-0 my-base border border-solid border-hr bg-hr text-hr;
-	}
-
-	table {
-		@apply max-w-full border-collapse border-spacing-0;
-	}
-
-	td,
-	th {
-		@apply p-[.5em] text-left align-top;
-	}
-
-	th {
-		@apply border border-solid border-th-border bg-th-bg font-th text-th;
-	}
-
-	td {
-		@apply border border-solid bg-td-bg font-td text-td;
-	}
-
-	ul,
-	ol {
-		@apply pl-[2em];
-	}
-
-	li {
-		@apply mx-0 my-[.67em];
 	}
 }
 

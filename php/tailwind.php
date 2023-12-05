@@ -80,10 +80,12 @@ add_action('save_post', function ($post_ID) {
 		foreach ($blocks as $block) {
 			if (isset($block['attrs']['data'])) {
 				foreach ($block['attrs']['data'] as $name => $val) {
-					if (strpos($val, 'tailwind_') === 0) {
-						$classes[] = str_replace('tailwind_', '', $val);
-					} elseif (strpos($name, 'tailwind_') === 0 && $val) {
-						$classes[] = str_replace('tailwind_', '', $name) . $val;
+					if (is_string($val)) {
+						if (strpos($val, 'tailwind_') === 0) {
+							$classes[] = str_replace('tailwind_', '', $val);
+						} elseif (strpos($name, 'tailwind_') === 0 && $val) {
+							$classes[] = str_replace('tailwind_', '', $name) . $val;
+						}
 					}
 				}
 			}
