@@ -9,15 +9,21 @@
  * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
 
-import { vars, cfg } from './core';
-/**
- * Import other modules as needed
- */
+//    .d8888b. 88888888888 .d88888b.  8888888b.   888
+//   d88P  Y88b    888    d88P" "Y88b 888   Y88b  888
+//   Y88b.         888    888     888 888    888  888
+//    "Y888b.      888    888     888 888   d88P  888
+//       "Y88b.    888    888     888 8888888P"   888
+//         "888    888    888     888 888         Y8P
+//   Y88b  d88P    888    Y88b. .d88P 888          "
+//    "Y8888P"     888     "Y88888P"  888         888
+//
+//  DO NOT MODIFY THIS FILE!
+
+import { vars, cfg, log } from './core';
+import { mutation } from './mutation';
 
 declare const lqx;
-/**
- * Declare other variables as needed
- */
 
 export const accordion = (() => { // Change the accordion name
 
@@ -26,49 +32,160 @@ export const accordion = (() => { // Change the accordion name
 		if (vars.accordion?.init) return; // Change the module name
 
 		vars.accordion = { // Change the module name
-			init: false,
-			/**
-			 * Add working variables as needed
-			 */
+			init: false
 		};
 
 		// Default module configuration
-		cfg.accordion = { // Change the module name
-			enabled: true
-			/**
-			 * Add default configuration as needed
-			 */
+		cfg.accordion = {
+			enabled: true,
+			accordionSelector: '.lqx-block-accordion > .accordion',
+			headerSelector: '.accordion-header',
+			panelSelector: '.accordion-panel',
+			analytics: {
+				enabled: true,
+				nonInteraction: true,
+				onClose: true 	// Sends event on accordion close
+			}
 		};
 
 		if (customCfg) cfg.accordion = jQuery.extend(true, cfg.accordion, customCfg);
 
 		// Initialize only if enabled
-		if (cfg.accordion.enabled) { // Change the accordion name
-			lqx.log('Initializing accordion'); // Change the module name
+		if (cfg.accordion.enabled) {
+			log('Initializing accordion');
 
-			/**
-			 *
-			 * Place here logic that needs to be executed
-			 * when the module is first initialized
-			 *
-			 */
+			// Disable analytics if the analytics module is not enabled
+			cfg.accordion.analytics.enabled = cfg.analytics.enabled ? cfg.accordion.analytics.enabled : false;
+			if (cfg.accordion.analytics.enabled) lqx.log('Setting accordions tracking');
+
+			// Initialize accordions
+			vars.document.ready(() => {
+				// Setup accordions loaded initially on the page
+				setup(jQuery(cfg.accordion.accordionSelector));
+
+				// Add a mutation handler for accordions added to the DOM
+				mutation.addHandler('addNode', cfg.accordion.accordionSelector, setup);
+			});
 		}
 
 		// Run only once
 		vars.accordion.init = true; // Change the module name
 	};
 
-	/**
-	 *
-	 * Add other functions, constants and variables as needed by the module
-	 *
-	 */
+	const setup = (elems) => {
+		if (elems instanceof Node) {
+			// Not an array, convert to an array
+			elems = [elems];
+		}
+		else if (elems instanceof jQuery) {
+			// Convert jQuery to array
+			elems = elems.toArray();
+		}
+
+		if (elems.length) {
+			log('Setting up ' + elems.length + ' accordions', elems);
+
+			elems.forEach((accElem) => {
+				// The accordion element
+				accElem = jQuery(accElem);
+
+				// Cycle through each panel
+				accElem.find(cfg.accordion.headerSelector).forEach((headerElem) => {
+					// The header element
+					headerElem = jQuery(headerElem);
+
+					// The panel element
+					const panelElem = jQuery('#' + headerElem.attr('id').replace('-header-', '-panel-'));
+					const panelId = panelElem.attr('id');
+
+					// Add click listener
+					headerElem.on('click', () => {
+						// Open accordion
+						if (panelElem.hasClass('closed')) open(panelId);
+						// Close accordion
+						else close(panelId);
+					});
+				});
+			});
+		}
+	};
+
+	const open = (panelId) => {
+		log('Opening accordion', panelId);
+
+		// The elements
+		const panelElem = jQuery('#' + panelId);
+		const headerElem = jQuery('#' + panelId.replace('-panel-', '-header-'));
+		const accElem = panelElem.parent();
+
+		// Remove closed class
+		panelElem.removeClass('closed');
+
+		// Toggle aria-hidden
+		panelElem.attr('aria-hidden', 'false');
+
+		// Toggle aria-expanded
+		headerElem.attr('aria-expanded', 'true');
+
+		// Scroll top
+		if(accElem.attr('data-auto-scroll') != '') {
+			const autoScrollScreens = (accElem.attr('data-auto-scroll') || '').split(',');
+			if(autoScrollScreens.includes(lqx.responsive.screen)) {
+				headerElem[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
+			}
+		}
+
+		// Open multiple
+		if(accElem.attr('data-open-multiple') == 'n') {
+			// Close all other panels
+			accElem.find(cfg.accordion.panelSelector).not(panelElem).each((id, elem) => {
+				close(jQuery(elem).attr('id'));
+			});
+		}
+
+		// Send event for accordion opened
+		if (cfg.accordion.analytics.enabled) {
+			lqx.analytics.sendGAEvent({
+				'eventCategory': 'Accordion',
+				'eventAction': 'Open',
+				'eventLabel': headerElem.text(),
+				'nonInteraction': cfg.accordion.analytics.nonInteraction
+			});
+		}
+	};
+
+	const close = function (panelId) {
+		log('Closing accordion', panelId);
+
+		// The elements
+		const panelElem = jQuery('#' + panelId);
+		const headerElem = jQuery('#' + panelId.replace('-panel-', '-header-'));
+
+		// Add closed class
+		panelElem.addClass('closed');
+
+		// Toggle aria-hidden
+		panelElem.attr('aria-hidden', 'true');
+
+		// Toggle aria-expanded
+		headerElem.attr('aria-expanded', 'false');
+
+		// Send event for accordion opened
+		if (cfg.accordion.analytics.enabled && cfg.accordion.analytics.onClose) {
+			lqx.analytics.sendGAEvent({
+				'eventCategory': 'Accordion',
+				'eventAction': 'Close',
+				'eventLabel': headerElem.text(),
+				'nonInteraction': cfg.accordion.analytics.nonInteraction
+			});
+		}
+	};
 
 	return {
-		init
-		/**
-		 * Add other functions that need to be exposed
-		 */
+		init,
+		open,
+		close,
+		setup
 	};
 
 })();

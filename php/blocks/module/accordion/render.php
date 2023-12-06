@@ -39,26 +39,42 @@ namespace lqx\blocks\accordion;
  * browser_history: Controls if interacting with an accordion will add a history entry to the browser
  * heading_style: Sets the heading level for the accordion headings
  * auto_scroll: Sets in what screen sizes the accordion will auto scroll to the top of the open accordion
- * animation_duration: Sets the speed of accordion animation
  */
 function render($settings, $content) {
 	// Get the processed settings
 	$s = $settings['processed'];
 
 	if (!empty($content)) : ?>
-		<div id="<?= $s['anchor'] ?>" class="lqx-block-accordion <?= $s['class'] ?>" data-block="accordion" data-open-on-load="<?= $s['open_on_load'] ?>" data-open-multiple="<?= $s['open-multiple'] ?>" data-browser-history="<?= $s['browser_history'] ?>" data-auto-scroll="<?= implode(',', $s['auto_scroll']) ?>" data-animation-duration="<?= $s['animation_duration'] ?>" data-hash=<?= $s['hash'] ?>>
-			<div class="accordion" id="<?= $s['hash'] ?>">
+		<section
+			id="<?= $s['anchor'] ?>"
+			class="lqx-block-accordion <?= $s['class'] ?>">
+			<div
+				class="accordion"
+				id="<?= $s['hash'] ?>"
+				data-open-on-load="<?= $s['open_on_load'] ?>"
+				data-open-multiple="<?= $s['open-multiple'] ?>"
+				data-browser-history="<?= $s['browser_history'] ?>"
+				data-auto-scroll="<?= implode(',', $s['auto_scroll']) ?>">
 				<?php foreach ($content as $idx => $item) : ?>
-					<div class="accordion-panel" id="<?= $s['hash'] . '-' . $idx ?>">
-						<<?= $s['heading_style'] ?> class="accordion-heading" id="<?= $s['hash'] . '-' . $idx . '-heading'  ?>" aria-expanded="<?= $idx == 0 && $s['open_on_load'] == 'y' ? 'true' : 'false' ?>" aria-controls="<?= $s['hash'] . '-' . $idx . '-content'  ?>">
+					<<?= $s['heading_style'] ?>>
+						<button
+							class="accordion-header"
+							id="<?= $s['hash'] . '-header-' . $idx ?>"
+							aria-expanded="<?= $idx == 0 && $s['open_on_load'] == 'y' ? 'true' : 'false' ?>"
+							aria-controls="<?= $s['hash'] . '-panel-' . $idx ?>">
 							<?= $item['heading'] ?>
-						</<?= $s['heading_style'] ?>>
-						<div class="accordion-content" id="<?= $s['hash'] . '-' . $idx . '-content'  ?>" role="region" aria-labelledby="<?= $s['hash'] . '-' . $idx . '-heading'  ?>" style="--transition-duration: <?= $s['duration'] . 's' ?>">
-							<?= $item['content'] ?>
-						</div>
-					</div>
+						</button>
+					</<?= $s['heading_style'] ?>>
+					<section
+						class="accordion-panel <?= $idx == 0 && $s['open_on_load'] == 'y' ? '' : 'closed' ?>"
+						id="<?= $s['hash'] . '-panel-' . $idx ?>"
+						role="region"
+						aria-labelledby="<?= $s['hash'] . '-header-' . $idx ?>"
+						aria-hidden="<?= $idx == 0 && $s['open_on_load'] == 'y' ? 'false' : 'true' ?>">
+						<?= $item['content'] ?>
+					</section>
 				<?php endforeach; ?>
 			</div>
-		</div>
+		</section>
 <?php endif;
 }

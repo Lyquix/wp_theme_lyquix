@@ -163,27 +163,6 @@
                     "layout": "horizontal"
                 },
                 {
-                    "key": "field_65312ce1a5546",
-                    "label": "Animation Duration",
-                    "name": "animation_duration",
-                    "aria-label": "",
-                    "type": "range",
-                    "instructions": "Set the duration of the opening and closing of animation, in seconds (default: 0.5)",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "0.5",
-                    "min": 0,
-                    "max": 5,
-                    "step": "0.01",
-                    "prepend": "",
-                    "append": "seconds"
-                },
-                {
                     "key": "field_65312ca37e46e",
                     "label": "Auto Scroll",
                     "name": "auto_scroll",
