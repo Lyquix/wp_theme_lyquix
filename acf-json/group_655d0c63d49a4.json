@@ -1,6 +1,6 @@
 {
     "key": "group_655d0c63d49a4",
-    "title": "Block: Cluster",
+    "title": "Layout: Cluster",
     "fields": [
         {
             "key": "field_655d0c640ca6f",
@@ -83,5 +83,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1700596996
+    "modified": 1702084781
 }

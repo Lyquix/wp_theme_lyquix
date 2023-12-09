@@ -1,6 +1,6 @@
 {
     "key": "group_655d0ff13192c",
-    "title": "Block: Reel",
+    "title": "Layout: Reel",
     "fields": [
         {
             "key": "field_655d0ff1c031a",
@@ -81,5 +81,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1700597840
+    "modified": 1702084781
 }

@@ -1,6 +1,6 @@
 {
     "key": "group_655d0ee010c27",
-    "title": "Block: Cover",
+    "title": "Layout: Cover",
     "fields": [
         {
             "key": "field_655d0ee03707d",
@@ -83,5 +83,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1700597598
+    "modified": 1702084781
 }

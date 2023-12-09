@@ -1,5 +1,7 @@
+<?php
+
 /**
- * rollup.lyquix.js - Rollup configuration for Lyquix library
+ * accordion.php - Lyquix accordion block
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix
@@ -20,25 +22,13 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-import typescript from '@rollup/plugin-typescript';
+$settings = \lqx\blocks\get_settings($block, $post_id);
+$content = \lqx\blocks\get_content($block);
 
-export default {
-	input: 'js/lyquix.ts',
-	output: [
-		{
-			file: 'js/lyquix.js',
-			format: 'iife',
-			name: 'lqx',
-			sourcemap: false
-		}
-	],
-	plugins: [
-		typescript({
-			tsconfig: 'tsconfig.lyquix.json',
-		})
-	],
-	watch: {
-		include: ['js/lyquix.ts', 'js/lib/lyquix/*.ts'],
-		clearScreen: false
-	}
-};
+if (file_exists(get_stylesheet_directory() . '/php/custom/blocks/accordion/render.php')) {
+	require_once get_stylesheet_directory() . '/php/custom/blocks/accordion/render.php';
+} else {
+	require_once get_stylesheet_directory() . '/php/blocks/accordion/render.php';
+}
+
+\lqx\blocks\accordion\render($settings, $content);

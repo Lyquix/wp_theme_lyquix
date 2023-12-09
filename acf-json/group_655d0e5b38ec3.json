@@ -1,6 +1,6 @@
 {
     "key": "group_655d0e5b38ec3",
-    "title": "Block: Switcher",
+    "title": "Layout: Switcher",
     "fields": [
         {
             "key": "field_655d0e5b5856b",
@@ -81,5 +81,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1700597442
+    "modified": 1702084781
 }

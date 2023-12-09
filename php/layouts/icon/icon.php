@@ -1,5 +1,7 @@
+<?php
+
 /**
- * rollup.lyquix.js - Rollup configuration for Lyquix library
+ * icon.php - Lyquix icon layout block - https://tailwind-layouts.dev/layouts/
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix
@@ -20,25 +22,11 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-import typescript from '@rollup/plugin-typescript';
+// Get a list of used Tailwind classes
+$classes = \lqx\layouts\get_tailwind_classes();
+if($block['className']) $classes .= ' ' . $block['className'];
 
-export default {
-	input: 'js/lyquix.ts',
-	output: [
-		{
-			file: 'js/lyquix.js',
-			format: 'iife',
-			name: 'lqx',
-			sourcemap: false
-		}
-	],
-	plugins: [
-		typescript({
-			tsconfig: 'tsconfig.lyquix.json',
-		})
-	],
-	watch: {
-		include: ['js/lyquix.ts', 'js/lib/lyquix/*.ts'],
-		clearScreen: false
-	}
-};
+?>
+<span id="<?= esc_attr($block['anchor']) ?>" class="icon-l <?= $classes ?>">
+	<InnerBlocks />
+</span>

@@ -1,6 +1,6 @@
 {
     "key": "group_655d0ab52067c",
-    "title": "Block: Center",
+    "title": "Layout: Center",
     "fields": [
         {
             "key": "field_655d0ab522a44",
@@ -105,5 +105,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1700596827
+    "modified": 1702084781
 }

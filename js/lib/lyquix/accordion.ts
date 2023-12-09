@@ -66,6 +66,8 @@ export const accordion = (() => { // Change the accordion name
 				// Add a mutation handler for accordions added to the DOM
 				mutation.addHandler('addNode', cfg.accordion.accordionSelector, setup);
 			});
+
+			// TODO: Check URL hash and open matching accordion panel
 		}
 
 		// Run only once
@@ -73,24 +75,15 @@ export const accordion = (() => { // Change the accordion name
 	};
 
 	const setup = (elems) => {
-		if (elems instanceof Node) {
-			// Not an array, convert to an array
-			elems = [elems];
-		}
-		else if (elems instanceof jQuery) {
-			// Convert jQuery to array
-			elems = elems.toArray();
-		}
-
 		if (elems.length) {
 			log('Setting up ' + elems.length + ' accordions', elems);
 
-			elems.forEach((accElem) => {
+			elems.each((idx, accElem) => {
 				// The accordion element
 				accElem = jQuery(accElem);
 
 				// Cycle through each panel
-				accElem.find(cfg.accordion.headerSelector).forEach((headerElem) => {
+				accElem.find(cfg.accordion.headerSelector).each((idx, headerElem) => {
 					// The header element
 					headerElem = jQuery(headerElem);
 
@@ -127,18 +120,22 @@ export const accordion = (() => { // Change the accordion name
 		// Toggle aria-expanded
 		headerElem.attr('aria-expanded', 'true');
 
-		// Scroll top
-		if(accElem.attr('data-auto-scroll') != '') {
-			const autoScrollScreens = (accElem.attr('data-auto-scroll') || '').split(',');
-			if(autoScrollScreens.includes(lqx.responsive.screen)) {
-				headerElem[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
-			}
+		// Auto scroll top
+		const autoScrollScreens = (accElem.attr('data-auto-scroll') || '').split(',');
+
+		if (autoScrollScreens.includes(lqx.responsive.screen)) {
+			// TODO: Auto Scroll functionality
+		}
+
+		// Browser history
+		if (accElem.attr('data-browser-history') == 'y') {
+			// TODO: Browser history functionality
 		}
 
 		// Open multiple
-		if(accElem.attr('data-open-multiple') == 'n') {
+		if (accElem.attr('data-open-multiple') == 'n') {
 			// Close all other panels
-			accElem.find(cfg.accordion.panelSelector).not(panelElem).each((id, elem) => {
+			accElem.find(cfg.accordion.panelSelector).not(panelElem).each((idx, elem) => {
 				close(jQuery(elem).attr('id'));
 			});
 		}

@@ -25,7 +25,7 @@ CURRDIR="${PWD}"
 SCRIPTDIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 cd ${SCRIPTDIR}
 
-# Check for neceessary files to be copied from distribution
+# Check for files that need to be created
 if [ ! -f custom.php ]; then
 	cp custom.dist.php custom.php
 fi
@@ -33,13 +33,34 @@ if [ ! -f css/custom/custom.scss ]; then
 	cp css/custom/custom.dist.scss css/custom/custom.scss
 fi
 if [ ! -f css/custom.css ]; then
-	touch css/custom.css
+	echo "# This file will be overwritten when SCSS is compiled" > css/custom.css
 fi
 if [ ! -f css/custom/editor.css ]; then
-	touch css/custom/editor.css
+	echo "# This file will be overwritten when SCSS is compiled" >  css/custom/editor.css
 fi
 if [ ! -f css/tailwind/theme.js ]; then
 	cp css/tailwind/theme.dist.js css/tailwind/theme.js
 fi
+
+# Copy sample styles from css/lib to css/custom
+FILES=("accordion" "alerts" "banner" "cards" "cta" "gallery" "hero" "lyqbox" "popup" "slider" "tabs")
+for FILE in "${FILES[@]}"; do
+	# Check if the file exists in the css/custom directory
+	if [ ! -f "css/custom/$FILE.scss" ]; then
+		# If it does not exist, copy it from the css/lib directory
+		cp "css/lib/$FILE.dist.scss" "css/custom/$FILE.scss"
+	fi
+done
+
+# Create empty files for common styling structure
+FILES=("base" "text" "lists" "tables" "forms" "utility" "buttons" "header" "footer" "filters" "home" "search" "404" "page" "blog" "blog-archive")
+for FILE in "${FILES[@]}"; do
+	# Check if the file exists in the css/custom directory
+	if [ ! -f "css/custom/$FILE.scss" ]; then
+		# If it does not exist, create a new one
+		# Capitalize the first letter of the file name
+		echo "/* $(tr '[:lower:]' '[:upper:]' <<< ${FILE:0:1})${FILE:1} styles */" >  "css/custom/$FILE.scss"
+	fi
+done
 
 cd ${CURRDIR}

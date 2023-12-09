@@ -1,6 +1,6 @@
 {
     "key": "group_655d0d68866c9",
-    "title": "Block: Sidebar",
+    "title": "Layout: Sidebar",
     "fields": [
         {
             "key": "field_655d0d6829742",
@@ -103,5 +103,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1700597259
+    "modified": 1702084781
 }

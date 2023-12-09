@@ -1,6 +1,6 @@
 {
     "key": "group_655d0fa8c0025",
-    "title": "Block: Frame",
+    "title": "Layout: Frame",
     "fields": [
         {
             "key": "field_655d0fa8cca5c",
@@ -41,5 +41,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1700597720
+    "modified": 1702084781
 }

@@ -1,6 +1,6 @@
 {
     "key": "group_655d1055d9db5",
-    "title": "Block: Imposter",
+    "title": "Layout: Imposter",
     "fields": [
         {
             "key": "field_655d10567f1f2",
@@ -63,5 +63,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1700597927
+    "modified": 1702084781
 }

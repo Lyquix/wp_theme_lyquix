@@ -1,6 +1,6 @@
 {
     "key": "group_65588aaab6198",
-    "title": "Block: Box",
+    "title": "Layout: Box",
     "fields": [
         {
             "key": "field_65588aabf7d75",
@@ -101,5 +101,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1700463120
+    "modified": 1702084781
 }

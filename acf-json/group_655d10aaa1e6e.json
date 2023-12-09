@@ -1,6 +1,6 @@
 {
     "key": "group_655d10aaa1e6e",
-    "title": "Block: Icon",
+    "title": "Layout: Icon",
     "fields": [
         {
             "key": "field_655d10aaece8a",
@@ -103,5 +103,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1700598071
+    "modified": 1702084781
 }

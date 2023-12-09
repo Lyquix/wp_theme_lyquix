@@ -1,6 +1,6 @@
 {
     "key": "group_655d0f65022cf",
-    "title": "Block: Grid",
+    "title": "Layout: Grid",
     "fields": [
         {
             "key": "field_655d0f65e0829",
@@ -61,5 +61,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1700597664
+    "modified": 1702084781
 }

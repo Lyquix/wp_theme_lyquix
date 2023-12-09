@@ -1,6 +1,6 @@
 {
     "key": "group_6553775228a4d",
-    "title": "Block: Stack",
+    "title": "Layout: Stack",
     "fields": [
         {
             "key": "field_655377525148a",
@@ -85,5 +85,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1700301078
+    "modified": 1702084781
 }

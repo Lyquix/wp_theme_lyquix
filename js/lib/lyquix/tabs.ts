@@ -46,8 +46,7 @@ export const tabs = (() => {
 			tabContentSelector: '.tab-content',
 			analytics: {
 				enabled: true,
-				nonInteraction: true,
-				onClose: true 	// Sends event on accordion close
+				nonInteraction: true
 			}
 		};
 
@@ -69,6 +68,8 @@ export const tabs = (() => {
 				// Add a mutation handler for tabss added to the DOM
 				mutation.addHandler('addNode', cfg.tabs.tabsSelector, setup);
 			});
+
+			// TODO: Check URL hash and open matching tabs panel
 		}
 
 		// Run only once
@@ -76,64 +77,76 @@ export const tabs = (() => {
 	};
 
 	const setup = (elems) => {
-		if (elems instanceof Node) {
-			// Not an array, convert to an array
-			elems = [elems];
-		}
-		else if (elems instanceof jQuery) {
-			// Convert jQuery to array
-			elems = elems.toArray();
-		}
-
 		if (elems.length) {
 			log('Setting up ' + elems.length + ' tabs', elems);
 
-			elems.forEach((tabsElem) => {
+			elems.each((idx, tabsElem) => {
 				// The tabs element
 				tabsElem = jQuery(tabsElem);
 
-				// Cycle through each panel
-				tabsElem.find(cfg.tabs.headerSelector).forEach((tabElem) => {
+				// Cycle through each tab
+				tabsElem.find(cfg.tabs.tabSelector).each((idx, tabElem) => {
 					// The tab element
 					tabElem = jQuery(tabElem);
 
-					// The panel element
-					const panelElem = jQuery('#' + tabElem.attr('id').replace('-tab-', '-panel-'));
-					const panelId = panelElem.attr('id');
+					// The panel id
+					const panelId = tabElem.attr('id').replace('-tab-', '-panel-');
 
 					// Add click listener
 					jQuery(tabElem).on('click', () => {
 						// Open tabs
 						open(panelId);
 					});
-
-					// Accordion-tabs switcher
-					if(tabsElem.attr('data-convert-to-accordion') != '') {
-						const accordionScreens = (tabsElem.attr('data-convert-to-accordion') || '').split(',');
-
-						// Add listener for screen change
-						vars.window.on('screensizechange', () => {
-							if(accordionScreens.includes(lqx.responsive.screen)) {
-								// Convert to accordion
-								// Toggle aria-hidden
-								tabsElem.find(cfg.tabs.tabsListSelector).attr('aria-hiddent', 'true');
-								tabsElem.find(cfg.tabs.headerSelector).attr('aria-hiddent', 'false');
-							}
-							else {
-								// Convert to tabs
-								// Toggle aria-hidden
-								tabsElem.find(cfg.tabs.tabsListSelector).attr('aria-hiddent', 'false');
-								tabsElem.find(cfg.tabs.headerSelector).attr('aria-hiddent', 'true');
-							}
-						});
-					}
 				});
+
+				// Convert to accordion?
+				const accordionScreens = (tabsElem.attr('data-convert-to-accordion') || '').split(',');
+				console.log(accordionScreens);
+
+				if(accordionScreens.length) {
+					// Function to enable/disable elements for accordion and tabs
+					const accordionTabsSwitch = () => {
+						if(accordionScreens.includes(lqx.responsive.screen)) {
+							// Convert to accordion
+							// Toggle aria-hidden
+							tabsElem.find(cfg.tabs.tabsListSelector).attr('aria-hidden', 'true');
+							tabsElem.find(cfg.tabs.headerSelector).attr('aria-hidden', 'false');
+						}
+						else {
+							// Convert to tabs
+							// Toggle aria-hidden
+							tabsElem.find(cfg.tabs.tabsListSelector).attr('aria-hidden', 'false');
+							tabsElem.find(cfg.tabs.headerSelector).attr('aria-hidden', 'true');
+						}
+					};
+
+					// Add listener for screen change
+					vars.window.on('screensizechange',accordionTabsSwitch);
+
+					// Run the first time
+					accordionTabsSwitch();
+
+					// Cycle through each header
+					tabsElem.find(cfg.tabs.headerSelector).each((idx, headerElem) => {
+						// The tab element
+						headerElem = jQuery(headerElem);
+
+						// The panel element
+						const panelId = headerElem.attr('id').replace('-header-', '-panel-');
+
+						// Add click listener
+						jQuery(headerElem).on('click', () => {
+							// Open tabs
+							open(panelId);
+						});
+					});
+				}
 			});
 		}
 	};
 
 	const open = (panelId) => {
-		log('Opening tabs', panelId);
+		log('Opening tab', panelId);
 
 		// The elements
 		const panelElem = jQuery('#' + panelId);
@@ -150,31 +163,34 @@ export const tabs = (() => {
 		tabElem.attr('aria-selected', 'true');
 
 		// Accordion behavior
-		if(tabsElem.attr('data-convert-to-accordion') != '') {
-			const accordionScreens = (tabsElem.attr('data-convert-to-accordion') || '').split(',');
-			if(accordionScreens.includes(lqx.responsive.screen)) {
-				// The elements
-				const headerElem = jQuery('#' + panelId.replace('-panel-', '-header-'));
-				const contentElem = jQuery('#' + panelId.replace('-panel-', '-content-'));
+		const accordionScreens = (tabsElem.attr('data-convert-to-accordion') || '').split(',');
 
-				// Toggle aria-hidden
-				contentElem.attr('aria-hidden', 'false');
+		if(accordionScreens.includes(lqx.responsive.screen)) {
+			// The elements
+			const headerElem = jQuery('#' + panelId.replace('-panel-', '-header-'));
+			const contentElem = jQuery('#' + panelId.replace('-panel-', '-content-'));
 
-				// Toggle aria-expanded
-				headerElem.attr('aria-expanded', 'true');
-			}
+			// Toggle aria-hidden
+			contentElem.attr('aria-hidden', 'false');
+
+			// Toggle aria-expanded
+			headerElem.attr('aria-expanded', 'true');
 		}
 
-		// Scroll top
-		if(tabsElem.attr('data-auto-scroll') != '') {
-			const autoScrollScreens = (tabsElem.attr('data-auto-scroll') || '').split(',');
-			if(autoScrollScreens.includes(lqx.responsive.screen)) {
-				tabElem[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
-			}
+		// Auto scroll top
+		const autoScrollScreens = (tabsElem.attr('data-auto-scroll') || '').split(',');
+
+		if(autoScrollScreens.includes(lqx.responsive.screen)) {
+			// TODO: Auto Scroll functionality
+		}
+
+		// Browser history
+		if (tabsElem.attr('data-browser-history') == 'y') {
+			// TODO: Browser history functionality
 		}
 
 		// Close all other panels
-		tabsElem.find(cfg.tabs.panelSelector).not(panelElem).each((id, elem) => {
+		tabsElem.find(cfg.tabs.tabPanelSelector).not(panelElem).each((idx, elem) => {
 			close(jQuery(elem).attr('id'));
 		});
 
@@ -190,12 +206,14 @@ export const tabs = (() => {
 	};
 
 	const close = (panelId) => {
-		log('Closing tabs', panelId);
+		log('Closing tab', panelId);
 
 		// The elements
 		const panelElem = jQuery('#' + panelId);
-		const tabElem = jQuery('#' + panelId.replace('-panel-', '-header-'));
+		const tabElem = jQuery('#' + panelId.replace('-panel-', '-tab-'));
 		const tabsElem = panelElem.parent();
+
+		console.log(panelId.replace('-panel-', '-tab-'), tabElem);
 
 		// Toggle aria-hidden
 		panelElem.attr('aria-hidden', 'true');
@@ -203,23 +221,22 @@ export const tabs = (() => {
 		// Toggle tabindex
 		tabElem.attr('tabindex', '-1');
 
-		// Toggle aria-expanded
-		tabElem.attr('aria-expanded', 'false');
+		// Toggle aria-selected
+		tabElem.attr('aria-selected', 'false');
 
 		// Accordion behavior
-		if(tabsElem.attr('data-convert-to-accordion') != '') {
-			const accordionScreens = (tabsElem.attr('data-convert-to-accordion') || '').split(',');
-			if(accordionScreens.includes(lqx.responsive.screen)) {
-				// The elements
-				const headerElem = jQuery('#' + panelId.replace('-panel-', '-header-'));
-				const contentElem = jQuery('#' + panelId.replace('-panel-', '-content-'));
+		const accordionScreens = (tabsElem.attr('data-convert-to-accordion') || '').split(',');
 
-				// Toggle aria-hidden
-				contentElem.attr('aria-hidden', 'true');
+		if(accordionScreens.includes(lqx.responsive.screen)) {
+			// The elements
+			const headerElem = jQuery('#' + panelId.replace('-panel-', '-header-'));
+			const contentElem = jQuery('#' + panelId.replace('-panel-', '-content-'));
 
-				// Toggle aria-expanded
-				headerElem.attr('aria-expanded', 'false');
-			}
+			// Toggle aria-hidden
+			contentElem.attr('aria-hidden', 'true');
+
+			// Toggle aria-expanded
+			headerElem.attr('aria-expanded', 'false');
 		}
 
 		// Send event for tabs opened

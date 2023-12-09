@@ -21,39 +21,104 @@
 //    "Y8888P"     888     "Y88888P"  888         888
 //
 //  DO NOT MODIFY THIS FILE!
-//  Instead add directories under /php/custom/blocks with and use
-//  block.json files
+//  Instead add directories under /php/custom/blocks and use block.json files
 
 namespace lqx\blocks;
 
-/**
- * Register new blocks categories
- */
+// Process overrides for settings presets
+function process_overrides($settings) {
+	$processed = [];
+	foreach ($settings as $key => $value) {
+		// Check if the key ends in _group
+		if (substr($key, -6) == '_group') {
+			// Extract the key name by removing _group
+			$sub_key = substr($key, 0, -6);
 
+			// Check if the override is set to true
+			if ($value[$sub_key . '_override'] === true) {
+				// Get the override value
+				$sub_value = $value[substr($key, 0, -6)];
+
+				if ($sub_value) {
+					$processed[$sub_key] = $sub_value;
+				}
+			}
+		} elseif ($value) {
+			$processed[$key] = $value;
+		}
+	}
+
+	return $processed;
+}
+
+// Get the settings for a block
+function get_settings($block, $post_id) {
+	// Get the block name by removing the lqx/ prefix
+	$block_name = substr($block['name'], 4);
+
+	// Initialize the settings array
+	$settings = [
+		'global' => get_field($block_name . '_block_global', 'option'),
+		'styles' => get_field($block_name . '_block_styles', 'option'),
+		'presets' => get_field($block_name . '_block_presets', 'option'),
+		'local' => [
+			'user' => get_field($block_name . '_block_user'),
+			'admin' => get_field($block_name . '_block_admin')
+		],
+		'processed' => array_merge([
+			'anchor' => $block['anchor'] ? esc_attr($block['anchor']) : '',
+			'class' => $block['className'] ? $block['className'] : '',
+			'hash' => 'id-' . md5(json_encode([$post_id, $block])) // Generate a unique hash for the block
+		], get_field($block_name . '_block_global', 'option'))
+	];
+
+	// Check for user settings
+	if ($settings['local']['user'] !== null) {
+		// Style presets
+		if ($settings['local']['user']['style']) $settings['processed']['class'] .= ' ' . $settings['local']['user']['style'];
+
+		// Check for settings presets
+		if ($settings['local']['user']['presets'] !== '') {
+			foreach ($settings['presets'] as $preset) {
+				if ($preset['preset_name'] == $settings['local']['user']['preset']) {
+					// Process the overrides
+					$settings['processed'] = array_merge($settings['processed'], process_overrides($preset[$block_name . '_block_admin']));
+					break;
+				}
+			}
+		}
+	}
+
+	// Check for admin settings
+	if ($settings['local']['admin'] !== null) {
+		// Process the overrides
+		$settings['processed'] = array_merge($settings['processed'], process_overrides($settings['local']['admin']));
+	}
+
+	return $settings;
+}
+
+function get_content($block) {
+	// Remove the lqx/ prefix from the block name
+	$block_name = substr($block['name'], 4);
+
+	return get_field($block_name . '_block_content');
+}
+
+// Register the Lyquix Modules block category
 add_filter('block_categories_all', function ($categories) {
 	$categories[] = [
 		'slug'  => 'lqx-module-blocks',
 		'title' => 'Lyquix Modules'
 	];
 
-	$categories[] = [
-		'slug'  => 'lqx-layout-blocks',
-		'title' => 'Lyquix Layouts'
-	];
-
 	return $categories;
 });
 
-// Load Lyquix blocks common functions
-require_once(get_stylesheet_directory() . '/php/blocks/layout/layout.php');
-require_once(get_stylesheet_directory() . '/php/blocks/module/module.php');
-
-/**
- * Register ACF blocks
- */
+// Register ACF blocks
 add_action('init', function () {
 	// Use glob to find 'block.json' files in the 'blocks' directory
-	$matches = array_merge(glob(__DIR__ . '/blocks/**/*/block.json'), glob(__DIR__ . 'custom/blocks/**/*/block.json'));
+	$matches = array_merge(glob(__DIR__ . '/blocks/*/block.json'), glob(__DIR__ . 'custom/blocks/*/block.json'));
 
 	// Check if any matches were found
 	if (!empty($matches)) {
@@ -64,36 +129,31 @@ add_action('init', function () {
 	}
 });
 
-/**
- * ACF Inner Blocks should wrap
- */
-add_filter('acf/blocks/wrap_frontend_innerblocks', function ($wrap, $name) {
-	if (str_contains($name, 'lqx/')) {
-		return false;
-	}
-	return true;
-}, 10, 2);
-
-
-/**
- * Set the Style Preset values for the Lyquix Modules
- */
-add_filter('acf/load', function ($field) {
+// Set the Style Preset values for the Lyquix Modules
+add_filter('acf/load_field', function ($field) {
 	$field_keys = [
-		[ // Accordion Style Presets
+		[ // Accordion: style and style_name fields
 			'user' => 'field_656c9b99e9e1f',
 			'choice' => 'field_656e7cb6b285f'
 		],
-		[ // Accordion Settings Presets
+		[ // Accordion: preset and preset_name fields
 			'user' => 'field_656c9bb1e9e20',
 			'choice' => 'field_656d01578aa30'
+		],
+		[ // Tabs: style and style_name fields
+			'user' => 'field_656f866617343',
+			'choice' => 'field_656f879ccf606'
+		],
+		[ // Tabs: preset and preset_name fields
+			'user' => 'field_656f866617344',
+			'choice' => 'field_656f87fcef854'
 		]
 	];
 
 	foreach ($field_keys as $k) {
 		if ($field['key'] == $k['user']) {
 			$choice_field = get_field_object($k['choice']);
-			error_log(json_encode([$field, $choice_field], JSON_PRETTY_PRINT), 3, __DIR__ . '/blocks.log');
+
 			while (have_rows($choice_field['parent'], 'option')) {
 				the_row();
 				$value = get_sub_field($k['choice'], 'option');

@@ -1,5 +1,5 @@
 //
-// custom.scss - Main SCSS file for custom styles
+// custom - Main SCSS file for custom styles
 //
 // @version     3.0.0
 // @package     wp_theme_lyquix
@@ -19,53 +19,114 @@
 //    "Y8888P"     888     "Y88888P"  888         888
 
 //  DO NOT MODIFY THIS FILE!
-//  Instead copy it to custom.scss and make your changes there.
+//  Instead copy it to css/custom/custom.scss and make your changes there.
+
+// Tailwind CSS
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// Global styling for HTML elements
+// --------------------------------
+
+// Base
+// Main elements: html, body, section, article, aside, header, footer, main, nav, menu, hr
+@import "base";
 
 // Text
-//@import "text.scss";
+// Main elements: body, p, a, h1, h2, h3, h4, h5, h6, strong, em, pre, code,
+//                sub, sup, small, big, dfn, blockquote
+@import "text";
 
-// Buttons
-//@import "buttons.scss";
+// Lists
+// Main elements: ul, ol, li, dl, dt, dd
+@import "lists";
+
+// Tables
+// Main elements: table, thead, tbody, tfoot, tr, th, td, caption, colgroup, col
+@import "tables";
 
 // Forms
-//@import "forms.scss";
+// Main elements: form, label, textarea, select, option, button,
+//                input[type="text"], input[type="password"], input[type="search"]
+//                input[type="button"], input[type="submit"], input[type="reset"],
+//                input[type="checkbox"], input[type="radio"]
+// Other: fieldset, legend, optgroup, meter, progress, other input types
+@import "forms";
 
-// Header
-//@import "header.scss";
+// Lyquix Blocks and Modules
+// -------------------------
 
-// Footer
-//@import "footer.scss";
+// Accordion
+@import "accordion";
 
-// Home
-//@import "home.scss";
+// Alerts
+@import "alerts";
 
-// Single
-//@import "page.scss";
-//@import "single-post.scss";
-//@import "single-???.scss";
+// Banner
+@import "banner";
 
-// Archives
-//@import "category-???.scss";
-//@import "taxonomy-???.scss";
-//@import "tag-???.scss";
+// Cards
+@import "cards";
 
-// Widgets
-//@import "widget-???.scss";
+// CTA
+@import "cta";
 
-// Search
-//@import "search.scss";
+// Gallery
+@import "gallery";
 
-// 404
-//@import "404.scss";
+// Hero
+@import "hero";
+
+// Lyqbox
+@import "lyqbox";
+
+// Popup
+@import "popup";
+
+// Slider
+@import "slider";
 
 // Tabs
-//@import "tabs.scss";
+@import "tabs";
 
-// Accordions
-//@import "accordions.scss";
+// Common website sections and elements
+// ------------------------------------
 
-// Lightbox
-//@import "lightbox.scss";
+// Utility
+@import "utility";
+
+// Buttons
+@import "buttons";
+
+// Header
+@import "header";
+
+// Footer
+@import "footer";
 
 // Filters
-//@import "filters.scss";
+@import "filters";
+
+// Home
+@import "home";
+
+// Search results
+@import "search";
+
+// 404
+@import "404";
+
+// Project content types
+// ---------------------
+
+// Generic pages
+@import "page";
+
+// Blog
+@import "blog";
+@import "blog-archive";
+
+// Custom post type, e.g. Project
+@import "project";
+@import "project-archive";
