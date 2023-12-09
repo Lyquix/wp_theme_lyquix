@@ -44,7 +44,7 @@ require get_template_directory() . '/php/vars.php';
 	// Render GTM head code
 	lqx\js\render_gtm_head_code();
 
-	// WordPress head
+	// WordPress enqueued head meta and scripts
 	wp_head();
 
 	// Favicons
@@ -64,8 +64,13 @@ require get_template_directory() . '/php/body.php';
 	// Render GTM body code
 	lqx\js\render_gtm_body_code();
 
-	// Skip header area for blank page template
-	if ($lqx_page_template != 'blank') : ?>
+	// Chromeless page template
+	if ($lqx_page_template == 'chromeless') :
+		// Template router
+		require get_template_directory() . '/php/router.php';
+
+	// Non-chromeless page template
+	else : ?>
 		<header>
 			<?php if (is_active_sidebar('header')) dynamic_sidebar('header'); ?>
 
@@ -92,7 +97,6 @@ require get_template_directory() . '/php/body.php';
 					<?php wp_nav_menu(['menu' => 'logged-in-menu']); ?>
 				</nav>
 			<?php endif; ?>
-
 		</header>
 
 		<main>
@@ -115,14 +119,8 @@ require get_template_directory() . '/php/body.php';
 					</section>
 				<?php endif;
 
-			// End skip of header area for blank page template
-			endif;
-
-			// Template router
-			require get_template_directory() . '/php/router.php';
-
-			// Skip footer area for blank page template
-			if ($lqx_page_template != 'blank') :
+				// Template router
+				require get_template_directory() . '/php/router.php';
 
 				if (is_active_sidebar('after')) : ?>
 					<section class="widget after">
@@ -158,19 +156,18 @@ require get_template_directory() . '/php/body.php';
 					<?php wp_nav_menu(['menu' => 'footer-menu']); ?>
 				</nav>
 			<?php endif; ?>
-
 		</footer>
-		<?php
-				// Outdated browser alert
-				require get_template_directory() . '/php/browser-alert.php';
-		?>
 	<?php
-				if (is_active_sidebar('body-scripts')) dynamic_sidebar('body-scripts');
+	// Outdated browser alert
+	require get_template_directory() . '/php/browser-alert.php';
 
-			// End skip of footer area for blank page template
-			endif; ?>
-	<?php
+	// End of non-chromeless page template
+	endif;
+
+	// WordPress enqueued footer scripts
 	wp_footer();
+
+	if (is_active_sidebar('body-scripts')) dynamic_sidebar('body-scripts');
 
 	// Render Lyquix and Scripts options
 	lqx\js\render_lyquix_options();

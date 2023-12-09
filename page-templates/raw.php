@@ -12,9 +12,6 @@
  * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
 
-the_post();
-echo get_the_content();
-
 //    .d8888b. 88888888888 .d88888b.  8888888b.   888
 //   d88P  Y88b    888    d88P" "Y88b 888   Y88b  888
 //   Y88b.         888    888     888 888    888  888
@@ -25,3 +22,6 @@ echo get_the_content();
 //    "Y8888P"     888     "Y88888P"  888         888
 //
 //  DO NOT MODIFY THIS FILE!
+
+the_post();
+the_content();
