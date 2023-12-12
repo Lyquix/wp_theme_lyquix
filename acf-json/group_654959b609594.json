@@ -65,6 +65,9 @@
             "layout": "block",
             "acfe_seamless_style": 0,
             "acfe_group_modal": 0,
+            "acfe_group_modal_close": 0,
+            "acfe_group_modal_button": "",
+            "acfe_group_modal_size": "large",
             "sub_fields": [
                 {
                     "key": "field_654959b61e2dc",
@@ -175,10 +178,7 @@
                     "save_custom": 0,
                     "custom_choice_button_text": "Add new choice"
                 }
-            ],
-            "acfe_group_modal_close": 0,
-            "acfe_group_modal_button": "",
-            "acfe_group_modal_size": "large"
+            ]
         },
         {
             "key": "field_656f87e9ef853",
@@ -260,7 +260,7 @@
             {
                 "param": "options_page",
                 "operator": "==",
-                "value": "blocks"
+                "value": "tabs"
             }
         ]
     ],
@@ -280,5 +280,5 @@
     "acfe_display_title": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1701808672
+    "modified": 1702393534
 }

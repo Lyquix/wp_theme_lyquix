@@ -52,7 +52,19 @@ function process_overrides($settings) {
 }
 
 // Get the settings for a block
-function get_settings($block, $post_id) {
+function get_settings($block, $post_id = null) {
+	// If $block is a string, convert it to an array
+	if(is_string($block)) {
+		$block = [
+			'name' => $block,
+			'anchor' => '',
+			'className' => ''
+		];
+	}
+
+	// For some reason get_field doesn't work when passing the post ID for the current post
+	if($post_id === get_the_ID()) $post_id = null;
+
 	// Get the block name by removing the lqx/ prefix
 	$block_name = substr($block['name'], 4);
 
@@ -62,13 +74,13 @@ function get_settings($block, $post_id) {
 		'styles' => get_field($block_name . '_block_styles', 'option'),
 		'presets' => get_field($block_name . '_block_presets', 'option'),
 		'local' => [
-			'user' => get_field($block_name . '_block_user'),
-			'admin' => get_field($block_name . '_block_admin')
+			'user' => get_field($block_name . '_block_user', $post_id),
+			'admin' => get_field($block_name . '_block_admin', $post_id)
 		],
 		'processed' => array_merge([
 			'anchor' => $block['anchor'] ? esc_attr($block['anchor']) : '',
 			'class' => $block['className'] ? $block['className'] : '',
-			'hash' => 'id-' . md5(json_encode([$post_id, $block])) // Generate a unique hash for the block
+			'hash' => 'id-' . md5(json_encode([get_the_ID(), $block, random_int(1000, 9999)])) // Generate a unique hash for the block
 		], get_field($block_name . '_block_global', 'option'))
 	];
 
@@ -98,11 +110,17 @@ function get_settings($block, $post_id) {
 	return $settings;
 }
 
-function get_content($block) {
+function get_content($block, $post_id = null) {
+	// If $block is a string, convert it to an array
+	if(is_string($block)) $block = ['name' => $block];
+
 	// Remove the lqx/ prefix from the block name
 	$block_name = substr($block['name'], 4);
 
-	return get_field($block_name . '_block_content');
+	// For some reason get_field doesn't work when passing the post ID for the current post
+	if($post_id === get_the_ID()) $post_id = null;
+
+	return get_field($block_name . '_block_content', $post_id);
 }
 
 // Register the Lyquix Modules block category

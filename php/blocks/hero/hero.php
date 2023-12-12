@@ -22,13 +22,15 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
+//Settings
 $settings = \lqx\blocks\get_settings($block);
 $content = \lqx\blocks\get_content($block);
 
-if (file_exists(get_stylesheet_directory() . '/php/custom/blocks/accordion/render.php')) {
-	require_once get_stylesheet_directory() . '/php/custom/blocks/accordion/render.php';
+//check for override. If it does not exist, use the provided render file to render the block
+if (file_exists(get_stylesheet_directory() . '/php/custom/blocks/hero/render.php')) {
+	require_once get_stylesheet_directory() . '/php/custom/blocks/hero/render.php';
 } else {
-	require_once get_stylesheet_directory() . '/php/blocks/accordion/render.php';
+	require_once get_stylesheet_directory() . '/php/blocks/hero/render.php';
 }
-
-\lqx\blocks\accordion\render($settings, $content);
+//call to render the block
+\lqx\blocks\hero\render($settings, $content);

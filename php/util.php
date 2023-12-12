@@ -200,3 +200,121 @@ function validateData($data, $schema) {
 		'data' => $data
 	];
 }
+
+function get_video_urls($url) {
+	// Check if the video is from YouTube
+	if (preg_match('/^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/', $url, $match)) {
+		$youtube_id = $match[1];
+		if ($youtube_id) {
+			$url = 'https://www.youtube.com/embed/' . $youtube_id . '?rel=0&amp;autoplay=1&amp;mute=1&amp;modestbranding=1';
+			$thumbnail = 'https://img.youtube.com/vi/' . $youtube_id . '/hqdefauldepth$breadcrumbt.jpg';
+		}
+	}
+	// Check if the video is from Vimeo
+	elseif (preg_match('/^https?:\/\/(?:www\.)?vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|video\/|)(\d+)(?:|\/\?)$/', $url, $match)) {
+		$vimeo_id = $match[1];
+		if ($vimeo_id) {
+			$url = 'https://player.vimeo.com/video/' . $vimeo_id;
+			$thumbnail = 'https://vumbnail.com/' . $vimeo_id . '.jpg';
+		}
+	}
+	else {
+		$url = '';
+		$thumbnail = '';
+	}
+
+	// Return the video URL and thumbnail URL as an array
+	return ['url' => $url, 'thumbnail' => $thumbnail];
+}
+
+
+function get_breadcrumbs($post_id = null, $type = 'parent', $depth = 3, $show_current = true) {
+	// Get the post ID
+	if ($post_id == null) {
+		$post_id = get_the_ID();
+	}
+
+	// Show current item
+	if ($show_current == 'y') {
+		$breadcrumbs = [
+			[
+				'title' => get_the_title($post_id),
+				'url' => null
+			]
+		];
+	} else {
+		$breadcrumbs = [];
+	}
+
+	switch ($type) {
+		// Category breadcrumbs
+		case 'category':
+			$categories = get_the_category($post_id);
+			$category = get_category($categories[0]->term_id);
+			$parent_cat = $categories[0]->parent;
+			for ($i = 1; $i <= $depth; $i++) {
+				array_unshift($breadcrumbs, [
+					'title' => $category->name,
+					'url' => get_category_link($category->term_id)
+				]);
+				if ($parent_cat !== 0) {
+					$category = get_category($parent_cat);
+				} else {
+					break;
+				}
+			}
+			break;
+
+		// Post type archive breadcrumbs
+		case 'post-type':
+			$post_type = get_post_type_object(get_post_type($post_id));
+			array_unshift($breadcrumbs, [
+				'title' => $post_type->label,
+				'url' => get_post_type_archive_link($post_type->name)
+			]);
+			break;
+
+		// Post type archive and category breadcrumbs
+		case 'post-type-category':
+			$categories = get_the_category($post_id);
+			$category = get_category($categories[0]->term_id);
+			$parent_cat = $categories[0]->parent;
+			// Start this loop at 2 because of the presence of the post type in the breadcrumbs before this point
+			for ($i = 2; $i <= $depth; $i++) {
+				array_unshift($breadcrumbs, [
+					'title' => $category->name,
+					'url' => get_category_link($category->term_id)
+				]);
+				if ($parent_cat !== 0) {
+					$category = get_category($parent_cat);
+				} else {
+					break;
+				}
+			}
+			$post_type = get_post_type_object(get_post_type($post_id));
+			array_unshift($breadcrumbs, [
+				'title' => $post_type->label,
+				'url' => get_post_type_archive_link($post_type->name)
+			]);
+			break;
+
+		// Parent page breadcrumbs
+		case 'parent':
+		default:
+			$parent_page_id = wp_get_post_parent_id($post_id);
+			for ($i = 1; $i <= $depth; $i++) {
+				if ($parent_page_id !== 0) {
+					array_unshift($breadcrumbs, [
+						'title' => get_the_title($parent_page_id),
+						'url' => get_permalink($parent_page_id)
+					]);
+					$parent_page_id = wp_get_post_parent_id($parent_page_id);
+				} else {
+					break;
+				}
+			}
+			break;
+	}
+
+	return $breadcrumbs;
+}
