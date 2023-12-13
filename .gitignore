@@ -20,5 +20,7 @@ Desktop.ini
 # gitignore for wp_theme_lyquix
 /.sass-cache
 node_modules
-/php/browsers/browsers.json
-/php/ip2geo/GeoLite2-City.*
+bun.lockb
+package.lock
+php/browsers/browsers.json
+php/ip2geo/GeoLite2-City.*
