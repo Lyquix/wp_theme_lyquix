@@ -53,7 +53,7 @@ for FILE in "${FILES[@]}"; do
 done
 
 # Create empty files for common styling structure
-FILES=("base" "text" "lists" "tables" "forms" "utility" "buttons" "header" "footer" "filters" "home" "search" "404" "page" "blog" "blog-archive")
+FILES=("base" "text" "lists" "tables" "forms" "utility" "buttons" "pagination" "breadcrumbs" "header" "footer" "filters" "home" "search" "404" "page" "blog" "blog-archive")
 for FILE in "${FILES[@]}"; do
 	# Check if the file exists in the css/custom directory
 	if [ ! -f "css/custom/$FILE.scss" ]; then

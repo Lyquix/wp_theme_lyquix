@@ -54,6 +54,24 @@
 // Other: fieldset, legend, optgroup, meter, progress, other input types
 @import "forms";
 
+// Common elements
+// ---------------
+
+// Utility
+@import "utility";
+
+// Buttons
+@import "buttons";
+
+// Pagination
+@import "pagination";
+
+// Breadcrumbs
+@import "breadcrumbs";
+
+// Other
+// Include other elements such as: tooltips, tags, icons, videos, etc.
+
 // Lyquix Blocks and Modules
 // -------------------------
 
@@ -90,14 +108,8 @@
 // Tabs
 @import "tabs";
 
-// Common website sections and elements
-// ------------------------------------
-
-// Utility
-@import "utility";
-
-// Buttons
-@import "buttons";
+// Common website sections
+// -----------------------
 
 // Header
 @import "header";
