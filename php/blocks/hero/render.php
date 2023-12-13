@@ -37,12 +37,10 @@ function render($settings, $content) {
 		if ($content['breadcrumbs_override'] !== '') {
 			$breadcrumbs .= $content['breadcrumbs_override'];
 		} else {
-			$breadcrumbs_arr = \lqx\util\get_breadcrumbs(get_the_ID(), $s['breadcrumbs']['type'], $s['breadcrumbs']['depth'], $s['breadcrumbs']['show_current']);
-			for ($i = 0; $i <= count($breadcrumbs_arr); $i++) {
-				if ($breadcrumbs_arr[$i]['url']) $breadcrumbs .= '<a href="' . $breadcrumbs_arr[$i]['url'] . '">' . $breadcrumbs_arr[$i]['title'] . '</a>';
-				else $breadcrumbs .= $breadcrumbs_arr[$i]['title'];
-				if ($i < count($breadcrumbs_arr) - 1) $breadcrumbs .= ' &raquo; ';
-			}
+			$breadcrumbs .= implode(' &raquo; ', array_map(function ($b) {
+				if ($b['url']) return sprintf('<a href="%s">%s</a>', $b['url'], $b['title']);
+				else return $b['title'];
+			}, \lqx\util\get_breadcrumbs(get_the_ID(), $s['breadcrumbs']['type'], $s['breadcrumbs']['depth'], $s['breadcrumbs']['show_current'])));
 		}
 		$breadcrumbs .= '</div>';
 	}
