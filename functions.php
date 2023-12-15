@@ -56,6 +56,9 @@ require_once get_template_directory() . '/php/blocks.php';
 // Layouts
 require_once get_template_directory() . '/php/layouts.php';
 
+// Modules
+require_once get_template_directory() . '/php/modules.php';
+
 // Tailwind
 require_once get_template_directory() . '/php/tailwind.php';
 
