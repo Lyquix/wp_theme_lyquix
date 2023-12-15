@@ -114,32 +114,6 @@
                     "colors": []
                 },
                 {
-                    "key": "field_65775698e439a",
-                    "label": "Hover Icon Color",
-                    "name": "hover_icon_color",
-                    "aria-label": "",
-                    "type": "color_picker",
-                    "instructions": "Select a hover color for all social icons. Clear to use the social network brand color. (Default: none)",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "enable_opacity": 0,
-                    "return_format": "string",
-                    "display": "default",
-                    "button_label": "Select Color",
-                    "color_picker": 1,
-                    "absolute": 0,
-                    "input": 1,
-                    "allow_null": 1,
-                    "theme_colors": 0,
-                    "colors": []
-                },
-                {
                     "key": "field_6577558ce4399",
                     "label": "Background Color",
                     "name": "background_color",
@@ -166,12 +140,38 @@
                     "colors": []
                 },
                 {
+                    "key": "field_65775698e439a",
+                    "label": "Hover Icon Color",
+                    "name": "hover_icon_color",
+                    "aria-label": "",
+                    "type": "color_picker",
+                    "instructions": "Select a hover icon color for all social icons. Clear to use the social network brand color. (Default: none)",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "enable_opacity": 0,
+                    "return_format": "string",
+                    "display": "default",
+                    "button_label": "Select Color",
+                    "color_picker": 1,
+                    "absolute": 0,
+                    "input": 1,
+                    "allow_null": 1,
+                    "theme_colors": 0,
+                    "colors": []
+                },
+                {
                     "key": "field_657ca0c447225",
                     "label": "Hover Background Color",
                     "name": "hover_background_color",
                     "aria-label": "",
                     "type": "color_picker",
-                    "instructions": "Select a hover color for all social icons. Clear to use the social network brand color. (Default: none)",
+                    "instructions": "Select a hover background color for all social icons. Clear to use the social network brand color. (Default: none)",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -222,5 +222,5 @@
     "acfe_display_title": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1702667535
+    "modified": 1702669428
 }
