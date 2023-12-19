@@ -21,14 +21,17 @@
 //    "Y8888P"     888     "Y88888P"  888         888
 //
 //  DO NOT MODIFY THIS FILE!
-//  Instead add directories under /php/custom/blocks and use block.json files
+//  Instead add directories under /php/custom/modules and use .php files with the same name
 
 namespace lqx\modules;
 
 // Get directories under php/modules
-$modules = array_map(function($dir) {
-	return basename($dir);
-}, array_filter(glob(get_template_directory() . '/php/modules/*'), 'is_dir'));
+$modules = array_merge(
+	glob(get_template_directory() . '/php/modules/*'),
+	glob(get_template_directory() . '/php/custom/modules/*')
+);
+$modules = array_filter($modules, 'is_dir');
+$modules = array_map('basename', $modules);
 
 // Load each module once
 foreach ($modules as $module) {
