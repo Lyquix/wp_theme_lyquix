@@ -180,6 +180,9 @@ add_filter('acf/load_field', function ($field) {
 		if ($field['key'] == $k['user']) {
 			$choice_field = get_field_object($k['choice']);
 
+			// Add an empty choice
+			$field['choices'][''] = '';
+
 			while (have_rows($choice_field['parent'], 'option')) {
 				the_row();
 				$value = get_sub_field($k['choice'], 'option');
