@@ -1,5 +1,5 @@
 /**
- * scripts.core.ts - Common functions for $lqx library
+ * core.ts - Common functions for $lqx library
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix

@@ -1,5 +1,5 @@
 /**
- * theme.js - Tailwind CSS theme configuration
+ * theme.js - Sample Tailwind CSS theme configuration
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix
@@ -19,6 +19,7 @@
 //    "Y8888P"     888     "Y88888P"  888         888
 //
 //  DO NOT MODIFY THIS FILE!
+//  Instead copy this file to css/tailwind/theme.js and edit it there
 
 const extend = {
 	extend: {

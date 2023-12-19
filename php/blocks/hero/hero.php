@@ -1,7 +1,7 @@
 <?php
 
 /**
- * accordion.php - Lyquix accordion block
+ * hero.php - Lyquix hero block
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix

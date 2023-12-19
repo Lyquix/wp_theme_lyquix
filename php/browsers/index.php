@@ -1,7 +1,7 @@
 <?php
 
 /**
- * browser-alert.php - Includes alerts for outdated browsers
+ * index.php - Checks for outdated browsers
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix

@@ -1,5 +1,5 @@
 /**
- * module.dist.ts - my first module
+ * accordion.ts - Accordion block functionality
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix

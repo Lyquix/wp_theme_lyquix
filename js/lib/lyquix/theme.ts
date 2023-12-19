@@ -1,5 +1,5 @@
 /**
- * theme.ts - Changing between Dark mode/light mode
+ * theme.ts - Detect system theme (dark/light) and handle user preferences
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix

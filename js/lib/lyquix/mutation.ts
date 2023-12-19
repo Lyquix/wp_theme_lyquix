@@ -1,5 +1,5 @@
 /**
- * detect.ts - Detection of device, browser and O/S
+ * mutation.ts - Mutation observer and handler
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix

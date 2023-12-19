@@ -20,9 +20,10 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
+// Import core functions and variables
 import { vars, cfg, log, warn, error } from './lib/lyquix/core';
 
-// JS modules
+// Import library modules
 import { analytics } from './lib/lyquix/analytics';
 import { detect } from './lib/lyquix/detect';
 import { geolocate } from './lib/lyquix/geolocate';
@@ -33,15 +34,15 @@ import { responsive } from './lib/lyquix/responsive';
 import { theme } from './lib/lyquix/theme';
 import { util } from './lib/lyquix/util';
 
-// Gutenberg blocks
+// Import functionality for Gutenberg blocks and modules
 import { accordion } from './lib/lyquix/accordion';
 import { tabs } from './lib/lyquix/tabs';
-
 
 declare const lqx;
 
 const version = '3.0.0';
 
+// Initialize library
 const init = (customCfg) => {
 	// Run only once
 	if (vars.init) return;

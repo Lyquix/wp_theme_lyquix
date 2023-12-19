@@ -1,5 +1,5 @@
 /**
- * editor.cdn.js - Tailwind CSS CDN configuration
+ * editor.cdn.js - Tailwind CSS CDN configuration for editor
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix

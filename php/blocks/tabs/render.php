@@ -21,7 +21,7 @@
 //    "Y8888P"     888     "Y88888P"  888         888
 //
 //  DO NOT MODIFY THIS FILE!
-//  If you need a custom renderer, copy this file to php/custom/blocks/module/tabs/render.php and modify it there
+//  If you need a custom renderer, copy this file to php/custom/blocks/tabs/render.php and modify it there
 
 namespace lqx\blocks\tabs;
 

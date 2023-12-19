@@ -1,15 +1,45 @@
 <?php
 
 /**
- * Hero Banner Block Template
+ * render.php - Render function for Lyquix hero block
  *
- * @param array $block The block settings and attributes.
- *
- *
+ * @version     3.0.0
+ * @package     wp_theme_lyquix
+ * @author      Lyquix
+ * @copyright   Copyright (C) 2015 - 2018 Lyquix
+ * @license     GNU General Public License version 2 or later
+ * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
+
+//    .d8888b. 88888888888 .d88888b.  8888888b.   888
+//   d88P  Y88b    888    d88P" "Y88b 888   Y88b  888
+//   Y88b.         888    888     888 888    888  888
+//    "Y888b.      888    888     888 888   d88P  888
+//       "Y88b.    888    888     888 8888888P"   888
+//         "888    888    888     888 888         Y8P
+//   Y88b  d88P    888    Y88b. .d88P 888          "
+//    "Y8888P"     888     "Y88888P"  888         888
+//
+//  DO NOT MODIFY THIS FILE!
+//  If you need a custom renderer, copy this file to php/custom/blocks/hero/render.php and modify it there
 
 namespace lqx\blocks\hero;
 
+/**
+ * Render function for Lyquix hero block
+ *
+ * @param array $settings - block settings
+ * @param array $content - block content
+ *
+ * anchor: The anchor of the tabs
+ * class: Additional classes to add to the tabs
+ * hash: A unique hash of the tabs
+ * show_image: Controls if the image will be shown
+ * show_breadcrumbs: Controls if breadcrumbs will be shown
+ * type: Sets the type of breadcrumbs to show
+ * depth: Sets the depth of the breadcrumbs to show
+ * show_current: Controls if the current page will be shown in the breadcrumbs
+ */
 function render($settings, $content) {
 	// Processed settings
 	$s = $settings['processed'];

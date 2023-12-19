@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 
 /**
- * config.js - Tailwind CSS configuration
+ * config.js - Tailwind CSS configuration for compiler
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix
