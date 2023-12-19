@@ -47,7 +47,7 @@ function render($settings, $content) {
 ?>
 	<section
 		id="<?= $s['anchor'] ?>"
-		class="lqx-hero">
+		class="lqx-block-hero <?= $s['class'] ?>">
 		<div
 			class="hero"
 			id="<?= $s['hash'] ?>"

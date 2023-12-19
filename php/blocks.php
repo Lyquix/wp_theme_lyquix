@@ -165,6 +165,14 @@ add_filter('acf/load_field', function ($field) {
 		[ // Tabs: preset and preset_name fields
 			'user' => 'field_656f866617344',
 			'choice' => 'field_656f87fcef854'
+		],
+		[ // Hero: style and style_name fields
+			'user' => 'field_657217f48ca53',
+			'choice' => 'field_657761228bf9d'
+		],
+		[ // Hero: preset and preset_name fields
+			'user' => 'field_657218058ca54',
+			'choice' => 'field_657766304a9cc'
 		]
 	];
 
