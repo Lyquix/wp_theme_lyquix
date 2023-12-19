@@ -3,6 +3,13 @@
     "title": "Custom CSS & JS",
     "fields": [
         {
+            "allow_backendsearch": false,
+            "show_column_filter": false,
+            "allow_bulkedit": false,
+            "allow_quickedit": false,
+            "show_column": false,
+            "show_column_weight": 1000,
+            "show_column_sortable": false,
             "key": "field_651d974e0a687",
             "label": "CSS",
             "name": "",
@@ -18,9 +25,17 @@
             },
             "placement": "top",
             "endpoint": 1,
-            "acfe_permissions": ""
+            "acfe_permissions": "",
+            "no_preference": 0
         },
         {
+            "allow_backendsearch": false,
+            "show_column_filter": false,
+            "allow_bulkedit": false,
+            "allow_quickedit": false,
+            "show_column": false,
+            "show_column_weight": 1000,
+            "show_column_sortable": false,
             "key": "field_651d94db713ae",
             "label": "CSS",
             "name": "custom_css",
@@ -48,6 +63,13 @@
             "acfe_permissions": ""
         },
         {
+            "allow_backendsearch": false,
+            "show_column_filter": false,
+            "allow_bulkedit": false,
+            "allow_quickedit": false,
+            "show_column": false,
+            "show_column_weight": 1000,
+            "show_column_sortable": false,
             "key": "field_651d97a666df5",
             "label": "JS",
             "name": "",
@@ -63,9 +85,17 @@
             },
             "placement": "top",
             "endpoint": 0,
-            "acfe_permissions": ""
+            "acfe_permissions": "",
+            "no_preference": 0
         },
         {
+            "allow_backendsearch": false,
+            "show_column_filter": false,
+            "allow_bulkedit": false,
+            "allow_quickedit": false,
+            "show_column": false,
+            "show_column_weight": 1000,
+            "show_column_sortable": false,
             "key": "field_651d977c0a688",
             "label": "JS",
             "name": "custom_js",
@@ -111,12 +141,14 @@
     "active": true,
     "description": "",
     "show_in_rest": 1,
-    "acfe_display_title": "",
     "acfe_autosync": [
         "json"
     ],
     "acfe_form": 1,
+    "acfe_display_title": "",
+    "qef_simple_location_rules": 0,
+    "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1701457849
+    "modified": 1703000150
 }
