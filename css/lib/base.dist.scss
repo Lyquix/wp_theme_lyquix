@@ -1,0 +1,86 @@
+/**
+ * base.dist.scss - Sample base styles
+ *
+ * @version     3.0.0
+ * @package     wp_theme_lyquix
+ * @author      Lyquix
+ * @copyright   Copyright (C) 2015 - 2018 Lyquix
+ * @license     GNU General Public License version 2 or later
+ * @link        https://github.com/Lyquix/wp_theme_lyquix
+ */
+
+/*
+    .d8888b. 88888888888 .d88888b.  8888888b.   888
+   d88P  Y88b    888    d88P" "Y88b 888   Y88b  888
+   Y88b.         888    888     888 888    888  888
+    "Y888b.      888    888     888 888   d88P  888
+       "Y88b.    888    888     888 8888888P"   888
+         "888    888    888     888 888         Y8P
+   Y88b  d88P    888    Y88b. .d88P 888          "
+    "Y8888P"     888     "Y88888P"  888         888
+
+  DO NOT MODIFY THIS FILE!
+	Instead copy it to css/custom/base.scss and make your changes there.
+*/
+
+*,
+*:before,
+*:after {
+	box-sizing: inherit;
+}
+
+html {
+	// Break long words to fit container
+	word-break: break-word;
+
+	// Improve text rendering
+	text-rendering: optimizeSpeed;
+	-webkit-font-smoothing: antialiased;
+
+	// Add momentum scrolling for iOS
+	-webkit-overflow-scrolling: touch;
+
+	// Set box-sizing to border-box
+	box-sizing: border-box;
+}
+
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+	vertical-align: middle;
+	// Set the alt text as italic when image is missing
+	font-style: italic;
+	// Used to load a low resolution or placeholder image in the background
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+hr {
+	/* text color / background color / border color / vertical margin */
+	@apply bg-color-base border-color-base my-base text-color-base;
+	border-width: 1px;
+	border-style: solid;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+   scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

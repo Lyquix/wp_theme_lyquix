@@ -43,7 +43,7 @@ if [ ! -f css/tailwind/theme.js ]; then
 fi
 
 # Copy sample styles from css/lib to css/custom
-FILES=("accordion" "alerts" "banner" "cards" "cta" "gallery" "hero" "lyqbox" "popup" "slider" "social" "tabs")
+FILES=("vars" "base" "text" "lists" "tables" "forms" "accordion" "alerts" "banner" "cards" "cta" "gallery" "hero" "layout" "lyqbox" "popup" "slider" "social" "tabs")
 for FILE in "${FILES[@]}"; do
 	# Check if the file exists in the css/custom directory
 	if [ ! -f "css/custom/$FILE.scss" ]; then
@@ -53,7 +53,7 @@ for FILE in "${FILES[@]}"; do
 done
 
 # Create empty files for common styling structure
-FILES=("base" "text" "lists" "tables" "forms" "utility" "buttons" "pagination" "breadcrumbs" "header" "footer" "filters" "home" "search" "404" "page" "blog" "blog-archive")
+FILES=("utility" "buttons" "pagination" "breadcrumbs" "header" "footer" "filters" "home" "search" "404" "page" "blog" "blog-archive")
 for FILE in "${FILES[@]}"; do
 	# Check if the file exists in the css/custom directory
 	if [ ! -f "css/custom/$FILE.scss" ]; then

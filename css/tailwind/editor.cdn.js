@@ -1,5 +1,5 @@
 /**
- * cdn.config.js - Tailwind CSS CDN configuration
+ * editor.cdn.js - Tailwind CSS CDN configuration
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix
@@ -36,4 +36,8 @@ tailwind.config = {
 			useGlobalMeasure: false,
 		}),
 	],
+	corePlugins: {
+		// Disable Preflight base styles in CSS targeting the editor.
+		preflight: false,
+	}
 };

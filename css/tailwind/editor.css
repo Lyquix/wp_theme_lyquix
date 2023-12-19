@@ -22,19 +22,14 @@
   DO NOT MODIFY THIS FILE!
 */
 
-@import "../custom/editor.css";
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+
 @layer base {
 	body {
-		@apply bg-base-bg font-copy text-copy;
-	}
-
-	p {
-		@apply mx-0 my-base;
+		@apply font-base font-weight-base text-color-base;
 	}
 
 	code,
@@ -44,64 +39,86 @@
 		@apply font-mono;
 	}
 
-	a {
-		@apply text-link;
-	}
-
-	h1,
-	h2,
-	h3,
-	h4,
-	h5,
-	h6 {
-		@apply mx-0 my-base font-headings font-w-headings leading-normal text-headings;
-	}
-
 	h1 {
-    @apply text-h1
-  }
+		@apply font-h1 font-weight-h1 text-color-h1;
+	}
 
 	h2 {
-    @apply text-h2
-  }
+		@apply font-h2 font-weight-h2 text-color-h2;
+	}
 
 	h3 {
-    @apply text-h3
-  }
+		@apply font-h3 font-weight-h3 text-color-h3;
+	}
 
 	h4 {
-    @apply text-h4
-  }
+		@apply font-h4 font-weight-h4 text-color-h4;
+	}
 
 	h5 {
-    @apply text-h5
-  }
+		@apply font-h5 font-weight-h5 text-color-h5;
+	}
 
 	h6 {
-    @apply text-h6
-  }
-
-	sup {
-		font-variant-position: super;
+		@apply font-h6 font-weight-h6 text-color-h6;
 	}
 
-	sub {
-		font-variant-position: sub;
-	}
 }
 
 .acf-innerblocks-container.block-editor-block-list__layout {
-	@apply contents
+	@apply contents;
 }
 
-.editor-styles-wrapper .wp-block {
-	@apply mx-0
+.wp-block {
+	@apply mx-0;
 }
 
-.wp-block-lqx-container {
-	@apply container
+.wp-block-lqx-container > .container {
+	max-width: 840px;
 }
 
 html :where(.wp-block) {
-	@apply max-w-none transition
+	@apply max-w-none transition;
 }
+
+[data-type="lqx/box"],
+[data-type="lqx/center"],
+[data-type="lqx/cluster"],
+[data-type="lqx/container"],
+[data-type="lqx/cover"],
+[data-type="lqx/frame"],
+[data-type="lqx/grid"],
+[data-type="lqx/icon"],
+[data-type="lqx/imposter"],
+[data-type="lqx/reel"],
+[data-type="lqx/sidebar"],
+[data-type="lqx/stack"],
+[data-type="lqx/switcher"] {
+	border: 1px dashed #5d93ad !important;
+	padding: 0.75rem !important;
+	position: relative !important;
+}
+
+[data-type="lqx/box"]::before,
+[data-type="lqx/center"]::before,
+[data-type="lqx/cluster"]::before,
+[data-type="lqx/container"]::before,
+[data-type="lqx/cover"]::before,
+[data-type="lqx/frame"]::before,
+[data-type="lqx/grid"]::before,
+[data-type="lqx/icon"]::before,
+[data-type="lqx/imposter"]::before,
+[data-type="lqx/reel"]::before,
+[data-type="lqx/sidebar"]::before,
+[data-type="lqx/stack"]::before,
+[data-type="lqx/switcher"]::before {
+	display: block;
+	font-size: 0.75em;
+	color: #5d93ad;
+	position: absolute;
+	top: -16px;
+	left: 0;
+	content: attr(data-type);
+}
+
+@import "../custom/editor.css";

@@ -29,6 +29,9 @@
 // Global styling for HTML elements
 // --------------------------------
 
+// SCSS and CSS Variables
+@import "vars";
+
 // Base
 // Main elements: html, body, section, article, aside, header, footer, main, nav, menu, hr
 @import "base";
@@ -95,6 +98,9 @@
 
 // Hero
 @import "hero";
+
+// Layout
+@import "layout";
 
 // Lyqbox
 @import "lyqbox";

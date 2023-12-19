@@ -71,7 +71,9 @@ function render($settings, $content) {
 						role="region"
 						aria-labelledby="<?= $s['hash'] . '-header-' . $idx ?>"
 						aria-hidden="<?= $idx == 0 && $s['open_on_load'] == 'y' ? 'false' : 'true' ?>">
-						<?= $item['content'] ?>
+						<div>
+							<?= $item['content'] ?>
+						</div>
 					</section>
 				<?php endforeach; ?>
 			</div>

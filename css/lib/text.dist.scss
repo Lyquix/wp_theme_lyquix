@@ -1,0 +1,78 @@
+//
+// text.dist.scss - Text styles
+//
+// @version     3.0.0
+// @package     wp_theme_lyquix
+// @author      Lyquix
+// @copyright   Copyright (C) 2015 - 2018 Lyquix
+// @license     GNU General Public License version 2 or later
+// @link        https://github.com/Lyquix/wp_theme_lyquix
+//
+
+//    .d8888b. 88888888888 .d88888b.  8888888b.   888
+//   d88P  Y88b    888    d88P" "Y88b 888   Y88b  888
+//   Y88b.         888    888     888 888    888  888
+//    "Y888b.      888    888     888 888   d88P  888
+//       "Y88b.    888    888     888 8888888P"   888
+//         "888    888    888     888 888         Y8P
+//   Y88b  d88P    888    Y88b. .d88P 888          "
+//    "Y8888P"     888     "Y88888P"  888         888
+
+//  DO NOT MODIFY THIS FILE!
+//  Instead copy it to css/custom/text.scss and make your changes there.
+
+html {
+	// Set default font-size to 10px, then use rem units for the rest of the stylesheet
+	font-size: 10px;
+}
+
+body {
+	/* background color / font family / font weight / text color / text size / line height */
+	@apply bg-bg font-base font-weight-base text-color-base text-size-base leading-base;
+}
+
+@each $s in $screen-sizes {
+	body {
+		@apply #{$s}:text-size-base-#{$s} #{$s}:leading-base-#{$s};
+	}
+}
+
+p {
+	@apply my-base;
+}
+
+code,
+kbd,
+pre,
+samp {
+	@apply font-mono;
+}
+
+a {
+	@apply text-link;
+	text-decoration: none;
+	outline: none;
+
+	&:hover {
+		@apply text-link-hover;
+		text-decoration: underline;
+	}
+
+	&:visited {
+		@apply text-link-visited;
+	}
+}
+
+@each $h in $headings {
+	#{$h}, .#{$h} {
+		/* text color / font family / font weight / margin */
+		@apply text-color-#{$h} font-#{$h} font-weight-#{$h} my-headings;
+	}
+
+	@each $s in $screen-sizes {
+		#{$h}, .#{$h} {
+			/* text size / line height */
+			@apply #{$s}:text-size-#{$h}-#{$s} #{$s}:leading-#{$h}-#{$s};
+		}
+	}
+}

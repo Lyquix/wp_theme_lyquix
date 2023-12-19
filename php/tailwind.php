@@ -33,7 +33,7 @@ add_action('enqueue_block_editor_assets', function () {
 		);
 		wp_enqueue_script(
 			'tailwind-config',
-			get_template_directory_uri() . '/css/tailwind/cdn.config.js'
+			get_template_directory_uri() . '/css/tailwind/editor.cdn.js'
 		);
 		wp_enqueue_script(
 			'tailwind-editor',
