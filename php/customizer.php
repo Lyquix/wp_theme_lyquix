@@ -79,7 +79,13 @@ function customizer_add($wp_customize) {
 				'type' => 'radio',
 				'label' => 'Day.js library',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
-				'default' => '0'
+				'default' => '1'
+			],
+			'swiperjs' => [
+				'type' => 'radio',
+				'label' => 'Swiper library',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
 			],
 			'add_js_libraries' => [
 				'type' => 'textarea',

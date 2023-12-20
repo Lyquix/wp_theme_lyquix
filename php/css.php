@@ -59,6 +59,15 @@ function enqueue_styles() {
 	// Use non minified version?
 	$non_min_css = get_theme_mod('non_min_css', '0');
 
+	// Swiper
+	if (get_theme_mod('swiperjs', 1)) {
+		$stylesheets[] = [
+			'handle' => 'swiper',
+			'url' => 'https://cdn.jsdelivr.net/npm/swiper@11.0.5/swiper-bundle.min.css',
+			'version' => '11.0.5'
+		];
+	}
+
 	// Additional CSS Libraries
 	$add_css_libraries = explode("\n", trim(get_theme_mod('add_css_libraries', '')));
 	foreach ($add_css_libraries as $css_url) {

@@ -62,7 +62,7 @@ function enqueue_scripts() {
 	];
 
 	// Day.js
-	if (get_theme_mod('dayjs', 0)) {
+	if (get_theme_mod('dayjs', 1)) {
 		$scripts[] = [
 			'handle' => 'dayjs',
 			'url' => 'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.9/dayjs' . ($non_min_js ? '' : '.min') . '.js',
@@ -72,6 +72,15 @@ function enqueue_scripts() {
 			'handle' => 'dayjs-locale-en',
 			'url' => 'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.9/locale/en' . ($non_min_js ? '' : '.min') . '.js',
 			'version' => '1.11.9'
+		];
+	}
+
+	// Swiper
+	if (get_theme_mod('swiperjs', 1)) {
+		$scripts[] = [
+			'handle' => 'swiper',
+			'url' => 'https://cdn.jsdelivr.net/npm/swiper@11.0.5/swiper-bundle.min.js',
+			'version' => '11.0.5'
 		];
 	}
 
