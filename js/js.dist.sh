@@ -23,7 +23,7 @@ do
 	cat ./lib/$MOD.js >> ./lyquix.js
 done
 npx jshint ./lyquix.js --verbose
-npx babel --presets env --no-comments --compact --minified --comments false ./lyquix.js > ./lyquix.min.js
+npx babel  --presets=@babel/preset-env --no-comments --compact --minified ./lyquix.js > ./lyquix.min.js
 
 
 # Vue
@@ -42,7 +42,7 @@ fi
 if [ -f ./vue.js ]; then
 	npx jshint ./vue.js --verbose
 	mv vue.min.js vue.min.tmp.js
-	npx babel --presets env --no-comments --compact --minified ./vue.min.tmp.js > ./vue.min.js
+	npx babel --presets=@babel/preset-env --no-comments --compact --minified ./vue.min.tmp.js > ./vue.min.js
 	rm vue.min.tmp.js
 fi
 
@@ -53,7 +53,7 @@ if [ -f ./scripts.core.js ]; then
 		find ./custom/scripts -name '*.js' -not -name '*.dist.js' -exec cat {} + >> ./scripts.js
 	fi
 	npx jshint ./scripts.js --verbose
-	npx babel --presets env --no-comments --compact --minified --comments false ./scripts.js > ./scripts.min.js
+	npx babel --presets=@babel/preset-env --no-comments --compact --minified  ./scripts.js > ./scripts.min.js
 fi
 
 rm -f ../dist/*.js
