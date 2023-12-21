@@ -3,6 +3,13 @@
     "title": "Block: Tabs",
     "fields": [
         {
+            "allow_backendsearch": false,
+            "show_column_filter": false,
+            "allow_bulkedit": false,
+            "allow_quickedit": false,
+            "show_column": false,
+            "show_column_weight": 1000,
+            "show_column_sortable": false,
             "key": "field_654d2d1bad983",
             "label": "Tabs Block",
             "name": "",
@@ -21,6 +28,13 @@
             "esc_html": 0
         },
         {
+            "allow_backendsearch": false,
+            "show_column_filter": false,
+            "allow_bulkedit": false,
+            "allow_quickedit": false,
+            "show_column": false,
+            "show_column_weight": 1000,
+            "show_column_sortable": false,
             "key": "field_654a45cad86bf",
             "label": "Content",
             "name": "",
@@ -39,6 +53,13 @@
             "no_preference": 0
         },
         {
+            "allow_backendsearch": false,
+            "show_column_filter": false,
+            "allow_bulkedit": false,
+            "allow_quickedit": false,
+            "show_column": false,
+            "show_column_weight": 1000,
+            "show_column_sortable": false,
             "key": "field_654a45cad8716",
             "label": "",
             "name": "tabs_block_content",
@@ -57,11 +78,18 @@
             "pagination": 0,
             "min": 1,
             "max": 0,
-            "collapsed": "field_654a45cadf801",
+            "collapsed": "field_656f8edf78324",
             "button_label": "Add Tab",
             "rows_per_page": 20,
             "sub_fields": [
                 {
+                    "allow_backendsearch": false,
+                    "show_column_filter": false,
+                    "allow_bulkedit": false,
+                    "allow_quickedit": false,
+                    "show_column": false,
+                    "show_column_weight": 1000,
+                    "show_column_sortable": false,
                     "key": "field_656f8edf78324",
                     "label": "Label",
                     "name": "label",
@@ -84,6 +112,13 @@
                     "parent_repeater": "field_654a45cad8716"
                 },
                 {
+                    "allow_backendsearch": false,
+                    "show_column_filter": false,
+                    "allow_bulkedit": false,
+                    "allow_quickedit": false,
+                    "show_column": false,
+                    "show_column_weight": 1000,
+                    "show_column_sortable": false,
                     "key": "field_654a45cadf801",
                     "label": "Heading",
                     "name": "heading",
@@ -105,6 +140,13 @@
                     "parent_repeater": "field_654a45cad8716"
                 },
                 {
+                    "allow_backendsearch": false,
+                    "show_column_filter": false,
+                    "allow_bulkedit": false,
+                    "allow_quickedit": false,
+                    "show_column": false,
+                    "show_column_weight": 1000,
+                    "show_column_sortable": false,
                     "key": "field_654a45cadf867",
                     "label": "Content",
                     "name": "content",
@@ -166,7 +208,8 @@
     ],
     "acfe_form": 0,
     "acfe_display_title": "",
+    "qef_simple_location_rules": 0,
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1701809954
+    "modified": 1703185702
 }

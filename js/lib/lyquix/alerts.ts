@@ -1,5 +1,5 @@
 /**
- * accordion.ts - Accordion block functionality
+ * alerts.ts - Alerts module functionality
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix

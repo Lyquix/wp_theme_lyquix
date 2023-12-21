@@ -3,6 +3,13 @@
     "title": "Block: Accordions",
     "fields": [
         {
+            "allow_backendsearch": false,
+            "show_column_filter": false,
+            "allow_bulkedit": false,
+            "allow_quickedit": false,
+            "show_column": false,
+            "show_column_weight": 1000,
+            "show_column_sortable": false,
             "key": "field_656a43a6779ed",
             "label": "Accordion Block",
             "name": "",
@@ -21,6 +28,13 @@
             "esc_html": 0
         },
         {
+            "allow_backendsearch": false,
+            "show_column_filter": false,
+            "allow_bulkedit": false,
+            "allow_quickedit": false,
+            "show_column": false,
+            "show_column_weight": 1000,
+            "show_column_sortable": false,
             "key": "field_65301a8ccf086",
             "label": "Content",
             "name": "",
@@ -40,6 +54,13 @@
             "no_preference": 0
         },
         {
+            "allow_backendsearch": false,
+            "show_column_filter": false,
+            "allow_bulkedit": false,
+            "allow_quickedit": false,
+            "show_column": false,
+            "show_column_weight": 1000,
+            "show_column_sortable": false,
             "key": "field_65301b9bb6ce8",
             "label": "",
             "name": "accordion_block_content",
@@ -65,11 +86,18 @@
             "max": 0,
             "instruction_placement": "",
             "acfe_permissions": "",
-            "collapsed": "",
+            "collapsed": "field_65301aabcf087",
             "button_label": "Add Row",
             "rows_per_page": 20,
             "sub_fields": [
                 {
+                    "allow_backendsearch": false,
+                    "show_column_filter": false,
+                    "allow_bulkedit": false,
+                    "allow_quickedit": false,
+                    "show_column": false,
+                    "show_column_weight": 1000,
+                    "show_column_sortable": false,
                     "key": "field_65301aabcf087",
                     "label": "Heading",
                     "name": "heading",
@@ -100,6 +128,13 @@
                     "parent_repeater": "field_65301b9bb6ce8"
                 },
                 {
+                    "allow_backendsearch": false,
+                    "show_column_filter": false,
+                    "allow_bulkedit": false,
+                    "allow_quickedit": false,
+                    "show_column": false,
+                    "show_column_weight": 1000,
+                    "show_column_sortable": false,
                     "key": "field_65302bf5062cd",
                     "label": "Content",
                     "name": "content",
@@ -161,8 +196,9 @@
     ],
     "acfe_form": 1,
     "acfe_display_title": "",
+    "qef_simple_location_rules": 0,
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1701809972
+    "modified": 1703185305
 }

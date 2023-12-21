@@ -22,15 +22,13 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-//Settings
 $settings = \lqx\blocks\get_settings($block);
 $content = \lqx\blocks\get_content($block);
 
-//check for override. If it does not exist, use the provided render file to render the block
 if (file_exists(get_stylesheet_directory() . '/php/custom/blocks/hero/render.php')) {
 	require_once get_stylesheet_directory() . '/php/custom/blocks/hero/render.php';
 } else {
 	require_once get_stylesheet_directory() . '/php/blocks/hero/render.php';
 }
-//call to render the block
+
 \lqx\blocks\hero\render($settings, $content);

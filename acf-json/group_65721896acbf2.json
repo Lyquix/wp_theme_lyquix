@@ -3,6 +3,13 @@
     "title": "Block: Hero (Admin Settings)",
     "fields": [
         {
+            "allow_backendsearch": false,
+            "show_column_filter": false,
+            "allow_bulkedit": false,
+            "allow_quickedit": false,
+            "show_column": false,
+            "show_column_weight": 1000,
+            "show_column_sortable": false,
             "key": "field_657218976ffd1",
             "label": "Admin Settings",
             "name": "",
@@ -21,6 +28,13 @@
             "no_preference": 0
         },
         {
+            "allow_backendsearch": false,
+            "show_column_filter": false,
+            "allow_bulkedit": false,
+            "allow_quickedit": false,
+            "show_column": false,
+            "show_column_weight": 1000,
+            "show_column_sortable": false,
             "key": "field_657218d86ffd3",
             "label": "",
             "name": "hero_block_admin",
@@ -34,16 +48,24 @@
                 "class": "",
                 "id": ""
             },
+            "hide_field": "",
+            "hide_label": "",
+            "hide_instructions": "",
+            "hide_required": "",
             "layout": "block",
-            "acfe_seamless_style": 0,
-            "acfe_group_modal": 0,
+            "acfe_seamless_style": 1,
             "acfe_settings": "",
+            "instruction_placement": "",
             "acfe_permissions": "",
-            "acfe_group_modal_close": 0,
-            "acfe_group_modal_button": "",
-            "acfe_group_modal_size": "large",
             "sub_fields": [
                 {
+                    "allow_backendsearch": false,
+                    "show_column_filter": false,
+                    "allow_bulkedit": false,
+                    "allow_quickedit": false,
+                    "show_column": false,
+                    "show_column_weight": 1000,
+                    "show_column_sortable": false,
                     "key": "field_6577667d6e7e3",
                     "label": "Show Image",
                     "name": "show_image",
@@ -75,6 +97,13 @@
                     "layout": "horizontal"
                 },
                 {
+                    "allow_backendsearch": false,
+                    "show_column_filter": false,
+                    "allow_bulkedit": false,
+                    "allow_quickedit": false,
+                    "show_column": false,
+                    "show_column_weight": 1000,
+                    "show_column_sortable": false,
                     "key": "field_657766916e7e6",
                     "label": "",
                     "name": "breadcrumbs_group",
@@ -100,6 +129,13 @@
                     "acfe_permissions": "",
                     "sub_fields": [
                         {
+                            "allow_backendsearch": false,
+                            "show_column_filter": 0,
+                            "allow_bulkedit": 0,
+                            "allow_quickedit": 0,
+                            "show_column": 0,
+                            "show_column_weight": 1000,
+                            "show_column_sortable": false,
                             "key": "field_657766926e7e7",
                             "label": "Show Breadcrumbs",
                             "name": "show_breadcrumbs",
@@ -131,6 +167,13 @@
                             "layout": "horizontal"
                         },
                         {
+                            "allow_backendsearch": false,
+                            "show_column_filter": false,
+                            "allow_bulkedit": false,
+                            "allow_quickedit": false,
+                            "show_column": false,
+                            "show_column_weight": 1000,
+                            "show_column_sortable": false,
                             "key": "field_657766926e7e8",
                             "label": "Type",
                             "name": "type",
@@ -174,6 +217,13 @@
                             "save_other_choice": 0
                         },
                         {
+                            "allow_backendsearch": false,
+                            "show_column_filter": false,
+                            "allow_bulkedit": false,
+                            "allow_quickedit": false,
+                            "show_column": false,
+                            "show_column_weight": 1000,
+                            "show_column_sortable": false,
                             "key": "field_657766926e7e9",
                             "label": "Maximum Depth",
                             "name": "depth",
@@ -217,6 +267,13 @@
                             "append": ""
                         },
                         {
+                            "allow_backendsearch": false,
+                            "show_column_filter": false,
+                            "allow_bulkedit": false,
+                            "allow_quickedit": false,
+                            "show_column": false,
+                            "show_column_weight": 1000,
+                            "show_column_sortable": false,
                             "key": "field_657766926e7ea",
                             "label": "Show Current",
                             "name": "show_current",
@@ -260,7 +317,11 @@
                     "acfe_group_modal_button": "",
                     "acfe_group_modal_size": "large"
                 }
-            ]
+            ],
+            "acfe_group_modal": 0,
+            "acfe_group_modal_close": 0,
+            "acfe_group_modal_button": "",
+            "acfe_group_modal_size": "large"
         }
     ],
     "location": [
@@ -286,10 +347,11 @@
     ],
     "acfe_form": 1,
     "acfe_display_title": "",
+    "qef_simple_location_rules": 0,
     "acfe_permissions": [
         "administrator"
     ],
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1702399902
+    "modified": 1703185173
 }

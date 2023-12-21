@@ -112,7 +112,7 @@ function render($settings, $content) {
 						<img
 							src="<?= $content['image_override']['url'] ?>"
 							alt="<?= $content['image_override']['alt'] ?>"
-							class="<?= $content['image_mobile'] !== false ? 'xs-hide' : '' ?>" />
+							class="<?= is_array($content['image_mobile']) ? 'xs-hide' : '' ?>" />
 					<?php else :
 						the_post_thumbnail('post-thumbnail', ['class' => $content['image_mobile'] !== false ? 'xs-hide' : '']);
 					endif; ?>
@@ -128,4 +128,3 @@ function render($settings, $content) {
 	</section>
 <?php
 }
-?>

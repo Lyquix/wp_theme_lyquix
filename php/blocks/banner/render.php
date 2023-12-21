@@ -98,4 +98,3 @@ function render($settings, $content) {
 	</section>
 <?php
 }
-?>

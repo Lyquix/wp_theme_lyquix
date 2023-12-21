@@ -3,6 +3,13 @@
     "title": "Block: Hero (User Settings)",
     "fields": [
         {
+            "allow_backendsearch": false,
+            "show_column_filter": false,
+            "allow_bulkedit": false,
+            "allow_quickedit": false,
+            "show_column": false,
+            "show_column_weight": 1000,
+            "show_column_sortable": false,
             "key": "field_657217b48ca51",
             "label": "Settings",
             "name": "",
@@ -21,6 +28,13 @@
             "no_preference": 0
         },
         {
+            "allow_backendsearch": false,
+            "show_column_filter": false,
+            "allow_bulkedit": false,
+            "allow_quickedit": false,
+            "show_column": false,
+            "show_column_weight": 1000,
+            "show_column_sortable": false,
             "key": "field_657217d28ca52",
             "label": "",
             "name": "hero_block_user",
@@ -35,13 +49,16 @@
                 "id": ""
             },
             "layout": "block",
-            "acfe_seamless_style": 0,
-            "acfe_group_modal": 0,
-            "acfe_group_modal_close": 0,
-            "acfe_group_modal_button": "",
-            "acfe_group_modal_size": "large",
+            "acfe_seamless_style": 1,
             "sub_fields": [
                 {
+                    "allow_backendsearch": false,
+                    "show_column_filter": false,
+                    "allow_bulkedit": false,
+                    "allow_quickedit": false,
+                    "show_column": false,
+                    "show_column_weight": 1000,
+                    "show_column_sortable": false,
                     "key": "field_657217f48ca53",
                     "label": "Style",
                     "name": "style",
@@ -55,7 +72,9 @@
                         "class": "",
                         "id": ""
                     },
-                    "choices": [],
+                    "choices": {
+                        "": ""
+                    },
                     "default_value": false,
                     "return_format": "value",
                     "multiple": 0,
@@ -71,6 +90,13 @@
                     "min": ""
                 },
                 {
+                    "allow_backendsearch": false,
+                    "show_column_filter": false,
+                    "allow_bulkedit": false,
+                    "allow_quickedit": false,
+                    "show_column": false,
+                    "show_column_weight": 1000,
+                    "show_column_sortable": false,
                     "key": "field_657218058ca54",
                     "label": "Preset",
                     "name": "preset",
@@ -84,7 +110,9 @@
                         "class": "",
                         "id": ""
                     },
-                    "choices": [],
+                    "choices": {
+                        "": ""
+                    },
                     "default_value": false,
                     "return_format": "value",
                     "multiple": 0,
@@ -99,7 +127,11 @@
                     "search_placeholder": "",
                     "min": ""
                 }
-            ]
+            ],
+            "acfe_group_modal": 0,
+            "acfe_group_modal_close": 0,
+            "acfe_group_modal_button": "",
+            "acfe_group_modal_size": "large"
         }
     ],
     "location": [
@@ -125,7 +157,8 @@
     ],
     "acfe_form": 0,
     "acfe_display_title": "",
+    "qef_simple_location_rules": 0,
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1702329349
+    "modified": 1703185190
 }
