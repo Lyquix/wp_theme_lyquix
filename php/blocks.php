@@ -150,29 +150,41 @@ add_action('init', function () {
 // Set the Style Preset values for the Lyquix Modules
 add_filter('acf/load_field', function ($field) {
 	$field_keys = [
-		[ // Accordion: style and style_name fields
+		// Accordion
+		[ // sstyle and style_name fields
 			'user' => 'field_656c9b99e9e1f',
 			'choice' => 'field_656e7cb6b285f'
 		],
-		[ // Accordion: preset and preset_name fields
+		[ // preset and preset_name fields
 			'user' => 'field_656c9bb1e9e20',
 			'choice' => 'field_656d01578aa30'
 		],
-		[ // Tabs: style and style_name fields
-			'user' => 'field_656f866617343',
-			'choice' => 'field_656f879ccf606'
+		// Banner
+		[ // style and style_name fields
+			'user' => 'field_657727e6739ff',
+			'choice' => 'field_65806108a3e5d'
 		],
-		[ // Tabs: preset and preset_name fields
-			'user' => 'field_656f866617344',
-			'choice' => 'field_656f87fcef854'
+		[ // preset and preset_name fields
+			'user' => 'field_657727e673a6d',
+			'choice' => 'field_656d01578aa30'
 		],
-		[ // Hero: style and style_name fields
+		// Hero
+		[ // style and style_name fields
 			'user' => 'field_657217f48ca53',
 			'choice' => 'field_657761228bf9d'
 		],
-		[ // Hero: preset and preset_name fields
+		[ // preset and preset_name fields
 			'user' => 'field_657218058ca54',
 			'choice' => 'field_657766304a9cc'
+		],
+		// Tabs
+		[ //  style and style_name fields
+			'user' => 'field_656f866617343',
+			'choice' => 'field_656f879ccf606'
+		],
+		[ // preset and preset_name fields
+			'user' => 'field_656f866617344',
+			'choice' => 'field_656f87fcef854'
 		]
 	];
 
@@ -181,7 +193,7 @@ add_filter('acf/load_field', function ($field) {
 			$choice_field = get_field_object($k['choice']);
 
 			// Add an empty choice
-			$field['choices'][''] = '';
+			$field['choices'][''] = 'Select';
 
 			while (have_rows($choice_field['parent'], 'option')) {
 				the_row();
