@@ -300,6 +300,6 @@ if (file_exists('browsers.json')) {
 	}
 } else get_all_browsers_versions();
 
-echo 'lqxBrowserAlert(' . json_encode(browser_outdated()) . ');';
+echo 'lqx.util.browserAlert(' . json_encode(browser_outdated()) . ');';
 
 exit;

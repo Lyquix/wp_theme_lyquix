@@ -354,6 +354,47 @@ export const util = (() => {
 		};
 	};
 
+	const browserAlert = (browserData) => {
+		if ('outdated' in browserData && browserData.outdated) {
+			log('Outdated browser', browserData);
+
+			// Load CSS stylesheet
+			const css = document.createElement('link');
+			css.rel = 'stylesheet';
+			css.href = '<?php echo get_template_directory_uri(); ?>/css/browsers.css';
+			document.body.appendChild(css);
+
+			// Create alert element
+			const elem = jQuery(
+				`<section id="browser-alert">
+					<h1>Please Update Your Browser</h1>
+					<p><strong>You are using an outdated browser.</strong></p>
+					<p>Outdated browsers can make your computer unsafe and may not properly work with this website.
+					To ensure security, performance, and full functionality, please upgrade to an up-to-date browser.</p>
+					<ul></ul>
+				</section>`);
+
+			// Cycle through the list of browsers
+			Object.keys(browserData.info).forEach((browserCode) => {
+				const browser = browserData.info[browserCode];
+				const li = jQuery(
+					`<li id="${browserCode}">
+						<a href="${browser.url}" title="${browser.long_name}" target="_blank">
+							<div class="icon"></div>
+							<h2>${browser.name}</h2>
+						</a>
+						<p class="info"><em>${browser.info}</em></p>
+						<p class="version">Latest Version: <strong>${browser.version}</strong></p>
+						<p class="website"><a href="${browser.url}" title="${browser.long_name}" target="_blank">Visit Official Website</a></p>
+					</li>`);
+				elem.find('ul').append(li);
+			});
+
+			// Append alert to body
+			jQuery('body').append(elem);
+		}
+	};
+
 	return {
 		init,
 		cookie,
@@ -364,7 +405,8 @@ export const util = (() => {
 		uniqueUrl,
 		versionCompare,
 		parseUrlParams,
-		validateData
+		validateData,
+		browserAlert
 	};
 
 })();
