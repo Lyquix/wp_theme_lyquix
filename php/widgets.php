@@ -27,24 +27,7 @@
 namespace lqx\widgets;
 
 function add_widget_positions() {
-	$widget_positions = [
-		'Head Scripts',
-		'Header',
-		'Utility',
-		'Top',
-		'Left',
-		'Center',
-		'Right',
-		'Before',
-		'After',
-		'Aside',
-		'Previous',
-		'Next',
-		'Footer',
-		'Bottom',
-		'Copyright',
-		'Body Scripts',
-	];
+	$widget_positions = [];
 
 	// Add custom widget positions to $widgets array
 	if (file_exists(get_template_directory() . '/php/custom/widgets.php')) {

@@ -26,5 +26,20 @@
 
 $custom_widget_positions = [
 	// Add list of custom widget positions
-	// 'Custom Widget Position'
+	// 'Head Scripts',
+	// 'Header',
+	// 'Utility',
+	// 'Top',
+	// 'Left',
+	// 'Center',
+	// 'Right',
+	// 'Before',
+	// 'After',
+	// 'Aside',
+	// 'Previous',
+	// 'Next',
+	// 'Footer',
+	// 'Bottom',
+	// 'Copyright',
+	// 'Body Scripts',
 ];

@@ -33,12 +33,7 @@ function add_menu_positions() {
 		'Top Menu',
 		'Main Menu',
 		'Utility Menu',
-		'Logged In Menu',
-		'Top Menu',
-
-		// Sidebar menus
-		'Left Menu',
-		'Right Menu',
+		'Logged-In Menu',
 
 		// Footer menus
 		'Bottom Menu',
