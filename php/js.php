@@ -1,7 +1,7 @@
 <?php
 
 /**
- * js.php - Includes JavaScript libraries
+ * js.php - Enqueue JavaScript libraries and render GTM code, and custom JS
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix
@@ -26,7 +26,7 @@ namespace lqx\js;
 
 function enqueue_scripts() {
 	// Prevent adding js libraries in wp_head()
-	global $wp_scripts, $tmpl_url, $tmpl_path;
+	global $wp_scripts;
 	$remove_js_libraries = explode("\n", trim(get_theme_mod('remove_js_libraries', '')));
 	foreach ($wp_scripts->queue as $i => $js) {
 		if (array_search(trim($js), $remove_js_libraries)) unset($wp_scripts->queue[$i]);
@@ -113,29 +113,29 @@ function enqueue_scripts() {
 	// Lyquix
 	$scripts[] = [
 		'handle' => 'lyquix',
-		'url' => $tmpl_url . '/js/lyquix' . ($non_min_js ? '' : '.min') . '.js',
-		'version' => date("YmdHis", filemtime($tmpl_path . '/js/lyquix' . ($non_min_js ? '' : '.min') . '.js'))
+		'url' => get_template_directory_uri() . '/js/lyquix' . ($non_min_js ? '' : '.min') . '.js',
+		'version' => date("YmdHis", filemtime(get_template_directory() . '/js/lyquix' . ($non_min_js ? '' : '.min') . '.js'))
 	];
 
 	// Vue
-	if (file_exists($tmpl_path . '/js/vue.js')) {
+	if (file_exists(get_template_directory() . '/js/vue.js')) {
 		$scripts[] = [
 			'handle' => 'vue',
 			'url' => 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global' . ($non_min_js ? '' : '.prod') . '.js'
 		];
 		$scripts[] = [
 			'handle' => 'lyquix-vue',
-			'url' => $tmpl_url . '/js/vue' . ($non_min_js ? '' : '.min') . '.js',
-			'version' => date("YmdHis", filemtime($tmpl_path . '/js/vue' . ($non_min_js ? '' : '.min') . '.js'))
+			'url' => get_template_directory_uri() . '/js/vue' . ($non_min_js ? '' : '.min') . '.js',
+			'version' => date("YmdHis", filemtime(get_template_directory() . '/js/vue' . ($non_min_js ? '' : '.min') . '.js'))
 		];
 	}
 
 	// Scripts
-	if (file_exists($tmpl_path . '/js/scripts.js')) {
+	if (file_exists(get_template_directory() . '/js/scripts.js')) {
 		$scripts[] = [
 			'handle' => 'scripts',
-			'url' => $tmpl_url . '/js/scripts' . ($non_min_js ? '' : '.min') . '.js',
-			'version' => date("YmdHis", filemtime($tmpl_path . '/js/scripts' . ($non_min_js ? '' : '.min') . '.js'))
+			'url' => get_template_directory_uri() . '/js/scripts' . ($non_min_js ? '' : '.min') . '.js',
+			'version' => date("YmdHis", filemtime(get_template_directory() . '/js/scripts' . ($non_min_js ? '' : '.min') . '.js'))
 		];
 	}
 
@@ -148,13 +148,11 @@ add_action('wp_enqueue_scripts', '\lqx\js\enqueue_scripts', 100);
 
 
 function render_lyquix_options() {
-	global $site_abs_url, $tmpl_url;
-
 	// Set lqx options
 	$lqx_options = [
 		'debug' => get_theme_mod('lqx_debug', '0'),
-		'siteURL' => $site_abs_url,
-		'tmplURL' => $tmpl_url
+		'siteURL' => get_site_url(),
+		'tmplURL' => get_template_directory_uri()
 	];
 
 	if (get_theme_mod('ga_account', '') || get_theme_mod('ga4_account', '')) {

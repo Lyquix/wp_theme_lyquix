@@ -74,3 +74,27 @@ if (file_exists(get_template_directory() . '/php/custom/shortcodes.php')) {
 
 // Updates checker
 require_once get_template_directory() . '/php/update.php';
+
+// Prepare meta tags
+require_once get_template_directory() . '/php/meta.php';
+
+// Enqueue CSS
+require_once get_template_directory() . '/php/css.php';
+
+// Enqueue JS
+require_once get_template_directory() . '/php/js.php';
+
+// Render favicons
+require_once get_template_directory() . '/php/favicon.php';
+
+// Prepare body classes
+require_once get_template_directory() . '/php/body.php';
+
+// Template router
+require_once get_template_directory() . '/php/router.php';
+
+// Outdated browser alert
+require_once get_template_directory() . '/php/browsers.php';
+
+// Livereload
+require_once get_template_directory() . '/php/livereload.php';

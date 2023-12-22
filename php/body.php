@@ -22,68 +22,71 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-// Prepare array of classes for body tag
-if (@!is_array($body_classes)) {
-	$body_classes = [];
-}
+namespace lqx\body;
 
-if ($home) {
-	$body_classes[] = 'home';
-}
+function classes() {
+	$classes = [];
 
-foreach ([
-	'404', 'search', 'home', 'category',
-	'post_type_archive', 'tax', 'tag', 'author', 'date',
-	'single', 'page', 'attachment'
-] as $type) {
-	$f = 'is_' . $type;
-	if ($f()) {
-		switch ($type) {
-			case 'home':
-				$body_classes[] = 'blog';
-				break;
-			case 'post_type_archive':
-				$body_classes[] = 'archive-' . get_post_type();
-				break;
-			case 'category':
-				$body_classes[] = $type;
-				$body_classes[] = $type . '-' . $wp_query->query['category_name'];
-				break;
-			case 'tax':
-				$body_classes[] = 'taxonomy';
-				$body_classes[] = 'taxonomy-' . $wp_query->query_vars['taxonomy'];
-				$body_classes[] = 'taxonomy-' . $wp_query->query_vars['taxonomy'] . '-' . $wp_query->query_vars['term'];
-				break;
-			case 'single':
-				$body_classes[] = $type;
-				$body_classes[] = $type . '-' . get_post_type();
-				$body_classes[] = $type . '-' . get_post_type() . '-' . $wp_query->query['name'];
-				break;
-			case 'page':
-				$body_classes[] = $type;
-				$body_classes[] = $type . '-' . $wp_query->query['pagename'];
-				break;
-			case 'attachment':
-				$body_classes[] = $type;
-				$mime_type = explode('/', get_post_mime_type());
-				$body_classes[] = $type . '-' . $mime_type[0];
-				$body_classes[] = $type . '-' . $mime_type[0] . '-' . $wp_query->query['attachment'];
-				break;
-			default:
-				$body_classes[] = $type;
-		}
+	if (is_front_page()) {
+		$classes[] = 'home';
 	}
-}
 
-// Set feature flags
-if (file_exists(get_template_directory() . '/php/custom/features.php')) {
-	require get_template_directory() . '/php/custom/features.php';
-
-	if(count($feature_flags)) {
-		foreach($feature_flags as $code => $title) {
-			if (get_theme_mod('feature-' . $code, '0') == '1') {
-				$body_classes[] = 'feature-' . $code;
+	foreach ([
+		'404', 'search', 'home', 'category',
+		'post_type_archive', 'tax', 'tag', 'author', 'date',
+		'single', 'page', 'attachment'
+	] as $type) {
+		$f = 'is_' . $type;
+		if ($f()) {
+			switch ($type) {
+				case 'home':
+					$classes[] = 'blog';
+					break;
+				case 'post_type_archive':
+					$classes[] = 'archive-' . get_post_type();
+					break;
+				case 'category':
+					$classes[] = $type;
+					$classes[] = $type . '-' . $wp_query->query['category_name'];
+					break;
+				case 'tax':
+					$classes[] = 'taxonomy';
+					$classes[] = 'taxonomy-' . $wp_query->query_vars['taxonomy'];
+					$classes[] = 'taxonomy-' . $wp_query->query_vars['taxonomy'] . '-' . $wp_query->query_vars['term'];
+					break;
+				case 'single':
+					$classes[] = $type;
+					$classes[] = $type . '-' . get_post_type();
+					$classes[] = $type . '-' . get_post_type() . '-' . $wp_query->query['name'];
+					break;
+				case 'page':
+					$classes[] = $type;
+					$classes[] = $type . '-' . $wp_query->query['pagename'];
+					break;
+				case 'attachment':
+					$classes[] = $type;
+					$mime_type = explode('/', get_post_mime_type());
+					$classes[] = $type . '-' . $mime_type[0];
+					$classes[] = $type . '-' . $mime_type[0] . '-' . $wp_query->query['attachment'];
+					break;
+				default:
+					$classes[] = $type;
 			}
 		}
 	}
+
+	// Set feature flags
+	if (file_exists(get_template_directory() . '/php/custom/features.php')) {
+		require get_template_directory() . '/php/custom/features.php';
+
+		if (count($feature_flags)) {
+			foreach ($feature_flags as $code => $title) {
+				if (get_theme_mod('feature-' . $code, '0') == '1') {
+					$classes[] = 'feature-' . $code;
+				}
+			}
+		}
+	}
+
+	return implode(' ', $classes);
 }

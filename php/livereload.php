@@ -22,6 +22,10 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-if (substr($_SERVER['HTTP_HOST'], -5) === '.test') : ?>
-	<script src="http://localhost:35729/livereload.js?snipver=1"></script>
+namespace lqx\livereload;
+
+function render() {
+	if (substr($_SERVER['HTTP_HOST'], -5) === '.test') : ?>
+		<script src="http://localhost:35729/livereload.js?snipver=1"></script>
 <?php endif;
+}

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * css.php - Includes CSS files
+ * css.php - Enqueues CSS files and render custom CSS
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix
@@ -39,7 +39,7 @@ function abs_url($rel, $base) {
 }
 
 function enqueue_styles() {
-	global $wp_styles, $tmpl_path, $tmpl_url;
+	global $wp_styles;
 
 	// Get styles to remove
 	$remove_css_libraries = explode("\n", trim(get_theme_mod('remove_css_libraries', '')));
@@ -97,11 +97,11 @@ function enqueue_styles() {
 	}
 
 	// Custom Project Styles
-	if (file_exists($tmpl_path . '/css/styles' . ($non_min_css ? '' : '.min') . '.css')) {
+	if (file_exists(get_template_directory() . '/css/styles' . ($non_min_css ? '' : '.min') . '.css')) {
 		$stylesheets[] = [
 			'handle' => 'styles',
-			'url' => $tmpl_url . '/css/styles' . ($non_min_css ? '' : '.min') . '.css',
-			'version' => date("YmdHis", filemtime($tmpl_path . '/css/styles' . ($non_min_css ? '' : '.min') . '.css'))
+			'url' => get_template_directory_uri() . '/css/styles' . ($non_min_css ? '' : '.min') . '.css',
+			'version' => date("YmdHis", filemtime(get_template_directory() . '/css/styles' . ($non_min_css ? '' : '.min') . '.css'))
 		];
 	}
 

@@ -2,7 +2,7 @@
 /*
  * Template Name: Raw
  *
- * raw.php - page template outputs only the_content()
+ * raw.php - page template outputs only the page without CSS, JS, headers or footers
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix
@@ -23,5 +23,4 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-the_post();
-the_content();
+\lqx\router\render();

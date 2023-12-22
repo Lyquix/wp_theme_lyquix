@@ -22,10 +22,8 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-namespace lqx\comments;
-
 // Disable comments post type support
-function disable_comments_post_type_support() {
+add_action('init', function () {
 	$post_types = get_post_types();
 	foreach ($post_types as $post_type) {
 		if (post_type_supports($post_type, 'comments')) {
@@ -33,31 +31,28 @@ function disable_comments_post_type_support() {
 			remove_post_type_support($post_type, 'trackbacks');
 		}
 	}
-}
-add_action('init', '\lqx\comments\disable_comments_post_type_support');
+});
 
 // Remove comments from the admin menu and admin bar
-function remove_comments_admin_menu() {
+add_action('admin_menu', function () {
 	remove_menu_page('edit-comments.php');
 	remove_submenu_page('options-general.php', 'options-discussion.php');
-}
-add_action('admin_menu', '\lqx\comments\remove_comments_admin_menu');
+});
 
-function remove_comments_admin_bar() {
+// Remove comments from the admin bar
+add_action('wp_before_admin_bar_render', function () {
 	if (is_admin_bar_showing()) {
 		remove_action('admin_bar_menu', 'wp_admin_bar_comments_menu', 60);
 	}
-}
-add_action('wp_before_admin_bar_render', '\lqx\comments\remove_comments_admin_bar');
+});
 
 // Remove comments from the "Right Now" dashboard widget
-function remove_comments_dashboard_widget() {
+add_action('wp_dashboard_setup', function () {
 	remove_meta_box('dashboard_recent_comments', 'dashboard', 'normal');
-}
-add_action('wp_dashboard_setup', '\lqx\comments\remove_comments_dashboard_widget');
+});
 
 // Disable comment-related REST API endpoints
-function disable_comments_rest_api_endpoints($endpoints) {
+add_filter('rest_endpoints', function ($endpoints) {
 	if (isset($endpoints['/wp/v2/comments'])) {
 		unset($endpoints['/wp/v2/comments']);
 	}
@@ -65,28 +60,25 @@ function disable_comments_rest_api_endpoints($endpoints) {
 		unset($endpoints['/wp/v2/comments/(?P<id>[\d]+)']);
 	}
 	return $endpoints;
-}
-add_filter('rest_endpoints', '\lqx\comments\disable_comments_rest_api_endpoints');
+});
 
 // Disable XML-RPC methods related to comments
-function disable_xmlrpc_comment_methods($methods) {
+add_filter('xmlrpc_methods', function ($methods) {
 	unset($methods['wp.getComments']);
 	unset($methods['wp.getComment']);
 	unset($methods['wp.deleteComment']);
 	unset($methods['wp.editComment']);
 	unset($methods['wp.newComment']);
 	return $methods;
-}
-add_filter('xmlrpc_methods', '\lqx\comments\disable_xmlrpc_comment_methods');
+});
 
 // Disable comments RSS feed
-function disable_comments_rss() {
+add_action('do_feed_comments', function () {
 	wp_die('No comments are available.');
-}
-add_action('do_feed_comments', '\lqx\comments\disable_comments_rss', 1);
+}, 1);
 
 // Disable comments in the admin
-function disable_comments_admin() {
+add_action('admin_init', function () {
 	// Hide the existing comments
 	add_filter('comments_array', '__return_empty_array', 10);
 	// Remove the comments metabox from the dashboard
@@ -94,5 +86,4 @@ function disable_comments_admin() {
 	// Disable support for comments in the admin
 	remove_post_type_support('post', 'comments');
 	remove_post_type_support('page', 'comments');
-}
-add_action('admin_init', '\lqx\comments\disable_comments_admin');
+});

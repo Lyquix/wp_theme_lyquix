@@ -23,23 +23,13 @@
 //  DO NOT MODIFY THIS FILE!
 //  Instead make a copy to custom.php and modify that file.
 
-// Initialize variables
-require get_template_directory() . '/php/vars.php';
-
 ?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?> class="no-js">
-
 <head>
 	<?php
 	// Meta tags
-	require get_template_directory() . '/php/meta.php';
-
-	// Prepare CSS
-	require get_template_directory() . '/php/css.php';
-
-	// Prepare JavaScript
-	require get_template_directory() . '/php/js.php';
+	\lqx\meta\render();
 
 	// Render GTM head code
 	lqx\js\render_gtm_head_code();
@@ -48,30 +38,27 @@ require get_template_directory() . '/php/vars.php';
 	wp_head();
 
 	// Favicons
-	require get_template_directory() . '/php/favicon.php';
+	\lqx\favicon\render();
 
 	// head-scripts widget area
 	dynamic_sidebar('head-scripts');
 	?>
 </head>
-<?php
-// Prepare <body> classes
-require get_template_directory() . '/php/body.php';
-?>
-
-<body class="<?php echo implode(' ', $body_classes); ?>">
+<body class="<?= \lqx\body\classes() ?>">
 	<?php
 	// Render GTM body code
 	lqx\js\render_gtm_body_code();
 
 	// Chromeless page template
-	if ($lqx_page_template == 'chromeless') :
+	if ($lqx_page_template === 'chromeless') :
 		// Template router
-		require get_template_directory() . '/php/router.php';
+		\lqx\router\render();
 
 	// Non-chromeless page template
 	else : ?>
 		<header>
+			<?php lqx\modules\alerts\render(); ?>
+
 			<?php if (is_active_sidebar('header')) dynamic_sidebar('header'); ?>
 
 			<?php if (has_nav_menu('top-menu')) : ?>
@@ -120,7 +107,7 @@ require get_template_directory() . '/php/body.php';
 				<?php endif;
 
 				// Template router
-				require get_template_directory() . '/php/router.php';
+				\lqx\router\render();
 
 				if (is_active_sidebar('after')) : ?>
 					<section class="widget after">
@@ -156,10 +143,13 @@ require get_template_directory() . '/php/body.php';
 					<?php wp_nav_menu(['menu' => 'footer-menu']); ?>
 				</nav>
 			<?php endif; ?>
+
+			<?php lqx\modules\social\render_social_icons(); ?>
+
 		</footer>
 	<?php
 	// Outdated browser alert
-	require get_template_directory() . '/php/browser-alert.php';
+	\lqx\browsers\render();
 
 	// End of non-chromeless page template
 	endif;
@@ -177,7 +167,7 @@ require get_template_directory() . '/php/body.php';
 	lqx\js\render_page_custom_js();
 
 	// LiveReload library
-	require get_template_directory() . '/php/livereload.php';
+	\lqx\livereload\render();
 	?>
 </body>
 

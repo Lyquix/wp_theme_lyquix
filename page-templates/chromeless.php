@@ -2,7 +2,7 @@
 /*
  * Template Name: Chromeless
  *
- * chromeless.php - page template outputs <head> and the_content()
+ * chromeless.php - page template outputs CSS, JS and the page content without headers or footers
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix
