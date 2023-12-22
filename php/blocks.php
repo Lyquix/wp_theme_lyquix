@@ -78,8 +78,8 @@ function get_settings($block, $post_id = null) {
 			'admin' => get_field($block_name . '_block_admin', $post_id)
 		],
 		'processed' => array_merge([
-			'anchor' => $block['anchor'] ? esc_attr($block['anchor']) : '',
-			'class' => $block['className'] ? $block['className'] : '',
+			'anchor' => isset($block['anchor']) ? esc_attr($block['anchor']) : '',
+			'class' => isset($block['className']) ? $block['className'] : '',
 			'hash' => 'id-' . md5(json_encode([get_the_ID(), $block, random_int(1000, 9999)])) // Generate a unique hash for the block
 		], get_field($block_name . '_block_global', 'option'))
 	];
@@ -90,7 +90,7 @@ function get_settings($block, $post_id = null) {
 		if ($settings['local']['user']['style']) $settings['processed']['class'] .= ' ' . $settings['local']['user']['style'];
 
 		// Check for settings presets
-		if ($settings['local']['user']['presets'] !== '') {
+		if (isset($settings['local']['user']['presets']) && $settings['local']['user']['presets'] !== '') {
 			foreach ($settings['presets'] as $preset) {
 				if ($preset['preset_name'] == $settings['local']['user']['preset']) {
 					// Process the overrides
