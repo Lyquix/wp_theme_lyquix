@@ -9,8 +9,11 @@
  * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
 
+@use "sass:math";
+
 // Count number of percentage steps
-$blk-pct-step-count: floor(100 / $blk-pct-step);
+$blk-pct-step-count: floor(math.div(100, $blk-pct-step));
+
 
 // Display property placeholder
 %blk-display {
@@ -20,62 +23,70 @@ $blk-pct-step-count: floor(100 / $blk-pct-step);
 // Set display property for fraction classes
 @for $d from 1 through $blk-denominator {
 	@for $n from 1 through $d {
-		.blk#{$n}\/#{$d} {@extend %blk-display;}
+		.blk#{$n}\/#{$d} {
+			@extend %blk-display;
+		}
 	}
 }
 
 // Set display property for percentage classes
 @for $p from 1 through $blk-pct-step-count {
-	.blk#{$p * $blk-pct-step}\% {@extend %blk-display;}
+	.blk#{$p * $blk-pct-step}\% {
+		@extend %blk-display;
+	}
 }
 
 // Cycle through each screen size
 @each $s in $screen-sizes {
 	// Index matching screen size array
 	$i: index($screen-sizes, $s);
-
+	
 	// Margin, border and padding width placeholder
 	%blk-margin-border-padding-#{$s} {
 		margin: nth($blk-margin-top, $i) nth($blk-margin-right, $i) nth($blk-margin-bottom, $i) nth($blk-margin-left, $i);
 		border-width: nth($blk-border-top, $i) nth($blk-border-right, $i) nth($blk-border-bottom, $i) nth($blk-border-left, $i);
 		padding: nth($blk-padding-top, $i) nth($blk-padding-right, $i) nth($blk-padding-bottom, $i) nth($blk-padding-left, $i);
 	}
-
+	
 	// Left-right margin to be substracted from width
 	$m: nth($blk-margin-left, $i) + nth($blk-margin-right, $i);
-
+	
 	// Cycle through all $n/$d fractions
 	@for $d from 1 through $blk-denominator {
 		@for $n from 1 through $d {
 			// Set display property for fraction-screen classes
-			.blk#{$n}\/#{$d}-#{$s} {@extend %blk-display;}
-
+			.blk#{$n}\/#{$d}-#{$s} {
+				@extend %blk-display;
+			}
+			
 			// Set margin, border, padding for fraction classes
 			body[screen=#{$s}] .blk#{$n}\/#{$d} {
 				@extend %blk-margin-border-padding-#{$s};
 			}
-
+			
 			// Set width and margin, border, padding for fraction and fraction-screen classes
-			$pc: percentage($n/$d);
+			$pc: percentage(math.div($n, $d));
 			body[screen=#{$s}] .blk#{$n}\/#{$d}, body[screen=#{$s}] .blk#{$n}\/#{$d}-#{$s} {
 				width: calc(#{$pc} - #{$m});
 				@extend %blk-margin-border-padding-#{$s};
 			}
 		}
 	}
-
+	
 	// Cycle through all percent steps
 	@for $p from 1 through $blk-pct-step-count {
 		// Set display property for percentage-screen classes
-		.blk#{$p * $blk-pct-step}\%-#{$s} {@extend %blk-display;}
-
+		.blk#{$p * $blk-pct-step}\%-#{$s} {
+			@extend %blk-display;
+		}
+		
 		// Set margin, border, padding for percentage classes
 		body[screen=#{$s}] .blk#{$p * $blk-pct-step}\% {
 			@extend %blk-margin-border-padding-#{$s};
 		}
-
+		
 		// Set width and margin, border, padding for percentage and percentage-screen classes
-		$pc: percentage($p * $blk-pct-step / 100);
+		$pc: percentage(math.div($p * $blk-pct-step, 100));
 		body[screen=#{$s}] .blk#{$p * $blk-pct-step}\%, body[screen=#{$s}] .blk#{$p * $blk-pct-step}\%-#{$s} {
 			width: calc(#{$pc} - #{$m});
 			@extend %blk-margin-border-padding-#{$s};
@@ -95,13 +106,19 @@ $blk-pct-step-count: floor(100 / $blk-pct-step);
 @for $d from 1 through $blk-denominator {
 	@for $n from 1 through $d {
 		// Set margin, border, width to zero
-		.bleed-margin.blk#{$n}\/#{$d} {@extend %blk-bleed-margin;}
-
+		.bleed-margin.blk#{$n}\/#{$d} {
+			@extend %blk-bleed-margin;
+		}
+		
 		// Reset width
-		$pc: percentage($n/$d);
-		%blk-bleed-margin-#{$n}-#{$d}-width {width: #{$pc};}
-		.bleed-margin.blk#{$n}\/#{$d} {@extend %blk-bleed-margin-#{$n}-#{$d}-width;}
-
+		$pc: percentage(math.div($n, $d));
+		%blk-bleed-margin-#{$n}-#{$d}-width {
+			width: #{$pc};
+		}
+		.bleed-margin.blk#{$n}\/#{$d} {
+			@extend %blk-bleed-margin-#{$n}-#{$d}-width;
+		}
+		
 		// Fraction-screen classes
 		@each $s in $screen-sizes {
 			body[screen=#{$s}] .bleed-margin.blk#{$n}\/#{$d}-#{$s} {
@@ -111,16 +128,23 @@ $blk-pct-step-count: floor(100 / $blk-pct-step);
 		}
 	}
 }
+
 // Percentage classes
 @for $p from 1 through $blk-pct-step-count {
 	// Set margin, border, width to zero
-	.bleed-margin.blk#{$p * $blk-pct-step}\% {@extend %blk-bleed-margin;}
-
+	.bleed-margin.blk#{$p * $blk-pct-step}\% {
+		@extend %blk-bleed-margin;
+	}
+	
 	// Reset width
-	$pc: percentage($p * $blk-pct-step / 100);
-	%blk-bleed-margin-#{$p * $blk-pct-step}pct-width {width: #{$pc};}
-	.bleed-margin.blk#{$p * $blk-pct-step}\% {@extend %blk-bleed-margin-#{$p * $blk-pct-step}pct-width;}
-
+	$pc: percentage(math.div($p * $blk-pct-step, 100));
+	%blk-bleed-margin-#{$p * $blk-pct-step}pct-width {
+		width: #{$pc};
+	}
+	.bleed-margin.blk#{$p * $blk-pct-step}\% {
+		@extend %blk-bleed-margin-#{$p * $blk-pct-step}pct-width;
+	}
+	
 	// Percentage-screen classes
 	@each $s in $screen-sizes {
 		body[screen=#{$s}] .bleed-margin.blk#{$p * $blk-pct-step}\%-#{$s} {
@@ -141,22 +165,31 @@ $blk-pct-step-count: floor(100 / $blk-pct-step);
 @for $d from 1 through $blk-denominator {
 	@for $n from 1 through $d {
 		// Set border, width to zero
-		.bleed-border.blk#{$n}\/#{$d} {@extend %blk-bleed-border;}
-
+		.bleed-border.blk#{$n}\/#{$d} {
+			@extend %blk-bleed-border;
+		}
+		
 		// Fraction-screen classes
 		@each $s in $screen-sizes {
-			body[screen=#{$s}] .bleed-border.blk#{$n}\/#{$d}-#{$s} {@extend %blk-bleed-border;}
+			body[screen=#{$s}] .bleed-border.blk#{$n}\/#{$d}-#{$s} {
+				@extend %blk-bleed-border;
+			}
 		}
 	}
 }
+
 // Percentage classes
 @for $p from 1 through $blk-pct-step-count {
 	// Set border, width to zero
-	.bleed-border.blk#{$p * $blk-pct-step}\% {@extend %blk-bleed-border;}
-
+	.bleed-border.blk#{$p * $blk-pct-step}\% {
+		@extend %blk-bleed-border;
+	}
+	
 	// Percentage-screen classes
 	@each $s in $screen-sizes {
-		body[screen=#{$s}] .bleed-border.blk#{$p * $blk-pct-step}\%-#{$s} {@extend %blk-bleed-border;}
+		body[screen=#{$s}] .bleed-border.blk#{$p * $blk-pct-step}\%-#{$s} {
+			@extend %blk-bleed-border;
+		}
 	}
 }
 
@@ -170,22 +203,31 @@ $blk-pct-step-count: floor(100 / $blk-pct-step);
 @for $d from 1 through $blk-denominator {
 	@for $n from 1 through $d {
 		// Set padding to zero
-		.bleed-padding.blk#{$n}\/#{$d} {@extend %blk-bleed-padding;}
-
+		.bleed-padding.blk#{$n}\/#{$d} {
+			@extend %blk-bleed-padding;
+		}
+		
 		// Fraction-screen classes
 		@each $s in $screen-sizes {
-			body[screen= #{$s}] .bleed-padding.blk#{$n}\/#{$d}-#{$s} {@extend %blk-bleed-padding;}
+			body[screen= #{$s}] .bleed-padding.blk#{$n}\/#{$d}-#{$s} {
+				@extend %blk-bleed-padding;
+			}
 		}
 	}
 }
+
 // Percentage classes
 @for $p from 1 through $blk-pct-step-count {
 	// Set padding to zero
-	body[screen] .bleed-padding.blk#{$p * $blk-pct-step}\% {@extend %blk-bleed-padding;}
-
+	body[screen] .bleed-padding.blk#{$p * $blk-pct-step}\% {
+		@extend %blk-bleed-padding;
+	}
+	
 	// Percentage-screen classes
 	@each $s in $screen-sizes {
-		body[screen] .bleed-padding.blk#{$p * $blk-pct-step}\%-#{$s} {@extend %blk-bleed-padding;}
+		body[screen] .bleed-padding.blk#{$p * $blk-pct-step}\%-#{$s} {
+			@extend %blk-bleed-padding;
+		}
 	}
 }
 
@@ -200,22 +242,31 @@ $blk-pct-step-count: floor(100 / $blk-pct-step);
 @for $d from 1 through $blk-denominator {
 	@for $n from 1 through $d {
 		// Set margins to auto
-		body[screen] .blkcenter.blk#{$n}\/#{$d} {@extend %blk-center;}
-
+		body[screen] .blkcenter.blk#{$n}\/#{$d} {
+			@extend %blk-center;
+		}
+		
 		// Fraction-screen classes
 		@each $s in $screen-sizes {
-			body[screen] .blkcenter.blk#{$n}\/#{$d}-#{$s} {@extend %blk-center;}
+			body[screen] .blkcenter.blk#{$n}\/#{$d}-#{$s} {
+				@extend %blk-center;
+			}
 		}
 	}
 }
+
 // Percentage classes
 @for $p from 1 through $blk-pct-step-count {
 	// Set margins to auto
-	body[screen] .blkcenter.blk#{$p * $blk-pct-step}\% {@extend %blk-center;}
-
+	body[screen] .blkcenter.blk#{$p * $blk-pct-step}\% {
+		@extend %blk-center;
+	}
+	
 	// Percentage-screen classes
 	@each $s in $screen-sizes {
-		body[screen] .blkcenter.blk#{$p * $blk-pct-step}\%-#{$s} {@extend %blk-center;}
+		body[screen] .blkcenter.blk#{$p * $blk-pct-step}\%-#{$s} {
+			@extend %blk-center;
+		}
 	}
 }
 
@@ -229,21 +280,30 @@ $blk-pct-step-count: floor(100 / $blk-pct-step);
 @for $d from 1 through $blk-denominator {
 	@for $n from 1 through $d {
 		// Set padding to zero
-		body[screen] .flex-container.blk#{$n}\/#{$d} {@extend %blk-display-flex;}
-
+		body[screen] .flex-container.blk#{$n}\/#{$d} {
+			@extend %blk-display-flex;
+		}
+		
 		// Fraction-screen classes
 		@each $s in $screen-sizes {
-			body[screen] .flex-container.blk#{$n}\/#{$d}-#{$s} {@extend %blk-display-flex;}
+			body[screen] .flex-container.blk#{$n}\/#{$d}-#{$s} {
+				@extend %blk-display-flex;
+			}
 		}
 	}
 }
+
 // Percentage classes
 @for $p from 1 through $blk-pct-step-count {
 	// Set padding to zero
-	body[screen] .flex-container.blk#{$p * $blk-pct-step}\% {@extend %blk-display-flex;}
-
+	body[screen] .flex-container.blk#{$p * $blk-pct-step}\% {
+		@extend %blk-display-flex;
+	}
+	
 	// Percentage-screen classes
 	@each $s in $screen-sizes {
-		body[screen] .flex-container.blk#{$p * $blk-pct-step}\%-#{$s} {@extend %blk-display-flex;}
+		body[screen] .flex-container.blk#{$p * $blk-pct-step}\%-#{$s} {
+			@extend %blk-display-flex;
+		}
 	}
 }

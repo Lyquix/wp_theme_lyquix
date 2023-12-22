@@ -34,6 +34,7 @@ gulp.task('default', function () {
 	gulp.watch([
 		'./css/styles.scss',
 		'./css/custom/*.scss',
+		'./css/custom/*/*.scss',
 		'./css/lib/*.scss'
 	], gulp.series('process-css'));
 	gulp.watch([

@@ -90,6 +90,14 @@ elseif(is_singular()) {
 		elseif(tmpl_file_exists($mime_type[0])) $tmpl_name = $mime_type[0];
 		elseif(tmpl_file_exists('attachment')) $tmpl_name = 'attachment';
 	}
+	// WooCommerce
+	 elseif (is_woocommerce()) {
+	// Page
+	if (is_page()) {
+		if (tmpl_file_exists('page-' . $wp_query->query['pagename'])) $tmpl_name = 'page-' . $wp_query->query['pagename'];
+		elseif (tmpl_file_exists('page')) $tmpl_name = 'page';
+	}
+}
 }
 if($tmpl_name) {
 	require get_template_directory() . '/php/custom/' . $tmpl_name . '.php';
