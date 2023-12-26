@@ -97,9 +97,6 @@ function customizer_add($wp_customize) {
 			]
 		],
 		'Analytics' => [
-			'ga4_account' => [
-				'label' => 'Google Analytics 4 Measurement ID',
-			],
 			'ga_pageview' => [
 				'type' => 'radio',
 				'label' => 'Send Google Analytics Pageview',

@@ -20,10 +20,11 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-import { vars, cfg, log, warn, error } from './core';
+import { vars, cfg, log, error } from './core';
 import { mutation } from './mutation';
 import { util } from './util';
-declare const ga, gtag, YT, jQuery;
+
+declare const gtag, YT, jQuery;
 
 export const analytics = (() => {
 
@@ -35,8 +36,8 @@ export const analytics = (() => {
 		vars.analytics = {
 			abTestGroup: null,
 			scrollDepthMax: null,
-			gaReady: false, 	// Track status of ga function
-			gtagReady: false,	// Track status of gtag function
+			status: null, // wait, init, ready, n/a
+			queue: [],
 			youTubeIframeAPIReady: false,
 			youtubePlayers: {},
 			vimeoPlayers: {},
@@ -104,8 +105,6 @@ export const analytics = (() => {
 			// Google Analytics
 			usingGTM: false,		// set to true if Google Analytics is loaded via GTM
 			sendPageview: true,		// set to false if you don't want to send the Pageview (e.g. when sent via GTM)
-			trackingId: null,		// Google Analytics tracking ID
-			useAnalyticsJS: true, 	// Use analytics.js instead of gtag for Universal Google Analytics (old GA)
 			measurementId: null, 		// Google Analytics 4 measurement ID
 			// A-B testing
 			abTest: {
@@ -127,7 +126,7 @@ export const analytics = (() => {
 			log('Initializing analytics');
 
 			// Check if there's any analytics account available
-			if ((cfg.analytics.trackingId && !cfg.analytics.usingGTM) || (cfg.analytics.measurementId && !cfg.analytics.usingGTM) || cfg.analytics.usingGTM) {
+			if ((cfg.analytics.measurementId && !cfg.analytics.usingGTM) || cfg.analytics.usingGTM) {
 				// Init A-B testing before loading GA code
 				if (cfg.analytics.abTest.name && cfg.analytics.abTest.dimension) initABTesting();
 
@@ -135,12 +134,10 @@ export const analytics = (() => {
 				if (!cfg.analytics.usingGTM && cfg.analytics.measurementId) {
 					gtagCode(cfg.analytics.measurementId);
 				}
-				// Load Google Analytics
-				if (!cfg.analytics.usingGTM && cfg.analytics.trackingId) {
-					if (cfg.analytics.useAnalyticsJS) gaCode(cfg.analytics.trackingId);
-					else gtagCode(cfg.analytics.trackingId);
-				}
+
 				// Wait for GA to be ready before starting tracking functions
+				vars.analytics.status = 'wait';
+				log('Waiting for Google Analytics to be ready');
 				checkGA();
 
 				// Set YouTube API callback function
@@ -148,7 +145,11 @@ export const analytics = (() => {
 					onYouTubeIframeAPIReady();
 				};
 			}
-			else log('Analytics not available: no trackingId or measurementId or GTM set');
+			else {
+				log('Analytics not available: no measurementId or GTM set');
+				// Set status
+				vars.analytics.status = 'n/a';
+			}
 
 			// Check if Microsoft Clarity is available
 			if (cfg.analytics.projectId) {
@@ -158,25 +159,6 @@ export const analytics = (() => {
 
 		// Run only once
 		vars.analytics.init = true;
-	};
-
-	// Add old analytics.js code
-	const gaCode = (tagId) => {
-		log('Loading Google Analytics code (analytics.js)');
-
-		// Create the script element
-		const gaScript = document.createElement('script');
-		gaScript.innerHTML = `
-			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-			})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-			ga('create', '${tagId}', 'auto');` +
-			(vars.analytics.abTestGroup ? `ga('set', 'dimension' + '${cfg.analytics.abTest.dimension}', '${vars.analytics.abTestGroup}');` : '') +
-			(cfg.analytics.sendPageview ? 'ga(\'send\', \'pageview\');' : '');
-
-		// Append the second script element to the head
-		document.head.appendChild(gaScript);
 	};
 
 	// Add new gtag.js code
@@ -218,25 +200,21 @@ export const analytics = (() => {
 
 	const checkGA = (count?) => {
 		if (!count) count = 0;
-		let gaNeeded = false;
-		let gtagNeeded = false;
-
-		// Check if ga and gtag are needed
-		if (cfg.analytics.trackingId && cfg.analytics.useAnalyticsJS) gaNeeded = true;
-		if ((cfg.analytics.trackingId && !cfg.analytics.useAnalyticsJS) || cfg.analytics.measurementId) gtagNeeded = true;
-
-		// Check for ga ready
-		if (gaNeeded && 'ga' in window && typeof window['ga'] == 'function') vars.analytics.gaReady = true;
 
 		// Check for gtag ready
-		if (gtagNeeded && 'gtag' in window && typeof window['gtag'] == 'function') vars.analytics.gtagReady = true;
-
-		// All ready?
-		if (((gaNeeded && vars.analytics.gaReady) || !gaNeeded) && ((gtagNeeded && vars.analytics.gtagReady) || !gtagNeeded)) initTracking();
+		if ('gtag' in window && typeof window['gtag'] == 'function') {
+			// Set status
+			vars.analytics.status = 'init';
+			initTracking();
+		}
 		else if (count < 600) setTimeout(() => {
 			checkGA(count++);
 		}, 100);
-
+		else {
+			vars.analytics.status = 'n/a';
+			error('Google Analytics not available');
+			if (vars.analytics.queue.length) error('Unable to send queued analytics', vars.analytics.queue);
+		}
 	};
 
 	// Sends google analytics pageview to ga and gtag as available
@@ -249,29 +227,9 @@ export const analytics = (() => {
 	 * }
 	 */
 	const sendGAPageview = (pageInfo) => {
-		log('Sending page view to GA', pageInfo);
+		if (vars.analytics.status == 'ready') {
+			log('Sending page view to GA', pageInfo);
 
-		// Send event with ga
-		if (vars.analytics.gaReady) {
-			if (pageInfo.url && pageInfo.title) {
-				const url = new URL(pageInfo.url, window.location.href);
-
-				const pageParams = {
-					hitType: 'pageview',
-					location: url.href,
-					page: url.pathname + url.search,
-					title: pageInfo.title
-				};
-
-				if ('callback' in pageInfo) pageParams['hitCallback'] = pageInfo.callback;
-
-				ga('send', pageParams);
-			}
-			else ga('send', 'pageview');
-		}
-
-		// Send event with gtag
-		if (vars.analytics.gtagReady) {
 			if (pageInfo.url && pageInfo.title) {
 				const url = new URL(pageInfo.url, window.location.href);
 
@@ -287,8 +245,12 @@ export const analytics = (() => {
 			}
 			else gtag('event', 'page_view');
 		}
+		else if (vars.analytics.status == 'wait' || vars.analytics.status == 'init') {
+			log('Queueing GA pageview to send later', pageInfo);
+			vars.analytics.queue.push({ type: 'pageview', info: pageInfo });
+		}
+		else if (vars.analytics.status == 'n/a') log('Analytics not available, unable to send GA pageview', pageInfo);
 
-		if (!vars.analytics.gaReady && !vars.analytics.gtagReady) warn('Unable to send GA page view', pageInfo);
 	};
 
 	// Sends google analytics events to ga and gtag as available
@@ -303,33 +265,18 @@ export const analytics = (() => {
 	 * }
 	 */
 	const sendGAEvent = (eventInfo) => {
-		log('Sending event to GA', eventInfo);
+		if (vars.analytics.status == 'ready') {
+			log('Sending event to GA', eventInfo);
 
-		const ga4PropMap = {
-			eventCategory: 'event_category',
-			eventLabel: 'event_label',
-			eventAction: 'event_action',
-			eventValue: 'value',
-			nonInteraction: 'non_interaction',
-			hitCallback: 'event_callback'
-		};
-
-		// Send event with ga
-		if (vars.analytics.gaReady) {
-			const eventParams = {
-				hitType: 'event'
+			const ga4PropMap = {
+				eventCategory: 'event_category',
+				eventLabel: 'event_label',
+				eventAction: 'event_action',
+				eventValue: 'value',
+				nonInteraction: 'non_interaction',
+				hitCallback: 'event_callback'
 			};
 
-			Object.keys(ga4PropMap).forEach((prop) => {
-				if (prop in eventInfo && eventInfo[prop]) eventParams[prop] = eventInfo[prop];
-			});
-
-			// send event
-			ga('send', eventParams);
-		}
-
-		// Send event with gtag
-		if (vars.analytics.gtagReady) {
 			const eventParams = {};
 
 			Object.keys(ga4PropMap).forEach((prop) => {
@@ -344,8 +291,11 @@ export const analytics = (() => {
 			// send event
 			gtag('event', eventName, eventParams);
 		}
-
-		if (!vars.analytics.gaReady && !vars.analytics.gtagReady) warn('Unable to send GA event', eventInfo);
+		else if (vars.analytics.status == 'wait' || vars.analytics.status == 'init') {
+			log('Queueing GA event to send later', eventInfo);
+			vars.analytics.queue.push({ type: 'event', info: eventInfo });
+		}
+		else if (vars.analytics.status == 'n/a') log('Analytics not available, unable to send GA event', eventInfo);
 	};
 
 	// Initialize tracking
@@ -648,6 +598,13 @@ export const analytics = (() => {
 				}
 			});
 		}
+
+		// Set status and send queued pageviews and events
+		vars.analytics.status = 'ready';
+		vars.analytics.queue.forEach((item) => {
+			if (item.type == 'pageview') sendGAPageview(item.info);
+			else if (item.type == 'event') sendGAEvent(item.info);
+		});
 	};
 
 	// initialize the js api for youtube and vimeo players
@@ -844,45 +801,45 @@ export const analytics = (() => {
 
 			switch (data.event) {
 
-			case 'ready':
-				// set player object variables
-				player.progress = 0;
-				player.start = false;
-				player.complete = false;
-				// set the listeners
-				vimeoSendMessage(data.player_id, e.origin, 'addEventListener', 'play');
-				vimeoSendMessage(data.player_id, e.origin, 'addEventListener', 'finish');
-				vimeoSendMessage(data.player_id, e.origin, 'addEventListener', 'playProgress');
-				break;
+				case 'ready':
+					// set player object variables
+					player.progress = 0;
+					player.start = false;
+					player.complete = false;
+					// set the listeners
+					vimeoSendMessage(data.player_id, e.origin, 'addEventListener', 'play');
+					vimeoSendMessage(data.player_id, e.origin, 'addEventListener', 'finish');
+					vimeoSendMessage(data.player_id, e.origin, 'addEventListener', 'playProgress');
+					break;
 
-			case 'play':
-				// if this is the first time we get the playing status, track it as start
-				if (!player.start) {
-					label = 'Start';
-					player.start = true;
-				}
-				break;
-
-			case 'playProgress': {
-				const playerProgress = Math.floor(data.data.percent * 10) * 10;
-
-				if (playerProgress > player.progress) {
-
-					player.progress = playerProgress;
-
-					if (player.progress != 10) {
-						label = (player.progress * 10) + '%';
+				case 'play':
+					// if this is the first time we get the playing status, track it as start
+					if (!player.start) {
+						label = 'Start';
+						player.start = true;
 					}
-				}
-				break;
-			}
+					break;
 
-			case 'finish':
-				// make sure we capture finish event just once
-				if (!player.complete) {
-					label = 'Complete';
-					player.complete = true;
+				case 'playProgress': {
+					const playerProgress = Math.floor(data.data.percent * 10) * 10;
+
+					if (playerProgress > player.progress) {
+
+						player.progress = playerProgress;
+
+						if (player.progress != 10) {
+							label = (player.progress * 10) + '%';
+						}
+					}
+					break;
 				}
+
+				case 'finish':
+					// make sure we capture finish event just once
+					if (!player.complete) {
+						label = 'Complete';
+						player.complete = true;
+					}
 			}
 
 			if (label) {
@@ -1060,9 +1017,36 @@ export const analytics = (() => {
 		}
 	};
 
-	return {
+	return Object.defineProperties({
 		init,
 		sendGAEvent,
 		sendGAPageview
+	}, {
+		// Set the status property as read-only
+		status: {
+			get() {
+				return vars.analytics.status;
+			},
+			set() {
+				return undefined;
+			}
+		}
+	}) as {
+		init: () => void,
+		sendGAEvent: (eventInfo: {
+			eventName?: string,
+			eventAction: string,
+			eventCategory: string,
+			eventLabel?: string,
+			eventValue?: number,
+			nonInteraction?: boolean,
+			hitCallback?: () => void
+		}) => void,
+		sendGAPageview: (pageInfo: {
+			url: string,
+			title: string,
+			callback?: () => void
+		}) => void,
+		status: string
 	};
 })();
