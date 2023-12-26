@@ -294,7 +294,7 @@
                     "name": "autoplay",
                     "aria-label": "",
                     "type": "button_group",
-                    "instructions": "Set to Yes to cycle through alerts automatically",
+                    "instructions": "Set to Yes to cycle through alerts automatically (Default: Yes)",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -324,7 +324,7 @@
                     "name": "autoplay_delay",
                     "aria-label": "",
                     "type": "number",
-                    "instructions": "Set the time (in seconds) that each alert will be displayed when autoplaying",
+                    "instructions": "Set the time (in seconds) that each alert will be displayed when auto-playing (Default: 15)",
                     "required": 0,
                     "conditional_logic": [
                         [
@@ -350,6 +350,45 @@
                 },
                 {
                     "allow_backendsearch": false,
+                    "show_column_filter": false,
+                    "allow_bulkedit": false,
+                    "allow_quickedit": false,
+                    "show_column": false,
+                    "show_column_weight": 1000,
+                    "show_column_sortable": false,
+                    "key": "field_6585bb7f26169",
+                    "label": "Swiper Settings Override",
+                    "name": "swiper_settings_override",
+                    "aria-label": "",
+                    "type": "acfe_code_editor",
+                    "instructions": "Enter a JSON object to extend default Swiper options",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_6578bfba3ebf5",
+                                "operator": "==",
+                                "value": "y"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "placeholder": "",
+                    "mode": "application\/x-json",
+                    "lines": 1,
+                    "indent_unit": 4,
+                    "maxlength": "",
+                    "rows": 4,
+                    "max_rows": "",
+                    "return_format": []
+                },
+                {
+                    "allow_backendsearch": false,
                     "show_column_filter": 0,
                     "allow_bulkedit": 0,
                     "allow_quickedit": 0,
@@ -361,7 +400,7 @@
                     "name": "heading_style",
                     "aria-label": "",
                     "type": "button_group",
-                    "instructions": "Select the style to be used for the heading text",
+                    "instructions": "Select the style to be used for the heading text (Default: P and STRONG)",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -415,5 +454,5 @@
     "qef_simple_location_rules": 0,
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1703099162
+    "modified": 1703264211
 }

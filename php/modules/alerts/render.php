@@ -30,6 +30,7 @@ namespace lqx\modules\alerts;
  * @param  array $settings - alerts settings
  * 	autoplay - boolean, whether to autoplay alerts
  * 	autoplay_delay - integer, delay in seconds between alerts
+ *  swiper_options_override - string, a JSON object to override Swiper options
  * 	heading_style - string, style of heading: p, h1, h2, h3, h4, h5, h6
  */
 function render() {
@@ -37,10 +38,12 @@ function render() {
 	$s = get_field('alerts_module_settings', 'option');
 
 	?>
-	<section id="lqx-module-alerts" class="hidden">
-		<div class="alerts"
+	<section id="lqx-module-alerts">
+		<div
+			class="alerts hidden"
 			data-autoplay="<?= $s['autoplay'] ?>"
 			data-autoplay-delay="<?= $s['autoplay_delay'] * 1000 ?>"
+			data-swiper-options-override="<?= htmlspecialchars($s['swiper_options_override']) ?>"
 			data-heading-style="<?= $s['heading_style'] ?>">
 			<button class="close">Close</button>
 			<div class="swiper">
