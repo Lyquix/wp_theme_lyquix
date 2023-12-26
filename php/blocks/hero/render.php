@@ -99,7 +99,7 @@ function render($settings, $content) {
 									class="btn <?= $link['type'] == 'button' ? 'common-button' : 'readmore' ?>"
 									href="<?= $link['link']['url'] ?>"
 									target="<?= $link['link']['target'] ?>">
-									<?php echo $link['link']['title']; ?>
+									<?= $link['link']['title'] ?>
 								</a>
 							</li>
 						<?php endforeach; ?>
@@ -111,15 +111,15 @@ function render($settings, $content) {
 					<?php if (is_array($content['image_override'])) : ?>
 						<img
 							src="<?= $content['image_override']['url'] ?>"
-							alt="<?= $content['image_override']['alt'] ?>"
+							alt="<?= htmlspecialchars($content['image_override']['alt']) ?>"
 							class="<?= is_array($content['image_mobile']) ? 'xs-hide' : '' ?>" />
 					<?php else :
 						the_post_thumbnail('post-thumbnail', ['class' => $content['image_mobile'] !== false ? 'xs-hide' : '']);
 					endif; ?>
 					<?php if (is_array($content['image_mobile'])) : ?>
 						<img
-							src="<?php echo $content['image_mobile']['url']; ?>"
-							alt="<?php echo $content['image_mobile']['alt']; ?>"
+							src="<?= $content['image_mobile']['url'] ?>"
+							alt="<?= htmlspecialchars($content['image_mobile']['alt']) ?>"
 							class="hide xs-show" />
 					<?php endif; ?>
 				</div>
