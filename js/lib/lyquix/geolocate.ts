@@ -129,7 +129,7 @@ export const geolocate = (() => {
 			cache: false,
 			dataType: 'json',
 			url: vars.tmplURL + '/php/ip2geo/',
-			success: (data, ready, xhr) => {
+			success: (data) => {
 				vars.location = data;
 				vars.location.source = 'ip2geo';
 				vars.ready.ip = true;
@@ -507,5 +507,13 @@ export const geolocate = (() => {
 				return undefined;
 			}
 		}
-	});
+	}) as {
+		init: (customCfg?: object) => void,
+		setRegions: (regions: object) => string[],
+		regionDisplay: (elems?: any) => void,
+		geoJSONtoRegions: (geoJSON: string) => object,
+		location: object,
+		regions: string[],
+		ready: boolean
+	};
 })();

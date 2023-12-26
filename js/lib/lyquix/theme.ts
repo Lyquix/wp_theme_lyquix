@@ -113,6 +113,13 @@ export const theme = (() => {
 				return undefined;
 			}
 		}
-	});
+	}) as {
+		init: (customCfg?: object) => void,
+		get: () => string,
+		set: (userPref: 'dark' | 'light') => void,
+		reset: () => void,
+		systemPref: string,
+		userPref: string
+	};
 
 })();

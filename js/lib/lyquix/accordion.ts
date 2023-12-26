@@ -22,8 +22,8 @@
 
 import { vars, cfg, log } from './core';
 import { mutation } from './mutation';
-
-declare const lqx;
+import { analytics } from './analytics';
+import { responsive } from './responsive';
 
 export const accordion = (() => { // Change the accordion name
 
@@ -56,7 +56,7 @@ export const accordion = (() => { // Change the accordion name
 
 			// Disable analytics if the analytics module is not enabled
 			cfg.accordion.analytics.enabled = cfg.analytics.enabled ? cfg.accordion.analytics.enabled : false;
-			if (cfg.accordion.analytics.enabled) lqx.log('Setting accordions tracking');
+			if (cfg.accordion.analytics.enabled) log('Setting accordions tracking');
 
 			// Initialize accordions
 			vars.document.ready(() => {
@@ -123,7 +123,7 @@ export const accordion = (() => { // Change the accordion name
 		// Auto scroll top
 		const autoScrollScreens = (accElem.attr('data-auto-scroll') || '').split(',');
 
-		if (autoScrollScreens.includes(lqx.responsive.screen)) {
+		if (autoScrollScreens.includes(responsive.screen)) {
 			// TODO: Auto Scroll functionality
 		}
 
@@ -142,7 +142,7 @@ export const accordion = (() => { // Change the accordion name
 
 		// Send event for accordion opened
 		if (cfg.accordion.analytics.enabled) {
-			lqx.analytics.sendGAEvent({
+			analytics.sendGAEvent({
 				'eventCategory': 'Accordion',
 				'eventAction': 'Open',
 				'eventLabel': headerElem.text(),
@@ -169,7 +169,7 @@ export const accordion = (() => { // Change the accordion name
 
 		// Send event for accordion opened
 		if (cfg.accordion.analytics.enabled && cfg.accordion.analytics.onClose) {
-			lqx.analytics.sendGAEvent({
+			analytics.sendGAEvent({
 				'eventCategory': 'Accordion',
 				'eventAction': 'Close',
 				'eventLabel': headerElem.text(),

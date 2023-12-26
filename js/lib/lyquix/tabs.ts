@@ -23,8 +23,7 @@
 import { vars, cfg, log } from './core';
 import { mutation } from './mutation';
 import { analytics } from './analytics';
-
-declare const lqx;
+import { responsive } from './responsive';
 
 export const tabs = (() => {
 
@@ -55,11 +54,11 @@ export const tabs = (() => {
 
 		// Initialize only if enabled
 		if (cfg.tabs.enabled) {
-			lqx.log('Initializing tabs');
+			log('Initializing tabs');
 
 			// Disable analytics if the analytics module is not enabled
 			cfg.tabs.analytics.enabled = cfg.analytics.enabled ? cfg.tabs.analytics.enabled : false;
-			if (cfg.tabs.analytics.enabled) lqx.log('Setting tabs tracking');
+			if (cfg.tabs.analytics.enabled) log('Setting tabs tracking');
 
 			// Initialize tabs
 			vars.document.ready(() => {
@@ -107,7 +106,7 @@ export const tabs = (() => {
 				if(accordionScreens.length) {
 					// Function to enable/disable elements for accordion and tabs
 					const accordionTabsSwitch = () => {
-						if(accordionScreens.includes(lqx.responsive.screen)) {
+						if(accordionScreens.includes(responsive.screen)) {
 							// Convert to accordion
 							// Toggle aria-hidden
 							tabsElem.find(cfg.tabs.tabsListSelector).attr('aria-hidden', 'true');
@@ -166,7 +165,7 @@ export const tabs = (() => {
 		// Accordion behavior
 		const accordionScreens = (tabsElem.attr('data-convert-to-accordion') || '').split(',');
 
-		if(accordionScreens.includes(lqx.responsive.screen)) {
+		if(accordionScreens.includes(responsive.screen)) {
 			// The elements
 			const headerElem = jQuery('#' + panelId.replace('-panel-', '-header-'));
 			const contentElem = jQuery('#' + panelId.replace('-panel-', '-content-'));
@@ -181,7 +180,7 @@ export const tabs = (() => {
 		// Auto scroll top
 		const autoScrollScreens = (tabsElem.attr('data-auto-scroll') || '').split(',');
 
-		if(autoScrollScreens.includes(lqx.responsive.screen)) {
+		if(autoScrollScreens.includes(responsive.screen)) {
 			// TODO: Auto Scroll functionality
 		}
 
@@ -228,7 +227,7 @@ export const tabs = (() => {
 		// Accordion behavior
 		const accordionScreens = (tabsElem.attr('data-convert-to-accordion') || '').split(',');
 
-		if(accordionScreens.includes(lqx.responsive.screen)) {
+		if(accordionScreens.includes(responsive.screen)) {
 			// The elements
 			const headerElem = jQuery('#' + panelId.replace('-panel-', '-header-'));
 			const contentElem = jQuery('#' + panelId.replace('-panel-', '-content-'));

@@ -177,6 +177,11 @@ export const responsive = (() => {
 				return undefined;
 			}
 		}
-	});
+	}) as {
+		init: (customCfg?: object) => void,
+		screen: string,
+		orientation: string,
+		aspectRatio: string
+	};
 
 })();

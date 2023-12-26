@@ -304,6 +304,12 @@ export const detect = (() => {
 				return undefined;
 			}
 		}
-	});
+	}) as {
+		init: (customCfg?: object) => void,
+		mobile: string,
+		browser: string,
+		os: string,
+		urlParams: object
+	};
 
 })();
