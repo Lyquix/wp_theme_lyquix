@@ -37,6 +37,7 @@ import { util } from './lib/lyquix/util';
 // Import functionality for Gutenberg blocks and modules
 import { accordion } from './lib/lyquix/accordion';
 import { alerts } from './lib/lyquix/alerts';
+import { gallery } from './lib/lyquix/gallery';
 import { tabs } from './lib/lyquix/tabs';
 
 declare const lqx;
@@ -64,6 +65,7 @@ const init = (customCfg) => {
 		// Gutenberg blocks
 		'accordion',
 		'alerts',
+		'gallery',
 		'tabs'
 	];
 
@@ -113,6 +115,7 @@ const expObj = Object.defineProperties({
 	/* Gutenberg blocks */
 	accordion,
 	alerts,
+	gallery,
 	tabs
 }, {
 	// Set the cfg and vars properties as read-only

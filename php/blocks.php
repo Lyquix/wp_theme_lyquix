@@ -177,6 +177,15 @@ add_filter('acf/load_field', function ($field) {
 			'user' => 'field_657218058ca54',
 			'choice' => 'field_657766304a9cc'
 		],
+		// Gallery
+		[ // style and style_name fields
+			'user' => 'field_6577582aed940',
+			'choice' => 'field_65806199e7ed0'
+		],
+		[ // preset and preset_name fields
+			'user' => 'field_6577582aed9a8',
+			'choice' => 'field_658061d6e7ed2'
+		],
 		// Tabs
 		[ //  style and style_name fields
 			'user' => 'field_656f866617343',

@@ -1,0 +1,23 @@
+{
+    "key": "ui_options_page_658074b03e2ad",
+    "title": "Gallery",
+    "active": true,
+    "menu_order": 0,
+    "page_title": "Gallery",
+    "menu_slug": "gallery",
+    "parent_slug": "site-settings",
+    "advanced_configuration": 0,
+    "icon_url": "",
+    "menu_title": "",
+    "position": "",
+    "redirect": false,
+    "description": "",
+    "update_button": "Update",
+    "updated_message": "Options Updated",
+    "capability": "edit_posts",
+    "data_storage": "options",
+    "post_id": "",
+    "autoload": 0,
+    "_parent": 349,
+    "modified": 1703193311
+}
