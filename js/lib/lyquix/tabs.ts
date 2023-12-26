@@ -22,6 +22,7 @@
 
 import { vars, cfg, log } from './core';
 import { mutation } from './mutation';
+import { analytics } from './analytics';
 
 declare const lqx;
 
@@ -196,7 +197,7 @@ export const tabs = (() => {
 
 		// Send event for tabs opened
 		if (cfg.tabs.analytics.enabled) {
-			lqx.analytics.sendGAEvent({
+			analytics.sendGAEvent({
 				'eventCategory': 'tabs',
 				'eventAction': 'Open',
 				'eventLabel': tabElem.text(),
@@ -241,7 +242,7 @@ export const tabs = (() => {
 
 		// Send event for tabs opened
 		if (cfg.tabs.analytics.enabled && cfg.tabs.analytics.onClose) {
-			lqx.analytics.sendGAEvent({
+			analytics.sendGAEvent({
 				'eventCategory': 'tabs',
 				'eventAction': 'Close',
 				'eventLabel': tabElem.text(),
