@@ -27,7 +27,6 @@ namespace lqx\modules\alerts;
 
 /**
  * Render alerts
- * @param  array $settings - alerts settings
  * 	autoplay - boolean, whether to autoplay alerts
  * 	autoplay_delay - integer, delay in seconds between alerts
  *  swiper_options_override - string, a JSON object to override Swiper options
@@ -42,7 +41,7 @@ function render() {
 		<div
 			class="alerts hidden"
 			data-autoplay="<?= $s['autoplay'] ?>"
-			data-autoplay-delay="<?= $s['autoplay_delay'] * 1000 ?>"
+			data-autoplay-delay="<?= $s['autoplay_delay'] ?>"
 			data-swiper-options-override="<?= htmlspecialchars($s['swiper_options_override']) ?>"
 			data-heading-style="<?= $s['heading_style'] ?>">
 			<button class="close">Close</button>

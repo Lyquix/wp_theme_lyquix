@@ -30,15 +30,24 @@ function rest_route() {
 
 	if (!$alerts) return [];
 
-	return array_map(function ($alert) {
+	$alerts = array_map(function ($alert) {
 		// Add hash to alert
 		$alert['hash'] = md5(json_encode($alert));
+
+		// Convert expiration to UTC
+		if ($alert['expiration'] != '') {
+			$alert['expiration'] = date('c', strtotime($alert['expiration'] . ' ' . get_option('timezone_string')));
+		}
+
 		return $alert;
-	},
+	}, $alerts);
+
 	// Filter out alerts that are not enabled or have expired
-	array_filter($alerts, function ($alert) {
+	$alerts = array_filter($alerts, function ($alert) {
 		return $alert['enabled'] == 'y' && ($alert['expiration'] == '' || time() <= strtotime($alert['expiration']));
-	}));
+	});
+
+	return $alerts;
 }
 
 // Register a REST API endpoint to get the alerts from site options

@@ -46,7 +46,7 @@ export const alerts = (() => {
 			analytics: {
 				enabled: true,
 				nonInteraction: true,
-				onClose: true, // Sends event on accordion close
+				onClose: true, // Sends event on alerts close
 				onPrevNext: true // Sends event on prev/next click
 			}
 		};
@@ -89,7 +89,6 @@ export const alerts = (() => {
 				error('There has been an error trying to fetch alerts from site options', status, errorMsg);
 			},
 			success: (data) => {
-				vars.alerts.alerts = data;
 				if (data.length > 0) {
 					// Get settings
 					const autoplay = alertsModuleElem.attr('data-autoplay') === 'y' ? true : false;
@@ -108,24 +107,31 @@ export const alerts = (() => {
 						if (util.cookie('alert-' + alert.hash) !== null) return;
 
 						// Skip if alert has expired
-						if (alert.expiration === '' || now <= dayjs(alert.expiration).valueOf()) {
-							let html = `<div id="alert-${i}" class="${cfg.alerts.swiperSlideClass}">`;
-							if (alert.heading) {
-								html += headingStyle == 'p' ? '<p><strong>' : `<${headingStyle}>`;
-								html += alert.heading;
-								html += headingStyle == 'p' ? '</strong></p>' : `</${headingStyle}>`;
-							}
-							html += alert.body;
-							if (alert.link.url) {
-								html += `<a href="${alert.link.url}" ${alert.link.target ? ' target="_blank"' : ''}>`;
-								html += alert.link.title ? alert.link.title : 'Read More';
-								html += '</a>';
-							}
-							html += '</div>';
-							jQuery(html).appendTo(alertsModuleElem.find(cfg.alerts.swiperWrapperSelector));
-							log('Alert added: ' + alert.heading);
-							i++;
+						if (alert.expiration != '' && now <= dayjs(alert.expiration).valueOf()) return;
+
+						// Prepare the HTML
+						let html = `<div id="alert-${i}" class="${cfg.alerts.swiperSlideClass}">`;
+						if (alert.heading) {
+							html += headingStyle == 'p' ? '<p><strong>' : `<${headingStyle}>`;
+							html += alert.heading;
+							html += headingStyle == 'p' ? '</strong></p>' : `</${headingStyle}>`;
 						}
+						html += alert.body;
+						if (alert.link.url) {
+							html += `<a href="${alert.link.url}" ${alert.link.target ? ' target="_blank"' : ''}>`;
+							html += alert.link.title ? alert.link.title : 'Read More';
+							html += '</a>';
+						}
+						html += '</div>';
+
+						// Append the alert to the swiper
+						jQuery(html).appendTo(alertsModuleElem.find(cfg.alerts.swiperWrapperSelector));
+						log('Alert added: ' + alert.heading);
+
+						// Add the alert to the alerts array
+						vars.alerts.alerts.push(alert);
+
+						i++;
 					});
 
 					if (i > 0) {
@@ -153,17 +159,19 @@ export const alerts = (() => {
 							// Setup autoplay if enabled
 							if (autoplay == true) {
 								swiperOptions['autoplay'] = {
-									delay: autoplayDelay,
+									delay: autoplayDelay * 1000,
 									pauseOnMouseEnter: true
 								};
 							}
 
 							// Swiper options override
-							try {
-								const swiperOptionsOverride = JSON.parse(alertsModuleElem.attr('data-swiper-options-override'));
-								swiperOptions = jQuery.extend(true, swiperOptions, swiperOptionsOverride);
-							} catch (e) {
-								warn('Swiper options override is not valid JSON');
+							const swiperOptionsOverride = alertsModuleElem.attr('data-swiper-options-override');
+							if(swiperOptionsOverride) {
+								try {
+									swiperOptions = jQuery.extend(true, swiperOptions, JSON.parse(swiperOptionsOverride));
+								} catch (e) {
+									warn('Swiper options override is not valid JSON');
+								}
 							}
 
 							// Construct the swiper
@@ -174,7 +182,10 @@ export const alerts = (() => {
 						alertsModuleElem.find('.close').click(() => {
 							// Set cookies for each alert
 							vars.alerts.alerts.forEach((alert) => {
-								util.cookie('alert-' + alert.hash, '1', { 'path': '/', 'expires': alert.expiration });
+								util.cookie('alert-' + alert.hash, '1', {
+									path: '/',
+									maxAge: alert.expiration ? dayjs(alert.expiration).diff(dayjs(), 'second') : 60 * 60 * 24 * 365 // 1 year
+								});
 							});
 
 							// Alerts closed
