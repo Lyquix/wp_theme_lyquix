@@ -494,19 +494,19 @@
                     "parent_repeater": "field_65566181bf16d"
                 },
                 {
-                    "allow_backendsearch": 0,
+                    "allow_backendsearch": false,
                     "show_column_filter": false,
-                    "allow_bulkedit": 0,
-                    "allow_quickedit": 0,
-                    "show_column": 0,
+                    "allow_bulkedit": false,
+                    "allow_quickedit": false,
+                    "show_column": false,
                     "show_column_weight": 1000,
                     "show_column_sortable": false,
                     "key": "field_658be723381f2",
-                    "label": "CSS Classes",
-                    "name": "css_classes",
+                    "label": "Style",
+                    "name": "style",
                     "aria-label": "",
-                    "type": "text",
-                    "instructions": "",
+                    "type": "select",
+                    "instructions": "Select from the available styles for this popup. Leave blank to use the default style.",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -514,11 +514,22 @@
                         "class": "",
                         "id": ""
                     },
-                    "default_value": "",
-                    "maxlength": "",
-                    "placeholder": "",
+                    "choices": {
+                        "": "Select"
+                    },
+                    "default_value": false,
+                    "return_format": "value",
+                    "multiple": 0,
+                    "max": "",
                     "prepend": "",
                     "append": "",
+                    "allow_null": 0,
+                    "ui": 0,
+                    "ajax": 0,
+                    "placeholder": "",
+                    "allow_custom": 0,
+                    "search_placeholder": "",
+                    "min": "",
                     "parent_repeater": "field_65566181bf16d"
                 }
             ]
@@ -550,5 +561,5 @@
     "qef_simple_location_rules": 0,
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1703669768
+    "modified": 1703704650
 }
