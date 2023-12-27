@@ -38,6 +38,7 @@ import { util } from './lib/lyquix/util';
 import { accordion } from './lib/lyquix/accordion';
 import { alerts } from './lib/lyquix/alerts';
 import { gallery } from './lib/lyquix/gallery';
+import { popup } from './lib/lyquix/popup';
 import { tabs } from './lib/lyquix/tabs';
 
 declare const lqx;
@@ -66,6 +67,7 @@ const init = (customCfg) => {
 		'accordion',
 		'alerts',
 		'gallery',
+		'popup',
 		'tabs'
 	];
 
@@ -116,6 +118,7 @@ const expObj = Object.defineProperties({
 	accordion,
 	alerts,
 	gallery,
+	popup,
 	tabs
 }, {
 	// Set the cfg and vars properties as read-only

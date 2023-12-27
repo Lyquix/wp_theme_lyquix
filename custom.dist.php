@@ -147,6 +147,8 @@
 			<?php lqx\modules\social\render_social_icons(); ?>
 
 		</footer>
+
+		<?php lqx\modules\popup\render(); ?>
 	<?php
 	// Outdated browser alert
 	\lqx\browsers\render();
