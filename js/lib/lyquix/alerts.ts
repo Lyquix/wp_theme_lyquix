@@ -110,7 +110,7 @@ export const alerts = (() => {
 						if (alert.expiration != '' && now <= dayjs(alert.expiration).valueOf()) return;
 
 						// Prepare the HTML
-						let html = `<div id="alert-${i}" class="${cfg.alerts.swiperSlideClass}">`;
+						let html = `<section id="alert-${i}" class="${cfg.alerts.swiperSlideClass}">`;
 						if (alert.heading) {
 							html += headingStyle == 'p' ? '<p class="title"><strong>' : `<${headingStyle}>`;
 							html += alert.heading;
@@ -122,7 +122,7 @@ export const alerts = (() => {
 							html += alert.link.title ? alert.link.title : 'Read More';
 							html += '</a>';
 						}
-						html += '</div>';
+						html += '</section>';
 
 						// Append the alert to the swiper
 						jQuery(html).appendTo(alertsModuleElem.find(cfg.alerts.swiperWrapperSelector));
