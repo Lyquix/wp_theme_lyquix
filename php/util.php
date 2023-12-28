@@ -75,7 +75,7 @@ if (PHP_VERSION_ID < 80100) { // PHP 8.1.0
  *               - 'data': The processed data, which may include fixes if 'isFixed' is true.
  */
 
-function validateData($data, $schema) {
+function validate_data($data, $schema) {
 	$missing = [];
 	$mistyped = [];
 	$fixed = [];
@@ -165,7 +165,7 @@ function validateData($data, $schema) {
 				}
 
 				// Handle nested associative arrays by calling validateData recursively
-				$nestedResult = validateData($data[$key], $config['schema']);
+				$nestedResult = validate_data($data[$key], $config['schema']);
 
 				foreach ($nestedResult['missing'] as $f) {
 					$missing[] = $key . '/' . $f;
@@ -201,6 +201,11 @@ function validateData($data, $schema) {
 	];
 }
 
+/**
+ * Get the video player and thumbnail URLs from a YouTube or Vimeo URL
+ * @param string $url The YouTube or Vimeo URL
+ * @return array An array containing the video URL and thumbnail URL
+ */
 function get_video_urls($url) {
 	// Check if the video is from YouTube
 	if (preg_match('/^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/', $url, $match)) {
@@ -227,7 +232,20 @@ function get_video_urls($url) {
 	return ['url' => $url, 'thumbnail' => $thumbnail];
 }
 
-
+/**
+ * Get the breadcrumbs for a page
+ * @param int $post_id The post ID for which to get the breadcrumbs. If null, the current post ID will be used.
+ * @param string $type The type of breadcrumbs to get. Can be one of the following:
+ * 	- 'parent': Parent page breadcrumbs
+ * 	- 'category': Category breadcrumbs
+ * 	- 'post-type': Post type archive breadcrumbs
+ * 	- 'post-type-category': Post type archive and category breadcrumbs
+ * @param int $depth The maximum depth of the breadcrumbs
+ * @param bool $show_current Whether to show the current page in the breadcrumbs
+ * @return array An array containing the breadcrumbs
+ * 	- 'title': The title of the breadcrumb
+ * 	- 'url': The URL of the breadcrumb
+ */
 function get_breadcrumbs($post_id = null, $type = 'parent', $depth = 3, $show_current = true) {
 	// Get the post ID
 	if ($post_id == null) {
@@ -318,3 +336,38 @@ function get_breadcrumbs($post_id = null, $type = 'parent', $depth = 3, $show_cu
 
 	return $breadcrumbs;
 }
+
+/**
+ * Create a slug from a string
+ * @param string $string The string to convert to a slug
+ * @param string $delimiter The delimiter to use between words
+ * @return string The slug
+ */
+function slugify($string, $delimiter = '-') {
+	// Get the string locale
+	$locale = setlocale(LC_ALL, 0);
+
+	// Set locale to UTF-8
+	setlocale(LC_ALL, 'en_US.UTF-8');
+
+	// Remove accents
+	$slug = iconv('UTF-8', 'ASCII//TRANSLIT', $string);
+
+	// Remove non-alphanumeric characters except spaces
+	$slug = preg_replace('/[^a-zA-Z0-9\s]/', '', $slug);
+
+	// Replace spaces with delimeter
+	$slug = preg_replace('/\s+/', $delimiter, $slug);
+
+	// Convert to lowercase
+	$slug = strtolower($slug);
+
+	// Trim delimeter from beginning and end
+	$slug = trim($slug, $delimiter);
+
+	// Revert back to the old locale
+	setlocale(LC_ALL, $locale);
+
+	return $slug;
+}
+

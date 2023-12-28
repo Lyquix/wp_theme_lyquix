@@ -49,7 +49,51 @@ export const util = (() => {
 		vars.util.init = true;
 	};
 
-	/*
+	/**
+	 * Render the outdated browser alert
+	 */
+	const browserAlert = (browserData) => {
+		if ('outdated' in browserData && browserData.outdated) {
+			log('Outdated browser', browserData);
+
+			// Load CSS stylesheet
+			const css = document.createElement('link');
+			css.rel = 'stylesheet';
+			css.href = '<?php echo get_template_directory_uri(); ?>/css/browsers.css';
+			document.body.appendChild(css);
+
+			// Create alert element
+			const elem = jQuery(
+				`<section id="browser-alert">
+					<h1>Please Update Your Browser</h1>
+					<p><strong>You are using an outdated browser.</strong></p>
+					<p>Outdated browsers can make your computer unsafe and may not properly work with this website.
+					To ensure security, performance, and full functionality, please upgrade to an up-to-date browser.</p>
+					<ul></ul>
+				</section>`);
+
+			// Cycle through the list of browsers
+			Object.keys(browserData.info).forEach((browserCode) => {
+				const browser = browserData.info[browserCode];
+				const li = jQuery(
+					`<li id="${browserCode}">
+						<a href="${browser.url}" title="${browser.long_name}" target="_blank">
+							<div class="icon"></div>
+							<h2>${browser.name}</h2>
+						</a>
+						<p class="info"><em>${browser.info}</em></p>
+						<p class="version">Latest Version: <strong>${browser.version}</strong></p>
+						<p class="website"><a href="${browser.url}" title="${browser.long_name}" target="_blank">Visit Official Website</a></p>
+					</li>`);
+				elem.find('ul').append(li);
+			});
+
+			// Append alert to body
+			jQuery('body').append(elem);
+		}
+	};
+
+	/**
 	* Function for handling cookies with ease
 	* inspired by https://github.com/js-cookie/js-cookie and https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie/Simple_document.cookie_framework
 	* lqx.util.cookie(name) to get value of cookie name
@@ -102,6 +146,23 @@ export const util = (() => {
 		return (hashHigh >>> 0).toString(36) + (hashLow >>> 0).toString(36);
 	};
 
+	// Parses URL parameters
+	const parseUrlParams = (url) => {
+		const urlParams = {};
+		const queryStr = (new URL(url, window.location.href)).search.substr(1);
+		if (queryStr != '') {
+			const params = queryStr.split('&');
+			if (params.length) {
+				params.forEach((param) => {
+					const pair = param.split('=', 2);
+					if (pair.length == 2) urlParams[pair[0]] = decodeURIComponent(pair[1].replace(/\+/g, ' '));
+					else urlParams[pair[0]] = null;
+				});
+			}
+		}
+		return urlParams;
+	};
+
 	// Generates a random string of the specificed length
 	const randomStr = (len?: number) => {
 		let str = parseInt((Math.random() * 10e16).toString()).toString(36);
@@ -110,6 +171,31 @@ export const util = (() => {
 			return str.substring(0, len);
 		}
 		return str;
+	};
+
+	/**
+	 * Create a slug from a string
+	 * @param str the string to slugify
+	 * @param delimiter the delimiter to use between words
+	 * @returns the slugified string
+	 */
+	const slugify = (str: string, delimiter: string = '-'): string => {
+		// Remove accents
+		let slug = str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+		// Remove non-alphanumeric characters except spaces
+		slug = str.replace(/[^a-zA-Z0-9\s]/g, '');
+
+		// Replace spaces with delimiter
+		slug = slug.replace(/\s+/g, delimiter);
+
+		// Convert to lowercase
+		slug = slug.toLowerCase();
+
+		// Trim delimiter from beginning and end
+		slug = slug.replace(new RegExp(`^${delimiter}|${delimiter}$`, 'g'), '');
+
+		return slug;
 	};
 
 	// Creates a string using current time - milliseconds
@@ -134,53 +220,6 @@ export const util = (() => {
 				}
 			});
 		}
-	};
-
-	// Compares version strings
-	// Returns:
-	// 0: equal
-	// 1: a > b
-	// -1: a < b
-	const versionCompare = (a, b) => {
-		// If they are equal
-		if (a === b) return 0;
-
-		// Split into arrays and get the length of the shortest
-		a = String(a).split('.');
-		b = String(b).split('.');
-		const len = Math.min(a.length, b.length);
-
-		// Loop while the components are equal
-		for (let i = 0; i < len; i++) {
-			// A bigger than B
-			if (parseInt(a[i]) > parseInt(b[i])) return 1;
-			// B bigger than A
-			if (parseInt(a[i]) < parseInt(b[i])) return -1;
-		}
-
-		// If they are still the same, the longer one is greater.
-		if (a.length > b.length) return 1;
-		if (a.length < b.length) return -1;
-
-		// Otherwise they are the same.
-		return 0;
-	};
-
-	// Parses URL parameters
-	const parseUrlParams = (url) => {
-		const urlParams = {};
-		const queryStr = (new URL(url, window.location.href)).search.substr(1);
-		if (queryStr != '') {
-			const params = queryStr.split('&');
-			if (params.length) {
-				params.forEach((param) => {
-					const pair = param.split('=', 2);
-					if (pair.length == 2) urlParams[pair[0]] = decodeURIComponent(pair[1].replace(/\+/g, ' '));
-					else urlParams[pair[0]] = null;
-				});
-			}
-		}
-		return urlParams;
 	};
 
 	/**
@@ -354,59 +393,49 @@ export const util = (() => {
 		};
 	};
 
-	const browserAlert = (browserData) => {
-		if ('outdated' in browserData && browserData.outdated) {
-			log('Outdated browser', browserData);
+	// Compares version strings
+	// Returns:
+	// 0: equal
+	// 1: a > b
+	// -1: a < b
+	const versionCompare = (a, b) => {
+		// If they are equal
+		if (a === b) return 0;
 
-			// Load CSS stylesheet
-			const css = document.createElement('link');
-			css.rel = 'stylesheet';
-			css.href = '<?php echo get_template_directory_uri(); ?>/css/browsers.css';
-			document.body.appendChild(css);
+		// Split into arrays and get the length of the shortest
+		a = String(a).split('.');
+		b = String(b).split('.');
+		const len = Math.min(a.length, b.length);
 
-			// Create alert element
-			const elem = jQuery(
-				`<section id="browser-alert">
-					<h1>Please Update Your Browser</h1>
-					<p><strong>You are using an outdated browser.</strong></p>
-					<p>Outdated browsers can make your computer unsafe and may not properly work with this website.
-					To ensure security, performance, and full functionality, please upgrade to an up-to-date browser.</p>
-					<ul></ul>
-				</section>`);
-
-			// Cycle through the list of browsers
-			Object.keys(browserData.info).forEach((browserCode) => {
-				const browser = browserData.info[browserCode];
-				const li = jQuery(
-					`<li id="${browserCode}">
-						<a href="${browser.url}" title="${browser.long_name}" target="_blank">
-							<div class="icon"></div>
-							<h2>${browser.name}</h2>
-						</a>
-						<p class="info"><em>${browser.info}</em></p>
-						<p class="version">Latest Version: <strong>${browser.version}</strong></p>
-						<p class="website"><a href="${browser.url}" title="${browser.long_name}" target="_blank">Visit Official Website</a></p>
-					</li>`);
-				elem.find('ul').append(li);
-			});
-
-			// Append alert to body
-			jQuery('body').append(elem);
+		// Loop while the components are equal
+		for (let i = 0; i < len; i++) {
+			// A bigger than B
+			if (parseInt(a[i]) > parseInt(b[i])) return 1;
+			// B bigger than A
+			if (parseInt(a[i]) < parseInt(b[i])) return -1;
 		}
+
+		// If they are still the same, the longer one is greater.
+		if (a.length > b.length) return 1;
+		if (a.length < b.length) return -1;
+
+		// Otherwise they are the same.
+		return 0;
 	};
 
 	return {
 		init,
+		browserAlert,
 		cookie,
 		hash,
+		parseUrlParams,
 		randomStr,
+		slugify,
 		timeStr,
 		uniqueStr,
 		uniqueUrl,
-		versionCompare,
-		parseUrlParams,
 		validateData,
-		browserAlert
+		versionCompare
 	};
 
 })();
