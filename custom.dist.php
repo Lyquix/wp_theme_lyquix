@@ -127,6 +127,8 @@
 					<?php dynamic_sidebar('bottom'); ?>
 				</section>
 			<?php endif; ?>
+
+			<?php lqx\modules\cta\render(); ?>
 		</main>
 
 		<footer>

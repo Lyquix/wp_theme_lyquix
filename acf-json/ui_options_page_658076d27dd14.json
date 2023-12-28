@@ -1,0 +1,23 @@
+{
+    "key": "ui_options_page_658076d27dd14",
+    "title": "CTAs",
+    "active": true,
+    "menu_order": 0,
+    "page_title": "CTAs",
+    "menu_slug": "cta-settings",
+    "parent_slug": "site-settings",
+    "advanced_configuration": 0,
+    "icon_url": "",
+    "menu_title": "",
+    "position": "",
+    "redirect": false,
+    "description": "",
+    "update_button": "Update",
+    "updated_message": "Options Updated",
+    "capability": "edit_posts",
+    "data_storage": "options",
+    "post_id": "",
+    "autoload": 0,
+    "_parent": 3870,
+    "modified": 1702917854
+}
