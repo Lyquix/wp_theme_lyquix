@@ -26,11 +26,11 @@ namespace lqx\modules\alerts;
 
 // Get the alerts from site options
 function rest_route() {
-	$alerts = get_field('alerts_module_content', 'option');
+	$content = get_field('alerts_module_content', 'option');
 
-	if (!$alerts) return [];
+	if (!$content) return [];
 
-	$alerts = array_map(function ($alert) {
+	$content = array_map(function ($alert) {
 		// Add hash to alert
 		$alert['hash'] = md5(json_encode($alert));
 
@@ -40,14 +40,14 @@ function rest_route() {
 		}
 
 		return $alert;
-	}, $alerts);
+	}, $content);
 
 	// Filter out alerts that are not enabled or have expired
-	$alerts = array_filter($alerts, function ($alert) {
+	$content = array_filter($content, function ($alert) {
 		return $alert['enabled'] == 'y' && ($alert['expiration'] == '' || time() <= strtotime($alert['expiration']));
 	});
 
-	return $alerts;
+	return $content;
 }
 
 // Register a REST API endpoint to get the alerts from site options
