@@ -226,7 +226,7 @@
                             "label": "Maximum Depth",
                             "name": "depth",
                             "aria-label": "",
-                            "type": "number",
+                            "type": "range",
                             "instructions": "Set the maximum number of breadcrumb segments (excluding current item) that will be displayed. (Default: 1)",
                             "required": 0,
                             "conditional_logic": [
@@ -248,11 +248,10 @@
                                 "class": "",
                                 "id": ""
                             },
-                            "default_value": 1,
+                            "default_value": 3,
                             "min": 1,
-                            "max": 10,
-                            "placeholder": "",
-                            "step": 1,
+                            "max": 5,
+                            "step": "",
                             "prepend": "",
                             "append": ""
                         },
@@ -426,5 +425,5 @@
     "qef_simple_location_rules": 0,
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1703786380
+    "modified": 1703788679
 }

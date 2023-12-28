@@ -312,18 +312,18 @@
                     "layout": "horizontal"
                 },
                 {
-                    "allow_backendsearch": 0,
+                    "allow_backendsearch": false,
                     "show_column_filter": false,
-                    "allow_bulkedit": 0,
-                    "allow_quickedit": 0,
-                    "show_column": 0,
+                    "allow_bulkedit": false,
+                    "allow_quickedit": false,
+                    "show_column": false,
                     "show_column_weight": 1000,
                     "show_column_sortable": false,
                     "key": "field_6578bfba3ec3f",
                     "label": "Autoplay Delay",
                     "name": "autoplay_delay",
                     "aria-label": "",
-                    "type": "number",
+                    "type": "range",
                     "instructions": "Set the time (in seconds) that each alert will be displayed when auto-playing (Default: 15)",
                     "required": 0,
                     "conditional_logic": [
@@ -341,10 +341,9 @@
                         "id": ""
                     },
                     "default_value": 15,
-                    "min": 0,
+                    "min": 1,
                     "max": 60,
-                    "placeholder": "",
-                    "step": 1,
+                    "step": "",
                     "prepend": "",
                     "append": ""
                 },
@@ -357,8 +356,8 @@
                     "show_column_weight": 1000,
                     "show_column_sortable": false,
                     "key": "field_6585bb7f26169",
-                    "label": "Swiper Settings Override",
-                    "name": "swiper_settings_override",
+                    "label": "Swiper Options Override",
+                    "name": "swiper_options_override",
                     "aria-label": "",
                     "type": "acfe_code_editor",
                     "instructions": "Enter a JSON object to extend default Swiper options",
@@ -454,5 +453,5 @@
     "qef_simple_location_rules": 0,
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1703264211
+    "modified": 1703788659
 }
