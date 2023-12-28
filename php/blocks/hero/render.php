@@ -96,7 +96,7 @@ function render($settings, $content) {
 						<?php foreach ($content['links'] as $link) : ?>
 							<li>
 								<a
-									class="btn <?= $link['type'] == 'button' ? 'common-button' : 'readmore' ?>"
+									class="<?= $link['type'] == 'button' ? 'button' : 'readmore' ?>"
 									href="<?= $link['link']['url'] ?>"
 									target="<?= $link['link']['target'] ?>">
 									<?= $link['link']['title'] ?>

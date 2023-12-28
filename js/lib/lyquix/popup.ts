@@ -135,7 +135,7 @@ export const popup = (() => {
 							popup.links.forEach((l) => {
 								if (l.link.url) {
 									html += '<li>';
-									html += `<a href="${l.link.url}" class="btn ${l.type == 'button' ? 'common-button' : 'readmore'}" ${l.link.target ? ' target="_blank"' : ''}>`;
+									html += `<a href="${l.link.url}" class="${l.type == 'button' ? 'button' : 'readmore'}" ${l.link.target ? ' target="_blank"' : ''}>`;
 									html += l.link.title ? l.link.title : 'Read More';
 									html += '</a>';
 									html += '</li>';
