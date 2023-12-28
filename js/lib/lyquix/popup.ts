@@ -125,7 +125,7 @@ export const popup = (() => {
 							data-dismiss-duration="${popup.dismiss_duration}">`;
 						html += '<button class="close">Close</button>';
 						if (popup.heading) {
-							html += headingStyle == 'p' ? '<p><strong>' : `<${headingStyle}>`;
+							html += headingStyle == 'p' ? '<p class="title"><strong>' : `<${headingStyle}>`;
 							html += popup.heading;
 							html += headingStyle == 'p' ? '</strong></p>' : `</${headingStyle}>`;
 						}

@@ -112,7 +112,7 @@ export const alerts = (() => {
 						// Prepare the HTML
 						let html = `<div id="alert-${i}" class="${cfg.alerts.swiperSlideClass}">`;
 						if (alert.heading) {
-							html += headingStyle == 'p' ? '<p><strong>' : `<${headingStyle}>`;
+							html += headingStyle == 'p' ? '<p class="title"><strong>' : `<${headingStyle}>`;
 							html += alert.heading;
 							html += headingStyle == 'p' ? '</strong></p>' : `</${headingStyle}>`;
 						}
