@@ -163,7 +163,6 @@
                                 "class": "",
                                 "id": ""
                             },
-                            "acfe_field_group_condition": 1,
                             "choices": {
                                 "y": "Yes",
                                 "n": "No"
@@ -315,7 +314,7 @@
             "show_column_sortable": false,
             "key": "field_6577644a0a231",
             "label": "Presets",
-            "name": "presets",
+            "name": "hero_block_presets",
             "aria-label": "",
             "type": "repeater",
             "instructions": "",
@@ -427,5 +426,5 @@
     "qef_simple_location_rules": 0,
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1703172718
+    "modified": 1703786380
 }
