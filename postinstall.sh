@@ -43,23 +43,21 @@ if [ ! -f css/tailwind/theme.js ]; then
 fi
 
 # Copy sample styles from css/lib to css/custom
-FILES=("vars" "base" "text" "lists" "tables" "forms" "accordion" "alerts" "banner" "cards" "cta" "gallery" "hero" "layout" "lyqbox" "popup" "slider" "social" "tabs")
+FILES=("vars" "base" "text" "lists" "tables" "forms" "utility" "buttons" "pagination" "breadcrumbs" \
+	"accordion" "alerts" "banner" "cards" "cta" "gallery" "hero" "layout" "lyqbox" "popup" "slider" \
+	"social" "tabs" "header" "footer" "filters" "home" "search" "404" "page" "blog" "blog-archive")
 for FILE in "${FILES[@]}"; do
 	# Check if the file exists in the css/custom directory
 	if [ ! -f "css/custom/$FILE.scss" ]; then
-		# If it does not exist, copy it from the css/lib directory
-		cp "css/lib/$FILE.dist.scss" "css/custom/$FILE.scss"
-	fi
-done
-
-# Create empty files for common styling structure
-FILES=("utility" "buttons" "pagination" "breadcrumbs" "header" "footer" "filters" "home" "search" "404" "page" "blog" "blog-archive")
-for FILE in "${FILES[@]}"; do
-	# Check if the file exists in the css/custom directory
-	if [ ! -f "css/custom/$FILE.scss" ]; then
-		# If it does not exist, create a new one
-		# Capitalize the first letter of the file name
-		echo "/* $(tr '[:lower:]' '[:upper:]' <<< ${FILE:0:1})${FILE:1} styles */" >  "css/custom/$FILE.scss"
+		# Check if sample file exists in css/lib directory
+		if [ -f "css/lib/$FILE.dist.scss" ]; then
+			# Copy it from the css/lib directory
+			cp "css/lib/$FILE.dist.scss" "css/custom/$FILE.scss"
+		else
+			# Create a new one
+			# Capitalize the first letter of the file name
+			echo "/* $(tr '[:lower:]' '[:upper:]' <<< ${FILE:0:1})${FILE:1} styles\n */" >  "css/custom/$FILE.scss"
+		fi
 	fi
 done
 
