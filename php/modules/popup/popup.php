@@ -26,13 +26,14 @@ namespace lqx\modules\popup;
 
 // Get the popup from site options
 function rest_route() {
-	$popups = get_field('popup_module_content', 'option');
+	$content = get_field('popup_module_content', 'option');
 
-	if (!$popups) return [];
+	if (!$content) return [];
 
-	$popups = array_map(function ($popup) {
+	$content = array_map(function ($popup) {
 		// Add hash to popup
 		$popup['hash'] = md5(json_encode($popup));
+		$popup['server'] = $_SERVER;
 
 		// Convert expiration to UTC
 		if ($popup['expiration'] != '') {
@@ -40,14 +41,14 @@ function rest_route() {
 		}
 
 		return $popup;
-	}, $popups);
+	}, $content);
 
 	// Filter out popup that are not enabled or have expired
-	$popups = array_filter($popups, function ($popup) {
+	$content = array_filter($content, function ($popup) {
 		return $popup['enabled'] == 'y' && ($popup['expiration'] == '' || time() <= strtotime($popup['expiration']));
 	});
 
-	return $popups;
+	return $content;
 }
 
 // Register a REST API endpoint to get the popup from site options

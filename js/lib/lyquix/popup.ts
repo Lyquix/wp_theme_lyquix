@@ -99,6 +99,23 @@ export const popup = (() => {
 						// Skip if popup has expired
 						if (popup.expiration != '' && now > dayjs(popup.expiration).valueOf()) return;
 
+						// Skip if display logic and exceptions are not met
+						let display = true;
+						if (popup.display_logic == 'hide') display = false;
+						if (Array.isArray(popup.display_exceptions)) {
+							popup.display_exceptions.forEach((e) => {
+								// Escape special characters and replace wildcard with regex
+								const url_pattern = e.url_pattern.replace(/[.+?{}()|[\]\\]/g, '\\$&').replace('*', '.*');
+
+								// Create regex
+								const regex = new RegExp('^' + url_pattern + '$');
+
+								// Check if current URL matches the regex
+								if (regex.test(window.location.pathname)) display = !display;
+							});
+						}
+						if (!display) return;
+
 						// Prepare the HTML
 						let html = `<section
 							id="popup-${i}"
