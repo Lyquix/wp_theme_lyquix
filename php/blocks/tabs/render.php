@@ -47,12 +47,14 @@ function render($settings, $content) {
 		<section
 			id="<?= $s['anchor'] ?>"
 			class="lqx-block-tabs  <?= $s['class'] ?>">
+
 			<div
 				class="tabs"
 				id="<?= $s['hash'] ?>"
 				data-browser-history="<?= $s['browser_history'] ?>"
 				data-convert-to-accordion="<?= implode(',', $s['convert_to_accordion']) ?>"
 				data-auto-scroll="<?= implode(',', $s['auto_scroll']) ?>">
+
 				<ul
 					class="tabs-list"
 					role="tablist"
@@ -71,6 +73,7 @@ function render($settings, $content) {
 						</li>
 					<?php endforeach; ?>
 				</ul>
+
 				<?php foreach ($content as $idx => $item) : ?>
 					<section
 						class="tab-panel"
@@ -79,7 +82,8 @@ function render($settings, $content) {
 						aria-hidden="<?= $idx == 0 ? 'false' : 'true' ?>"
 						role="tabpanel"
 						tabindex="0">
-						<?php if($s['convert_to_accordion']) : ?>
+
+						<?php if($s['convert_to_accordion'] == 'y') : ?>
 							<button
 								class="accordion-header"
 								id="<?= $s['hash'] . '-header-' . $idx ?>"
@@ -88,21 +92,21 @@ function render($settings, $content) {
 								aria-hidden="true">
 								<?= $item['label'] ?>
 							</button>
-							<div
-								class="tab-content"
-								id="<?= $s['hash'] . '-content-' . $idx ?>"
-								aria-hidden="<?= $idx == 0 ? 'false' : 'true' ?>">
-								<?php endif;
-								if ($item['heading']) {
-									echo '<' . $s['heading_style'] . '>' . $item['heading'] . '</' . $s['heading_style'] . '>' . "\n";
-								}
-								echo $item['content'] . "\n";
-								if($s['convert_to_accordion']) : ?>
-							</div>
-							<?php endif; ?>
+						<?php endif; ?>
+
+						<div
+							class="tab-content"
+							id="<?= $s['hash'] . '-content-' . $idx ?>"
+							<?= $s['convert_to_accordion'] == 'y' ? 'aria-hidden="' . ($idx == 0 ? 'false' : 'true') . '"' : '' ?>>
+							<?= $item['heading'] ? sprintf('<%s>%s</%s>', $s['heading_style'], $item['heading'], $s['heading_style']) : '' ?>
+							<?= $item['content'] ?>
+						</div>
+
 					</section>
 				<?php endforeach; ?>
+
 			</div>
+
 		</section>
 <?php endif;
 }

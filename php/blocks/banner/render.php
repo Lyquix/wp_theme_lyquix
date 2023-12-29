@@ -54,10 +54,12 @@ function render($settings, $content) {
 	<section
 		id="<?= $s['anchor'] ?>"
 		class="lqx-block-banner <?= $s['class'] ?>">
+
 		<div
 			class="banner"
 			id="<?= $s['hash'] ?>"
 			data-heading-style="<?= $s['heading_style'] ?>">
+
 			<div class="text">
 				<?php if($content['heading']): ?>
 				<<?= $s['heading_style'] ?> class="title"><?= $content['heading'] ?></<?= $s['heading_style'] ?>>
@@ -78,6 +80,7 @@ function render($settings, $content) {
 					</ul>
 				<?php endif; ?>
 			</div>
+
 			<?php if ($content['image']) : ?>
 				<div class="image" <?= $video_attrs ?>>
 					<?php if (is_array($content['image'])) : ?>
@@ -94,7 +97,9 @@ function render($settings, $content) {
 					<?php endif; ?>
 				</div>
 			<?php endif; ?>
+
 		</div>
+
 	</section>
 <?php
 }

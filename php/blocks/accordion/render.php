@@ -48,6 +48,7 @@ function render($settings, $content) {
 		<section
 			id="<?= $s['anchor'] ?>"
 			class="lqx-block-accordion <?= $s['class'] ?>">
+
 			<div
 				class="accordion"
 				id="<?= $s['hash'] ?>"
@@ -55,6 +56,7 @@ function render($settings, $content) {
 				data-open-multiple="<?= $s['open_multiple'] ?>"
 				data-browser-history="<?= $s['browser_history'] ?>"
 				data-auto-scroll="<?= implode(',', $s['auto_scroll']) ?>">
+
 				<?php foreach ($content as $idx => $item) : ?>
 					<<?= $s['heading_style'] ?>>
 						<button
@@ -65,6 +67,7 @@ function render($settings, $content) {
 							<?= $item['heading'] ?>
 						</button>
 					</<?= $s['heading_style'] ?>>
+
 					<section
 						class="accordion-panel <?= $idx == 0 && $s['open_on_load'] == 'y' ? '' : 'closed' ?>"
 						id="<?= $s['hash'] . '-panel-' . $idx ?>"
@@ -77,6 +80,7 @@ function render($settings, $content) {
 					</section>
 				<?php endforeach; ?>
 			</div>
+
 		</section>
 <?php endif;
 }

@@ -78,15 +78,17 @@ function render($settings, $content) {
 	<section
 		id="<?= $s['anchor'] ?>"
 		class="lqx-block-hero <?= $s['class'] ?>">
+
 		<div
 			class="hero"
 			id="<?= $s['hash'] ?>"
 			data-show-image="<?= $s['show_image'] ?>"
-			data-show-breadcrumbs="<?= $s['breadcrumbs']['show_breadcrumbs'] ?>"
+			data-breadcrumbs-show-breadcrumbs="<?= $s['breadcrumbs']['show_breadcrumbs'] ?>"
 			data-breadcrumbs-type="<?= $s['breadcrumbs']['type'] ?>"
 			data-breadcrumbs-depth="<?= $s['breadcrumbs']['depth'] ?>"
 			data-breadcrumbs-show-current="<?= $s['breadcrumbs']['show_current'] ?>"
 			>
+
 			<div class="text">
 				<?= $breadcrumbs ?>
 				<h1 class="title"><?= $content['heading_override'] !== '' ? $content['heading_override'] : get_the_title() ?></h1>
@@ -106,6 +108,7 @@ function render($settings, $content) {
 					</ul>
 				<?php endif; ?>
 			</div>
+
 			<?php if ($s['show_image'] == 'y') : ?>
 				<div class="image" <?= $video_attrs ?>>
 					<?php if (is_array($content['image_override'])) : ?>
@@ -124,7 +127,9 @@ function render($settings, $content) {
 					<?php endif; ?>
 				</div>
 			<?php endif; ?>
+
 		</div>
+
 	</section>
 <?php
 }
