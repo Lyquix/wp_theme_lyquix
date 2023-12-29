@@ -37,6 +37,7 @@ import { util } from './lib/lyquix/util';
 // Import functionality for Gutenberg blocks and modules
 import { accordion } from './lib/lyquix/accordion';
 import { alerts } from './lib/lyquix/alerts';
+import { cards } from './lib/lyquix/cards';
 import { gallery } from './lib/lyquix/gallery';
 import { popup } from './lib/lyquix/popup';
 import { tabs } from './lib/lyquix/tabs';
@@ -66,6 +67,7 @@ const init = (customCfg) => {
 		// Gutenberg blocks
 		'accordion',
 		'alerts',
+		'cards',
 		'gallery',
 		'popup',
 		'tabs'
@@ -117,6 +119,7 @@ const expObj = Object.defineProperties({
 	/* Gutenberg blocks */
 	accordion,
 	alerts,
+	cards,
 	gallery,
 	popup,
 	tabs
