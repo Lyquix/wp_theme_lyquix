@@ -36,53 +36,53 @@ function render($settings, $content) {
 	// Get settings
 	$s = $settings['processed'];
 
+	// Heading style
+	$heading_tag_open  = $s['heading_style'] == 'p' ? '<p class="title"><strong>' : '<' . $s['heading_style'] . '>';
+	$heading_tag_close  = $s['heading_style'] == 'p' ? '</strong></p>' : '</' . $s['heading_style'] . '>';
+
 	?>
 	<section
 		id="<?= $s['anchor'] ?>"
 		class="lqx-block-gallery <?= $s['class'] ?>">
+
 		<div
 			class="gallery <?= $s['slider'] == 'y' ? 'slider' : '' ?>"
 			id="<?= $s['hash'] ?>"
 			data-slider="<?= $s['slider'] ?>"
 			data-swiper-options-override="<?= htmlspecialchars($s['swiper_options_override']) ?>"
+			data-heading-style="<?= $s['heading_style'] ?>"
 			data-browser-history="<?= $s['browser_history'] ?>">
-			<?php if ($s['slider'] == 'y') : ?>
-				<div class="swiper">
-					<div class="swiper-wrapper">
-						<?php foreach ($content as $idx => $item) : ?>
-							<?php if ($item['video']) $video = \lqx\util\get_video_urls($item['video']); ?>
-							<div
-								class="swiper-slide"
-								id="<?= $item['slug'] ? $item['slug'] : 'gallery-image-' . $idx ?>"
-								data-lyqbox data-lyqbox-type="<?= $video['url'] ? 'video' : 'image' ?>"
-								data-lyqbox-url="<?= $video['url'] ? $video['url'] : $item['image']['sizes']['large'] ?>"
-								data-lyqbox-caption="<?= htmlspecialchars($item['caption']) ?>">
-								<img src="<?= $item['thumbnail']['sizes']['large'] ?>" alt="<?= htmlspecialchars($item['image']['alt']) ?>">
-							</div>
-						<?php endforeach; ?>
-					</div>
+
+			<?= $s['slider'] == 'y' ? '<div class="swiper">' : '' ?>
+				<ul class="<?= $s['slider'] == 'y' ? 'swiper-wrapper' : 'gallery-wrapper' ?>">
+					<?php foreach ($content as $idx => $item) : ?>
+						<?php if ($item['video']) $video = \lqx\util\get_video_urls($item['video']); ?>
+						<li
+							class="<?= $s['slider'] == 'y' ? 'swiper-slide' : 'gallery-slide' ?>"
+							id="<?= $item['slug'] ? $item['slug'] : $s['hash'] . '-' . $idx ?>"
+							data-lyqbox data-lyqbox-type="<?= $video['url'] ? 'video' : 'image' ?>"
+							data-lyqbox-url="<?= $video['url'] ? $video['url'] : $item['image']['sizes']['large'] ?>"
+							data-lyqbox-caption="<?= htmlspecialchars($heading_tag_open . $item['title'] . $heading_tag_close . $item['caption']) ?>">
+							<img
+								src="<?= $item['thumbnail']['sizes']['large'] ?>"
+								alt="<?= htmlspecialchars($item['image']['alt']) ?>">
+							<?= $heading_tag_open . $item['title'] . $heading_tag_close ?>
+							<?= '<p>' . $item['teaser'] . '</p>' ?>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+
+				<?php if ($s['slider'] == 'y') : ?>
 					<div class="controls">
 						<div class="swiper-button-prev"></div>
 						<div class="swiper-button-next"></div>
 					</div>
-				</div>
-			<?php else : ?>
-				<div class="">
-					<?php foreach ($content as $idx => $item) : ?>
-						<?php if ($item['video']) $video = \lqx\util\get_video_urls($item['video']); ?>
-						<div
-							class="gallery-image"
-							id="<?= 'gallery-image-' . $idx ?>"
-							data-slug="<?= $item['slug'] ?>"
-							data-lyqbox data-lyqbox-type="<?= $video['url'] ? 'video' : 'image' ?>"
-							data-lyqbox-url="<?= $video['url'] ? $video['url'] : $item['image']['sizes']['large'] ?>"
-							data-lyqbox-caption="<?= htmlspecialchars($item['caption']) ?>">
-							<img src="<?= $item['thumbnail']['sizes']['large'] ?>" alt="<?= htmlspecialchars($item['image']['alt']) ?>">
-						</div>
-					<?php endforeach; ?>
-				</div>
-			<?php endif; ?>
+				<?php endif; ?>
+
+			<?= $s['slider'] == 'y' ? '</div>' : '' ?>
+
 		</div>
+
 	</section>
 	<?php
 }

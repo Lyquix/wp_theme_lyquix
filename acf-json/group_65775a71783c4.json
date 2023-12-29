@@ -126,8 +126,8 @@
                     "show_column_weight": 1000,
                     "show_column_sortable": false,
                     "key": "field_6585b27ac13e1",
-                    "label": "Swiper Settings Override",
-                    "name": "swiper_settings_override",
+                    "label": "Swiper Options Override",
+                    "name": "swiper_options_override",
                     "aria-label": "",
                     "type": "acfe_code_editor",
                     "instructions": "Enter a JSON object to extend default Swiper options",
@@ -155,6 +155,41 @@
                     "rows": 4,
                     "max_rows": "",
                     "return_format": []
+                },
+                {
+                    "allow_backendsearch": false,
+                    "show_column_filter": 0,
+                    "allow_bulkedit": 0,
+                    "allow_quickedit": 0,
+                    "show_column": 0,
+                    "show_column_weight": 1000,
+                    "show_column_sortable": false,
+                    "key": "field_658f0e886d58f",
+                    "label": "Heading Style",
+                    "name": "heading_style",
+                    "aria-label": "",
+                    "type": "button_group",
+                    "instructions": "Select the heading level for the title",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "choices": {
+                        "p": "P and STRONG",
+                        "h1": "H1",
+                        "h2": "H2",
+                        "h3": "H3",
+                        "h4": "H4",
+                        "h5": "H5",
+                        "h6": "H6"
+                    },
+                    "default_value": "p",
+                    "return_format": "value",
+                    "allow_null": 1,
+                    "layout": "horizontal"
                 },
                 {
                     "allow_backendsearch": false,
@@ -313,5 +348,5 @@
     "qef_simple_location_rules": 0,
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1703264229
+    "modified": 1703874486
 }
