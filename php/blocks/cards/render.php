@@ -36,8 +36,100 @@ namespace lqx\blocks\cards;
  * hash: A unique hash of the cards
  */
 function render($settings, $content) {
-	// Get the processed settings
-	$s = $settings['processed'];
+	file_put_contents(__DIR__ . '/render.log', json_encode([$settings, $content], JSON_PRETTY_PRINT));
+
+	// Get and validate processed settings
+	$s = (\lqx\util\validate_data($settings['processed'], [
+		'anchor' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+		'class' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+		'hash' => [
+			'type' => 'string',
+			'required' => true,
+			'default' => 'id-' . md5(json_encode([$settings, $content, random_int(1000, 9999)]))
+		],
+		'slider' => [
+			'type' => 'string',
+			'required' => true,
+			'default' => 'n'
+		],
+		'swiper_options_override' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+		'heading_style' => [
+			'type' => 'string',
+			'required' => true,
+			'default' => 'h3'
+		],
+		'heading_clickable' => [
+			'type' => 'string',
+			'required' => true,
+			'default' => 'y'
+		],
+		'image_clickable' => [
+			'type' => 'string',
+			'required' => true,
+			'default' => 'y'
+		],
+		'responsive_rules' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING
+	]))['data'];
+
+	// Filter out any content missing heading or content
+	if (is_array($content)) {
+		$content = array_map(function ($item) {
+			return \lqx\util\validate_data($item, [
+				'heading' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+				'subheading' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+				'image' => [
+					'type' => 'array',
+					'required' => false,
+					'schema' => LQX_VALIDATE_DATA_SCHEMA_IMAGE
+				],
+				'icon_image' => [
+					'type' => 'array',
+					'required' => false,
+					'schema' => LQX_VALIDATE_DATA_SCHEMA_IMAGE
+				],
+				'video' => [
+					'type' => 'array',
+					'required' => false,
+					'schema' => [
+						'type' => [
+							'type' => 'string',
+							'required' => true,
+							'default' => 'url'
+						],
+						'url' => [
+							'type' => 'string',
+							'required' => false,
+							'default' => ''
+						],
+						'upload' => LQX_VALIDATE_DATA_SCHEMA_VIDEO_UPLOAD
+					]
+				],
+				'body' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+				'links' => [
+					'type' =>	'array',
+					'required' => false,
+					'schema' => [
+						'type' => [
+							'type' => 'string',
+							'required' => true,
+							'default' => 'button'
+						],
+						'link' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_LINK
+					]
+
+				],
+				'labels' => [
+					'type' =>	'array',
+					'required' => false,
+					'schema' => [
+						'label' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+						'value' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING
+					]
+				]
+			])['data'];
+		}, $content);
+	}
+	else $content = [];
 
 	if (!empty($content)) : ?>
 		<section
@@ -94,7 +186,7 @@ function render($settings, $content) {
 											<video
 												autoplay loop muted playsinline
 												poster="<?= $item['image']['sizes']['large'] ?>">
-												<source src="<?= $item['video']['upload'] ?>" type="video/mp4">
+												<source src="<?= $item['video']['upload']['url'] ?>" type="<?= $item['video']['upload']['mime_type'] ?>">
 											</video>
 										<?php else: ?>
 											<?= $s['image_clickable'] == 'y' && $first_link ? '<a href="' . $first_link . '">' : '' ?>
