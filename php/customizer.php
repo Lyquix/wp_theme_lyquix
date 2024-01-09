@@ -29,7 +29,7 @@ function customizer_add($wp_customize) {
 		'CSS' => [
 			'non_min_css' => [
 				'type' => 'radio',
-				'label' => 'Use Original CSS',
+				'label' => 'Use Original CSS (non-minified)',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '0'
 			],
@@ -58,12 +58,12 @@ function customizer_add($wp_customize) {
 			'lqx_debug' => [
 				'type' => 'radio',
 				'label' => 'Enable lqx debug',
-				'choices' => ['0' => 'None', '1' => 'Errors', '2' => 'Warnings', '3' => 'Info'],
+				'choices' => ['0' => 'None', '1' => 'Errors', '2' => 'Errors, Warnings', '3' => 'Errors, Warnings, Info'],
 				'default' => '0'
 			],
 			'non_min_js' => [
 				'type' => 'radio',
-				'label' => 'Use Original JS',
+				'label' => 'Use Original JS (non-minified)',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '0'
 			],
@@ -97,6 +97,9 @@ function customizer_add($wp_customize) {
 			]
 		],
 		'Analytics' => [
+			'ga4_account' => [
+				'label' => 'Google Analytics 4 Account (Measurement ID)',
+			],
 			'ga_pageview' => [
 				'type' => 'radio',
 				'label' => 'Send Google Analytics Pageview',
