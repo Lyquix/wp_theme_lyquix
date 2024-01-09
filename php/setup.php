@@ -71,6 +71,32 @@ function theme_setup() {
 		echo '<style>.pw-weak { display: none !important; }</style>';
 		echo '<script>(() => {var e = document.getElementById(\'pw-checkbox\'); if(e) e.disabled = true;})();</script>';
 	}
+
+	// Change the default image sizes
+	add_image_size('small', 640, 640);
+	add_action('init', 	function () {
+		remove_image_size('medium_large');
+		remove_image_size('1536x1536');
+		remove_image_size('2048x2048');
+	});
+	add_filter('intermediate_image_sizes_advanced', function ($sizes) {
+		file_put_contents(__DIR__ . '/setup1.log', json_encode($sizes, JSON_PRETTY_PRINT));
+		return [
+			'thumbnail' => ['width' => 150, 'height' => 150, 'crop' => true],
+			'small' => ['width' => 640, 'height' => 640, 'crop' => false],
+			'medium' => ['width' => 1280, 'height' => 1280, 'crop' => false],
+			'large' => ['width' => 3840, 'height' => 3840, 'crop' => false]
+		];
+	}, 10, 1);
+	add_filter('intermediate_image_sizes', function ($sizes) {
+		file_put_contents(__DIR__ . '/setup2.log', json_encode($sizes, JSON_PRETTY_PRINT));
+		return [
+			'thumbnail',
+			'small',
+			'medium',
+			'large'
+		];
+	}, 10, 1);
 }
 
 add_action('after_setup_theme', '\lqx\setup\theme_setup');
