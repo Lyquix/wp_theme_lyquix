@@ -97,6 +97,51 @@ function theme_setup() {
 			'large'
 		];
 	}, 10, 1);
+
+	// Remove additional ACF extended menu items
+	add_action('admin_menu', function () {
+		global $submenu, $admin_submenu_backup;
+		$remove_menus = [
+			'edit.php?post_type=acf-field-group' => [
+				'edit.php?post_type=acf-post-type',
+				'edit.php?post_type=acfe-dop',
+				'edit-tags.php?taxonomy=acf-field-group-category',
+				'edit.php?post_type=acfe-dbt',
+				'edit.php?post_type=acfe-form',
+				'acfe-settings',
+				'edit.php?post_type=acfe-template'
+			],
+			'options-general.php' => ['acfe-options'],
+			'tools.php' => [
+				'edit.php?post_type=acfe-dpt',
+				'edit.php?post_type=acfe-dt',
+				'acfe-rewrite-rules',
+				'acfe-scripts'
+			]
+		];
+		foreach ($remove_menus as $parent_slug => $submenus) {
+			foreach ($submenus as $submenu_slug) {
+				foreach ($submenu[$parent_slug] as $k => $sub) {
+					if (in_array($submenu_slug, $submenu[$parent_slug][$k])) {
+						$admin_submenu_backup[$parent_slug][$k] = $submenu[$parent_slug][$k];
+						unset($submenu[$parent_slug][$k]);
+					}
+				}
+			}
+		}
+	}, 999);
+
+	// Add ACF extended pages for ACF screens
+	add_action('current_screen', function ($screen) {
+		global $submenu, $admin_submenu_backup;
+		if (str_contains($screen->id, 'acf') && count($admin_submenu_backup)) {
+			foreach ($admin_submenu_backup as $parent_slug => $submenus_array) {
+				foreach ($submenus_array as $submenu_array) {
+					$submenu[$parent_slug][] = $submenu_array;
+				}
+			}
+		}
+	});
 }
 
 add_action('after_setup_theme', '\lqx\setup\theme_setup');
