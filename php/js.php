@@ -57,7 +57,7 @@ function enqueue_scripts() {
 	// MobileDetect
 	$scripts[] = [
 		'handle' => 'mobile-detect',
-		'url' => 'https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.5/mobile-detect' . ($non_min_js ? '' : '.min') . '.js',
+		'url' => 'https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.5/mobile-detect.min.js',
 		'version' => '1.4.5'
 	];
 
@@ -65,12 +65,12 @@ function enqueue_scripts() {
 	if (get_theme_mod('dayjs', 1)) {
 		$scripts[] = [
 			'handle' => 'dayjs',
-			'url' => 'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.9/dayjs' . ($non_min_js ? '' : '.min') . '.js',
+			'url' => 'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.10/dayjs.min.js',
 			'version' => '1.11.9'
 		];
 		$scripts[] = [
 			'handle' => 'dayjs-locale-en',
-			'url' => 'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.9/locale/en' . ($non_min_js ? '' : '.min') . '.js',
+			'url' => 'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.10/locale/en.min.js',
 			'version' => '1.11.9'
 		];
 	}
@@ -155,16 +155,10 @@ function render_lyquix_options() {
 		'tmplURL' => get_template_directory_uri()
 	];
 
-	if (get_theme_mod('ga_account', '') || get_theme_mod('ga4_account', '')) {
-		$lqx_options['analytics'] = [
-			'trackingId' => get_theme_mod('ga_account'),
-			'measurementId' => get_theme_mod('ga4_account')
-		];
-	}
-
+	if (get_theme_mod('ga4_account', '')) $lqx_options['analytics'] = ['measurementId' => get_theme_mod('ga4_account')];
 	if (!get_theme_mod('ga_pageview', '1')) $lqx_options['analytics']['sendPageview'] = false;
 	if (get_theme_mod('ga_via_gtm', '0')) $lqx_options['analytics']['usingGTM'] = true;
-	if (!get_theme_mod('ga_use_analytics_js', '1')) $lqx_options['analytics']['useAnalyticsJS'] = false;
+
 
 	// Merge with options from template settings
 	$theme_lqx_options = json_decode(get_theme_mod('lqx_options'), true);
