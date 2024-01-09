@@ -98,6 +98,17 @@ function theme_setup() {
 		];
 	}, 10, 1);
 
+
+	// Add user management capabilities to editor user role
+	add_action('admin_init', function () {
+		$role = get_role('editor');
+		$role->add_cap('create_users');
+		$role->add_cap('edit_users');
+		$role->add_cap('delete_users');
+		$role->add_cap('promote_users');
+		$role->add_cap('list_users');
+		$role->add_cap('remove_users');
+	});
 	// Remove additional ACF extended menu items
 	add_action('admin_menu', function () {
 		global $submenu, $admin_submenu_backup;
