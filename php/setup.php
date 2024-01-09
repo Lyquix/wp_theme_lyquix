@@ -45,8 +45,9 @@ function theme_setup() {
 	})());
 
 	// Hide PHP upgrade alert from dashboard
+	// Hide Yoast SEO meta box
 	add_action('admin_head', function () {
-		echo '<style>#dashboard_php_nag {display:none;}</style>';
+		echo '<style>#dashboard_php_nag, #wpseo_meta {display:none;}</style>';
 	});
 
 	// Allow SVGs in WP Uploads
@@ -63,14 +64,6 @@ function theme_setup() {
 	add_action('wp_head', function () {
 		wp_enqueue_style('global-styles');
 	});
-
-	// Remove Yoast SEO meta box from all post types
-	add_action('add_meta_boxes', function () {
-		$post_types = get_post_types();
-		foreach ($post_types as $post_type) {
-			remove_meta_box('wpseo_meta', $post_type, 'normal');
-		}
-	}, 100);
 
 	// Remove WordPress generator meta tag
 	remove_action('wp_head', 'wp_generator');
