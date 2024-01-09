@@ -32,22 +32,19 @@
 	\lqx\meta\render();
 
 	// Render GTM head code
-	lqx\js\render_gtm_head_code();
+	\lqx\js\render_gtm_head_code();
 
 	// WordPress enqueued head meta and scripts
 	wp_head();
 
 	// Favicons
 	\lqx\favicon\render();
-
-	// head-scripts widget area
-	dynamic_sidebar('head-scripts');
 	?>
 </head>
 <body class="<?= \lqx\body\classes() ?>">
 	<?php
 	// Render GTM body code
-	lqx\js\render_gtm_body_code();
+	\lqx\js\render_gtm_body_code();
 
 	// Chromeless page template
 	if ($lqx_page_template === 'chromeless') :
@@ -57,9 +54,8 @@
 	// Non-chromeless page template
 	else : ?>
 		<header>
-			<?php lqx\modules\alerts\render(); ?>
 
-			<?php if (is_active_sidebar('header')) dynamic_sidebar('header'); ?>
+		<?php \lqx\modules\alerts\render(); ?>
 
 			<?php if (has_nav_menu('top-menu')) : ?>
 				<nav class="menu top">
@@ -84,55 +80,22 @@
 					<?php wp_nav_menu(['menu' => 'logged-in-menu']); ?>
 				</nav>
 			<?php endif; ?>
+
 		</header>
 
 		<main>
-			<?php if (is_active_sidebar('top')) : ?>
-				<section class="widget top">
-					<?php dynamic_sidebar('top'); ?>
-				</section>
-			<?php endif; ?>
-
-			<?php if (is_active_sidebar('left')) : ?>
-				<aside class="widget left">
-					<?php dynamic_sidebar('left'); ?>
-				</aside>
-			<?php endif; ?>
 
 			<article>
-				<?php if (is_active_sidebar('before')) : ?>
-					<section class="widget before">
-						<?php dynamic_sidebar('before'); ?>
-					</section>
-				<?php endif;
 
-				// Template router
-				\lqx\router\render();
+				<?php \lqx\router\render(); ?>
 
-				if (is_active_sidebar('after')) : ?>
-					<section class="widget after">
-						<?php dynamic_sidebar('after'); ?>
-					</section>
-				<?php endif; ?>
 			</article>
 
-			<?php if (is_active_sidebar('right')) : ?>
-				<aside class="widget right">
-					<?php dynamic_sidebar('right'); ?>
-				</aside>
-			<?php endif; ?>
+			<?php \lqx\modules\cta\render(); ?>
 
-			<?php if (is_active_sidebar('bottom')) : ?>
-				<section class="widget bottom">
-					<?php dynamic_sidebar('bottom'); ?>
-				</section>
-			<?php endif; ?>
-
-			<?php lqx\modules\cta\render(); ?>
 		</main>
 
 		<footer>
-			<?php if (is_active_sidebar('footer')) dynamic_sidebar('footer'); ?>
 
 			<?php if (has_nav_menu('bottom-menu')) : ?>
 				<nav class="menu bottom">
@@ -146,14 +109,13 @@
 				</nav>
 			<?php endif; ?>
 
-			<?php lqx\modules\social\render_social_icons(); ?>
+			<?php \lqx\modules\social\render_social_icons(); ?>
 
 		</footer>
 
-		<?php lqx\modules\popup\render(); ?>
 	<?php
-	// Outdated browser alert
-	\lqx\browsers\render();
+	// Popups
+	\lqx\modules\popup\render();
 
 	// End of non-chromeless page template
 	endif;
@@ -161,14 +123,15 @@
 	// WordPress enqueued footer scripts
 	wp_footer();
 
-	if (is_active_sidebar('body-scripts')) dynamic_sidebar('body-scripts');
-
 	// Render Lyquix and Scripts options
-	lqx\js\render_lyquix_options();
+	\lqx\js\render_lyquix_options();
 
 	// Render page custom CSS and JS
-	lqx\css\render_page_custom_css();
-	lqx\js\render_page_custom_js();
+	\lqx\css\render_page_custom_css();
+	\lqx\js\render_page_custom_js();
+
+	// Outdated browser alert
+	\lqx\browsers\render();
 
 	// LiveReload library
 	\lqx\livereload\render();
