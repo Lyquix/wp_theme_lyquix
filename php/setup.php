@@ -63,6 +63,14 @@ function theme_setup() {
 
 	// Remove WordPress generator meta tag
 	remove_action('wp_head', 'wp_generator');
+
+	// Remove weak password confirmation checkbox
+	add_action('login_init', '\lqx\setup\no_weak_password');
+	add_action('admin_head', '\lqx\setup\no_weak_password');
+	function no_weak_password() {
+		echo '<style>.pw-weak { display: none !important; }</style>';
+		echo '<script>(() => {var e = document.getElementById(\'pw-checkbox\'); if(e) e.disabled = true;})();</script>';
+	}
 }
 
 add_action('after_setup_theme', '\lqx\setup\theme_setup');
