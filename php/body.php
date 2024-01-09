@@ -25,6 +25,8 @@
 namespace lqx\body;
 
 function classes() {
+	global $wp_query;
+
 	$classes = [];
 
 	if (is_front_page()) {
