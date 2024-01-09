@@ -32,6 +32,37 @@ if (PHP_VERSION_ID < 80100) { // PHP 8.1.0
 }
 
 /**
+ * Utility function to get the data type of a variable as needed by validate_data
+ * @param mixed $data The variable to check
+ * @return string The data type of the variable
+ */
+function get_data_type($data) {
+	// Get the data type
+	$type = gettype($data);
+
+	// Convert the data type to a string that can be used by validate_data
+	switch ($type) {
+		case 'boolean':
+		case 'integer':
+		case 'string':
+			break;
+
+		case 'double':
+			$type = 'float';
+			break;
+
+		case 'array':
+			if (!array_is_list($data)) $type = 'object';
+			break;
+
+		default:
+			$type = '';
+	}
+
+	return $type;
+}
+
+/**
  * Validates and processes data based on a provided schema.
  *
  * This function checks whether the given data conforms to the specified schema
@@ -39,6 +70,7 @@ if (PHP_VERSION_ID < 80100) { // PHP 8.1.0
  * adheres to expected formats and requirements.
  *
  * @param array $data    The data to be validated and processed. Must be an associative array.
+ * @param string $field  The name of the field being validated. This is used to provide more detailed information
  * @param array $schema  The schema defines the expected structure and validation rules for the incoming data.
  *
  *              It should be an associative array where each key corresponds to a field in the incoming data,
@@ -46,143 +78,181 @@ if (PHP_VERSION_ID < 80100) { // PHP 8.1.0
  *
  *              The structure of each field configuration is as follows:
  *
- *              - 'type' (string, required): Specifies the expected data type for the field. It can be one of the following types:
+ *              - 'type' (string, required): Specifies the expected data type for the field. It can be one of the
+ *                following types:
  *                - 'string': A string data type.
  *                - 'integer': An integer data type.
  *                - 'float': A floating-point number data type.
  *                - 'boolean': A boolean data type (true or false).
- *                - 'array': An array data type. To distinguish between list and associative arrays see the 'itemsType' and 'schema'
- *                   options below.
+ *                - 'array' : An array (a  numbered list of elements)
+ *                - 'object' : An associative array
  *
- *              - 'required' (bool, optional): Indicates whether the field is required. If set to true, the field must exist in the
- *                incoming data, or it will be considered missing. Default is false.
+ *              - 'allowed' (array, optional): Applicable only if 'type' is 'string', 'integer', or 'float;. Defines a list
+ *                 of the allowed values. If the string is not one of the allowed values, it will be considered mistyped.
  *
- *              - 'default' (mixed, optional): Provides a default value for the field if it's missing in the incoming data or
- *                the value is of the wrong type.
+ *              - 'range' (array, optional): Applicable only if 'type' is 'integer' or 'float'. Defines the allowed range
+ *                of values by setting a minimum and maximum. If the value is outside the range, it will be considered
+ *                mistyped.
  *
- *              - 'itemsType' (string, optional): Applicable only if 'type' is 'array'. Specifies the expected data type for elements
- *                in the array. It can have the same data type options as 'type' (e.g., 'string', 'integer', 'boolean', etc.).
+ *              - 'default' (mixed, optional): Provides a default value for the field when it's required and it's either
+ *                missing in the incoming data or the value is of the wrong type. If no default is provided for a required
+ *                field, the data will not be considered fixed.
  *
- *              - 'schema' (array, optional): Applicable only if 'type' is 'array'. Defines a nested schema for elements within the array.
- *                This nested schema follows the same structure as the main `$schema` and is used to validate the elements within the array.
+ *              - 'required' (bool, optional): Indicates whether a key in an object is required. If set to true, the key
+ *                must exist in the incoming data, or it will be considered missing. Default is false.
  *
+ *              - 'keys' (array, optional): Applicable only if 'type' is 'object'. Defines the expected keys within the
+ *                object. This is a nested schema that follows the same structure as the main `$schema` and is used to
+ *                validate the keys of the object.
+ *
+ *              - 'elems' (array, optional): Applicable only if 'type' is 'array'. Defines the expected elements within the
+ *                array. This is a nested schema that follows the same structure as the main `$schema` and is used to
+ *
+ * @return false if the schema is invalid.
  * @return array An array containing the validation results and possibly fixed data.
  *               - 'isValid': A boolean indicating whether the data is valid according to the schema.
  *               - 'isFixed': A boolean indicating whether any fixes were applied to the data.
  *               - 'missing': An array listing keys that are missing in the data but required by the schema.
  *               - 'mistyped': An array listing keys whose data types do not match the schema.
+ *               - 'invalid': An array listing keys whose values are not allowed by the schema.
  *               - 'fixed': An array listing keys for which fixes were applied.
  *               - 'data': The processed data, which may include fixes if 'isFixed' is true.
  */
 
-function validate_data($data, $schema) {
+function validate_data($data, $schema, $field = 'root') {
 	$missing = [];
 	$mistyped = [];
+	$invalid = [];
 	$fixed = [];
 	$isValid = true;
 	$isFixed = false;
 
-	foreach ($schema as $key => $config) {
-		// Check if the key exists in the received data
-		if (!array_key_exists($key, $data)) {
-			// If the key is required, add it to the missing array
-			if ($config['required']) {
-				$missing[] = $key;
+	// Return false if there's no type in schema
+	if (!array_key_exists('type', $schema)) {
+		echo 'validate_data: no type in schema';
+		return false;
+	}
+
+	// The only valid keys in schema are 'type', 'required', 'default', 'keys', and 'elems'
+	// Return false if other keys are found
+	foreach (array_keys($schema) as $key) {
+		if (!in_array($key, ['type', 'required', 'default', 'keys', 'elems', 'allowed', 'range'])) {
+			echo 'validate_data: invalid key in schema: ' . $key;
+			return false;
+		}
+	}
+
+	// Check if the received data type matches the expected type
+	if (get_data_type($data) !== $schema['type']) {
+		// Add the key to the mistyped array
+		$mistyped[] = $field;
+
+		// Attempt to fix by using the default value if available
+		if (array_key_exists('default', $schema)) {
+			$data = $schema['default'];
+			$fixed[] = $field;
+			$isFixed = true;
+		} else {
+			$isValid = false;
+		}
+	}
+
+	// Handle allowed values
+	if (in_array($schema['type'], ['string', 'integer', 'float'])) {
+		if (array_key_exists('allowed', $schema)) {
+			if (!in_array($data, $schema['allowed'])) {
+				// Add the key to the invalid array
+				$invalid[] = $field;
 
 				// Attempt to fix by using the default value if available
-				if (array_key_exists('default', $config)) {
-					$data[$key] = $config['default'];
-					$fixed[] = $key;
+				if (array_key_exists('default', $schema)) {
+					$data = $schema['default'];
+					$fixed[] = $field;
 					$isFixed = true;
 				} else {
 					$isValid = false;
-					continue;
 				}
 			}
 		}
+	}
 
-		// Check if the received data type matches the expected type
-		if (gettype($data[$key]) !== $config['type']) {
-			// Add the key to the mistyped array
-			$mistyped[] = $key;
+	// Handle allowed range
+	if (in_array($schema['type'], ['integer', 'float'])) {
+		if (array_key_exists('range', $schema)) {
+			if ($data < $schema['range'][0] || $data > $schema['range'][1]) {
+				// Add the key to the invalid array
+				$invalid[] = $field;
 
-			// Attempt to fix by using the default value if available
-			if (array_key_exists('default', $config)) {
-				$data[$key] = $config['default'];
-				$fixed[] = $key;
-				$isFixed = true;
-			} else {
-				$isValid = false;
-				continue;
+				// Attempt to fix by using the default value if available
+				if (array_key_exists('default', $schema)) {
+					$data = $schema['default'];
+					$fixed[] = $field;
+					$isFixed = true;
+				} else {
+					$isValid = false;
+				}
 			}
 		}
+	}
 
-		// Check if the received data is an array
-		if ($config['type'] === 'array') {
+	// Handle arrays
+	if ($schema['type'] === 'array') {
+		if (array_key_exists('elems', $schema)) {
+			foreach ($data as $i => $item) {
+				// Handle array data by calling validate_data recursively
+				$elemResult = validate_data($item, $schema['elems'], $field . '[' . $i . ']');
 
-			// Handle arrays of primitive types
-			if (isset($config['itemsType'])) {
-				// Check if the array is a list
-				if (!array_is_list($data[$key])) {
-					$mistyped[] = $key;
+				foreach ($elemResult['missing'] as $f) $missing[] = $f;
+				foreach ($elemResult['mistyped'] as $f) $mistyped[] = $f;
+				foreach ($elemResult['invalid'] as $f) $invalid[] = $f;
+				foreach ($elemResult['fixed'] as $f) $fixed[] = $f;
 
-					// Attempt to fix by using the default value if available
-					if (array_key_exists('default', $config)) {
-						$data[$key] = $config['default'];
-						$fixed[] = $key;
+				if ($elemResult['isValid']) {
+					if ($elemResult['isFixed']) {
 						$isFixed = true;
-					} else {
-						$isValid = false;
-						continue;
+						$data[$i] = $elemResult['data'];
 					}
-				}
-
-				// Handle arrays of primitive types
-				foreach ($data[$key] as $i => $item) {
-					if (gettype($item) !== $config['itemsType']) {
-						$mistyped[] = $key . '[' . $i . ']';
-						$isFixed = false;
-						$isValid = false;
-						continue;
-					}
+				} else {
+					$isValid = false;
 				}
 			}
-			// Handle associative arrays
-			elseif (isset($config['schema'])) {
-				// Check if the array is a list
-				if (array_is_list($data[$key])) {
-					$mistyped[] = $key;
+		}
+	}
 
-					// Attempt to fix by using the default value if available
-					if (array_key_exists('default', $config)) {
-						$data[$key] = $config['default'];
-						$fixed[] = $key;
-						$isFixed = true;
-					} else {
-						$isValid = false;
-						continue;
+	// Handle objects
+	if ($schema['type'] === 'object') {
+		if (array_key_exists('keys', $schema)) {
+			foreach ($schema['keys'] as $key => $config) {
+				// Check if the key exists in the received data
+				if (!array_key_exists($key, $data)) {
+					// If the key is required, add it to the missing array
+					if ($config['required']) {
+						$missing[] = $field . '/' . $key;
+
+						// Attempt to fix by using the default value if available
+						if (array_key_exists('default', $config)) {
+							$data[$key] = $config['default'];
+							$fixed[] = $field . '/' . $key;
+							$isFixed = true;
+						} else {
+							$isValid = false;
+							continue;
+						}
 					}
 				}
 
-				// Handle nested associative arrays by calling validateData recursively
-				$nestedResult = validate_data($data[$key], $config['schema']);
+				// Handle object data by calling validate_data recursively
+				$keyResult = validate_data($data[$key], $config, $field . '/' . $key);
 
-				foreach ($nestedResult['missing'] as $f) {
-					$missing[] = $key . '/' . $f;
-				}
+				foreach ($keyResult['missing'] as $f) $missing[] = $f;
+				foreach ($keyResult['mistyped'] as $f) $mistyped[] = $f;
+				foreach ($keyResult['invalid'] as $f) $invalid[] = $f;
+				foreach ($keyResult['fixed'] as $f) $fixed[] = $f;
 
-				foreach ($nestedResult['mistyped'] as $f) {
-					$mistyped[] = $key . '/' . $f;
-				}
-
-				foreach ($nestedResult['fixed'] as $f) {
-					$fixed[] = $key . '/' . $f;
-				}
-
-				if ($nestedResult['isValid']) {
-					if ($nestedResult['isFixed']) {
+				if ($keyResult['isValid']) {
+					if ($keyResult['isFixed']) {
 						$isFixed = true;
-						$data[$key] = $nestedResult['data'];
+						$data[$key] = $keyResult['data'];
 					}
 				} else {
 					$isValid = false;
@@ -196,6 +266,7 @@ function validate_data($data, $schema) {
 		'isFixed' => $isFixed,
 		'missing' => $missing,
 		'mistyped' => $mistyped,
+		'invalid' => $invalid,
 		'fixed' => $fixed,
 		'data' => $data
 	];
@@ -211,7 +282,7 @@ define('LQX_VALIDATE_DATA_SCHEMA_REQUIRED_INTEGER', [
 	'required' => true,
 	'default' => ''
 ]);
-define('LQX_VALIDATE_DATA_SCHEMA_REQUIRED_LINK', [
+define('LQX_VALIDATE_DATA_SCHEMA_LINK', [
 	'title' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
 	'url' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
 	'target' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING
@@ -225,9 +296,9 @@ define('LQX_VALIDATE_DATA_SCHEMA_IMAGE', [
 	'width' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_INTEGER,
 	'height' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_INTEGER,
 	'sizes' => [
-		'type'	=> 'array',
+		'type'	=> 'object',
 		'required' => true,
-		'schema' => [
+		'keys' => [
 			'small' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
 			'small-width' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_INTEGER,
 			'small-height' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_INTEGER,
@@ -274,8 +345,7 @@ function get_video_urls($url) {
 			$url = 'https://player.vimeo.com/video/' . $vimeo_id;
 			$thumbnail = 'https://vumbnail.com/' . $vimeo_id . '.jpg';
 		}
-	}
-	else {
+	} else {
 		$url = '';
 		$thumbnail = '';
 	}

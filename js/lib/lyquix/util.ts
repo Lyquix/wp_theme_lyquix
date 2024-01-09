@@ -20,7 +20,7 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-import { vars, cfg, log } from './core';
+import { vars, cfg, log, error } from './core';
 
 export const util = (() => {
 
@@ -223,6 +223,41 @@ export const util = (() => {
 	};
 
 	/**
+	 * Utility function to get the data type of a variable as needed by validateData
+	 * @param mixed data The variable to check
+	 * @return string The data type of the variable
+	 */
+	const getDataType = (data: any) => {
+		// Get the data type
+		let type: string = typeof data;
+
+		// Convert the data type to a string that can be used by validateData
+		switch (type) {
+			case 'boolean':
+			case 'string':
+				break;
+
+			case 'bigint':
+				type = 'integer';
+				break;
+
+			case 'number':
+				if (data % 1 === 0) type = 'integer';
+				else type = 'float';
+				break;
+
+			case 'object':
+				if (Array.isArray(data)) type = 'array';
+				break;
+
+			default:
+				type = '';
+		}
+
+		return type;
+	};
+
+	/**
 	 * Validates and processes data based on a provided schema.
 	 *
 	 * This function checks whether the given data conforms to the specified schema
@@ -230,6 +265,7 @@ export const util = (() => {
 	 * adheres to expected formats and requirements.
 	 *
 	 * @param array $data    The data to be validated and processed. Must be an associative array.
+	 * @param string $field  The name of the field being validated. This is used to provide more detailed information
 	 * @param array $schema  The schema defines the expected structure and validation rules for the incoming data.
 	 *
 	 *              It should be an associative array where each key corresponds to a field in the incoming data,
@@ -237,144 +273,200 @@ export const util = (() => {
 	 *
 	 *              The structure of each field configuration is as follows:
 	 *
-	 *              - 'type' (string, required): Specifies the expected data type for the field. It can be one of the following types:
+	 *              - 'type' (string, required): Specifies the expected data type for the field. It can be one of the
+	 *                following types:
 	 *                - 'string': A string data type.
 	 *                - 'integer': An integer data type.
 	 *                - 'float': A floating-point number data type.
 	 *                - 'boolean': A boolean data type (true or false).
-	 *                - 'object': An object data type. To distinguish between arrays and keyed objects see the 'itemsType' and 'schema'
-	 *                   options below.
+	 *                - 'array' : An array (a  numbered list of elements)
+	 *                - 'object' : An associative array
 	 *
-	 *              - 'required' (bool, optional): Indicates whether the field is required. If set to true, the field must exist in the
-	 *                incoming data, or it will be considered missing. Default is false.
+	 *              - 'allowed' (array, optional): Applicable only if 'type' is 'string', 'integer', or 'float;. Defines a list
+	 *                 of the allowed values. If the string is not one of the allowed values, it will be considered mistyped.
 	 *
-	 *              - 'default' (mixed, optional): Provides a default value for the field if it's missing in the incoming data or
-	 *                the value is of the wrong type.
+	 *              - 'range' (array, optional): Applicable only if 'type' is 'integer' or 'float'. Defines the allowed range
+	 *                of values by setting a minimum and maximum. If the value is outside the range, it will be considered
+	 *                mistyped.
 	 *
-	 *              - 'itemsType' (string, optional): Applicable only if 'type' is 'object'. Specifies the expected data type for elements
-	 *                in the array. It can have the same data type options as 'type' (e.g., 'string', 'integer', 'boolean', etc.).
+	 *              - 'default' (mixed, optional): Provides a default value for the field when it's required and it's either
+	 *                missing in the incoming data or the value is of the wrong type. If no default is provided for a required
+	 *                field, the data will not be considered fixed.
 	 *
-	 *              - 'schema' (object, optional): Applicable only if 'type' is 'object'. Defines a nested schema for elements within the object.
-	 *                This nested schema follows the same structure as the main `schema` and is used to validate the elements within the object.
+	 *              - 'required' (bool, optional): Indicates whether a key in an object is required. If set to true, the key
+	 *                must exist in the incoming data, or it will be considered missing. Default is false.
 	 *
+	 *              - 'keys' (array, optional): Applicable only if 'type' is 'object'. Defines the expected keys within the
+	 *                object. This is a nested schema that follows the same structure as the main `$schema` and is used to
+	 *                validate the keys of the object.
+	 *
+	 *              - 'elems' (array, optional): Applicable only if 'type' is 'array'. Defines the expected elements within the
+	 *                array. This is a nested schema that follows the same structure as the main `$schema` and is used to
+	 *
+	 * @return false if the schema is invalid.
 	 * @return array An array containing the validation results and possibly fixed data.
 	 *               - 'isValid': A boolean indicating whether the data is valid according to the schema.
 	 *               - 'isFixed': A boolean indicating whether any fixes were applied to the data.
 	 *               - 'missing': An array listing keys that are missing in the data but required by the schema.
 	 *               - 'mistyped': An array listing keys whose data types do not match the schema.
+	 *               - 'invalid': An array listing keys whose values are not allowed by the schema.
 	 *               - 'fixed': An array listing keys for which fixes were applied.
 	 *               - 'data': The processed data, which may include fixes if 'isFixed' is true.
 	 */
 
-	const validateData = (data: object, schema: object) => {
+	interface validateDataSchema {
+		type: string;
+		allowed?: any[];
+		range?: number[];
+		default?: any;
+		required?: boolean;
+		keys: { [key: string]: validateDataSchema };
+		elems: validateDataSchema;
+	}
+
+	const validateData = (data: any, schema: validateDataSchema, field: string = 'root'): {
+		isValid: boolean,
+		isFixed: boolean,
+		missing: string[],
+		mistyped: string[],
+		invalid: string[],
+		fixed: string[],
+		data: any
+	} | false => {
 		const missing: string[] = [];
 		const mistyped: string[] = [];
+		const invalid: string[] = [];
 		const fixed: string[] = [];
 		let isValid: boolean = true;
 		let isFixed: boolean = false;
 
-		for (const key in schema) {
-			const config = schema[key];
+		// Return false if there's no type in schema
+		if (!('type' in schema)) {
+			error('validateData: missing type in schema', schema);
+			return false;
+		}
 
-			// Check if the key exists in the received data
-			if (!(key in data)) {
-				// If the key is required, add it to the missing array
-				if (config.required) {
-					missing.push(key);
+		// Return false if unexpected keys are found in schema
+		for (const key in schema) {
+			if (!['type', 'required', 'default', 'keys', 'elems', 'allowed', 'range'].includes(key)) {
+				error(`validateData: unexpected key ${key} in schema`, schema);
+				return false;
+			}
+		}
+
+		// Check if the received data type matches the expected type
+		if (getDataType(data) !== schema.type) {
+			// Add the key to the mistyped array
+			mistyped.push(field);
+
+			// Attempt to fix by using the default value if available
+			if ('default' in schema) {
+				data = schema.default;
+				fixed.push(field);
+				isFixed = true;
+			} else {
+				isValid = false;
+			}
+		}
+
+		// Handle allowed values
+		if (['string', 'integer', 'float'].includes(schema.type)) {
+			if ('allowed' in schema) {
+				// Check if the value is allowed
+				if (!schema.allowed.includes(data)) {
+					// Add the key to the invalid array
+					invalid.push(field);
 
 					// Attempt to fix by using the default value if available
-					if (config.default !== undefined) {
-						data[key] = config.default;
-						fixed.push(key);
+					if ('default' in schema) {
+						data = schema.default;
+						fixed.push(field);
 						isFixed = true;
 					} else {
 						isValid = false;
-						continue;
 					}
 				}
 			}
+		}
 
-			// Check if the received data type matches the expected type
-			if (typeof data[key] !== config.type) {
-				// Add the key to the mistyped array
-				mistyped.push(key);
+		// Handle allowed range
+		if (['integer', 'float'].includes(schema.type)) {
+			if ('range' in schema) {
+				// Check if the value is allowed
+				if (data < schema.range[0] || data > schema.range[1]) {
+					// Add the key to the invalid array
+					invalid.push(field);
 
-				// Attempt to fix by using the default value if available
-				if (config.default !== undefined) {
-					data[key] = config.default;
-					fixed.push(key);
-					isFixed = true;
-				} else {
-					isValid = false;
-					continue;
+					// Attempt to fix by using the default value if available
+					if ('default' in schema) {
+						data = schema.default;
+						fixed.push(field);
+						isFixed = true;
+					} else {
+						isValid = false;
+					}
 				}
 			}
+		}
 
-			// Check if the received data is an array
-			if (config.type === 'object') {
-				// Handle arrays of primitive types
-				if (config.itemsType !== undefined) {
-					// Check if the array is a list
-					if (!Array.isArray(data[key])) {
-						mistyped.push(key);
+		// Handle arrays
+		if (schema.type === 'array') {
+			if ('elems' in schema) {
+				data.forEach((elem, index) => {
+					// Handle array data by calling validateData recursively
+					const elemResult = validateData(elem, schema.elems, `${field}[${index}]`);
 
-						// Attempt to fix by using the default value if available
-						if (config.default !== undefined) {
-							data[key] = config.default;
-							fixed.push(key);
+					elemResult.missing.forEach(f => missing.push(f));
+					elemResult.mistyped.forEach(f => mistyped.push(f));
+					elemResult.invalid.forEach(f => invalid.push(f));
+					elemResult.fixed.forEach(f => fixed.push(f));
+
+					if (elemResult.isValid) {
+						if (elemResult.isFixed) {
 							isFixed = true;
-						} else {
-							isValid = false;
-							continue;
+							data[index] = elemResult.data;
 						}
+					} else {
+						isValid = false;
 					}
+				});
+			}
+		}
 
-					// Handle arrays of primitive types
-					for (let i = 0; i < data[key].length; i++) {
-						if (typeof data[key][i] !== config.itemsType) {
-							mistyped.push(`${key}[${i}]`);
+		// Handle objects
+		if (schema.type === 'object') {
+			if ('keys' in schema) {
+				for (const key in schema.keys) {
+					// Check if the key exists in the received data
+					if (!(key in data)) {
+						// If the key is required, add it to the missing array
+						if (schema.keys[key].required) {
+							missing.push(key);
 
 							// Attempt to fix by using the default value if available
-							if (config.default !== undefined) {
-								data[key][i] = config.default;
-								fixed.push(`${key}[${i}]`);
-								isFixed = false;
+							if (schema.keys[key].default !== undefined) {
+								data[key] = schema.keys[key].default;
+								fixed.push(key);
+								isFixed = true;
+							} else {
 								isValid = false;
 								continue;
 							}
 						}
 					}
-				}
-				// Handle associative arrays
-				else if (config.schema !== undefined) {
-					// Check if the array is a list
-					if (Array.isArray(data[key])) {
-						mistyped.push(key);
 
-						// Attempt to fix by using the default value if available
-						if (config.default !== undefined) {
-							data[key] = config.default;
-							fixed.push(key);
+					// Handle object data by calling validateData recursively
+					const keyResult = validateData(data[key], schema.keys[key], `${field}/${key}`);
+
+					keyResult.missing.forEach(f => missing.push(f));
+					keyResult.mistyped.forEach(f => mistyped.push(f));
+					keyResult.invalid.forEach(f => invalid.push(f));
+					keyResult.fixed.forEach(f => fixed.push(f));
+
+					if (keyResult.isValid) {
+						if (keyResult.isFixed) {
 							isFixed = true;
-						} else {
-							isValid = false;
-							continue;
-						}
-					}
-
-					// Handle nested associative arrays by calling validateData recursively
-					const nestedResult = validateData(data[key], config.schema);
-
-					nestedResult.missing.forEach(f => missing.push(`${key}/${f}`));
-
-					nestedResult.mistyped.forEach(f => mistyped.push(`${key}/${f}`));
-
-					nestedResult.fixed.forEach(f => fixed.push(`${key}/${f}`));
-
-					if (nestedResult.isValid) {
-						if (nestedResult.isFixed) {
-							isFixed = true;
-							data[key] = nestedResult.data;
+							data[key] = keyResult.data;
 						}
 					} else {
 						isValid = false;
@@ -388,6 +480,7 @@ export const util = (() => {
 			isFixed,
 			missing,
 			mistyped,
+			invalid,
 			fixed,
 			data
 		};
