@@ -56,10 +56,6 @@ function theme_setup() {
 		return $mimes;
 	});
 
-	// Disable wpautop
-	remove_filter('the_content', 'wpautop');
-	remove_filter('the_excerpt', 'wpautop');
-
 	// Load Global WordPress Styles
 	add_action('wp_head', function () {
 		wp_enqueue_style('global-styles');
