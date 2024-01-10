@@ -37,7 +37,7 @@ $browser_data = [
 		'name' => 'Chrome',
 		'long_name' => 'Google Chrome',
 		'wikidataId' => 'Q777',
-		'url' => 'https://www.google.cn/chrome',
+		'url' => 'https://www.google.com/chrome',
 		'info' => '&#8220;Get more done with the new Google Chrome. A more simple, secure, and faster web browser than ever, with Google’s smarts built-in.&#8221;'
 	],
 	'firefox' => [
@@ -101,6 +101,33 @@ function browser_type() {
 
 	return $browser;
 }
+
+// Detect type of browser from user agent
+function browser_name() {
+	$ua = $_SERVER['HTTP_USER_AGENT'];
+
+	$browser = null;
+
+	if (preg_match('/MSIE/i', $ua) && !preg_match('/Opera/i', $ua)) {
+		$browser = 'Microsoft Internet Explorer';
+	} elseif (preg_match('/Firefox/i', $ua)) {
+		$browser = 'Mozilla Firefox';
+	} elseif (preg_match('/Chrome/i', $ua)) {
+		$browser = 'Google Chrome';
+	} elseif (preg_match('/Safari/i', $ua)) {
+		$browser = 'Apple Safari';
+	} elseif (preg_match('/Opera/i', $ua)) {
+		$browser = 'Opera';
+	} elseif (preg_match('/Edge/i', $ua)) {
+		$browser = 'Microsoft Edge';
+	} elseif (preg_match('/Brave/i', $ua)) {
+		$browser = 'Brave';
+	}
+	else $browser = 'Unknown';
+
+	return $browser;
+}
+
 
 // Detect the browser version from user agent
 function browser_version() {
@@ -218,11 +245,8 @@ function get_browser_version($browser) {
 		return -1 * version_compare ( $a , $b );
 	});
 
-	// Reverse order
-	$versions = array_reverse($versions);
-
 	// Remove duplicates
-	//$versions = array_unique($versions);
+	$versions = array_unique($versions);
 
 	// Save versions to data dictionary
 	$browser_data[$browser]['version'] = $versions;
@@ -247,12 +271,10 @@ function get_all_browsers_versions() {
 function browser_outdated() {
 	global $browser_data;
 
-	$browser = browser_type();
-	$version = browser_version();
-
 	$res = [
-		'browser' => $browser,
-		'user_version' => $version,
+		'browser' => browser_type(),
+		'browser_name' => browser_name(),
+		'user_version' => browser_version(),
 	];
 
 	if (array_key_exists($res['browser'], $browser_data)) {
@@ -300,6 +322,19 @@ if (file_exists('browsers.json')) {
 	}
 } else get_all_browsers_versions();
 
-echo 'lqx.util.browserAlert(' . str_replace("'", "\'", json_encode(browser_outdated())) . ');';
+// Check if browser is outdated
+$browser_outdated = browser_outdated();
+
+// Get the request URI and remove: index.php, any query string, trailing slash, and hash
+$browsers_uri = preg_replace('/index\.php|(\?.*)|\/$|#.*/', '', $_SERVER['REQUEST_URI']);
+
+// Get the contents of browsers.js and minify it
+$browsers_js = file_get_contents('browsers.min.js');
+$browsers_js = str_replace('BROWSERS_URI', $browsers_uri, $browsers_js);
+$browsers_js = str_replace('BROWSERS_DATA', json_encode($browser_outdated), $browsers_js);
+
+if ($browser_outdated['outdated'] === true) echo $browsers_js;
+else echo ';';
 
 exit;
+
