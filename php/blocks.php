@@ -29,26 +29,65 @@ namespace lqx\blocks;
 function process_overrides($settings) {
 	$processed = [];
 	foreach ($settings as $key => $value) {
-		// Check if the key ends in _group
-		if (substr($key, -6) == '_group') {
-			// Extract the key name by removing _group
-			$sub_key = substr($key, 0, -6);
+		// Check if the key ends in _override_group
+		if (substr($key, -6) == '_override_group') {
+			// Extract the key name by removing _override_group
+			$original_key = substr($key, 0, -15);
 
 			// Check if the override is set to true
-			if ($value[$sub_key . '_override'] === true) {
+			if ($value[$original_key . '_override'] === true) {
 				// Get the override value
-				$sub_value = $value[substr($key, 0, -6)];
-
-				if ($sub_value) {
-					$processed[$sub_key] = $sub_value;
+				if ($value[$original_key]) {
+					$processed[$original_key] = $value[$original_key];
 				}
 			}
 		} elseif ($value) {
-			$processed[$key] = $value;
+			// Check if $value is an array
+			if (is_array($value)) {
+				// Recursively process the overrides
+				$processed[$key] = process_overrides($value);
+			} else {
+				$processed[$key] = $value;
+			}
 		}
 	}
 
 	return $processed;
+}
+
+// Recursively removes any keys from $settings that are null or ''
+function remove_empty_settings($settings) {
+	foreach ($settings as $key => $value) {
+		if (is_array($value)) {
+			$value = remove_empty_settings($value);
+			if (!count($value)) {
+				unset($settings[$key]);
+			} else {
+				$settings[$key] = $value;
+			}
+		} elseif ($value === null || $value === '') {
+			unset($settings[$key]);
+		}
+	}
+
+	return $settings;
+}
+
+// Recursively merge seetings arrays while skipping null and '' values
+function merge_settings($settings, $override) {
+	foreach ($override as $key => $value) {
+		if (is_array($value)) {
+			if (isset($settings[$key])) {
+				$settings[$key] = merge_settings($settings[$key], $value);
+			} else {
+				$settings[$key] = $value;
+			}
+		} else {
+			$settings[$key] = $value;
+		}
+	}
+
+	return $settings;
 }
 
 // Get the settings for a block
@@ -90,11 +129,11 @@ function get_settings($block, $post_id = null) {
 		if ($settings['local']['user']['style']) $settings['processed']['class'] .= ' ' . $settings['local']['user']['style'];
 
 		// Check for settings presets
-		if (isset($settings['local']['user']['presets']) && $settings['local']['user']['presets'] !== '') {
+		if (isset($settings['local']['user']['preset']) && $settings['local']['user']['preset'] !== '') {
 			foreach ($settings['presets'] as $preset) {
 				if ($preset['preset_name'] == $settings['local']['user']['preset']) {
 					// Process the overrides
-					$settings['processed'] = array_merge($settings['processed'], process_overrides($preset[$block_name . '_block_admin']));
+					$settings['processed'] = merge_settings($settings['processed'], remove_empty_settings(process_overrides($preset[$block_name . '_block_admin'])));
 					break;
 				}
 			}
@@ -102,9 +141,9 @@ function get_settings($block, $post_id = null) {
 	}
 
 	// Check for admin settings
-	if ($settings['local']['admin'] !== null) {
+	if (!empty($settings['local']['admin'])) {
 		// Process the overrides
-		$settings['processed'] = array_merge($settings['processed'], process_overrides($settings['local']['admin']));
+		$settings['processed'] = merge_settings($settings['processed'], remove_empty_settings(process_overrides($settings['local']['admin'])));
 	}
 
 	return $settings;

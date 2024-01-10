@@ -65,7 +65,7 @@ function theme_setup() {
 	remove_action('wp_head', 'wp_generator');
 
 	// Remove weak password confirmation checkbox
-	add_action('login_init', '\lqx\setup\no_weak_password');
+	add_action('login_head', '\lqx\setup\no_weak_password');
 	add_action('admin_head', '\lqx\setup\no_weak_password');
 	function no_weak_password() {
 		echo '<style>.pw-weak { display: none !important; }</style>';
