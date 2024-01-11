@@ -324,108 +324,113 @@ export const util = (() => {
 				isValid = false;
 			}
 		}
+		else {
+			// Handle allowed values
+			if (['string', 'integer', 'float'].includes(schema.type)) {
+				if ('allowed' in schema) {
+					// Check if the value is allowed
+					if (!schema.allowed.includes(data)) {
+						// Add the key to the invalid array
+						invalid.push(field);
 
-		// Handle allowed values
-		if (['string', 'integer', 'float'].includes(schema.type)) {
-			if ('allowed' in schema) {
-				// Check if the value is allowed
-				if (!schema.allowed.includes(data)) {
-					// Add the key to the invalid array
-					invalid.push(field);
-
-					// Attempt to fix by using the default value if available
-					if ('default' in schema) {
-						data = schema.default;
-						fixed.push(field);
-						isFixed = true;
-					} else {
-						isValid = false;
-					}
-				}
-			}
-		}
-
-		// Handle allowed range
-		if (['integer', 'float'].includes(schema.type)) {
-			if ('range' in schema) {
-				// Check if the value is allowed
-				if (data < schema.range[0] || data > schema.range[1]) {
-					// Add the key to the invalid array
-					invalid.push(field);
-
-					// Attempt to fix by using the default value if available
-					if ('default' in schema) {
-						data = schema.default;
-						fixed.push(field);
-						isFixed = true;
-					} else {
-						isValid = false;
-					}
-				}
-			}
-		}
-
-		// Handle arrays
-		if (schema.type === 'array') {
-			if ('elems' in schema) {
-				data.forEach((elem, index) => {
-					// Handle array data by calling validateData recursively
-					const elemResult = validateData(elem, schema.elems, `${field}[${index}]`);
-
-					elemResult.missing.forEach(f => missing.push(f));
-					elemResult.mistyped.forEach(f => mistyped.push(f));
-					elemResult.invalid.forEach(f => invalid.push(f));
-					elemResult.fixed.forEach(f => fixed.push(f));
-
-					if (elemResult.isValid) {
-						if (elemResult.isFixed) {
+						// Attempt to fix by using the default value if available
+						if ('default' in schema) {
+							data = schema.default;
+							fixed.push(field);
 							isFixed = true;
-							data[index] = elemResult.data;
+						} else {
+							isValid = false;
 						}
-					} else {
-						isValid = false;
 					}
-				});
+				}
 			}
-		}
 
-		// Handle objects
-		if (schema.type === 'object') {
-			if ('keys' in schema) {
-				for (const key in schema.keys) {
-					// Check if the key exists in the received data
-					if (!(key in data)) {
-						// If the key is required, add it to the missing array
-						if (schema.keys[key].required) {
-							missing.push(key);
+			// Handle allowed range
+			if (['integer', 'float'].includes(schema.type)) {
+				if ('range' in schema) {
+					// Check if the value is allowed
+					if (data < schema.range[0] || data > schema.range[1]) {
+						// Add the key to the invalid array
+						invalid.push(field);
 
-							// Attempt to fix by using the default value if available
-							if (schema.keys[key].default !== undefined) {
-								data[key] = schema.keys[key].default;
-								fixed.push(key);
-								isFixed = true;
+						// Attempt to fix by using the default value if available
+						if ('default' in schema) {
+							data = schema.default;
+							fixed.push(field);
+							isFixed = true;
+						} else {
+							isValid = false;
+						}
+					}
+				}
+			}
+
+			// Handle arrays
+			if (schema.type === 'array') {
+				if ('elems' in schema) {
+					data.forEach((elem, index) => {
+						// Handle array data by calling validateData recursively
+						const elemResult = validateData(elem, schema.elems, `${field}[${index}]`);
+
+						if (elemResult !== false) {
+							elemResult.missing.forEach(f => missing.push(f));
+							elemResult.mistyped.forEach(f => mistyped.push(f));
+							elemResult.invalid.forEach(f => invalid.push(f));
+							elemResult.fixed.forEach(f => fixed.push(f));
+
+							if (elemResult.isValid) {
+								if (elemResult.isFixed) {
+									isFixed = true;
+									data[index] = elemResult.data;
+								}
 							} else {
 								isValid = false;
-								continue;
 							}
 						}
-					}
+					});
+				}
+			}
 
-					// Handle object data by calling validateData recursively
-					const keyResult = validateData(data[key], schema.keys[key], `${field}/${key}`);
+			// Handle objects
+			if (schema.type === 'object') {
+				if ('keys' in schema) {
+					for (const key in schema.keys) {
+						// Check if the key exists in the received data
+						if (!(key in data)) {
+							// If the key is required, add it to the missing array
+							if (schema.keys[key].required) {
+								missing.push(key);
 
-					keyResult.missing.forEach(f => missing.push(f));
-					keyResult.mistyped.forEach(f => mistyped.push(f));
-					keyResult.invalid.forEach(f => invalid.push(f));
-					keyResult.fixed.forEach(f => fixed.push(f));
-
-					if (keyResult.isValid) {
-						if (keyResult.isFixed) {
-							isFixed = true;
-							data[key] = keyResult.data;
+								// Attempt to fix by using the default value if available
+								if (schema.keys[key].default !== undefined) {
+									data[key] = schema.keys[key].default;
+									fixed.push(key);
+									isFixed = true;
+								} else {
+									isValid = false;
+									continue;
+								}
+							}
 						}
-					} else {
-						isValid = false;
+
+						// Handle object data by calling validateData recursively
+						const keyResult = validateData(data[key], schema.keys[key], `${field}/${key}`);
+
+						if (keyResult !== false) {
+							keyResult.missing.forEach(f => missing.push(f));
+							keyResult.mistyped.forEach(f => mistyped.push(f));
+							keyResult.invalid.forEach(f => invalid.push(f));
+							keyResult.fixed.forEach(f => fixed.push(f));
+
+							if (keyResult.isValid) {
+								if (keyResult.isFixed) {
+									isFixed = true;
+									data[key] = keyResult.data;
+								}
+							} else {
+								isValid = false;
+							}
+						}
 					}
 				}
 			}

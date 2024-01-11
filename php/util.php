@@ -155,107 +155,111 @@ function validate_data($data, $schema, $field = 'root') {
 		} else {
 			$isValid = false;
 		}
-	}
+	} else {
+		// Handle allowed values
+		if (in_array($schema['type'], ['string', 'integer', 'float'])) {
+			if (array_key_exists('allowed', $schema)) {
+				if (!in_array($data, $schema['allowed'])) {
+					// Add the key to the invalid array
+					$invalid[] = $field;
 
-	// Handle allowed values
-	if (in_array($schema['type'], ['string', 'integer', 'float'])) {
-		if (array_key_exists('allowed', $schema)) {
-			if (!in_array($data, $schema['allowed'])) {
-				// Add the key to the invalid array
-				$invalid[] = $field;
-
-				// Attempt to fix by using the default value if available
-				if (array_key_exists('default', $schema)) {
-					$data = $schema['default'];
-					$fixed[] = $field;
-					$isFixed = true;
-				} else {
-					$isValid = false;
-				}
-			}
-		}
-	}
-
-	// Handle allowed range
-	if (in_array($schema['type'], ['integer', 'float'])) {
-		if (array_key_exists('range', $schema)) {
-			if ($data < $schema['range'][0] || $data > $schema['range'][1]) {
-				// Add the key to the invalid array
-				$invalid[] = $field;
-
-				// Attempt to fix by using the default value if available
-				if (array_key_exists('default', $schema)) {
-					$data = $schema['default'];
-					$fixed[] = $field;
-					$isFixed = true;
-				} else {
-					$isValid = false;
-				}
-			}
-		}
-	}
-
-	// Handle arrays
-	if ($schema['type'] === 'array') {
-		if (array_key_exists('elems', $schema)) {
-			foreach ($data as $i => $item) {
-				// Handle array data by calling validate_data recursively
-				$elemResult = validate_data($item, $schema['elems'], $field . '[' . $i . ']');
-
-				foreach ($elemResult['missing'] as $f) $missing[] = $f;
-				foreach ($elemResult['mistyped'] as $f) $mistyped[] = $f;
-				foreach ($elemResult['invalid'] as $f) $invalid[] = $f;
-				foreach ($elemResult['fixed'] as $f) $fixed[] = $f;
-
-				if ($elemResult['isValid']) {
-					if ($elemResult['isFixed']) {
+					// Attempt to fix by using the default value if available
+					if (array_key_exists('default', $schema)) {
+						$data = $schema['default'];
+						$fixed[] = $field;
 						$isFixed = true;
-						$data[$i] = $elemResult['data'];
+					} else {
+						$isValid = false;
 					}
-				} else {
-					$isValid = false;
 				}
 			}
 		}
-	}
 
-	// Handle objects
-	if ($schema['type'] === 'object') {
-		if (array_key_exists('keys', $schema)) {
-			foreach ($schema['keys'] as $key => $config) {
-				// Check if the key exists in the received data
-				if (!array_key_exists($key, $data)) {
-					// If the key is required, add it to the missing array
-					if ($config['required']) {
-						$missing[] = $field . '/' . $key;
+		// Handle allowed range
+		if (in_array($schema['type'], ['integer', 'float'])) {
+			if (array_key_exists('range', $schema)) {
+				if ($data < $schema['range'][0] || $data > $schema['range'][1]) {
+					// Add the key to the invalid array
+					$invalid[] = $field;
 
-						// Attempt to fix by using the default value if available
-						if (array_key_exists('default', $config)) {
-							$data[$key] = $config['default'];
-							$fixed[] = $field . '/' . $key;
-							$isFixed = true;
+					// Attempt to fix by using the default value if available
+					if (array_key_exists('default', $schema)) {
+						$data = $schema['default'];
+						$fixed[] = $field;
+						$isFixed = true;
+					} else {
+						$isValid = false;
+					}
+				}
+			}
+		}
+
+		// Handle arrays
+		if ($schema['type'] === 'array') {
+			if (array_key_exists('elems', $schema)) {
+				foreach ($data as $i => $item) {
+					// Handle array data by calling validate_data recursively
+					$elemResult = validate_data($item, $schema['elems'], $field . '[' . $i . ']');
+
+					if ($elemResult !== false) {
+						foreach ($elemResult['missing'] as $f) $missing[] = $f;
+						foreach ($elemResult['mistyped'] as $f) $mistyped[] = $f;
+						foreach ($elemResult['invalid'] as $f) $invalid[] = $f;
+						foreach ($elemResult['fixed'] as $f) $fixed[] = $f;
+
+						if ($elemResult['isValid']) {
+							if ($elemResult['isFixed']) {
+								$isFixed = true;
+								$data[$i] = $elemResult['data'];
+							}
 						} else {
 							$isValid = false;
-							continue;
 						}
 					}
 				}
+			}
+		}
 
-				// Handle object data by calling validate_data recursively
-				$keyResult = validate_data($data[$key], $config, $field . '/' . $key);
+		// Handle objects
+		if ($schema['type'] === 'object') {
+			if (array_key_exists('keys', $schema)) {
+				foreach ($schema['keys'] as $key => $config) {
+					// Check if the key exists in the received data
+					if (!array_key_exists($key, $data)) {
+						// If the key is required, add it to the missing array
+						if ($config['required']) {
+							$missing[] = $field . '/' . $key;
 
-				foreach ($keyResult['missing'] as $f) $missing[] = $f;
-				foreach ($keyResult['mistyped'] as $f) $mistyped[] = $f;
-				foreach ($keyResult['invalid'] as $f) $invalid[] = $f;
-				foreach ($keyResult['fixed'] as $f) $fixed[] = $f;
-
-				if ($keyResult['isValid']) {
-					if ($keyResult['isFixed']) {
-						$isFixed = true;
-						$data[$key] = $keyResult['data'];
+							// Attempt to fix by using the default value if available
+							if (array_key_exists('default', $config)) {
+								$data[$key] = $config['default'];
+								$fixed[] = $field . '/' . $key;
+								$isFixed = true;
+							} else {
+								$isValid = false;
+								continue;
+							}
+						}
 					}
-				} else {
-					$isValid = false;
+
+					// Handle object data by calling validate_data recursively
+					$keyResult = validate_data($data[$key], $config, $field . '/' . $key);
+
+					if ($keyResult !== false) {
+						foreach ($keyResult['missing'] as $f) $missing[] = $f;
+						foreach ($keyResult['mistyped'] as $f) $mistyped[] = $f;
+						foreach ($keyResult['invalid'] as $f) $invalid[] = $f;
+						foreach ($keyResult['fixed'] as $f) $fixed[] = $f;
+
+						if ($keyResult['isValid']) {
+							if ($keyResult['isFixed']) {
+								$isFixed = true;
+								$data[$key] = $keyResult['data'];
+							}
+						} else {
+							$isValid = false;
+						}
+					}
 				}
 			}
 		}
