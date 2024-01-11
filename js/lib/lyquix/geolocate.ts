@@ -50,10 +50,11 @@ export const geolocate = (() => {
 				ip: null,
 				gps: null
 			},
-			ready: {
-				ip: false,
-				gps: false
-			}
+			status: {
+				ip: null,
+				gps: null
+			},
+			ready: false
 		};
 
 		// Configuration
@@ -89,28 +90,28 @@ export const geolocate = (() => {
 			log('Attempting to geolocate from cookies');
 
 			// Get data from cookies
-			vars.cookies.ip = util.cookie('lqx.geolocate.cookies.ip');
-			if (vars.cookies.ip !== null) vars.cookies.ip = JSON.parse(vars.cookies.ip);
+			vars.geolocate.cookies.ip = util.cookie('lqx.geolocate.cookies.ip');
+			if (vars.geolocate.cookies.ip !== null) vars.geolocate.cookies.ip = JSON.parse(vars.geolocate.cookies.ip);
 
-			if (vars.cookies.ip !== null) {
-				vars.location = Object.assign({}, vars.cookies.ip);
-				vars.location.source = 'ip2geo-cookie';
-				vars.ready.ip = true;
+			if (vars.geolocate.cookies.ip !== null) {
+				vars.geolocate.location = Object.assign({}, vars.geolocate.cookies.ip);
+				vars.geolocate.location.source = 'ip2geo-cookie';
+				vars.geolocate.status.ip = 'cookie';
 			}
 			else getIP();
 
-			vars.cookies.gps = util.cookie('lqx.geolocate.cookies.gps');
-			if (vars.cookies.gps !== null) vars.cookies.gps = JSON.parse(vars.cookies.gps);
+			vars.geolocate.cookies.gps = util.cookie('lqx.geolocate.cookies.gps');
+			if (vars.geolocate.cookies.gps !== null) vars.geolocate.cookies.gps = JSON.parse(vars.geolocate.cookies.gps);
 
 			if (cfg.geolocate.gps && 'geolocation' in window.navigator) {
-				if (vars.cookies.gps !== null) {
-					vars.location = Object.assign({}, vars.cookies.gps);
-					vars.location.source = 'gps-cookie';
-					vars.ready.gps = true;
+				if (vars.geolocate.cookies.gps !== null) {
+					vars.geolocate.location = Object.assign({}, vars.geolocate.cookies.gps);
+					vars.geolocate.location.source = 'gps-cookie';
+					vars.geolocate.status.gps = 'cookie';
 				}
 				else getGPS();
 			}
-			else vars.ready.gps = true;
+			else vars.geolocate.status.gps = 'n/a';
 
 			bodyGeoData();
 		}
@@ -123,6 +124,7 @@ export const geolocate = (() => {
 	// Geolocation from IP
 	const getIP = () => {
 		log('Attempting IP geolocation');
+		vars.geolocate.status.ip = 'wait';
 		// ip2geo to get location info
 		jQuery.ajax({
 			async: true,
@@ -130,14 +132,18 @@ export const geolocate = (() => {
 			dataType: 'json',
 			url: vars.tmplURL + '/php/ip2geo/',
 			success: (data) => {
-				vars.location = data;
-				vars.location.source = 'ip2geo';
-				vars.ready.ip = true;
+				// Do not overwrite existing GPS location
+				if (vars.geolocate.location.source !== 'gps' && vars.geolocate.location.source !== 'gps-cookie') {
+					vars.geolocate.location = data;
+					vars.geolocate.location.source = 'ip2geo';
+				}
 
-				log('IP geolocation result', vars.location);
+				vars.geolocate.status.ip = 'ready';
+
+				log('IP geolocation result', vars.geolocate.location);
 
 				// Save cookie
-				if (cfg.geolocate.useCookies) util.cookie('lqx.geolocate.locationIP', JSON.stringify(vars.location), { maxAge: cfg.geolocate.cookieExpirationIP, path: '/', secure: true });
+				if (cfg.geolocate.useCookies) util.cookie('lqx.geolocate.locationIP', JSON.stringify(vars.geolocate.location), { maxAge: cfg.geolocate.cookieExpirationIP, path: '/', secure: true });
 
 				bodyGeoData();
 			},
@@ -151,40 +157,52 @@ export const geolocate = (() => {
 	const getGPS = () => {
 		if ('geolocation' in window.navigator) {
 			log('Attempting GPS geolocation');
-			window.navigator.geolocation.getCurrentPosition((position) => {
-				vars.location.lat = position.coords.latitude;
-				vars.location.lon = position.coords.longitude;
-				vars.location.radius = position.coords.accuracy / 1000; // in km
-				vars.location.source = 'gps';
-				vars.ready.gps = true;
+			vars.geolocate.status.gps = 'wait';
 
-				log('GPS geolocation result', vars.location);
+			window.navigator.geolocation.getCurrentPosition((position) => {
+				vars.geolocate.location.lat = position.coords.latitude;
+				vars.geolocate.location.lon = position.coords.longitude;
+				vars.geolocate.location.radius = position.coords.accuracy / 1000; // in km
+				vars.geolocate.location.source = 'gps';
+				vars.geolocate.status.gps = 'ready';
+
+				log('GPS geolocation result', vars.geolocate.location);
 
 				// Save cookie
-				if (cfg.geolocate.useCookies) util.cookie('lqx.geolocate.locationGPS', JSON.stringify(vars.location), { maxAge: cfg.geolocate.cookieExpirationGPS, path: '/', secure: true });
+				if (cfg.geolocate.useCookies) util.cookie('lqx.geolocate.locationGPS', JSON.stringify(vars.geolocate.location), { maxAge: cfg.geolocate.cookieExpirationGPS, path: '/', secure: true });
 
 				bodyGeoData();
 			});
 		}
-		else vars.ready.gps = true;
+		else vars.geolocate.status.gps = 'n/a';
 	};
 
 	// Save results to body attributes and trigger geolocateready event
 	const bodyGeoData = () => {
-		if (vars.ready.ip && vars.ready.gps) {
+		if (['cookie', 'ready'].includes(vars.geolocate.status.ip) && ['cookie', 'ready', 'n/a'].includes(vars.geolocate.status.gps)) {
 			// Add location attributes to body tag
-			for (const key in vars.location) {
+			for (const key in vars.geolocate.location) {
 				if (key == 'time_zone') {
-					vars.body.attr('time-zone', vars.location.time_zone);
+					vars.body.attr('time-zone', vars.geolocate.location.time_zone);
 				}
 				else if (['source', 'ip'].indexOf(key) == -1) {
-					vars.body.attr(key, vars.location[key]);
+					vars.body.attr(key, vars.geolocate.location[key]);
 				}
 			}
 
 			// Trigger custom event 'geolocateready'
 			log('geolocateready event');
-			jQuery(document).trigger('geolocateready');
+			vars.geolocate.ready = true;
+			vars.document.trigger('geolocateready');
+		}
+	};
+
+	// A ready utility function that works like jQuery(document).ready()
+	const ready = (callback) => {
+		if (vars.geolocate.ready === true) {
+			callback();
+		} else {
+			vars.document.on('geolocateready', callback);
 		}
 	};
 
@@ -347,8 +365,8 @@ export const geolocate = (() => {
 
 		// Get current lat / lon
 		const here = {
-			lat: vars.location.lat,
-			lon: vars.location.lon
+			lat: vars.geolocate.location.lat,
+			lon: vars.geolocate.location.lon
 		};
 
 		// Check what regions match
@@ -356,30 +374,30 @@ export const geolocate = (() => {
 			// Check circles
 			if ('circles' in regions[region]) {
 				regions[region].circles.forEach((x) => {
-					if (inCircle(here, { lat: x.lat, lon: x.lon }, x.radius) && !vars.regions.includes(region)) vars.regions.push(region);
+					if (inCircle(here, { lat: x.lat, lon: x.lon }, x.radius) && !vars.geolocate.regions.includes(region)) vars.geolocate.regions.push(region);
 				});
 			}
 
 			// Check squares
 			if ('squares' in regions[region]) {
 				regions[region].squares.forEach((x) => {
-					if (inSquare(here, { lat: x.corner1.lat, lon: x.corner1.lon }, { lat: x.corner2.lat, lon: x.corner2.lon }) && !vars.regions.includes(region)) vars.regions.push(region);
+					if (inSquare(here, { lat: x.corner1.lat, lon: x.corner1.lon }, { lat: x.corner2.lat, lon: x.corner2.lon }) && !vars.geolocate.regions.includes(region)) vars.geolocate.regions.push(region);
 				});
 			}
 
 			// Check polygons
 			if ('polygons' in regions[region]) {
 				regions[region].polygons.forEach((x) => {
-					if (inPolygon(here, x) && !vars.regions.includes(region)) vars.regions.push(region);
+					if (inPolygon(here, x) && !vars.geolocate.regions.includes(region)) vars.geolocate.regions.push(region);
 				});
 			}
 		});
 
 		// Set body tag attribute
-		vars.body.attr('regions', vars.regions.join(','));
+		vars.body.attr('regions', vars.geolocate.regions.join(','));
 
 		// Return the array of regions of the current location
-		return vars.regions;
+		return vars.geolocate.regions;
 	};
 
 	// Show/hide elements based on region
@@ -439,7 +457,7 @@ export const geolocate = (() => {
 						elemOpts = elemAttribOpts;
 						if (typeof elemOpts.regions == 'string') elemOpts.regions = [elemOpts.regions];
 						elemOpts.regions.forEach((region) => {
-							if (vars.regions.indexOf(region) != -1) elemRegionMatch = true;
+							if (vars.geolocate.regions.indexOf(region) != -1) elemRegionMatch = true;
 						});
 					}
 				}
@@ -452,7 +470,7 @@ export const geolocate = (() => {
 					else if (elemClass.indexOf('region-name-') == 0) elemOpts.regions.push(elemClass.replace('region-name-', ''));
 				});
 				elemOpts.regions.forEach((region) => {
-					if (vars.regions.indexOf(region) != -1) elemRegionMatch = true;
+					if (vars.geolocate.regions.indexOf(region) != -1) elemRegionMatch = true;
 				});
 
 				// Show/hide element
@@ -478,6 +496,7 @@ export const geolocate = (() => {
 
 	return Object.defineProperties({
 		init,
+		ready,
 		setRegions,
 		regionDisplay,
 		geoJSONtoRegions
@@ -499,9 +518,9 @@ export const geolocate = (() => {
 				return undefined;
 			}
 		},
-		ready: {
+		status: {
 			get() {
-				return vars.geolocate.ready.ip && vars.geolocate.ready.gps;
+				return vars.geolocate.status;
 			},
 			set() {
 				return undefined;
@@ -509,11 +528,12 @@ export const geolocate = (() => {
 		}
 	}) as {
 		init: (customCfg?: object) => void,
+		ready: (callback: () => void) => void,
 		setRegions: (regions: object) => string[],
 		regionDisplay: (elems?: any) => void,
 		geoJSONtoRegions: (geoJSON: string) => object,
 		location: object,
 		regions: string[],
-		ready: boolean
+		status: object
 	};
 })();
