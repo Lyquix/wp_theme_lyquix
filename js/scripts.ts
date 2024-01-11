@@ -44,12 +44,26 @@ const init = (customCfg) => {
 		$lqx[mod].init(mod in customCfg ? customCfg[mod] : {});
 	});
 
+	// Trigger the $lqxready event
+	lqx.vars.document.trigger('$lqxready');
+	lqx.log('$lqxready Event');
+
 	// Run only once
 	vars.init = true;
 };
 
+// A ready utility function that works like jQuery(document).ready()
+const ready = (callback) => {
+	if (vars.init === true) {
+		callback();
+	} else {
+		vars.document.on('$lqxready', callback);
+	}
+};
+
 const expObj = Object.defineProperties({
 	init,
+	ready,
 	/* Modules */
 	module // Remove the sample module
 	/**
