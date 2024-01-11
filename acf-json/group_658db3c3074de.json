@@ -322,24 +322,12 @@
                                 "class": "",
                                 "id": ""
                             },
-                            "acfe_permissions": "",
-                            "instruction_placement": "",
-                            "hide_field": "",
-                            "hide_label": "",
-                            "hide_instructions": "",
-                            "hide_required": "",
                             "default_value": 3,
-                            "acfe_settings": "",
-                            "acfe_validate": "",
                             "min": 1,
-                            "max": 24,
+                            "max": 12,
                             "step": 1,
                             "prepend": "",
                             "append": "",
-                            "show_column": 0,
-                            "allow_quickedit": 0,
-                            "allow_bulkedit": 0,
-                            "allow_backendsearch": 0,
                             "parent_repeater": "field_658f168df434b"
                         },
                         {
@@ -530,5 +518,5 @@
     "acfe_display_title": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1704937610
+    "modified": 1705005859
 }
