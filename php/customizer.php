@@ -147,6 +147,111 @@ function customizer_add($wp_customize) {
 				'choices' => ['1' => 'Only Lastest', '2' => 'Last 2', '3' => 'Last 3', '4' => 'Last 4', '5' => 'Last 5'],
 				'default' => '3'
 			]
+		],
+		'Feature Flags' => [],
+		'Theme Features' => [
+			'feat_disable_comments' => [
+				'type' => 'radio',
+				'label' => 'Disable Comments',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_gutenberg_blocks' => [
+				'type' => 'radio',
+				'label' => 'Enable Gutenberg Blocks',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_gutenberg_layout_blocks' => [
+				'type' => 'radio',
+				'label' => 'Enable Gutenberg Layout Blocks',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_modules' => [
+				'type' => 'radio',
+				'label' => 'Enable Modules',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_tailwind' => [
+				'type' => 'radio',
+				'label' => 'Enable Tailwind',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_theme_update' => [
+				'type' => 'radio',
+				'label' => 'Enable Theme Update',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_livereload' => [
+				'type' => 'radio',
+				'label' => 'Enable LiveReload',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_disable_srcset' => [
+				'type' => 'radio',
+				'label' => 'Disable Image srcset',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_hide_php_version_alert' => [
+				'type' => 'radio',
+				'label' => 'Hide PHP Version Alert',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_hide_yoast_metabox' => [
+				'type' => 'radio',
+				'label' => 'Hide Yoast Metabox',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_allow_svg_upload' => [
+				'type' => 'radio',
+				'label' => 'Allow SVG Upload',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_hide_wp_generator_tag' => [
+				'type' => 'radio',
+				'label' => 'Hide WP Generator Tag',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_hide_weak_password_confirmation' => [
+				'type' => 'radio',
+				'label' => 'Hide Weak Password Confirmation',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_image_sizes' => [
+				'type' => 'radio',
+				'label' => 'Enable Image Sizes',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_required_plugins_alert' => [
+				'type' => 'radio',
+				'label' => 'Enable Required Plugins Alert',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_user_management_editors' => [
+				'type' => 'radio',
+				'label' => 'Enable User Management for Editor Role',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_hide_acf_ext_menu_items' => [
+				'type' => 'radio',
+				'label' => 'Hide ACF Extension Menu Items',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			]
 		]
 	];
 
@@ -154,9 +259,8 @@ function customizer_add($wp_customize) {
 	if (file_exists(get_template_directory() . '/php/custom/features.php')) {
 		require get_template_directory() . '/php/custom/features.php';
 
-		if(count($feature_flags)) {
-			$add_settings['Feature Flags'] = [];
-			foreach($feature_flags as $code => $title) {
+		if (count($feature_flags)) {
+			foreach ($feature_flags as $code => $title) {
 				$add_settings['Feature Flags']['feature-' . $code] = [
 					'type' => 'radio',
 					'label' => $title,
@@ -164,7 +268,7 @@ function customizer_add($wp_customize) {
 					'default' => '0'
 				];
 			}
-		}
+		} else unset($add_settings['Feature Flags']);
 	}
 
 	foreach ($add_settings as $section => $setting) {

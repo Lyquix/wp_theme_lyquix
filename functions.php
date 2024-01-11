@@ -36,7 +36,9 @@ nocache_headers();
 require_once get_template_directory() . '/php/util.php';
 
 // Remove comments
-require_once get_template_directory() . '/php/comments.php';
+if (get_theme_mod('feat_disable_comments', '1') === '1') {
+	require_once get_template_directory() . '/php/comments.php';
+}
 
 // Theme setup
 require_once get_template_directory() . '/php/setup.php';
@@ -51,16 +53,24 @@ require_once get_template_directory() . '/php/widgets.php';
 require_once get_template_directory() . '/php/customizer.php';
 
 // Blocks
-require_once get_template_directory() . '/php/blocks.php';
+if (get_theme_mod('feat_gutenberg_blocks', '1') === '1') {
+	require_once get_template_directory() . '/php/blocks.php';
+}
 
 // Layouts
-require_once get_template_directory() . '/php/layouts.php';
+if (get_theme_mod('feat_gutenberg_layout_blocks', '1') === '1') {
+	require_once get_template_directory() . '/php/layouts.php';
+}
 
 // Modules
-require_once get_template_directory() . '/php/modules.php';
+if (get_theme_mod('feat_modules', '1') === '1') {
+	require_once get_template_directory() . '/php/modules.php';
+}
 
 // Tailwind
-require_once get_template_directory() . '/php/tailwind.php';
+if (get_theme_mod('feat_tailwind', '1') === '1') {
+	require_once get_template_directory() . '/php/tailwind.php';
+}
 
 // Custom functions.php
 if (file_exists(get_template_directory() . '/php/custom/functions.php')) {
@@ -73,7 +83,9 @@ if (file_exists(get_template_directory() . '/php/custom/shortcodes.php')) {
 }
 
 // Updates checker
-require_once get_template_directory() . '/php/update.php';
+if (get_theme_mod('feat_theme_update', '1') === '1') {
+	require_once get_template_directory() . '/php/update.php';
+}
 
 // Prepare meta tags
 require_once get_template_directory() . '/php/meta.php';
@@ -97,4 +109,6 @@ require_once get_template_directory() . '/php/router.php';
 require_once get_template_directory() . '/php/browsers.php';
 
 // Livereload
-require_once get_template_directory() . '/php/livereload.php';
+if (get_theme_mod('feat_livereload', '1') === '1') {
+	require_once get_template_directory() . '/php/livereload.php';
+}
