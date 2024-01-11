@@ -93,7 +93,7 @@ function render($settings, $content) {
 								'allowed' => ['xs', 'sm', 'md', 'lg', 'xl']
 							]
 						],
-						'columns' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_INTEGER,
+						'columns' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
 						'image_position' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
 						'icon_image_position' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING
 					]
@@ -101,6 +101,18 @@ function render($settings, $content) {
 			]
 		]
 	]))['data'];
+
+	// Generate CSS classes for responsive rules
+	$css_classes = [];
+	foreach ($s['responsive_rules'] as $rule) {
+		foreach ($rule['screens'] as $screen) {
+			foreach ($rule as $prop => $value) {
+				if ($prop === 'screens') continue;
+				if ($value === '') continue;
+				$css_classes[] = $screen . ':' . str_replace('_', '-', $prop) . '-' . $value;
+			}
+		}
+	}
 
 	// Filter out any content missing heading or content
 	$c = \lqx\util\validate_data($content, [
@@ -181,7 +193,7 @@ function render($settings, $content) {
 			class="lqx-block-cards <?= $s['class'] ?>">
 
 			<div
-				class="cards"
+				class="cards <?= implode(' ', $css_classes) ?>"
 				id="<?= $s['hash'] ?>"
 				data-slider="<?= $s['slider'] ?>"
 				data-swiper-options-override="<?= htmlspecialchars($s['swiper_options_override']) ?>"

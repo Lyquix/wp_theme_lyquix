@@ -3,13 +3,6 @@
     "title": "Block: Cards (Site Settings)",
     "fields": [
         {
-            "allow_backendsearch": false,
-            "show_column_filter": false,
-            "allow_bulkedit": false,
-            "allow_quickedit": false,
-            "show_column": false,
-            "show_column_weight": 1000,
-            "show_column_sortable": false,
             "key": "field_658db3c317ae5",
             "label": "Styles",
             "name": "cards_block_styles",
@@ -33,13 +26,6 @@
             "rows_per_page": 20,
             "sub_fields": [
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": false,
-                    "allow_bulkedit": false,
-                    "allow_quickedit": false,
-                    "show_column": false,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_658db3c35c5ac",
                     "label": "Style Name",
                     "name": "style_name",
@@ -53,6 +39,13 @@
                         "class": "",
                         "id": ""
                     },
+                    "allow_backendsearch": false,
+                    "show_column_filter": false,
+                    "allow_bulkedit": false,
+                    "allow_quickedit": false,
+                    "show_column": false,
+                    "show_column_weight": 1000,
+                    "show_column_sortable": false,
                     "default_value": "",
                     "placeholder": "",
                     "prepend": "",
@@ -63,13 +56,6 @@
             ]
         },
         {
-            "allow_backendsearch": false,
-            "show_column_filter": false,
-            "allow_bulkedit": false,
-            "allow_quickedit": false,
-            "show_column": false,
-            "show_column_weight": 1000,
-            "show_column_sortable": false,
             "key": "field_658db3c317b3c",
             "label": "Global Settings",
             "name": "cards_block_global",
@@ -88,13 +74,6 @@
             "acfe_group_modal": 0,
             "sub_fields": [
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": 0,
-                    "allow_bulkedit": 0,
-                    "allow_quickedit": 0,
-                    "show_column": 0,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_658f166bf4345",
                     "label": "Slider",
                     "name": "slider",
@@ -115,16 +94,13 @@
                     "default_value": "n",
                     "return_format": "value",
                     "allow_null": 0,
-                    "layout": "horizontal"
+                    "layout": "horizontal",
+                    "show_column": 0,
+                    "allow_quickedit": 0,
+                    "allow_bulkedit": 0,
+                    "show_column_filter": 0
                 },
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": false,
-                    "allow_bulkedit": false,
-                    "allow_quickedit": false,
-                    "show_column": false,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_658f1672f4346",
                     "label": "Swiper Options Override",
                     "name": "swiper_options_override",
@@ -149,13 +125,6 @@
                     "return_format": []
                 },
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": 0,
-                    "allow_bulkedit": 0,
-                    "allow_quickedit": 0,
-                    "show_column": 0,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_658f1678f4347",
                     "label": "Heading Style",
                     "name": "heading_style",
@@ -180,16 +149,13 @@
                     "default_value": "h3",
                     "return_format": "value",
                     "allow_null": 0,
-                    "layout": "horizontal"
+                    "layout": "horizontal",
+                    "show_column": 0,
+                    "allow_quickedit": 0,
+                    "allow_bulkedit": 0,
+                    "show_column_filter": 0
                 },
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": 0,
-                    "allow_bulkedit": 0,
-                    "allow_quickedit": 0,
-                    "show_column": 0,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_658f167ef4348",
                     "label": "Subheading Style",
                     "name": "subheading_style",
@@ -215,16 +181,13 @@
                     "default_value": "p",
                     "return_format": "value",
                     "allow_null": 0,
-                    "layout": "horizontal"
+                    "layout": "horizontal",
+                    "show_column": 0,
+                    "allow_quickedit": 0,
+                    "allow_bulkedit": 0,
+                    "show_column_filter": 0
                 },
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": 0,
-                    "allow_bulkedit": 0,
-                    "allow_quickedit": 0,
-                    "show_column": 0,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_658f1683f4349",
                     "label": "Heading Clickable",
                     "name": "heading_clickable",
@@ -245,16 +208,13 @@
                     "default_value": "y",
                     "return_format": "value",
                     "allow_null": 0,
-                    "layout": "horizontal"
+                    "layout": "horizontal",
+                    "show_column": 0,
+                    "allow_quickedit": 0,
+                    "allow_bulkedit": 0,
+                    "show_column_filter": 0
                 },
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": 0,
-                    "allow_bulkedit": 0,
-                    "allow_quickedit": 0,
-                    "show_column": 0,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_658f1689f434a",
                     "label": "Image Clickable",
                     "name": "image_clickable",
@@ -275,16 +235,13 @@
                     "default_value": "y",
                     "return_format": "value",
                     "allow_null": 0,
-                    "layout": "horizontal"
+                    "layout": "horizontal",
+                    "show_column": 0,
+                    "allow_quickedit": 0,
+                    "allow_bulkedit": 0,
+                    "show_column_filter": 0
                 },
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": false,
-                    "allow_bulkedit": false,
-                    "allow_quickedit": false,
-                    "show_column": false,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_658f168df434b",
                     "label": "Responsive Rules",
                     "name": "responsive_rules",
@@ -308,13 +265,6 @@
                     "rows_per_page": 20,
                     "sub_fields": [
                         {
-                            "allow_backendsearch": false,
-                            "show_column_filter": 0,
-                            "allow_bulkedit": 0,
-                            "allow_quickedit": 0,
-                            "show_column": 0,
-                            "show_column_weight": 1000,
-                            "show_column_sortable": false,
                             "key": "field_658f168df434c",
                             "label": "Screens",
                             "name": "screens",
@@ -350,18 +300,15 @@
                             "allow_custom": 0,
                             "layout": "horizontal",
                             "toggle": 0,
+                            "show_column": 0,
+                            "allow_quickedit": 0,
+                            "allow_bulkedit": 0,
+                            "show_column_filter": 0,
                             "save_custom": 0,
                             "custom_choice_button_text": "Add new choice",
                             "parent_repeater": "field_658f168df434b"
                         },
                         {
-                            "allow_backendsearch": 0,
-                            "show_column_filter": false,
-                            "allow_bulkedit": 0,
-                            "allow_quickedit": 0,
-                            "show_column": 0,
-                            "show_column_weight": 1000,
-                            "show_column_sortable": false,
                             "key": "field_658f168df434d",
                             "label": "Columns",
                             "name": "columns",
@@ -389,16 +336,13 @@
                             "step": 1,
                             "prepend": "",
                             "append": "",
+                            "show_column": 0,
+                            "allow_quickedit": 0,
+                            "allow_bulkedit": 0,
+                            "allow_backendsearch": 0,
                             "parent_repeater": "field_658f168df434b"
                         },
                         {
-                            "allow_backendsearch": false,
-                            "show_column_filter": 0,
-                            "allow_bulkedit": 0,
-                            "allow_quickedit": 0,
-                            "show_column": 0,
-                            "show_column_weight": 1000,
-                            "show_column_sortable": false,
                             "key": "field_658f168df434e",
                             "label": "Image Position",
                             "name": "image_position",
@@ -429,16 +373,13 @@
                             "acfe_validate": "",
                             "allow_null": 1,
                             "layout": "horizontal",
+                            "show_column": 0,
+                            "allow_quickedit": 0,
+                            "allow_bulkedit": 0,
+                            "show_column_filter": 0,
                             "parent_repeater": "field_658f168df434b"
                         },
                         {
-                            "allow_backendsearch": false,
-                            "show_column_filter": 0,
-                            "allow_bulkedit": 0,
-                            "allow_quickedit": 0,
-                            "show_column": 0,
-                            "show_column_weight": 1000,
-                            "show_column_sortable": false,
                             "key": "field_658f168df434f",
                             "label": "Icon Image Position",
                             "name": "icon_image_position",
@@ -469,6 +410,10 @@
                             "acfe_validate": "",
                             "allow_null": 1,
                             "layout": "horizontal",
+                            "show_column": 0,
+                            "allow_quickedit": 0,
+                            "allow_bulkedit": 0,
+                            "show_column_filter": 0,
                             "parent_repeater": "field_658f168df434b"
                         }
                     ]
@@ -479,13 +424,6 @@
             "acfe_group_modal_size": "large"
         },
         {
-            "allow_backendsearch": false,
-            "show_column_filter": false,
-            "allow_bulkedit": false,
-            "allow_quickedit": false,
-            "show_column": false,
-            "show_column_weight": 1000,
-            "show_column_sortable": false,
             "key": "field_658db3c317b95",
             "label": "Presets",
             "name": "cards_block_presets",
@@ -509,13 +447,6 @@
             "rows_per_page": 20,
             "sub_fields": [
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": false,
-                    "allow_bulkedit": false,
-                    "allow_quickedit": false,
-                    "show_column": false,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_658db3c5e9695",
                     "label": "Preset Name",
                     "name": "preset_name",
@@ -529,6 +460,13 @@
                         "class": "",
                         "id": ""
                     },
+                    "allow_backendsearch": false,
+                    "show_column_filter": false,
+                    "allow_bulkedit": false,
+                    "allow_quickedit": false,
+                    "show_column": false,
+                    "show_column_weight": 1000,
+                    "show_column_sortable": false,
                     "default_value": "",
                     "placeholder": "",
                     "prepend": "",
@@ -537,13 +475,6 @@
                     "parent_repeater": "field_658db3c317b95"
                 },
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": false,
-                    "allow_bulkedit": false,
-                    "allow_quickedit": false,
-                    "show_column": false,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_658db3c5e9702",
                     "label": "",
                     "name": "",
@@ -558,7 +489,7 @@
                         "id": ""
                     },
                     "clone": [
-                        "group_656a4daeb4bbc"
+                        "group_658db3badc3e9"
                     ],
                     "display": "seamless",
                     "layout": "block",
@@ -597,8 +528,7 @@
     ],
     "acfe_form": 0,
     "acfe_display_title": "",
-    "qef_simple_location_rules": 0,
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1703877068
+    "modified": 1704937610
 }

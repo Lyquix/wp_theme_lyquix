@@ -81,10 +81,10 @@ export const cards = (() => {
 
 				// Swipper options
 				let swiperOptions = {
-					// Optional parameters
 					direction: 'horizontal',
-					loop: true,
+					loop: false,
 					slidesPerView: 1,
+					breakpoints: {},
 
 					// Navigation arrows
 					navigation: {
@@ -92,6 +92,16 @@ export const cards = (() => {
 						nextEl: cfg.cards.swiperNextSelector
 					}
 				};
+
+				// Slides per view
+				const responsiveRules = JSON.parse(cardsElem.attr('data-responsive-rules'));
+				responsiveRules.forEach((rule) => {
+					rule.screens.forEach((screen) => {
+						swiperOptions.breakpoints[cfg.responsive.breakPoints[cfg.responsive.sizes.indexOf(screen)]] = {
+							slidesPerView: parseInt(rule.columns)
+						};
+					});
+				});
 
 				// Swiper options override
 				try {
