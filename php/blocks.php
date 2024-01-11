@@ -30,7 +30,7 @@ function process_overrides($settings) {
 	$processed = [];
 	foreach ($settings as $key => $value) {
 		// Check if the key ends in _override_group
-		if (substr($key, -6) == '_override_group') {
+		if (substr($key, -15) == '_override_group') {
 			// Extract the key name by removing _override_group
 			$original_key = substr($key, 0, -15);
 
