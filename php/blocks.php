@@ -56,16 +56,27 @@ function process_overrides($settings) {
 }
 
 // Recursively removes any keys from $settings that are null or ''
+// Only associative arrays (not list/sequential) are traversed
 function remove_empty_settings($settings) {
+	# Assumes settings are associative arrays
 	foreach ($settings as $key => $value) {
 		if (is_array($value)) {
-			$value = remove_empty_settings($value);
-			if (!count($value)) {
-				unset($settings[$key]);
-			} else {
-				$settings[$key] = $value;
+			if (array_is_list($value)) {
+				// If value is a list array, remove it if empty (do not traverse it)
+				if (!count($value)) unset($settings[$key]);
+			}
+			else {
+				// Traverse associative arrays
+				$value = remove_empty_settings($value);
+				if (!count($value)) {
+					// Remove the key if the array is empty
+					unset($settings[$key]);
+				} else {
+					$settings[$key] = $value;
+				}
 			}
 		} elseif ($value === null || $value === '') {
+			// Remove any primitive values that are null or ''
 			unset($settings[$key]);
 		}
 	}
@@ -73,16 +84,27 @@ function remove_empty_settings($settings) {
 	return $settings;
 }
 
-// Recursively merge seetings arrays while skipping null and '' values
+// Recursively merge seetings and overrides
+// Only associative arrays (not list/sequential) are traversed
 function merge_settings($settings, $override) {
+	# Assumes settings are associative arrays
 	foreach ($override as $key => $value) {
 		if (is_array($value)) {
-			if (isset($settings[$key])) {
-				$settings[$key] = merge_settings($settings[$key], $value);
-			} else {
+			if (array_is_list($value)) {
+				// If value is a list array, replace the value, do not traverse it
 				$settings[$key] = $value;
 			}
+			else {
+				if (isset($settings[$key])) {
+					// If the setting is being overrident, traverse associative arrays
+					$settings[$key] = merge_settings($settings[$key], $value);
+				} else {
+					// Otherwise, just set the value
+					$settings[$key] = $value;
+				}
+			}
 		} else {
+			// Set the value for primitive values
 			$settings[$key] = $value;
 		}
 	}
