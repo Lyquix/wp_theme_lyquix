@@ -40,7 +40,7 @@ export const responsive = (() => {
 		cfg.responsive = {
 			enabled: true,
 			sizes: ['xs', 'sm', 'md', 'lg', 'xl'],
-			breakPoints: [320, 640, 960, 1280, 1600]
+			breakPoints: [320, 480, 720, 1080, 1620]
 		};
 
 		if (customCfg) cfg.responsive = jQuery.extend(true, cfg.responsive, customCfg);
