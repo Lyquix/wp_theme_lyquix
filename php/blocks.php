@@ -61,7 +61,7 @@ function remove_empty_settings($settings) {
 	# Assumes settings are associative arrays
 	foreach ($settings as $key => $value) {
 		if (is_array($value)) {
-			if (array_is_list($value)) {
+			if (\lqx\util\array_is_list($value)) {
 				// If value is a list array, remove it if empty (do not traverse it)
 				if (!count($value)) unset($settings[$key]);
 			}
@@ -90,7 +90,7 @@ function merge_settings($settings, $override) {
 	# Assumes settings are associative arrays
 	foreach ($override as $key => $value) {
 		if (is_array($value)) {
-			if (array_is_list($value)) {
+			if (\lqx\util\array_is_list($value)) {
 				// If value is a list array, replace the value, do not traverse it
 				$settings[$key] = $value;
 			}

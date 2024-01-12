@@ -24,11 +24,12 @@
 
 namespace lqx\util;
 
-if (PHP_VERSION_ID < 80100) { // PHP 8.1.0
-	function array_is_list(array $arr) {
-		if ($arr === []) return true;
-		return array_keys($arr) === range(0, count($arr) - 1);
-	}
+/**
+ * Polyfill for PHP 7.3 array_is_list function
+ */
+function array_is_list(array $arr) {
+	if ($arr === []) return true;
+	return array_keys($arr) === range(0, count($arr) - 1);
 }
 
 /**
