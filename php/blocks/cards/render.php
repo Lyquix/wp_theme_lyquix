@@ -36,8 +36,6 @@ namespace lqx\blocks\cards;
  * hash: A unique hash of the cards
  */
 function render($settings, $content) {
-	file_put_contents(__DIR__ . '/render.log', json_encode([$settings, $content], JSON_PRETTY_PRINT));
-
 	// Get and validate processed settings
 	$s = (\lqx\util\validate_data($settings['processed'], [
 		'type' => 'object',
