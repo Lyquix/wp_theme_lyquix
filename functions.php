@@ -13,6 +13,11 @@
 // Do not allow browsers to cache WordPress pages
 nocache_headers();
 
+// Remove comments
+if (get_theme_mod('feat_disable_comments', '1') === '1') {
+	require_once get_template_directory() . '/php/comments.php';
+}
+
 require get_template_directory() . '/php/setup.php';
 add_action('after_setup_theme', 'lqx_setup');
 

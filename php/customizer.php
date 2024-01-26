@@ -177,6 +177,14 @@ function lqx_customizer_add($wp_customize) {
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
 			]
+		],
+		'Theme Features' => [
+			'feat_disable_comments' => [
+				'type' => 'radio',
+				'label' => 'Disable Comments',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			]
 		]
 	];
 
