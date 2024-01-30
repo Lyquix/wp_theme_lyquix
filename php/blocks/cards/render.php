@@ -240,7 +240,9 @@ function render($settings, $content) {
 											<video
 												autoplay loop muted playsinline
 												poster="<?= $item['image']['sizes']['large'] ?>">
-												<source src="<?= $item['video']['upload']['url'] ?>" type="<?= $item['video']['upload']['mime_type'] ?>">
+												<source
+													src="<?= $item['video']['upload']['url'] ?>"
+													type="<?= $item['video']['upload']['mime_type'] ?>">
 											</video>
 										<?php else: ?>
 											<?= $s['image_clickable'] == 'y' && $first_link ? '<a href="' . $first_link . '">' : '' ?>
