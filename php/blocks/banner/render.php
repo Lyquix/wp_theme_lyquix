@@ -87,13 +87,13 @@ function render($settings, $content) {
 						<img
 							src="<?= $content['image']['url'] ?>"
 							alt="<?= htmlspecialchars($content['image']['alt']) ?>"
-							class="<?= is_array($content['image_mobile']) ? 'xs-hide' : '' ?>" />
+							class="<?= is_array($content['image_mobile']) ? 'xs-hide sm-hide' : '' ?>" />
 					<?php endif;
 					if (is_array($content['image_mobile'])) : ?>
 						<img
 							src="<?= $content['image_mobile']['url'] ?>"
 							alt="<?= htmlspecialchars($content['image_mobile']['alt']) ?>"
-							class="hide xs-show" />
+							class="hide xs-show sm-show" />
 					<?php endif; ?>
 				</div>
 			<?php endif; ?>

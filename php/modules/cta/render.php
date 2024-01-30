@@ -48,7 +48,18 @@ function render($settings = null, $content = null) {
 	<section class="lqx-module-cta">
 		<div class="cta <?= $cta['slim_cta'] == 'y' ? 'slim' : '' ?> <?= $cta['style'] ?>">
 			<div class="image">
-				<img src="<?php echo $cta['image']['url'];?>" alt="<?php echo $cta['image']['alt'];?>"/>
+				<?php if (is_array($cta['image'])) : ?>
+					<img
+						src="<?= $cta['image']['url'] ?>"
+						alt="<?= htmlspecialchars($cta['image']['alt']) ?>"
+						class="<?= is_array($cta['image_mobile']) ? 'xs-hide sm-hide' : '' ?>" />
+				<?php endif;
+				if (is_array($cta['image_mobile'])) : ?>
+					<img
+						src="<?= $cta['image_mobile']['url'] ?>"
+						alt="<?= htmlspecialchars($cta['image_mobile']['alt']) ?>"
+						class="hide xs-show sm-show" />
+				<?php endif; ?>
 			</div>
 			<div class="content">
 				<<?= $cta['heading_style'] == 'p' ? 'p class="title"><strong' : $cta['heading_style'] ?>>
