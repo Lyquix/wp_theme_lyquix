@@ -138,12 +138,14 @@ function get_settings($block, $post_id = null) {
 			'user' => get_field($block_name . '_block_user', $post_id),
 			'admin' => get_field($block_name . '_block_admin', $post_id)
 		],
-		'processed' => array_merge([
+		'processed' => [
 			'anchor' => isset($block['anchor']) ? esc_attr($block['anchor']) : '',
 			'class' => isset($block['className']) ? $block['className'] : '',
 			'hash' => 'id-' . md5(json_encode([get_the_ID(), $block, random_int(1000, 9999)])) // Generate a unique hash for the block
-		], get_field($block_name . '_block_global', 'option'))
+		]
 	];
+
+	if ($settings['global'] != null) $settings['processed'] = array_merge($settings['processed'], $settings['global']);
 
 	// Check for user settings
 	if ($settings['local']['user'] !== null) {
@@ -212,7 +214,7 @@ add_action('init', function () {
 add_filter('acf/load_field', function ($field) {
 	$field_keys = [
 		// Accordion
-		[ // sstyle and style_name fields
+		[ // style and style_name fields
 			'user' => 'field_656c9b99e9e1f',
 			'choice' => 'field_656e7cb6b285f'
 		],
@@ -220,6 +222,7 @@ add_filter('acf/load_field', function ($field) {
 			'user' => 'field_656c9bb1e9e20',
 			'choice' => 'field_656d01578aa30'
 		],
+
 		// Banner
 		[ // style and style_name fields
 			'user' => 'field_657727e6739ff',
@@ -229,6 +232,7 @@ add_filter('acf/load_field', function ($field) {
 			'user' => 'field_657727e673a6d',
 			'choice' => 'field_656d01578aa30'
 		],
+
 		// Hero
 		[ // style and style_name fields
 			'user' => 'field_657217f48ca53',
@@ -238,6 +242,7 @@ add_filter('acf/load_field', function ($field) {
 			'user' => 'field_657218058ca54',
 			'choice' => 'field_657766304a9cc'
 		],
+
 		// Gallery
 		[ // style and style_name fields
 			'user' => 'field_6577582aed940',
@@ -247,6 +252,7 @@ add_filter('acf/load_field', function ($field) {
 			'user' => 'field_6577582aed9a8',
 			'choice' => 'field_658061d6e7ed2'
 		],
+
 		// Tabs
 		[ //  style and style_name fields
 			'user' => 'field_656f866617343',
@@ -256,6 +262,7 @@ add_filter('acf/load_field', function ($field) {
 			'user' => 'field_656f866617344',
 			'choice' => 'field_656f87fcef854'
 		],
+
 		// Slider
 		[ //  style and style_name fields
 			'user' => 'field_659d51caf3d2a',
@@ -272,7 +279,7 @@ add_filter('acf/load_field', function ($field) {
 			$choice_field = get_field_object($k['choice']);
 
 			// Add an empty choice
-			$field['choices'][''] = 'Select';
+			$field['choices'] = ['' => 'Select'];
 
 			while (have_rows($choice_field['parent'], 'option')) {
 				the_row();
