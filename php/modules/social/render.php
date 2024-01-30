@@ -39,12 +39,36 @@ function render_social_icons($settings = null) {
 	// Get settings
 	if ($settings == null) $settings = get_field('social_icons_module', 'option');
 
+	$s = (\lqx\util\validate_data($settings,[
+		'type' => 'object',
+		'required' => true,
+		'keys' => [
+			'links' => [
+				'type' => 'array',
+				'required' => true,
+				'keys' => [
+					'url' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING
+				]
+			],
+			'style' => [
+				'type' => 'string',
+				'required' => true,
+				'default' => 'square',
+				'allowed' => ['square', 'circle', 'rounded']
+			],
+			'background_color' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+			'icon_color' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+			'hover_icon_color' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+			'hover_background_color' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING
+		]
+	]))['data'];
+
 	// Check if there are any social links configured
-	if (empty($settings['links'])) return;
+	if (empty($s['links'])) return;
 ?>
 	<div class="lqx-social-icons">
-		<ul class="icons-list <?= $settings['style'] ?>" style="<?= get_inline_style($settings) ?>">
-			<?php foreach ($settings['links'] as $l) :
+		<ul class="icons-list <?= $s['style'] ?>" style="<?= get_inline_style($s) ?>">
+			<?php foreach ($s['links'] as $l) :
 				$platform = get_platform($l['url']);
 				if ($platform['code'] !== 'unknown'): ?>
 				<li>
@@ -80,13 +104,43 @@ function render_social_icons($settings = null) {
 function render_social_share($settings = null) {
 	// Get settings
 	if ($settings == null) $settings = get_field('social_share_module', 'option');
+	$s = (\lqx\util\validate_data($settings,[
+		'type' => 'object',
+		'required' => true,
+		'keys' => [
+			'platforms' => [
+				'type' => 'array',
+				'required' => true,
+				'keys' => [
+					'platform_name' => [
+						'type' => 'object',
+						'required' => true,
+						'keys' => [
+							'value' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+							'label' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING
+						]
+					]
+				]
+			],
+			'style' => [
+				'type' => 'string',
+				'required' => true,
+				'default' => 'square',
+				'allowed' => ['square', 'circle', 'rounded']
+			],
+			'icon_color' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+			'background_color' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+			'hover_icon_color' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+			'hover_background_color' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING
+		]
+	]))['data'];
 
 	// Check if there are any platforms configured
-	if (empty($settings['platforms'])) return;
+	if (empty($s['platforms'])) return;
 ?>
 	<div class="lqx-social-share">
-		<ul class="share-list <?= $settings['style'] ?>" style="<?= get_inline_style($settings) ?>">
-			<?php foreach ($settings['platforms'] as $p) :
+		<ul class="share-list <?= $s['style'] ?>" style="<?= get_inline_style($s) ?>">
+			<?php foreach ($s['platforms'] as $p) :
 				$share_link = get_share_link($p['platform_name']['value']);
 				if($share_link) :	?>
 				<li>

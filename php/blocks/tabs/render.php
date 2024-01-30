@@ -41,9 +41,68 @@ namespace lqx\blocks\tabs;
  */
 function render($settings, $content) {
 	// Get the processed settings
-	$s = $settings['processed'];
+	$s = (\lqx\util\validate_data($settings['processed'],[
+		'type' => 'object',
+		'required' => true,
+		'keys' => [
+			'anchor' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+			'class' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+			'hash' => [
+				'type' => 'string',
+				'required' => true,
+				'default' => 'id-' . md5(json_encode([$settings, $content, random_int(1000, 9999)]))
+			],
+			'heading_style' => [
+				'type' => 'string',
+				'required' => true,
+				'default' => 'h3',
+				'allowed' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6' ]
+			],
+			'browser_history' => [
+				'type' => 'string',
+				'required' => true,
+				'default' => 'n',
+				'allowed' => ['y', 'n']
+			],
+			'convert_to_accordion' => [
+				'type' => 'array',
+				'required' => true,
+				'default' => [],
+				'allowed' => ['xs', 'sm', 'md', 'lg', 'xl']
+			],
+			'auto_scroll' => [
+				'type' => 'array',
+				'required' => true,
+				'default' => [],
+				'allowed' => ['xs', 'sm', 'md', 'lg', 'xl']
+			]
+		]
+	]))['data'];
 
-	if (!empty($content)) : ?>
+	// Get and validate processed content
+	$c = (\lqx\util\validate_data($content,[
+			'type' => 'array',
+			'required' => true,
+			'elems' => [
+				'type' => 'object',
+				'required' => true,
+				'keys' => [
+					'label' => [
+						'type' => 'string',
+						'required' => false,
+						'default' => 'Something'
+					],
+					'heading' => [
+						'type' => 'string',
+						'required' => false,
+						'default' => ''
+					],
+					'content' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+				]
+			]
+	]))['data'];
+
+	if (!empty($c)) : ?>
 		<section
 			id="<?= $s['anchor'] ?>"
 			class="lqx-block-tabs  <?= $s['class'] ?>">
@@ -59,7 +118,7 @@ function render($settings, $content) {
 					class="tabs-list"
 					role="tablist"
 					aria-hidden="false">
-					<?php foreach ($content as $idx => $item) : ?>
+					<?php foreach ($c as $idx => $item) : ?>
 						<li>
 							<button
 								class="tab"

@@ -41,10 +41,68 @@ namespace lqx\blocks\accordion;
  * auto_scroll: Sets in what screen sizes the accordion will auto scroll to the top of the open accordion
  */
 function render($settings, $content) {
-	// Get the processed settings
-	$s = $settings['processed'];
 
-	if (!empty($content)) : ?>
+	// Get and validate processed settings
+	$s = (\lqx\util\validate_data($settings['processed'],[
+		'type' => 'object',
+		'required' => true,
+		'keys' => [
+			'anchor' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+			'class' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+			'hash' => [
+				'type' => 'string',
+				'required' => true,
+				'default' => 'id-' . md5(json_encode([$settings, $content, random_int(1000, 9999)]))
+			],
+			'open_on_load' => [
+				'type' => 'string',
+				'required' => true,
+				'default' => 'n',
+				'allowed' => ['y', 'n']
+			],
+			'open_multiple' => [
+				'type' => 'string',
+				'required' => true,
+				'default' => 'n',
+				'allowed' => ['y', 'n']
+			],
+			'heading_style' => [
+				'type' => 'string',
+				'required' => true,
+				'default' => 'h3',
+				'allowed' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6' ]
+			],
+			'browser_history' => [
+				'type' => 'string',
+				'required' => true,
+				'default' => 'n',
+				'allowed' => ['y', 'n']
+			],
+			'auto_scroll' => [
+				'type' => 'array',
+				'required' => true,
+				'default' => [],
+				'allowed' => ['xs', 'sm', 'md', 'lg', 'xl']
+			]
+		]
+	]))['data'];
+
+	// Get the processed content
+	$c = \lqx\util\validate_data($content,[
+		'type' => 'array',
+		'required' => true,
+		'default' => [],
+		'elems' => [
+			'type' => 'object',
+			'required' => true,
+			'keys' => [
+				'heading' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+				'content' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING
+			]
+		]
+	])['data'];
+
+	if (!empty($c)) : ?>
 		<section
 			id="<?= $s['anchor'] ?>"
 			class="lqx-block-accordion <?= $s['class'] ?>">
@@ -57,7 +115,7 @@ function render($settings, $content) {
 				data-browser-history="<?= $s['browser_history'] ?>"
 				data-auto-scroll="<?= implode(',', $s['auto_scroll']) ?>">
 
-				<?php foreach ($content as $idx => $item) : ?>
+				<?php foreach ($c as $idx => $item) : ?>
 					<<?= $s['heading_style'] ?>>
 						<button
 							class="accordion-header"
