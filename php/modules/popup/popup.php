@@ -40,6 +40,10 @@ function rest_route() {
 			$popup['expiration'] = date('c', strtotime($popup['expiration'] . ' ' . get_option('timezone_string')));
 		}
 
+		// Convert zero hide delay and dismiss duration to blank
+		if ($popup['hide_delay'] == 0) $popup['hide_delay'] = '';
+		if ($popup['dismiss_duration'] == 0) $popup['dismiss_duration'] = '';
+
 		return $popup;
 	}, $content);
 
