@@ -3,13 +3,6 @@
     "title": "Block: Banner (Admin Settings)",
     "fields": [
         {
-            "allow_backendsearch": false,
-            "show_column_filter": false,
-            "allow_bulkedit": false,
-            "allow_quickedit": false,
-            "show_column": false,
-            "show_column_weight": 1000,
-            "show_column_sortable": false,
             "key": "field_657726ebd0534",
             "label": "Admin Settings",
             "name": "",
@@ -28,13 +21,6 @@
             "no_preference": 0
         },
         {
-            "allow_backendsearch": false,
-            "show_column_filter": false,
-            "allow_bulkedit": false,
-            "allow_quickedit": false,
-            "show_column": false,
-            "show_column_weight": 1000,
-            "show_column_sortable": false,
             "key": "field_657726ebd0590",
             "label": "",
             "name": "banner_block_admin",
@@ -59,13 +45,6 @@
             "acfe_permissions": "",
             "sub_fields": [
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": 0,
-                    "allow_bulkedit": 0,
-                    "allow_quickedit": 0,
-                    "show_column": 0,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_658494381a959",
                     "label": "Heading Style",
                     "name": "heading_style",
@@ -96,7 +75,7 @@
                     "acfe_settings": "",
                     "acfe_validate": "",
                     "allow_null": 1,
-                    "instruction_placement": "",
+                    "instruction_placement": "tooltip",
                     "acfe_permissions": "",
                     "layout": "horizontal"
                 }
@@ -130,11 +109,10 @@
     ],
     "acfe_form": 1,
     "acfe_display_title": "",
-    "qef_simple_location_rules": 0,
     "acfe_permissions": [
         "administrator"
     ],
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1703873501
+    "modified": 1706573697
 }

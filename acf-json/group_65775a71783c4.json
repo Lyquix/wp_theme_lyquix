@@ -3,13 +3,6 @@
     "title": "Block: Gallery (Site Settings)",
     "fields": [
         {
-            "allow_backendsearch": false,
-            "show_column_filter": false,
-            "allow_bulkedit": false,
-            "allow_quickedit": false,
-            "show_column": false,
-            "show_column_weight": 1000,
-            "show_column_sortable": false,
             "key": "field_65806184e7ecf",
             "label": "Styles",
             "name": "gallery_block_styles",
@@ -33,13 +26,6 @@
             "rows_per_page": 20,
             "sub_fields": [
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": false,
-                    "allow_bulkedit": false,
-                    "allow_quickedit": false,
-                    "show_column": false,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_65806199e7ed0",
                     "label": "Style Name",
                     "name": "style_name",
@@ -63,13 +49,6 @@
             ]
         },
         {
-            "allow_backendsearch": false,
-            "show_column_filter": false,
-            "allow_bulkedit": false,
-            "allow_quickedit": false,
-            "show_column": false,
-            "show_column_weight": 1000,
-            "show_column_sortable": false,
             "key": "field_65775ad9a7c3b",
             "label": "Global Settings",
             "name": "gallery_block_global",
@@ -88,13 +67,6 @@
             "acfe_group_modal": 0,
             "sub_fields": [
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": 0,
-                    "allow_bulkedit": 0,
-                    "allow_quickedit": 0,
-                    "show_column": 0,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_65775afaa7c3c",
                     "label": "Slider",
                     "name": "slider",
@@ -108,23 +80,24 @@
                         "class": "",
                         "id": ""
                     },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
                     "choices": {
                         "y": "Yes",
                         "n": "No"
                     },
                     "default_value": "n",
                     "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
                     "allow_null": 0,
+                    "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
                     "layout": "horizontal"
                 },
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": false,
-                    "allow_bulkedit": false,
-                    "allow_quickedit": false,
-                    "show_column": false,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_6585b27ac13e1",
                     "label": "Swiper Options Override",
                     "name": "swiper_options_override",
@@ -146,6 +119,10 @@
                         "class": "",
                         "id": ""
                     },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
                     "default_value": "",
                     "placeholder": "",
                     "mode": "application\/x-json",
@@ -154,16 +131,13 @@
                     "maxlength": "",
                     "rows": 4,
                     "max_rows": "",
-                    "return_format": []
+                    "return_format": [],
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "instruction_placement": "tooltip",
+                    "acfe_permissions": ""
                 },
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": 0,
-                    "allow_bulkedit": 0,
-                    "allow_quickedit": 0,
-                    "show_column": 0,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_658f0e886d58f",
                     "label": "Heading Style",
                     "name": "heading_style",
@@ -177,6 +151,10 @@
                         "class": "",
                         "id": ""
                     },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
                     "choices": {
                         "p": "P and STRONG",
                         "h1": "H1",
@@ -188,17 +166,14 @@
                     },
                     "default_value": "p",
                     "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
                     "allow_null": 1,
+                    "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
                     "layout": "horizontal"
                 },
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": 0,
-                    "allow_bulkedit": 0,
-                    "allow_quickedit": 0,
-                    "show_column": 0,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_65775d5f1008e",
                     "label": "Browser History",
                     "name": "browser_history",
@@ -212,13 +187,21 @@
                         "class": "",
                         "id": ""
                     },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
                     "choices": {
                         "y": "Yes",
                         "n": "No"
                     },
                     "default_value": "",
                     "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
                     "allow_null": 0,
+                    "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
                     "layout": "horizontal"
                 }
             ],
@@ -227,13 +210,6 @@
             "acfe_group_modal_size": "large"
         },
         {
-            "allow_backendsearch": false,
-            "show_column_filter": false,
-            "allow_bulkedit": false,
-            "allow_quickedit": false,
-            "show_column": false,
-            "show_column_weight": 1000,
-            "show_column_sortable": false,
             "key": "field_658061b1e7ed1",
             "label": "Presets",
             "name": "gallery_block_presets",
@@ -257,13 +233,6 @@
             "rows_per_page": 20,
             "sub_fields": [
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": false,
-                    "allow_bulkedit": false,
-                    "allow_quickedit": false,
-                    "show_column": false,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_658061d6e7ed2",
                     "label": "Preset Name",
                     "name": "preset_name",
@@ -285,13 +254,6 @@
                     "parent_repeater": "field_658061b1e7ed1"
                 },
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": false,
-                    "allow_bulkedit": false,
-                    "allow_quickedit": false,
-                    "show_column": false,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_658061e0e7ed3",
                     "label": "",
                     "name": "",
@@ -343,10 +305,10 @@
     "acfe_autosync": [
         "json"
     ],
-    "acfe_form": 0,
+    "acfe_form": 1,
     "acfe_display_title": "",
-    "qef_simple_location_rules": 0,
+    "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1703874486
+    "modified": 1706589311
 }

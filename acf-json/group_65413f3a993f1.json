@@ -3,13 +3,6 @@
     "title": "Block: Hero (Site Settings)",
     "fields": [
         {
-            "allow_backendsearch": false,
-            "show_column_filter": false,
-            "allow_bulkedit": false,
-            "allow_quickedit": false,
-            "show_column": false,
-            "show_column_weight": 1000,
-            "show_column_sortable": false,
             "key": "field_657761228bf9c",
             "label": "Styles",
             "name": "hero_block_styles",
@@ -33,13 +26,6 @@
             "rows_per_page": 20,
             "sub_fields": [
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": false,
-                    "allow_bulkedit": false,
-                    "allow_quickedit": false,
-                    "show_column": false,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_657761228bf9d",
                     "label": "Style Name",
                     "name": "style_name",
@@ -63,13 +49,6 @@
             ]
         },
         {
-            "allow_backendsearch": false,
-            "show_column_filter": false,
-            "allow_bulkedit": false,
-            "allow_quickedit": false,
-            "show_column": false,
-            "show_column_weight": 1000,
-            "show_column_sortable": false,
             "key": "field_65413f3a9e679",
             "label": "Global Settings",
             "name": "hero_block_global",
@@ -88,13 +67,6 @@
             "acfe_group_modal": 0,
             "sub_fields": [
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": false,
-                    "allow_bulkedit": false,
-                    "allow_quickedit": false,
-                    "show_column": false,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_65413f3ad0928",
                     "label": "Show Image",
                     "name": "show_image",
@@ -108,23 +80,24 @@
                         "class": "",
                         "id": ""
                     },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
                     "choices": {
                         "y": "Yes",
                         "n": "No"
                     },
                     "default_value": "y",
                     "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
                     "allow_null": 0,
+                    "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
                     "layout": "horizontal"
                 },
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": false,
-                    "allow_bulkedit": false,
-                    "allow_quickedit": false,
-                    "show_column": false,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_65775ef5bcde6",
                     "label": "",
                     "name": "breadcrumbs",
@@ -138,18 +111,17 @@
                         "class": "",
                         "id": ""
                     },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
                     "layout": "block",
-                    "acfe_seamless_style": 0,
-                    "acfe_group_modal": 0,
+                    "acfe_seamless_style": 1,
+                    "acfe_settings": "",
+                    "instruction_placement": "",
+                    "acfe_permissions": "",
                     "sub_fields": [
                         {
-                            "allow_backendsearch": false,
-                            "show_column_filter": 0,
-                            "allow_bulkedit": 0,
-                            "allow_quickedit": 0,
-                            "show_column": 0,
-                            "show_column_weight": 1000,
-                            "show_column_sortable": false,
                             "key": "field_65775f03bcde7",
                             "label": "Show Breadcrumbs",
                             "name": "show_breadcrumbs",
@@ -163,25 +135,26 @@
                                 "class": "",
                                 "id": ""
                             },
+                            "acfe_permissions": "",
+                            "instruction_placement": "tooltip",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
                             "choices": {
                                 "y": "Yes",
                                 "n": "No"
                             },
                             "default_value": "n",
                             "return_format": "value",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
                             "allow_null": 0,
                             "layout": "horizontal"
                         },
                         {
-                            "allow_backendsearch": false,
-                            "show_column_filter": false,
-                            "allow_bulkedit": false,
-                            "allow_quickedit": false,
-                            "show_column": false,
-                            "show_column_weight": 1000,
-                            "show_column_sortable": false,
                             "key": "field_65775f57d5a43",
-                            "label": "Type",
+                            "label": "Breadcrumbs Type",
                             "name": "type",
                             "aria-label": "",
                             "type": "radio",
@@ -197,10 +170,16 @@
                                 ]
                             ],
                             "wrapper": {
-                                "width": "",
+                                "width": "40",
                                 "class": "",
                                 "id": ""
                             },
+                            "acfe_permissions": "",
+                            "instruction_placement": "tooltip",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
                             "choices": {
                                 "parent": "Parent Pages",
                                 "category": "Categories",
@@ -209,21 +188,16 @@
                             },
                             "default_value": "parent",
                             "return_format": "value",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
                             "allow_null": 0,
                             "other_choice": 0,
                             "layout": "vertical",
                             "save_other_choice": 0
                         },
                         {
-                            "allow_backendsearch": false,
-                            "show_column_filter": false,
-                            "allow_bulkedit": false,
-                            "allow_quickedit": false,
-                            "show_column": false,
-                            "show_column_weight": 1000,
-                            "show_column_sortable": false,
                             "key": "field_65775f944d461",
-                            "label": "Maximum Depth",
+                            "label": "Breadcrumbs Maximum Depth",
                             "name": "depth",
                             "aria-label": "",
                             "type": "range",
@@ -244,27 +218,28 @@
                                 ]
                             ],
                             "wrapper": {
-                                "width": "",
+                                "width": "35",
                                 "class": "",
                                 "id": ""
                             },
+                            "acfe_permissions": "",
+                            "instruction_placement": "tooltip",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
                             "default_value": 3,
+                            "acfe_settings": "",
+                            "acfe_validate": "",
                             "min": 1,
                             "max": 5,
-                            "step": "",
+                            "step": 1,
                             "prepend": "",
                             "append": ""
                         },
                         {
-                            "allow_backendsearch": false,
-                            "show_column_filter": false,
-                            "allow_bulkedit": false,
-                            "allow_quickedit": false,
-                            "show_column": false,
-                            "show_column_weight": 1000,
-                            "show_column_sortable": false,
                             "key": "field_65775fbf4d462",
-                            "label": "Show Current",
+                            "label": "Show Current Page",
                             "name": "show_current",
                             "aria-label": "",
                             "type": "button_group",
@@ -280,20 +255,29 @@
                                 ]
                             ],
                             "wrapper": {
-                                "width": "",
+                                "width": "25",
                                 "class": "",
                                 "id": ""
                             },
+                            "acfe_permissions": "",
+                            "instruction_placement": "tooltip",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
                             "choices": {
                                 "y": "Yes",
                                 "n": "No"
                             },
                             "default_value": "n",
                             "return_format": "value",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
                             "allow_null": 0,
                             "layout": "horizontal"
                         }
                     ],
+                    "acfe_group_modal": 0,
                     "acfe_group_modal_close": 0,
                     "acfe_group_modal_button": "",
                     "acfe_group_modal_size": "large"
@@ -304,13 +288,6 @@
             "acfe_group_modal_size": "large"
         },
         {
-            "allow_backendsearch": false,
-            "show_column_filter": false,
-            "allow_bulkedit": false,
-            "allow_quickedit": false,
-            "show_column": false,
-            "show_column_weight": 1000,
-            "show_column_sortable": false,
             "key": "field_6577644a0a231",
             "label": "Presets",
             "name": "hero_block_presets",
@@ -334,13 +311,6 @@
             "rows_per_page": 20,
             "sub_fields": [
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": false,
-                    "allow_bulkedit": false,
-                    "allow_quickedit": false,
-                    "show_column": false,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_657766304a9cc",
                     "label": "Preset Name",
                     "name": "preset_name",
@@ -362,13 +332,6 @@
                     "parent_repeater": "field_6577644a0a231"
                 },
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": false,
-                    "allow_bulkedit": false,
-                    "allow_quickedit": false,
-                    "show_column": false,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_657766394a9cd",
                     "label": "",
                     "name": "",
@@ -420,10 +383,10 @@
     "acfe_autosync": [
         "json"
     ],
-    "acfe_form": 0,
+    "acfe_form": 1,
     "acfe_display_title": "",
-    "qef_simple_location_rules": 0,
+    "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1703788679
+    "modified": 1706589500
 }

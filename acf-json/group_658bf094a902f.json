@@ -3,13 +3,6 @@
     "title": "Module: Popups (Site Settings)",
     "fields": [
         {
-            "allow_backendsearch": false,
-            "show_column_filter": false,
-            "allow_bulkedit": false,
-            "allow_quickedit": false,
-            "show_column": false,
-            "show_column_weight": 1000,
-            "show_column_sortable": false,
             "key": "field_658bf094b7985",
             "label": "",
             "name": "popup_module_settings",
@@ -27,13 +20,6 @@
             "acfe_seamless_style": 1,
             "sub_fields": [
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": false,
-                    "allow_bulkedit": false,
-                    "allow_quickedit": false,
-                    "show_column": false,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_658c740a049f9",
                     "label": "Styles",
                     "name": "styles",
@@ -57,13 +43,6 @@
                     "rows_per_page": 20,
                     "sub_fields": [
                         {
-                            "allow_backendsearch": false,
-                            "show_column_filter": false,
-                            "allow_bulkedit": false,
-                            "allow_quickedit": false,
-                            "show_column": false,
-                            "show_column_weight": 1000,
-                            "show_column_sortable": false,
                             "key": "field_658c740a049fa",
                             "label": "Style Name",
                             "name": "style_name",
@@ -87,13 +66,6 @@
                     ]
                 },
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": false,
-                    "allow_bulkedit": false,
-                    "allow_quickedit": false,
-                    "show_column": false,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_658bf139bdeb1",
                     "label": "Heading Style",
                     "name": "heading_style",
@@ -107,6 +79,10 @@
                         "class": "",
                         "id": ""
                     },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
                     "choices": {
                         "p": "P and STRONG",
                         "h1": "H1",
@@ -118,7 +94,11 @@
                     },
                     "default_value": "p",
                     "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
                     "allow_null": 0,
+                    "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
                     "layout": "horizontal"
                 }
             ],
@@ -149,10 +129,10 @@
     "acfe_autosync": [
         "json"
     ],
-    "acfe_form": 0,
+    "acfe_form": 1,
     "acfe_display_title": "",
-    "qef_simple_location_rules": 0,
+    "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1703705400
+    "modified": 1706592415
 }

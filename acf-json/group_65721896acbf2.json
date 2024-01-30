@@ -71,7 +71,7 @@
                     "acfe_settings": "",
                     "acfe_validate": "",
                     "allow_null": 1,
-                    "instruction_placement": "",
+                    "instruction_placement": "tooltip",
                     "acfe_permissions": "",
                     "layout": "horizontal"
                 },
@@ -94,8 +94,7 @@
                     "hide_instructions": "",
                     "hide_required": "",
                     "layout": "block",
-                    "acfe_seamless_style": 0,
-                    "acfe_group_modal": 0,
+                    "acfe_seamless_style": 1,
                     "acfe_settings": "",
                     "instruction_placement": "",
                     "acfe_permissions": "",
@@ -115,7 +114,7 @@
                                 "id": ""
                             },
                             "acfe_permissions": "",
-                            "instruction_placement": "",
+                            "instruction_placement": "tooltip",
                             "hide_field": "",
                             "hide_label": "",
                             "hide_instructions": "",
@@ -129,15 +128,11 @@
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "allow_null": 1,
-                            "layout": "horizontal",
-                            "show_column": 0,
-                            "allow_quickedit": 0,
-                            "allow_bulkedit": 0,
-                            "show_column_filter": 0
+                            "layout": "horizontal"
                         },
                         {
                             "key": "field_657766926e7e8",
-                            "label": "Type",
+                            "label": "Breadcrumbs Type",
                             "name": "type",
                             "aria-label": "",
                             "type": "radio",
@@ -153,12 +148,12 @@
                                 ]
                             ],
                             "wrapper": {
-                                "width": "",
+                                "width": "40",
                                 "class": "",
                                 "id": ""
                             },
                             "acfe_permissions": "",
-                            "instruction_placement": "",
+                            "instruction_placement": "tooltip",
                             "hide_field": "",
                             "hide_label": "",
                             "hide_instructions": "",
@@ -180,7 +175,7 @@
                         },
                         {
                             "key": "field_657766926e7e9",
-                            "label": "Maximum Depth",
+                            "label": "Breadcrumbs Maximum Depth",
                             "name": "depth",
                             "aria-label": "",
                             "type": "range",
@@ -201,12 +196,12 @@
                                 ]
                             ],
                             "wrapper": {
-                                "width": "",
+                                "width": "35",
                                 "class": "",
                                 "id": ""
                             },
                             "acfe_permissions": "",
-                            "instruction_placement": "",
+                            "instruction_placement": "tooltip",
                             "hide_field": "",
                             "hide_label": "",
                             "hide_instructions": "",
@@ -218,15 +213,11 @@
                             "max": 5,
                             "step": 1,
                             "prepend": "",
-                            "append": "",
-                            "show_column": 0,
-                            "allow_quickedit": 0,
-                            "allow_bulkedit": 0,
-                            "allow_backendsearch": 0
+                            "append": ""
                         },
                         {
                             "key": "field_657766926e7ea",
-                            "label": "Show Current",
+                            "label": "Show Current Page",
                             "name": "show_current",
                             "aria-label": "",
                             "type": "button_group",
@@ -242,12 +233,12 @@
                                 ]
                             ],
                             "wrapper": {
-                                "width": "",
+                                "width": "25",
                                 "class": "",
                                 "id": ""
                             },
                             "acfe_permissions": "",
-                            "instruction_placement": "",
+                            "instruction_placement": "tooltip",
                             "hide_field": "",
                             "hide_label": "",
                             "hide_instructions": "",
@@ -264,6 +255,7 @@
                             "layout": "horizontal"
                         }
                     ],
+                    "acfe_group_modal": 0,
                     "acfe_group_modal_close": 0,
                     "acfe_group_modal_button": "",
                     "acfe_group_modal_size": "large"
@@ -303,5 +295,5 @@
     ],
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1704919943
+    "modified": 1706574233
 }

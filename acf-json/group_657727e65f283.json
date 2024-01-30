@@ -3,13 +3,6 @@
     "title": "Block: Banner (User Settings)",
     "fields": [
         {
-            "allow_backendsearch": false,
-            "show_column_filter": false,
-            "allow_bulkedit": false,
-            "allow_quickedit": false,
-            "show_column": false,
-            "show_column_weight": 1000,
-            "show_column_sortable": false,
             "key": "field_657727e668be9",
             "label": "Settings",
             "name": "",
@@ -28,13 +21,6 @@
             "no_preference": 0
         },
         {
-            "allow_backendsearch": false,
-            "show_column_filter": false,
-            "allow_bulkedit": false,
-            "allow_quickedit": false,
-            "show_column": false,
-            "show_column_weight": 1000,
-            "show_column_sortable": false,
             "key": "field_657727e668c45",
             "label": "",
             "name": "banner_block_user",
@@ -52,13 +38,6 @@
             "acfe_seamless_style": 1,
             "sub_fields": [
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": 0,
-                    "allow_bulkedit": 0,
-                    "allow_quickedit": 0,
-                    "show_column": 0,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_657727e6739ff",
                     "label": "Style",
                     "name": "style",
@@ -72,7 +51,12 @@
                         "class": "",
                         "id": ""
                     },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
                     "choices": {
+                        ": Select": ": Select",
                         "": "Select"
                     },
                     "default_value": false,
@@ -81,7 +65,11 @@
                     "max": "",
                     "prepend": "",
                     "append": "",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
                     "allow_null": 0,
+                    "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
                     "ui": 0,
                     "ajax": 0,
                     "placeholder": "",
@@ -90,13 +78,6 @@
                     "min": ""
                 },
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": 0,
-                    "allow_bulkedit": 0,
-                    "allow_quickedit": 0,
-                    "show_column": 0,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_657727e673a6d",
                     "label": "Preset",
                     "name": "preset",
@@ -110,14 +91,25 @@
                         "class": "",
                         "id": ""
                     },
-                    "choices": [],
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "choices": {
+                        ": Select": ": Select",
+                        "": "Select"
+                    },
                     "default_value": false,
                     "return_format": "value",
                     "multiple": 0,
                     "max": "",
                     "prepend": "",
                     "append": "",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
                     "allow_null": 0,
+                    "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
                     "ui": 0,
                     "ajax": 0,
                     "placeholder": "",
@@ -153,10 +145,10 @@
     "acfe_autosync": [
         "json"
     ],
-    "acfe_form": 0,
+    "acfe_form": 1,
     "acfe_display_title": "",
-    "qef_simple_location_rules": 0,
+    "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1703186898
+    "modified": 1706575139
 }

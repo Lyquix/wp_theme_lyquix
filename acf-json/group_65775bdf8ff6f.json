@@ -3,13 +3,6 @@
     "title": "Block: Gallery (Admin Settings)",
     "fields": [
         {
-            "allow_backendsearch": false,
-            "show_column_filter": false,
-            "allow_bulkedit": false,
-            "allow_quickedit": false,
-            "show_column": false,
-            "show_column_weight": 1000,
-            "show_column_sortable": false,
             "key": "field_65775bdf9598d",
             "label": "Admin Settings",
             "name": "",
@@ -29,13 +22,6 @@
             "no_preference": 0
         },
         {
-            "allow_backendsearch": false,
-            "show_column_filter": false,
-            "allow_bulkedit": false,
-            "allow_quickedit": false,
-            "show_column": false,
-            "show_column_weight": 1000,
-            "show_column_sortable": false,
             "key": "field_65775bdf959d5",
             "label": "",
             "name": "gallery_block_admin",
@@ -60,13 +46,6 @@
             "acfe_permissions": "",
             "sub_fields": [
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": 0,
-                    "allow_bulkedit": 0,
-                    "allow_quickedit": 0,
-                    "show_column": 0,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_65775bdf9a4f9",
                     "label": "Slider",
                     "name": "slider",
@@ -93,18 +72,11 @@
                     "acfe_settings": "",
                     "acfe_validate": "",
                     "allow_null": 1,
-                    "instruction_placement": "",
+                    "instruction_placement": "tooltip",
                     "acfe_permissions": "",
                     "layout": "horizontal"
                 },
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": false,
-                    "allow_bulkedit": false,
-                    "allow_quickedit": false,
-                    "show_column": false,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_6585bacc1e44a",
                     "label": "Swiper Options Override",
                     "name": "swiper_options_override",
@@ -112,7 +84,15 @@
                     "type": "acfe_code_editor",
                     "instructions": "Enter a JSON object to extend default Swiper options",
                     "required": 0,
-                    "conditional_logic": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_65775bdf9a4f9",
+                                "operator": "==",
+                                "value": "y"
+                            }
+                        ]
+                    ],
                     "wrapper": {
                         "width": "",
                         "class": "",
@@ -133,17 +113,10 @@
                     "return_format": [],
                     "acfe_settings": "",
                     "acfe_validate": "",
-                    "instruction_placement": "",
+                    "instruction_placement": "tooltip",
                     "acfe_permissions": ""
                 },
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": 0,
-                    "allow_bulkedit": 0,
-                    "allow_quickedit": 0,
-                    "show_column": 0,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_658f0bb3a8d45",
                     "label": "Heading Style",
                     "name": "heading_style",
@@ -175,18 +148,11 @@
                     "acfe_settings": "",
                     "acfe_validate": "",
                     "allow_null": 1,
-                    "instruction_placement": "",
+                    "instruction_placement": "tooltip",
                     "acfe_permissions": "",
                     "layout": "horizontal"
                 },
                 {
-                    "allow_backendsearch": false,
-                    "show_column_filter": 0,
-                    "allow_bulkedit": 0,
-                    "allow_quickedit": 0,
-                    "show_column": 0,
-                    "show_column_weight": 1000,
-                    "show_column_sortable": false,
                     "key": "field_65775d245999b",
                     "label": "Browser History",
                     "name": "browser_history",
@@ -213,7 +179,7 @@
                     "acfe_settings": "",
                     "acfe_validate": "",
                     "allow_null": 1,
-                    "instruction_placement": "",
+                    "instruction_placement": "tooltip",
                     "acfe_permissions": "",
                     "layout": "horizontal"
                 }
@@ -247,11 +213,10 @@
     ],
     "acfe_form": 1,
     "acfe_display_title": "",
-    "qef_simple_location_rules": 0,
     "acfe_permissions": [
         "administrator"
     ],
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1703874218
+    "modified": 1706573912
 }
