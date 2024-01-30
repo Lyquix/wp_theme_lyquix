@@ -41,6 +41,7 @@ import { cards } from './lib/lyquix/cards';
 import { gallery } from './lib/lyquix/gallery';
 import { popup } from './lib/lyquix/popup';
 import { tabs } from './lib/lyquix/tabs';
+import { slider } from './lib/lyquix/slider';
 
 declare const lqx;
 
@@ -70,7 +71,8 @@ const init = (customCfg) => {
 		'cards',
 		'gallery',
 		'popup',
-		'tabs'
+		'tabs',
+		'slider'
 	];
 
 	// Initialize core config
@@ -136,7 +138,8 @@ const expObj = Object.defineProperties({
 	cards,
 	gallery,
 	popup,
-	tabs
+	tabs,
+	slider
 }, {
 	// Set the cfg and vars properties as read-only
 	cfg: {

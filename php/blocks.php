@@ -255,6 +255,15 @@ add_filter('acf/load_field', function ($field) {
 		[ // preset and preset_name fields
 			'user' => 'field_656f866617344',
 			'choice' => 'field_656f87fcef854'
+		],
+		// Slider
+		[ //  style and style_name fields
+			'user' => 'field_659d51caf3d2a',
+			'choice' => 'field_659d2fcdd2f8e'
+		],
+		[ // preset and preset_name fields
+			'user' => 'field_659d5299a2521',
+			'choice' => 'field_659d3012b3e36'
 		]
 	];
 

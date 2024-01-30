@@ -1,0 +1,23 @@
+{
+    "key": "ui_options_page_659d1d8e98145",
+    "title": "Slider",
+    "active": true,
+    "menu_order": 0,
+    "page_title": "Slider",
+    "menu_slug": "slider",
+    "parent_slug": "site-settings",
+    "advanced_configuration": 0,
+    "icon_url": "",
+    "menu_title": "",
+    "position": "",
+    "redirect": false,
+    "description": "",
+    "update_button": "Update",
+    "updated_message": "Options Updated",
+    "capability": "edit_posts",
+    "data_storage": "options",
+    "post_id": "",
+    "autoload": 0,
+    "_parent": 472,
+    "modified": 1704795543
+}
