@@ -12,8 +12,6 @@ function render($settings = null, $content = null) {
 	if ($settings == null) $settings = get_field('cta_module_settings', 'option');
 	if ($content == null) $content = get_field('cta_module_content', 'option');
 
-	file_put_contents(__DIR__ . '/cta.log', json_encode([$settings, $content], JSON_PRETTY_PRINT));
-
 	// Check if there are any CTAs configured
 	if (empty($content)) return;
 

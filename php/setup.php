@@ -97,7 +97,6 @@ function theme_setup() {
 			remove_image_size('2048x2048');
 		});
 		add_filter('intermediate_image_sizes_advanced', function ($sizes) {
-			file_put_contents(__DIR__ . '/setup1.log', json_encode($sizes, JSON_PRETTY_PRINT));
 			return [
 				'thumbnail' => ['width' => 150, 'height' => 150, 'crop' => true],
 				'small' => ['width' => 640, 'height' => 640, 'crop' => false],
@@ -106,7 +105,6 @@ function theme_setup() {
 			];
 		}, 10, 1);
 		add_filter('intermediate_image_sizes', function ($sizes) {
-			file_put_contents(__DIR__ . '/setup2.log', json_encode($sizes, JSON_PRETTY_PRINT));
 			return [
 				'thumbnail',
 				'small',
