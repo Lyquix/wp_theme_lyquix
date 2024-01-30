@@ -54,6 +54,9 @@ export const gallery = (() => {
 		if (cfg.gallery.enabled) {
 			log('Initializing `gallery`');
 
+			// Disable analytics if the analytics module is not enabled
+			cfg.gallery.analytics.enabled = cfg.analytics.enabled ? cfg.gallery.analytics.enabled : false;
+			if (cfg.gallery.analytics.enabled) log('Setting gallery analytics');
 
 			// Initialize on document ready
 			vars.document.ready(() => {

@@ -54,7 +54,6 @@ export const cards = (() => {
 		if (cfg.cards.enabled) {
 			log('Initializing `cards`');
 
-
 			// Initialize on document ready
 			vars.document.ready(() => {
 				setup(jQuery(cfg.cards.cardsBlockSelector));

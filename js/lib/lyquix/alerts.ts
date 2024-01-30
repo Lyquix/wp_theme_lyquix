@@ -91,7 +91,7 @@ export const alerts = (() => {
 			success: (data) => {
 				if (data.length > 0) {
 					// Get settings
-					const autoplay = alertsModuleElem.attr('data-autoplay') === 'y' ? true : false;
+					const autoplay = alertsModuleElem.attr('data-autoplay') === 'y';
 					const autoplayDelay = parseInt(alertsModuleElem.attr('data-autoplay-delay'));
 					const headingStyle = alertsModuleElem.attr('data-heading-style');
 

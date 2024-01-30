@@ -81,11 +81,11 @@ export const slider = (() => {
 
 			elems.each((idx, sliderElem) => {
 				// Get the settings
-				const autoplay = sliderElem.attr('data-autoplay') === 'y' ? true : false;
+				const autoplay = sliderElem.attr('data-autoplay') === 'y';
 				const autoplayDelay = parseInt(sliderElem.attr('data-autoplay-delay'));
-				const loop = sliderElem.attr('data-loop') === 'y' ? true : false;
-				const pagination = sliderElem.attr('data-pagination') === 'y' ? true : false;
-				const navigation = sliderElem.attr('data-navigation') === 'y' ? true : false;
+				const loop = sliderElem.attr('data-loop') === 'y';
+				const pagination = sliderElem.attr('data-pagination') === 'y';
+				const navigation = sliderElem.attr('data-navigation') === 'y';
 
 				let swiperOptions = {
 					// Optional parameters
