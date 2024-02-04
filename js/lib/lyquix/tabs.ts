@@ -73,7 +73,7 @@ export const tabs = (() => {
 		}
 
 		// Run only once
-		vars.tabs.init = true; // Change the module name
+		vars.tabs.init = true;
 	};
 
 	const setup = (elems) => {

@@ -29,9 +29,9 @@ export const accordion = (() => { // Change the accordion name
 
 	const init = (customCfg?: object) => {
 		// Run only once
-		if (vars.accordion?.init) return; // Change the module name
+		if (vars.accordion?.init) return;
 
-		vars.accordion = { // Change the module name
+		vars.accordion = {
 			init: false
 		};
 
@@ -71,7 +71,7 @@ export const accordion = (() => { // Change the accordion name
 		}
 
 		// Run only once
-		vars.accordion.init = true; // Change the module name
+		vars.accordion.init = true;
 	};
 
 	const setup = (elems) => {

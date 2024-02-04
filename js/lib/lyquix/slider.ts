@@ -80,6 +80,8 @@ export const slider = (() => {
 			log('Setting up ' + elems.length + ' sliders', elems);
 
 			elems.each((idx, sliderElem) => {
+				sliderElem = jQuery(sliderElem);
+
 				// Get the settings
 				const autoplay = sliderElem.attr('data-autoplay') === 'y';
 				const autoplayDelay = parseInt(sliderElem.attr('data-autoplay-delay'));
