@@ -414,9 +414,9 @@
                     "acfe_validate": "",
                     "instruction_placement": "tooltip",
                     "acfe_permissions": "",
-                    "tabs": "text",
-                    "media_upload": 0,
+                    "tabs": "all",
                     "toolbar": "full",
+                    "media_upload": 1,
                     "delay": 0,
                     "acfe_wysiwyg_auto_init": 0,
                     "acfe_wysiwyg_min_height": 300,
@@ -518,5 +518,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1706564209
+    "modified": 1707052507
 }
