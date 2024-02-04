@@ -18,7 +18,10 @@
 		],
 		"indent": [
 			"error",
-			"tab"
+			"tab",
+			{
+				"SwitchCase": 1
+			}
 		],
 		"object-curly-spacing": [
 			"error",
