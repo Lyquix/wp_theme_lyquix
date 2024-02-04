@@ -46,18 +46,15 @@ function render($settings, $content) {
 
 	// Video attributes
 	$video_attrs = '';
-	switch ($content['video']['type']) {
-		case 'upload':
-			if ($content['video']['upload']) {
-				$video_attrs = ' data-lyqbox data-lyqbox-type="video" data-lyqbox-url="' . $content['video']['upload'] . '"';
-			}
-			break;
-		case 'url':
-			if ($content['video']['url']) {
-				$video_data = \lqx\util\get_video_urls($content['video']['url']);
-				if ($video_data['url']) $video_attrs = ' data-lyqbox data-lyqbox-type="video" data-lyqbox-url="' . $video_data['url'] . '"';
-			}
-			break;
+	if ($content['video']['type'] == 'url' && $content['video']['url']) {
+		$video = \lqx\util\get_video_urls($content['video']['url']);
+		if ($video['url']) $video_attrs = sprintf('data-lyqbox="%s"', htmlentities(json_encode([
+			'name' => str_replace('id-', 'hero-video-', $s['hash']),
+			'type' => 'video',
+			'url' => $content['video']['url'],
+			'title' => 'Hero Video',
+			'useHash' => false
+		])));
 	}
 
 	// Breadcrumbs
@@ -91,7 +88,7 @@ function render($settings, $content) {
 
 			<div class="text">
 				<?= $breadcrumbs ?>
-				<h1 class="title"><?= $content['heading_override'] !== '' ? $content['heading_override'] : get_the_title() ?></h1>
+				<h1 class="title"><?= $content['heading_override'] ? $content['heading_override'] : get_the_title() ?></h1>
 				<div class="intro"><?= $content['intro_text'] ?></div>
 				<?php if (count($content['links'])) : ?>
 					<ul class="links">
@@ -111,19 +108,29 @@ function render($settings, $content) {
 
 			<?php if ($s['show_image'] == 'y') : ?>
 				<div class="image" <?= $video_attrs ?>>
-					<?php if (is_array($content['image_override'])) : ?>
-						<img
-							src="<?= $content['image_override']['url'] ?>"
-							alt="<?= htmlspecialchars($content['image_override']['alt']) ?>"
-							class="<?= is_array($content['image_mobile']) ? 'xs-hide sm-hide' : '' ?>" />
-					<?php else :
-						the_post_thumbnail('post-thumbnail', ['class' => $content['image_mobile'] !== false ? 'xs-hide sm-hide' : '']);
-					endif; ?>
-					<?php if (is_array($content['image_mobile'])) : ?>
-						<img
-							src="<?= $content['image_mobile']['url'] ?>"
-							alt="<?= htmlspecialchars($content['image_mobile']['alt']) ?>"
-							class="hide xs-show sm-show" />
+					<?php if ($content['video']['type'] == 'upload' && $content['video']['upload']) : ?>
+						<video
+							autoplay loop muted playsinline
+							poster="<?= is_array($content['image_override']) ? $content['image_override']['url'] : get_the_post_thumbnail_url() ?>">
+							<source
+								src="<?= $content['video']['upload']['url'] ?>"
+								type="<?= $content['video']['upload']['mime_type'] ?>">
+						</video>
+					<?php else: ?>
+						<?php if (is_array($content['image_override'])) : ?>
+							<img
+								src="<?= $content['image_override']['url'] ?>"
+								alt="<?= htmlspecialchars($content['image_override']['alt']) ?>"
+								class="<?= is_array($content['image_mobile']) ? 'xs-hide sm-hide' : '' ?>" />
+						<?php else :
+							the_post_thumbnail('post-thumbnail', ['class' => $content['image_mobile'] !== false ? 'xs-hide sm-hide' : '']);
+						endif; ?>
+						<?php if (is_array($content['image_mobile'])) : ?>
+							<img
+								src="<?= $content['image_mobile']['url'] ?>"
+								alt="<?= htmlspecialchars($content['image_mobile']['alt']) ?>"
+								class="hide xs-show sm-show" />
+						<?php endif; ?>
 					<?php endif; ?>
 				</div>
 			<?php endif; ?>

@@ -60,9 +60,13 @@ function render($settings, $content) {
 						<li
 							class="<?= $s['slider'] == 'y' ? 'swiper-slide' : 'gallery-slide' ?>"
 							id="<?= $item['slug'] ? $item['slug'] : $s['hash'] . '-' . $idx ?>"
-							data-lyqbox data-lyqbox-type="<?= $video['url'] ? 'video' : 'image' ?>"
-							data-lyqbox-url="<?= $video['url'] ? $video['url'] : $item['image']['sizes']['large'] ?>"
-							data-lyqbox-caption="<?= htmlspecialchars($heading_tag_open . $item['title'] . $heading_tag_close . $item['caption']) ?>">
+							data-lyqbox="<?= htmlentities(json_encode([
+								'name' => str_replace('id-', 'gallery-', $s['hash']),
+								'type' => $video['url'] ? 'video' : 'image',
+								'url' => $video['url'] ? $video['url'] : $item['image']['sizes']['large'],
+								'title' => $item['title'] ? $item['title'] : ($video['url'] ? 'Video' : 'Image'),
+								'caption' => $item['caption']
+							])) ?>">
 							<img
 								src="<?= $item['thumbnail']['sizes']['large'] ?>"
 								alt="<?= htmlspecialchars($item['image']['alt']) ?>">

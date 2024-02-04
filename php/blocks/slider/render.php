@@ -58,7 +58,13 @@ function render($settings, $content) {
 							$video_attrs = '';
 							if ($item['video']['type'] == 'url' && $item['video']['url']) {
 								$video = \lqx\util\get_video_urls($item['video']['url']);
-								if ($video['url']) $video_attrs = 'data-lyqbox data-lyqbox-type="video" data-lyqbox-url="' . $video['url'] . '"';
+								if ($video['url']) $video_attrs = sprintf('data-lyqbox="%s"', htmlentities(json_encode([
+									'name' => str_replace('id-', 'slider-video-', $s['hash']) . '-' . $idx,
+									'type' => 'video',
+									'url' => $video['url'],
+									'title' => $item['heading'] ? $item['heading'] : 'Video',
+									'useHash' => false
+								])));
 							}
 							?>
 

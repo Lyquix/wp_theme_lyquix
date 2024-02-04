@@ -86,20 +86,56 @@ export const util = (() => {
 		return true;
 	};
 
-	// A simple hashing function based on FNV-1a (Fowler-Noll-Vo) algorithm
-	const hash = (str) => {
-		const FNV_PRIME = 0x01000193;
-		let hashLow = 0x811c9dc5;
-		let hashHigh = 0;
+	const getVideoUrls = (url) => {
+		let match, youtubeId, vimeoId, thumbnail;
+		const youtubeRegex = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/;
+		const vimeoRegex = /^https?:\/\/(?:www\.)?vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|video\/|)(\d+)(?:|\/\?)$/;
 
-		for (let i = 0; i < str.length; i++) {
-			hashLow ^= str.charCodeAt(i);
-			hashLow *= FNV_PRIME;
-			hashHigh ^= hashLow;
-			hashHigh *= FNV_PRIME;
+		// Check if the video is from YouTube
+		if ((match = url.match(youtubeRegex))) {
+			youtubeId = match[1];
+			if (youtubeId) {
+				url = 'https://www.youtube.com/embed/' + youtubeId + '?rel=0&amp;autoplay=1&amp;mute=1&amp;modestbranding=1';
+				thumbnail = 'https://img.youtube.com/vi/' + youtubeId + '/hqdefault.jpg';
+			}
+		}
+		// Check if the video is from Vimeo
+		else if ((match = url.match(vimeoRegex))) {
+			vimeoId = match[1];
+			if (vimeoId) {
+				url = 'https://player.vimeo.com/video/' + vimeoId;
+				thumbnail = 'https://vumbnail.com/' + vimeoId + '.jpg';
+			}
+		} else {
+			url = '';
+			thumbnail = '';
 		}
 
-		return (hashHigh >>> 0).toString(36) + (hashLow >>> 0).toString(36);
+		// Return the video URL and thumbnail URL as an object
+		return { url: url, thumbnail: thumbnail };
+	};
+
+	/**
+	 * A simple hashing function based on FNV-1a (Fowler-Noll-Vo) algorithm
+	 * @param str the string to hash
+	 * @returns the hash of the string
+	 * @see https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
+	 * Outputs a 128-bit hash (32 hex characters long)
+	 */
+	const hash = (str) => {
+		const FNV_PRIME = 0x01000193;
+		const h = [0x811c9dc5, 0x056892cd, 0x6b6b2d4f, 0x458e7388];
+		str += 't%V7t6Bu0^sN5zrjAZF*%eAVd49H0DhL';
+
+		for (let i = 0; i < str.length; i++) {
+			for (let j = 0; j < 4; j++) {
+				if (j == 0) h[j] ^= str.charCodeAt(i);
+				else h[j] ^= h[j - 1];
+				h[j] *= FNV_PRIME;
+			}
+		}
+
+		return h.map(v => (v >>> 0).toString(16).padStart(8, '0')).join('');
 	};
 
 	// Parses URL parameters
@@ -480,6 +516,7 @@ export const util = (() => {
 	return {
 		init,
 		cookie,
+		getVideoUrls,
 		hash,
 		parseUrlParams,
 		randomStr,

@@ -36,18 +36,15 @@ function render($settings, $content) {
 
 	// Video attributes
 	$video_attrs = '';
-	switch ($content['video']['type']) {
-		case 'upload':
-			if ($content['video']['upload']) {
-				$video_attrs = ' data-lyqbox data-lyqbox-type="video" data-lyqbox-url="' . $content['video']['upload'] . '"';
-			}
-			break;
-		case 'url':
-			if ($content['video']['url']) {
-				$video_data = \lqx\util\get_video_urls($content['video']['url']);
-				if ($video_data['url']) $video_attrs = ' data-lyqbox data-lyqbox-type="video" data-lyqbox-url="' . $video_data['url'] . '"';
-			}
-			break;
+	if ($content['video']['type'] == 'url' && $content['video']['url']) {
+		$video = \lqx\util\get_video_urls($content['video']['url']);
+		if ($video['url']) $video_attrs = sprintf('data-lyqbox="%s"', htmlentities(json_encode([
+			'name' => str_replace('id-', 'banner-video-', $s['hash']),
+			'type' => 'video',
+			'url' => $content['video']['url'],
+			'title' => $content['heading'] ? $content['heading'] : 'Banner Video',
+			'useHash' => false
+		])));
 	}
 
 	?>
@@ -81,19 +78,27 @@ function render($settings, $content) {
 				<?php endif; ?>
 			</div>
 
-			<?php if ($content['image']) : ?>
+			<?php if (is_array($content['image'])) : ?>
 				<div class="image" <?= $video_attrs ?>>
-					<?php if (is_array($content['image'])) : ?>
+					<?php if ($content['video']['type'] == 'upload' && $content['video']['upload']) : ?>
+						<video
+							autoplay loop muted playsinline
+							poster="<?= $content['image']['sizes']['large'] ?>">
+							<source
+								src="<?= $content['video']['upload']['url'] ?>"
+								type="<?= $content['video']['upload']['mime_type'] ?>">
+						</video>
+					<?php else: ?>
 						<img
 							src="<?= $content['image']['url'] ?>"
 							alt="<?= htmlspecialchars($content['image']['alt']) ?>"
 							class="<?= is_array($content['image_mobile']) ? 'xs-hide sm-hide' : '' ?>" />
-					<?php endif;
-					if (is_array($content['image_mobile'])) : ?>
-						<img
-							src="<?= $content['image_mobile']['url'] ?>"
-							alt="<?= htmlspecialchars($content['image_mobile']['alt']) ?>"
-							class="hide xs-show sm-show" />
+						<?php if (is_array($content['image_mobile'])) : ?>
+							<img
+								src="<?= $content['image_mobile']['url'] ?>"
+								alt="<?= htmlspecialchars($content['image_mobile']['alt']) ?>"
+								class="hide xs-show sm-show" />
+						<?php endif; ?>
 					<?php endif; ?>
 				</div>
 			<?php endif; ?>

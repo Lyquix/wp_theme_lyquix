@@ -27,6 +27,7 @@ import { vars, cfg, log, warn, error } from './lib/lyquix/core';
 import { analytics } from './lib/lyquix/analytics';
 import { detect } from './lib/lyquix/detect';
 import { geolocate } from './lib/lyquix/geolocate';
+import { lyqbox } from './lib/lyquix/lyqbox';
 import { mutation } from './lib/lyquix/mutation';
 import { store } from './lib/lyquix/store';
 import { swipe } from './lib/lyquix/swipe';
@@ -64,6 +65,7 @@ const init = (customCfg) => {
 		'analytics',
 		'geolocate',
 		'swipe',
+		'lyqbox',
 		'theme',
 		// Gutenberg blocks
 		'accordion',
@@ -126,6 +128,7 @@ const expObj = Object.defineProperties({
 	analytics,
 	detect,
 	geolocate,
+	lyqbox,
 	mutation,
 	responsive,
 	store,
