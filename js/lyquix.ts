@@ -40,6 +40,7 @@ import { accordion } from './lib/lyquix/accordion';
 import { alerts } from './lib/lyquix/alerts';
 import { cards } from './lib/lyquix/cards';
 import { gallery } from './lib/lyquix/gallery';
+import { modal } from './lib/lyquix/modal';
 import { popup } from './lib/lyquix/popup';
 import { tabs } from './lib/lyquix/tabs';
 import { slider } from './lib/lyquix/slider';
@@ -72,6 +73,7 @@ const init = (customCfg) => {
 		'alerts',
 		'cards',
 		'gallery',
+		'modal',
 		'popup',
 		'tabs',
 		'slider'
@@ -140,6 +142,7 @@ const expObj = Object.defineProperties({
 	alerts,
 	cards,
 	gallery,
+	modal,
 	popup,
 	tabs,
 	slider

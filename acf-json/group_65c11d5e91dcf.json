@@ -1,0 +1,145 @@
+{
+    "key": "group_65c11d5e91dcf",
+    "title": "Module: Modals (Site Settings)",
+    "fields": [
+        {
+            "key": "field_65c11d5ea91d5",
+            "label": "",
+            "name": "modal_module_settings",
+            "aria-label": "",
+            "type": "group",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "hide_field": "",
+            "hide_label": "",
+            "hide_instructions": "",
+            "hide_required": "",
+            "layout": "block",
+            "acfe_seamless_style": 1,
+            "acfe_settings": "",
+            "instruction_placement": "",
+            "acfe_permissions": "",
+            "sub_fields": [
+                {
+                    "key": "field_65c11d5f0696a",
+                    "label": "Styles",
+                    "name": "styles",
+                    "aria-label": "",
+                    "type": "repeater",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "acfe_repeater_stylised_button": 0,
+                    "layout": "table",
+                    "pagination": 0,
+                    "min": 0,
+                    "max": 0,
+                    "collapsed": "",
+                    "button_label": "Add Row",
+                    "rows_per_page": 20,
+                    "sub_fields": [
+                        {
+                            "key": "field_65c11d5f554f8",
+                            "label": "Style Name",
+                            "name": "style_name",
+                            "aria-label": "",
+                            "type": "acfe_slug",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": "",
+                            "parent_repeater": "field_65c11d5f0696a"
+                        }
+                    ]
+                },
+                {
+                    "key": "field_65c11d5f06a12",
+                    "label": "Heading Style",
+                    "name": "heading_style",
+                    "aria-label": "",
+                    "type": "button_group",
+                    "instructions": "Select the style to be used for the heading text (Default: P and STRONG)",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "choices": {
+                        "p": "P and STRONG",
+                        "h1": "H1",
+                        "h2": "H2",
+                        "h3": "H3",
+                        "h4": "H4",
+                        "h5": "H5",
+                        "h6": "H6"
+                    },
+                    "default_value": "p",
+                    "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "allow_null": 0,
+                    "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
+                    "layout": "horizontal"
+                }
+            ],
+            "acfe_group_modal": 0,
+            "acfe_group_modal_close": 0,
+            "acfe_group_modal_button": "",
+            "acfe_group_modal_size": "large"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "options_page",
+                "operator": "==",
+                "value": "modals-settings"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 1,
+    "acfe_autosync": [
+        "json"
+    ],
+    "acfe_form": 1,
+    "acfe_display_title": "",
+    "acfe_permissions": "",
+    "acfe_meta": "",
+    "acfe_note": "",
+    "modified": 1707155475
+}
