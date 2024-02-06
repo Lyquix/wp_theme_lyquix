@@ -318,7 +318,7 @@
                     "name": "display_exceptions",
                     "aria-label": "",
                     "type": "repeater",
-                    "instructions": "Enter the URL patterns that will make exceptions to the display logic",
+                    "instructions": "Enter the URL patterns that will make exceptions to the display logic. Use * as wildcard.",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -375,7 +375,7 @@
                     "name": "show_delay",
                     "aria-label": "",
                     "type": "range",
-                    "instructions": "Time in seconds to wait after page load to show the popup (Default: 5)",
+                    "instructions": "Time in seconds to wait after page load to show the popup. Set to 0 to open immediately. Set it to -1 to disable automatic opening. (Default: 5)",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -390,7 +390,7 @@
                     "default_value": 5,
                     "acfe_settings": "",
                     "acfe_validate": "",
-                    "min": 1,
+                    "min": -1,
                     "max": 300,
                     "instruction_placement": "tooltip",
                     "acfe_permissions": "",
@@ -529,5 +529,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1706592206
+    "modified": 1707157661
 }

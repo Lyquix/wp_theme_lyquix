@@ -35,7 +35,7 @@ function render($settings = null) {
 
 ?>
 	<section id="lqx-module-popup">
-		<div class="popup" data-heading-style="<?= $settings['heading_style'] ?>">
+		<div class="popup">
 		</div>
 	</section>
 <?php

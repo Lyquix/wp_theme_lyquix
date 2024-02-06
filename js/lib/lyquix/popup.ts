@@ -39,6 +39,7 @@ export const popup = (() => {
 			analytics: {
 				enabled: true,
 				nonInteraction: true,
+				onOpen: true, // Sends event on popup open
 				onClose: true // Sends event on popup dismissal
 			}
 		};
@@ -82,19 +83,13 @@ export const popup = (() => {
 			},
 			success: (data) => {
 				if (data.length > 0) {
-					// Get settings
-					const headingStyle = popupModuleElem.attr('data-heading-style');
-
 					// Get now
 					const now = new Date().getTime();
-
-					// Initialize the popup counter
-					let i = 0;
 
 					// Loop through the popup
 					data.forEach((popup) => {
 						// Skip if popup has been dismissed
-						if (util.cookie('popup-' + popup.hash) !== null) return;
+						if (util.cookie(popup.id) !== null) return;
 
 						// Skip if popup has expired
 						if (popup.expiration != '' && now > dayjs(popup.expiration).valueOf()) return;
@@ -118,16 +113,17 @@ export const popup = (() => {
 
 						// Prepare the HTML
 						let html = `<section
-							id="popup-${i}"
+							id="${popup.id}"
 							class="closed ${popup.css_classes}"
+							data-heading-style="${popup.heading_style}"
 							data-show-delay="${popup.show_delay}"
 							data-hide-delay="${popup.hide_delay}"
 							data-dismiss-duration="${popup.dismiss_duration}">`;
 						html += '<button class="close">Close</button>';
 						if (popup.heading) {
-							html += headingStyle == 'p' ? '<p class="title"><strong>' : `<${headingStyle}>`;
+							html += popup.heading_style == 'p' ? '<p class="title"><strong>' : `<${popup.heading_style}>`;
 							html += popup.heading;
-							html += headingStyle == 'p' ? '</strong></p>' : `</${headingStyle}>`;
+							html += popup.heading_style == 'p' ? '</strong></p>' : `</${popup.heading_style}>`;
 						}
 						html += popup.body;
 						if (popup.links.length) {
@@ -150,42 +146,20 @@ export const popup = (() => {
 						log('Popup added', popupElem);
 
 						// Show and hide delays
-						window.setTimeout(() => {
-							popupElem.removeClass('closed');
-							if (popup.hide_delay != '') {
-								window.setTimeout(() => {
-									popupElem.addClass('closed');
-								}, popup.hide_delay * 1000);
-							}
-						}, popup.show_delay * 1000);
+						if (!popup.show_delay) open(popup.id);
+						else if (popup.show_delay > 0) {
+							window.setTimeout(() => {
+								open(popup.id);
+							}, parseInt(popup.show_delay) * 1000);
+						}
 
 						// Close button listener
 						popupElem.find('.close').click(() => {
-							// Set cookies for the closed popup
-							util.cookie('popup-' + popup.hash, '1', {
-								path: '/',
-								maxAge: popup.dismiss_duration ? popup.dismiss_duration * 60 : 60 * 60 * 24 * 365 // 1 year
-							});
-
-							// Popup closed
-							popupElem.addClass('closed');
-							log('Popup closed');
-
-							// Send event for popup closed
-							if (cfg.popup.analytics.enabled) {
-								analytics.sendGAEvent({
-									'eventCategory': 'Popup',
-									'eventAction': 'Close',
-									'eventLabel': popup.heading,
-									'nonInteraction': cfg.popup.analytics.nonInteraction
-								});
-							}
+							close(popup.id);
 						});
-
-						i++;
 					});
 
-					if (!i) {
+					if (!popupModuleElem.children().length) {
 						// All popups were expired or closed
 						popupModuleElem.remove();
 						log('All popups were expired or closed');
@@ -201,8 +175,76 @@ export const popup = (() => {
 			url: '/wp-json/wp/v2/options/popup'
 		});
 	};
+
+	const open = (popupId) => {
+		const popupElem = jQuery('#' + popupId);
+
+		// Popup opened
+		popupElem.removeClass('closed');
+		log('Popup opened');
+
+		// Hide delay
+		const hideDelay = popupElem.attr('data-hide-delay');
+		if (hideDelay != '') {
+			window.setTimeout(() => {
+				close(popupId);
+			}, parseInt(hideDelay) * 1000);
+		}
+
+		// Send event for popup open
+		if (cfg.popup.analytics.enabled && cfg.popup.analytics.onOpen) {
+			// Get the heading
+			const headingStyle = popupElem.attr('data-heading-style');
+			const heading = popupElem.find(headingStyle == 'p' ? 'p.title strong' : headingStyle).text();
+
+			// Send event
+			analytics.sendGAEvent({
+				'eventCategory': 'Popup',
+				'eventAction': 'Open',
+				'eventLabel': heading,
+				'nonInteraction': cfg.popup.analytics.nonInteraction
+			});
+		}
+	};
+
+	const close = (popupId) => {
+		const popupElem = jQuery('#' + popupId);
+
+		// Skip if it is already closed
+		if (popupElem.hasClass('closed')) return;
+
+		const dismissDuration = popupElem.attr('data-dismiss-duration');
+
+		// Set cookies for the closed popup
+		util.cookie(popupId, '1', {
+			path: '/',
+			maxAge: dismissDuration ? dismissDuration * 60 : 60 * 60 * 24 * 365 // 1 year
+		});
+
+		// Popup closed
+		popupElem.addClass('closed');
+		log('Popup closed');
+
+		// Send event for popup closed
+		if (cfg.popup.analytics.enabled && cfg.popup.analytics.onClose) {
+			// Get the heading
+			const headingStyle = popupElem.attr('data-heading-style');
+			const heading = popupElem.find(headingStyle == 'p' ? 'p.title strong' : headingStyle).text();
+
+			// Send event
+			analytics.sendGAEvent({
+				'eventCategory': 'Popup',
+				'eventAction': 'Close',
+				'eventLabel': heading,
+				'nonInteraction': cfg.popup.analytics.nonInteraction
+			});
+		}
+	};
+
 	return {
-		init: init
+		init,
+		open,
+		close
 	};
 })();
 

@@ -27,13 +27,13 @@ namespace lqx\modules\popup;
 // Get the popup from site options
 function rest_route() {
 	$content = get_field('popup_module_content', 'option');
+	$settings = get_field('popup_module_settings', 'option');
 
 	if (!$content) return [];
 
-	$content = array_map(function ($popup) {
-		// Add hash to popup
-		$popup['hash'] = md5(json_encode($popup));
-		$popup['server'] = $_SERVER;
+	$content = array_map(function ($popup) use ($settings) {
+		// Add a unique id to popup
+		$popup['id'] = 'popup-' . md5(json_encode($popup));
 
 		// Convert expiration to UTC
 		if ($popup['expiration'] != '') {
@@ -43,6 +43,9 @@ function rest_route() {
 		// Convert zero hide delay and dismiss duration to blank
 		if ($popup['hide_delay'] == 0) $popup['hide_delay'] = '';
 		if ($popup['dismiss_duration'] == 0) $popup['dismiss_duration'] = '';
+
+		// Add settings to modal
+		$popup['heading_style'] = $settings['heading_style'];
 
 		return $popup;
 	}, $content);
