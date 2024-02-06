@@ -131,6 +131,6 @@ export const gallery = (() => {
 	};
 
 	return {
-		init: init
+		init
 	};
 })();

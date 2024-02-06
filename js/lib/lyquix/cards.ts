@@ -130,6 +130,6 @@ export const cards = (() => {
 	};
 
 	return {
-		init: init
+		init
 	};
 })();

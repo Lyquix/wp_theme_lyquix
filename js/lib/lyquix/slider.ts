@@ -161,6 +161,6 @@ export const slider = (() => {
 		}
 	};
 	return {
-		init: init
+		init
 	};
 })();
