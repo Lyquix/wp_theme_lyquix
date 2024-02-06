@@ -98,19 +98,16 @@ export const alerts = (() => {
 					// Get now
 					const now = new Date().getTime();
 
-					// Initialize the alert counter
-					let i = 0;
-
 					// Loop through the alerts
 					data.forEach((alert) => {
 						// Skip if alert has been closed
-						if (util.cookie('alert-' + alert.hash) !== null) return;
+						if (util.cookie(alert.id) !== null) return;
 
 						// Skip if alert has expired
 						if (alert.expiration != '' && now <= dayjs(alert.expiration).valueOf()) return;
 
 						// Prepare the HTML
-						let html = `<section id="alert-${i}" class="${cfg.alerts.swiperSlideClass}">`;
+						let html = `<section id="${alert.id}" class="${cfg.alerts.swiperSlideClass}">`;
 						if (alert.heading) {
 							html += headingStyle == 'p' ? '<p class="title"><strong>' : `<${headingStyle}>`;
 							html += alert.heading;
@@ -130,16 +127,17 @@ export const alerts = (() => {
 
 						// Add the alert to the alerts array
 						vars.alerts.alerts.push(alert);
-
-						i++;
 					});
 
-					if (i > 0) {
+					// Get the number of alerts
+					const count = alertsModuleElem.find(cfg.alerts.swiperWrapperSelector).children().length;
+
+					if (count > 0) {
 						// Show the alerts module
 						alertsModuleElem.removeClass('hidden');
 
 						// Remove the controls if there's only one slide
-						if (i === 1) {
+						if (count === 1) {
 							alertsModuleElem.find('.controls').remove();
 						} else {
 							// Swipper options
@@ -182,7 +180,7 @@ export const alerts = (() => {
 						alertsModuleElem.find('.close').click(() => {
 							// Set cookies for each alert
 							vars.alerts.alerts.forEach((alert) => {
-								util.cookie('alert-' + alert.hash, '1', {
+								util.cookie(alert.id, '1', {
 									path: '/',
 									maxAge: alert.expiration ? dayjs(alert.expiration).diff(dayjs(), 'second') : 60 * 60 * 24 * 365 // 1 year
 								});
@@ -244,6 +242,6 @@ export const alerts = (() => {
 		});
 	};
 	return {
-		init: init
+		init
 	};
 })();

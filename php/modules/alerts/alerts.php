@@ -31,8 +31,8 @@ function rest_route() {
 	if (!$content) return [];
 
 	$content = array_map(function ($alert) {
-		// Add hash to alert
-		$alert['hash'] = md5(json_encode($alert));
+		// Add a unuque id to alert
+		$alert['id'] = 'alert-' . md5(json_encode($alert));
 
 		// Convert expiration to UTC
 		if ($alert['expiration'] != '') {
