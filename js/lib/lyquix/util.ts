@@ -175,8 +175,8 @@ export const util = (() => {
 		// Remove accents
 		let slug = str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
-		// Remove non-alphanumeric characters except spaces
-		slug = str.replace(/[^a-zA-Z0-9\s]/g, '');
+		// Remove non-alphanumeric characters except spaces, dashes
+		slug = str.replace(/[^a-zA-Z0-9\s-]/g, '');
 
 		// Replace spaces with delimiter
 		slug = slug.replace(/\s+/g, delimiter);

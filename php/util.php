@@ -480,8 +480,8 @@ function slugify($string, $delimiter = '-') {
 	// Remove accents
 	$slug = iconv('UTF-8', 'ASCII//TRANSLIT', $string);
 
-	// Remove non-alphanumeric characters except spaces
-	$slug = preg_replace('/[^a-zA-Z0-9\s]/', '', $slug);
+	// Remove non-alphanumeric characters except spaces, dashes
+	$slug = preg_replace('/[^a-zA-Z0-9\s-]/', '', $slug);
 
 	// Replace spaces with delimeter
 	$slug = preg_replace('/\s+/', $delimiter, $slug);
