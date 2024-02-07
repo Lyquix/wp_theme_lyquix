@@ -172,7 +172,7 @@ export const popup = (() => {
 
 			},
 
-			url: '/wp-json/wp/v2/options/popup'
+			url: vars.siteURL + '/wp-json/wp/v2/options/popup'
 		});
 	};
 

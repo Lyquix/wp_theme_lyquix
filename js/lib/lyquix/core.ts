@@ -30,11 +30,15 @@ export const vars: DynamicObject = {
 	document: jQuery(document),
 	html: jQuery('html'),
 	body: jQuery('body'),
-	siteURL: window.location.protocol + '//' + window.location.hostname + (window.location.port != '' ? ':' + window.location.port : ''),
+	siteURL: (() => {
+		let url = jQuery('script[src*="js/lyquix.js"], script[src*="js/lyquix.min.js"]').attr('src') as string;
+		url = (new URL(url, window.location.href)).href;
+		return url.slice(0, url.indexOf('wp-content/themes/'));
+	})(),
 	tmplURL: (() => {
-		const a = document.createElement('a');
-		a.href = jQuery('script[src*="js/lyquix.js"], script[src*="js/lyquix.min.js"]').attr('src') as string;
-		return a.href.slice(0, a.href.indexOf('js/lyquix.'));
+		let url = jQuery('script[src*="js/lyquix.js"], script[src*="js/lyquix.min.js"]').attr('src') as string;
+		url = (new URL(url, window.location.href)).href;
+		return url.slice(0, url.indexOf('js/lyquix.'));
 	})()
 };
 

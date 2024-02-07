@@ -164,7 +164,7 @@ export const modal = (() => {
 
 			},
 
-			url: '/wp-json/wp/v2/options/modal'
+			url: vars.siteURL + '/wp-json/wp/v2/options/modal'
 		});
 	};
 

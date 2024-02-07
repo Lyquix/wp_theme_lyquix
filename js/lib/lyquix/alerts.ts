@@ -238,7 +238,7 @@ export const alerts = (() => {
 
 			},
 
-			url: '/wp-json/wp/v2/options/alerts'
+			url: vars.siteURL + '/wp-json/wp/v2/options/alerts'
 		});
 	};
 	return {
