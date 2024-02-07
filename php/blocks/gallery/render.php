@@ -55,16 +55,16 @@ function render($settings, $content) {
 
 			<?= $s['slider'] == 'y' ? '<div class="swiper">' : '' ?>
 				<ul class="<?= $s['slider'] == 'y' ? 'swiper-wrapper' : 'gallery-wrapper' ?>">
-					<?php foreach ($content as $idx => $item) : ?>
+					<?php foreach ($content['slides'] as $idx => $item) : ?>
 						<?php if ($item['video']) $video = \lqx\util\get_video_urls($item['video']); ?>
 						<li
 							class="<?= $s['slider'] == 'y' ? 'swiper-slide' : 'gallery-slide' ?>"
 							id="<?= $item['slug'] ? $item['slug'] : $s['hash'] . '-' . $idx ?>"
 							data-lyqbox="<?= htmlentities(json_encode([
-								'name' => str_replace('id-', 'gallery-', $s['hash']),
+								'name' => $content['lightbox_slug'],
 								'type' => $video['url'] ? 'video' : 'image',
 								'url' => $video['url'] ? $video['url'] : $item['image']['sizes']['large'],
-								'title' => $item['title'] ? $item['title'] : ($video['url'] ? 'Video' : 'Image'),
+								'title' => $item['title'],
 								'caption' => $item['caption']
 							])) ?>">
 							<img
