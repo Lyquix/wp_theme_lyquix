@@ -52,7 +52,6 @@ function render($settings, $content) {
 			'name' => str_replace('id-', 'hero-video-', $s['hash']),
 			'type' => 'video',
 			'url' => $content['video']['url'],
-			'title' => 'Hero Video',
 			'useHash' => false
 		])));
 	}

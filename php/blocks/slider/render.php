@@ -62,7 +62,6 @@ function render($settings, $content) {
 									'name' => str_replace('id-', 'slider-video-', $s['hash']) . '-' . $idx,
 									'type' => 'video',
 									'url' => $video['url'],
-									'title' => $item['heading'] ? $item['heading'] : 'Video',
 									'useHash' => false
 								])));
 							}

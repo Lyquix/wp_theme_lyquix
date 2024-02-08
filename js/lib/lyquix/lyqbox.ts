@@ -37,7 +37,7 @@ import { util } from './util';
  * - Video (YouTube and Vimeo players)
  * - HTML (passed as a string)
  * - URL (embdedded in an iframe)
- * - DOM (existing DOM element)
+ * - DOM (gets outer HTML of existing DOM element, and removes the element)
  *
  * Options passed via the data-lyqbox attribute in JSON format
  * (options marked with ** are required, other options may be required depending on the type)
@@ -45,16 +45,16 @@ import { util } from './util';
  * 	** name: Unique identifier for the lightbox, all the slides in a gallery must use the same name
  * 	template: HTML template for the slide (optional, only the value in the first slide of a gallery is used, if not present, uses the default template)
  *  useHash: Use hash in URL to identify the slide (optional, default is true)
- * 	** type: Type of content for the slide [ image | video | html | url | innerhtml | dom ]
+ * 	** type: Type of content for the slide [ image | video | html | url | dom ]
  * 	url: URL for the content (required for image, video and url types)
  * 	html: HTML content for the slide (required for html type)
  *  selector: CSS selector for the content (required for dom type)
  *  alt: Alternative text for image slides (required for image type)
- * 	** title: Title for the slide (required)
+ * 	title: Title for the slide (optional)
  * 	caption: Caption for the slide (optional)
  * 	credit: Credit line for the slide (optional)
  * 	class: Additional CSS class to add to the slide (optional)
- * 	slug: Used to identify the slide in the URL (optional, slug is created from the title)
+ * 	slug: Used to identify the slide in the URL (required if useHash is true)
  * 	thumb: URL for the slide thumbnail (optional, only in use for Gallery mode)
  * 	teaser: Teaser text for the slide (optional, only in use for Gallery mode)
  */
@@ -184,15 +184,29 @@ export const lyqbox = (() => {
 					warn('`type` is a required option in data-lyquix', slide);
 					return;
 				}
-				if (!['image', 'video', 'html', 'url', 'innerhtml', 'dom'].includes(opts.type)) {
+				if (!['image', 'video', 'html', 'url', 'dom'].includes(opts.type)) {
 					warn('Invalid `type` in data-lyquix', slide, opts.type);
 					return;
 				}
 
-				// Check the title
-				if (!('title' in opts) || !opts.title) {
-					warn('`title` is a required option in data-lyquix', slide);
-					return;
+				// Check for useHash if it has not been set
+				if (vars.lyqbox.lightboxes[opts.name].useHash === null) {
+					if ('useHash' in opts) vars.lyqbox.lightboxes[opts.name].useHash = !!opts.useHash;
+					else vars.lyqbox.lightboxes[opts.name].useHash = true;
+					delete opts.useHash;
+				}
+
+				// Get the slide index
+				const index = vars.lyqbox.lightboxes[opts.name].slides.length;
+
+				// Check the slug
+				if (!('slug' in opts) || !opts.slug) {
+					if (vars.lyqbox.lightboxes[opts.name].useHash) {
+						warn('`slug` is a required option in data-lyquix when using hash', slide);
+						return;
+					}
+					opts.slug = 'slide-' + index;
+					log('No `slug` provided, generating one', slide);
 				}
 
 				// Checks by type
@@ -208,41 +222,42 @@ export const lyqbox = (() => {
 
 					case 'html':
 						if (!('html' in opts) || !opts.html) {
-							warn('`html` is a required option in data-lyquix for type ' + opts.type, slide);
+							warn('`html` is a required option in data-lyquix for type html', slide);
 							return;
 						}
 						break;
 
 					case 'dom':
 						if (!('selector' in opts) || !opts.selector) {
-							warn('`selector` is a required option in data-lyquix for type ' + opts.type, slide);
+							warn('`selector` is a required option in data-lyquix for type dom', slide);
 							return;
 						}
+						if (jQuery(opts.selector).length == 0) {
+							warn('DOM element not found for selector ' + opts.selector, slide);
+							return;
+						}
+						// Get the HTML of the DOM element, and remove it
+						opts.html = jQuery(opts.selector).get(0).outerHTML;
+						jQuery(opts.selector).remove();
 						break;
 
 					default:
 						break;
 				}
 
-				// Check the alt for images
-				if (opts.type == 'image' && (!('alt' in opts) || !opts.alt)) {
-					log('No `alt` provided, using slide title', slide);
-					opts.alt = opts.title;
-				}
-
-				// Check for alt, slug,teaser
-				['alt', 'slug', 'teaser'].forEach((key) => {
-					if (key == 'alt' && opts.type !== 'image') return;
-					if (!(key in opts) || !opts[key]) {
-						log('No `' + key + '` provided, using slide title', slide);
-						opts[key] = opts.title;
-					}
-				});
-
-				// Set empty values for caption, credit, class, thumb
-				['caption', 'credit', 'class', 'thumb'].forEach((key) => {
+				// Set empty values for title, caption, credit, class, thumb, teaser
+				['title', 'caption', 'credit', 'class', 'thumb', 'teaser'].forEach((key) => {
 					if (!(key in opts)) opts[key] = '';
 				});
+
+				// Check for alt
+				if (opts.type == 'image' && (!('alt' in opts) || !opts.alt)) {
+					if (opts.title) {
+						log('No `alt` provided, using slide title', slide);
+						opts.alt = opts.title;
+					}
+					warn('No `alt` provided for image slide', slide);
+				}
 
 				// Check for template if it has not been set
 				if (vars.lyqbox.lightboxes[opts.name].template === null) {
@@ -254,18 +269,10 @@ export const lyqbox = (() => {
 					else vars.lyqbox.lightboxes[opts.name].template = cfg.lyqbox.template;
 				}
 
-				// Check for useHash if it has not been set
-				if (vars.lyqbox.lightboxes[opts.name].useHash === null) {
-					if ('useHash' in opts) vars.lyqbox.lightboxes[opts.name].useHash = !!opts.useHash;
-					else vars.lyqbox.lightboxes[opts.name].useHash = true;
-					delete opts.useHash;
-				}
-
 				// Add DOM element to opts
 				opts.elem = slide;
 
 				// Add slide to slides array
-				const index = vars.lyqbox.lightboxes[opts.name].slides.length;
 				vars.lyqbox.lightboxes[opts.name].slides.push(opts);
 
 				// Add listener to slide
@@ -351,8 +358,8 @@ export const lyqbox = (() => {
 				Object.keys(lightbox.slides).forEach((i) => {
 					const slide = lightbox.slides[i];
 					const thumbElem = `<li data-lyqbox-index="${i}">` +
-						slide.thumb ? `<img src="${slide.thumb}" alt="Thumbnail for slide ${slide.title}">` : '' +
-							slide.teaser ? `<span>${slide.teaser}</span>` : '' +
+						slide.thumb ? `<img src="${slide.thumb}" alt="Thumbnail for slide ${slide.title ? slide.title : i}">` : '' +
+						slide.teaser ? `<span>${slide.teaser}</span>` : '' +
 					'</li>';
 					jQuery(thumbElem).appendTo(elem.find('.navigation')).on('click', () => {
 						load(id, i);
@@ -416,15 +423,8 @@ export const lyqbox = (() => {
 				break;
 
 			case 'html':
-				content = slide.html;
-				break;
-
-			case 'innerhtml':
-				content = slide.elem.html();
-				break;
-
 			case 'dom':
-				content = jQuery(slide.selector).html();
+				content = slide.html;
 				break;
 
 			default:

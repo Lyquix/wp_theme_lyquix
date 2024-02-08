@@ -112,10 +112,12 @@ export const modal = (() => {
 							data-heading-style="${modal.heading_style}"
 							data-show-delay="${modal.show_delay}"
 							data-hide-delay="${modal.hide_delay}"
-							data-dismiss-duration="${modal.dismiss_duration}">`;
+							data-dismiss-duration="${modal.dismiss_duration}"
+							aria-labeledby="${modal.id}-title"
+							aria-describedby aria-modal="true" aria-hidden="true">`;
 						html += '<button class="close">Close</button>';
 						if (modal.heading) {
-							html += modal.heading_style == 'p' ? '<p class="title"><strong>' : `<${modal.heading_style}>`;
+							html += modal.heading_style == 'p' ? `<p class="title" id="${modal.id}-title"><strong>` : `<${modal.heading_style} id="${modal.id}-title">`;
 							html += modal.heading;
 							html += modal.heading_style == 'p' ? '</strong></p>' : `</${modal.heading_style}>`;
 						}
@@ -151,6 +153,11 @@ export const modal = (() => {
 						modalElem.find('.close').click(() => {
 							close(modal.id);
 						});
+
+						// Add listener to close event
+						modalElem.on('close', () => {
+							close(modal.id);
+						});
 					});
 
 					if (!jQuery('[id^=modal-]').length) {
@@ -173,6 +180,7 @@ export const modal = (() => {
 
 		// Modal opened
 		modalElem.get(0).showModal();
+		modalElem.attr('aria-hidden', 'false');
 		log('Modal opened');
 
 		// Hide delay
@@ -215,6 +223,7 @@ export const modal = (() => {
 
 		// Modal closed
 		modalElem.get(0).close();
+		modalElem.attr('aria-hidden', 'true');
 		log('Modal closed');
 
 		// Send event for modal closed

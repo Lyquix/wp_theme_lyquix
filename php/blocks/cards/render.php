@@ -214,7 +214,6 @@ function render($settings, $content) {
 									'name' => str_replace('id-', 'card-video-', $s['hash']) . '-' . $idx,
 									'type' => 'video',
 									'url' => $video['url'],
-									'title' => $item['heading'],
 									'useHash' => false
 								])));
 							}
