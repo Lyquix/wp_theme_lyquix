@@ -61,6 +61,12 @@ function render($settings, $content) {
 				'default' => 'h3',
 				'allowed' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p']
 			],
+			'subheading_style' => [
+				'type' => 'string',
+				'required' => true,
+				'default' => 'p',
+				'allowed' => ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p']
+			],
 			'heading_clickable' => [
 				'type' => 'string',
 				'required' => true,
@@ -205,7 +211,7 @@ function render($settings, $content) {
 
 					<ul class="<?= $s['slider'] == 'y' ? 'swiper-wrapper' : 'cards-wrapper' ?>">
 
-						<?php foreach ($content as $idx => $item) :
+						<?php foreach ($c as $idx => $item) :
 							// Video attributes
 							$video_attrs = '';
 							if ($item['video']['type'] == 'url' && $item['video']['url']) {

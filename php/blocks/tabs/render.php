@@ -133,7 +133,7 @@ function render($settings, $content) {
 					<?php endforeach; ?>
 				</ul>
 
-				<?php foreach ($content as $idx => $item) : ?>
+				<?php foreach ($c as $idx => $item) : ?>
 					<section
 						class="tab-panel"
 						id="<?= $s['hash'] . '-panel-' . $idx ?>"

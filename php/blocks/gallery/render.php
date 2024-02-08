@@ -33,13 +33,80 @@ namespace lqx\blocks\gallery;
  * 	browser_history - boolean, whether to use browser history
  */
 function render($settings, $content) {
-	// Get settings
-	$s = $settings['processed'];
+	// Get and validate processed settings
+	$s = (\lqx\util\validate_data($settings['processed'], [
+		'type' => 'object',
+		'required' => true,
+		'keys' => [
+			'anchor' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+			'class' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+			'hash' => [
+				'type' => 'string',
+				'required' => true,
+				'default' => 'id-' . md5(json_encode([$settings, $content, random_int(1000, 9999)]))
+			],
+			'slider' => [
+				'type' => 'string',
+				'required' => true,
+				'default' => 'n',
+				'allowed' => ['y', 'n']
+			],
+			'swiper_options_override' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+			'heading_style' => [
+				'type' => 'string',
+				'required' => true,
+				'default' => 'h3',
+				'allowed' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p']
+			],
+			'browser_history' => [
+				'type' => 'string',
+				'required' => true,
+				'default' => 'n',
+				'allowed' => ['y', 'n']
+			]
+		]
+	]))['data'];
 
 	// Heading style
 	$heading_tag_open  = $s['heading_style'] == 'p' ? '<p class="title"><strong>' : '<' . $s['heading_style'] . '>';
 	$heading_tag_close  = $s['heading_style'] == 'p' ? '</strong></p>' : '</' . $s['heading_style'] . '>';
 
+	// Filter out any content missing heading or content
+	$c = \lqx\util\validate_data($content, [
+		'type' => 'array',
+		'required' => true,
+		'default' => [],
+		'elems' => [
+			'type' => 'object',
+			'keys' => [
+				'lightbox_slug' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+				'slides' => [
+					'type' =>	'array',
+					'required' => false,
+					'default' => [],
+					'elems' => [
+						'type' => 'object',
+						'required' => true,
+						'keys' => [
+							'title' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+							'slug' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+							'image' => [
+								'type' => 'object',
+								'keys' => LQX_VALIDATE_DATA_SCHEMA_IMAGE
+							],
+							'video' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+							'caption' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+							'thumbnail' => [
+								'type' => 'object',
+								'keys' => LQX_VALIDATE_DATA_SCHEMA_IMAGE
+							],
+							'teaser' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING
+						]
+					]
+				]
+			]
+		]
+	])['data'];
 	?>
 	<section
 		id="<?= $s['anchor'] ?>"
@@ -55,13 +122,13 @@ function render($settings, $content) {
 
 			<?= $s['slider'] == 'y' ? '<div class="swiper">' : '' ?>
 				<ul class="<?= $s['slider'] == 'y' ? 'swiper-wrapper' : 'gallery-wrapper' ?>">
-					<?php foreach ($content['slides'] as $idx => $item) : ?>
+					<?php foreach ($c['slides'] as $idx => $item) : ?>
 						<?php if ($item['video']) $video = \lqx\util\get_video_urls($item['video']); ?>
 						<li
 							class="<?= $s['slider'] == 'y' ? 'swiper-slide' : 'gallery-slide' ?>"
 							id="<?= $item['slug'] ? $item['slug'] : $s['hash'] . '-' . $idx ?>"
 							data-lyqbox="<?= htmlentities(json_encode([
-								'name' => $content['lightbox_slug'],
+								'name' => $c['lightbox_slug'],
 								'type' => $video['url'] ? 'video' : 'image',
 								'url' => $video['url'] ? $video['url'] : $item['image']['sizes']['large'],
 								'title' => $item['title'],

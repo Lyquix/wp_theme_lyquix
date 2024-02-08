@@ -41,17 +41,121 @@ namespace lqx\blocks\hero;
  * show_current: Controls if the current page will be shown in the breadcrumbs
  */
 function render($settings, $content) {
-	// Processed settings
-	$s = $settings['processed'];
+	// Get and validate processed settings
+	$s = (\lqx\util\validate_data($settings['processed'], [
+		'type' => 'object',
+		'required' => true,
+		'keys' => [
+			'anchor' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+			'class' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+			'hash' => [
+				'type' => 'string',
+				'required' => true,
+				'default' => 'id-' . md5(json_encode([$settings, $content, random_int(1000, 9999)]))
+			],
+			'show_image' => [
+				'type' => 'string',
+				'required' => true,
+				'default' => 'n',
+				'allowed' => ['y', 'n']
+			],
+			'breadcrumbs' => [
+				'type' => 'object',
+				'required' => true,
+				'elems' => [
+					'show_breadcrumbs' => [
+						'type' => 'string',
+						'required' => true,
+						'default' => 'y',
+						'allowed' => ['y', 'n']
+					],
+					'type' => [
+						'type' => 'string',
+						'required' => true,
+						'default' => 'parent',
+						'allowed' => ['parent', 'category', 'post-type', 'post-type-category']
+					],
+					'depth' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+					'show_current' => [
+						'type' => 'string',
+						'required' => true,
+						'default' => 'n',
+						'allowed' => ['y', 'n']
+					]
+				]
+			]
+		]
+	]))['data'];
+
+	// Filter out any content missing heading or content
+	$c = \lqx\util\validate_data($content, [
+		'type' => 'object',
+		'required' => true,
+		'default' => [],
+		'elems' => [
+			'type' => 'object',
+			'keys' => [
+				'breadcrumbs_override' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+				'heading_override' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+				'image_override' => [
+					'type' => 'object',
+					'keys' => LQX_VALIDATE_DATA_SCHEMA_IMAGE
+				],
+				'image_mobile' => [
+					'type' => 'object',
+					'keys' => LQX_VALIDATE_DATA_SCHEMA_IMAGE
+				],
+				'video' => [
+					'type' => 'object',
+					'keys' => [
+						'type' => [
+							'type' => 'string',
+							'required' => true,
+							'default' => 'url'
+						],
+						'url' => [
+							'type' => 'string',
+							'default' => ''
+						],
+						'upload' => [
+							'type' => 'object',
+							'keys' => LQX_VALIDATE_DATA_SCHEMA_VIDEO_UPLOAD
+						]
+					]
+				],
+				'links' => [
+					'type' =>	'array',
+					'required' => false,
+					'default' => [],
+					'elems' => [
+						'type' => 'object',
+						'required' => true,
+						'keys' => [
+							'type' => [
+								'type' => 'string',
+								'required' => true,
+								'default' => 'button'
+							],
+							'link' => [
+								'type' => 'object',
+								'keys' => LQX_VALIDATE_DATA_SCHEMA_LINK
+							]
+						]
+					]
+				],
+				'intro_text' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING
+			]
+		]
+	])['data'];
 
 	// Video attributes
 	$video_attrs = '';
-	if ($content['video']['type'] == 'url' && $content['video']['url']) {
-		$video = \lqx\util\get_video_urls($content['video']['url']);
+	if ($c['video']['type'] == 'url' && $c['video']['url']) {
+		$video = \lqx\util\get_video_urls($c['video']['url']);
 		if ($video['url']) $video_attrs = sprintf('data-lyqbox="%s"', htmlentities(json_encode([
 			'name' => str_replace('id-', 'hero-video-', $s['hash']),
 			'type' => 'video',
-			'url' => $content['video']['url'],
+			'url' => $c['video']['url'],
 			'useHash' => false
 		])));
 	}
@@ -60,8 +164,8 @@ function render($settings, $content) {
 	$breadcrumbs = '';
 	if ($s['breadcrumbs']['show_breadcrumbs'] == 'y') {
 		$breadcrumbs = '<div class="breadcrumbs">';
-		if ($content['breadcrumbs_override'] !== '') {
-			$breadcrumbs .= $content['breadcrumbs_override'];
+		if ($c['breadcrumbs_override'] !== '') {
+			$breadcrumbs .= $c['breadcrumbs_override'];
 		} else {
 			$breadcrumbs .= implode(' &raquo; ', array_map(function ($b) {
 				if ($b['url']) return sprintf('<a href="%s">%s</a>', $b['url'], $b['title']);
@@ -87,11 +191,11 @@ function render($settings, $content) {
 
 			<div class="text">
 				<?= $breadcrumbs ?>
-				<h1 class="title"><?= $content['heading_override'] ? $content['heading_override'] : get_the_title() ?></h1>
-				<div class="intro"><?= $content['intro_text'] ?></div>
-				<?php if (count($content['links'])) : ?>
+				<h1 class="title"><?= $c['heading_override'] ? $c['heading_override'] : get_the_title() ?></h1>
+				<div class="intro"><?= $c['intro_text'] ?></div>
+				<?php if (count($c['links'])) : ?>
 					<ul class="links">
-						<?php foreach ($content['links'] as $link) : ?>
+						<?php foreach ($c['links'] as $link) : ?>
 							<li>
 								<a
 									class="<?= $link['type'] == 'button' ? 'button' : 'readmore' ?>"
@@ -107,27 +211,27 @@ function render($settings, $content) {
 
 			<?php if ($s['show_image'] == 'y') : ?>
 				<div class="image" <?= $video_attrs ?>>
-					<?php if ($content['video']['type'] == 'upload' && $content['video']['upload']) : ?>
+					<?php if ($c['video']['type'] == 'upload' && $c['video']['upload']) : ?>
 						<video
 							autoplay loop muted playsinline
-							poster="<?= is_array($content['image_override']) ? $content['image_override']['url'] : get_the_post_thumbnail_url() ?>">
+							poster="<?= is_array($c['image_override']) ? $c['image_override']['url'] : get_the_post_thumbnail_url() ?>">
 							<source
-								src="<?= $content['video']['upload']['url'] ?>"
-								type="<?= $content['video']['upload']['mime_type'] ?>">
+								src="<?= $c['video']['upload']['url'] ?>"
+								type="<?= $c['video']['upload']['mime_type'] ?>">
 						</video>
 					<?php else: ?>
-						<?php if (is_array($content['image_override'])) : ?>
+						<?php if (is_array($c['image_override'])) : ?>
 							<img
-								src="<?= $content['image_override']['url'] ?>"
-								alt="<?= htmlspecialchars($content['image_override']['alt']) ?>"
-								class="<?= is_array($content['image_mobile']) ? 'xs-hide sm-hide' : '' ?>" />
+								src="<?= $c['image_override']['url'] ?>"
+								alt="<?= htmlspecialchars($c['image_override']['alt']) ?>"
+								class="<?= is_array($c['image_mobile']) ? 'xs-hide sm-hide' : '' ?>" />
 						<?php else :
-							the_post_thumbnail('post-thumbnail', ['class' => $content['image_mobile'] !== false ? 'xs-hide sm-hide' : '']);
+							the_post_thumbnail('post-thumbnail', ['class' => $c['image_mobile'] !== false ? 'xs-hide sm-hide' : '']);
 						endif; ?>
-						<?php if (is_array($content['image_mobile'])) : ?>
+						<?php if (is_array($c['image_mobile'])) : ?>
 							<img
-								src="<?= $content['image_mobile']['url'] ?>"
-								alt="<?= htmlspecialchars($content['image_mobile']['alt']) ?>"
+								src="<?= $c['image_mobile']['url'] ?>"
+								alt="<?= htmlspecialchars($c['image_mobile']['alt']) ?>"
 								class="hide xs-show sm-show" />
 						<?php endif; ?>
 					<?php endif; ?>
