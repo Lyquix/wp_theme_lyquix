@@ -174,8 +174,7 @@ function render_lyquix_options() {
 
 function render_gtm_head_code() {
 	// Load GTM head code
-	if (get_theme_mod('gtm_account', '')) {
-?>
+	if (get_theme_mod('gtm_account', '')): ?>
 		<!-- Google Tag Manager -->
 		<script>
 			(function(w, d, s, l, i) {
@@ -194,19 +193,16 @@ function render_gtm_head_code() {
 			})(window, document, 'script', 'dataLayer', '<?= get_theme_mod('gtm_account') ?>');
 		</script>
 		<!-- End Google Tag Manager -->
-	<?
-	}
+	<? endif;
 }
 
 function render_gtm_body_code() {
 	// Load GTM head code
-	if (get_theme_mod('gtm_account', '')) {
-	?>
+	if (get_theme_mod('gtm_account', '')): ?>
 		<!-- Google Tag Manager (noscript) -->
 		<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<?= get_theme_mod('gtm_account') ?>" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 		<!-- End Google Tag Manager (noscript) -->
-<?
-	}
+	<? endif;
 }
 
 function render_page_custom_js() {

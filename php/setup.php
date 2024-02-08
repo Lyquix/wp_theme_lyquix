@@ -165,14 +165,13 @@ function theme_setup() {
 					echo '<div class="notice notice-error is-dismissible"><p><strong style="font-size: 1.25em;">Required Plugins</strong><br>';
 					if (count($not_installed)) {
 						$html = [];
-						foreach($not_installed as $plugin_path) {
-							if(array_key_exists($plugin_path, $premium_plugins)) {
+						foreach ($not_installed as $plugin_path) {
+							if (array_key_exists($plugin_path, $premium_plugins)) {
 								$install_url = $premium_plugins[$plugin_path];
 								$target = '_blank';
-							}
-							else {
+							} else {
 								$plugin_slug = explode('/', $plugin_path)[0];
-								$install_url = wp_nonce_url(self_admin_url('update.php?action=install-plugin&plugin=' . $plugin_slug ), 'install-plugin_' . $plugin_slug);
+								$install_url = wp_nonce_url(self_admin_url('update.php?action=install-plugin&plugin=' . $plugin_slug), 'install-plugin_' . $plugin_slug);
 								$target = '';
 							}
 							$html[] = sprintf('<a href="%s" target="%s">%s</a>', $install_url, $target, $required_plugins[$plugin_path]);
@@ -181,9 +180,9 @@ function theme_setup() {
 					}
 					if (count($not_active)) {
 						$html = [];
-						foreach($not_active as $plugin_path) {
+						foreach ($not_active as $plugin_path) {
 							$plugin_slug = basename($plugin_path);
-							$activate_url = wp_nonce_url('plugins.php?action=activate&amp;plugin=' . urlencode( $plugin_path ), 'activate-plugin_' . $plugin_path);
+							$activate_url = wp_nonce_url('plugins.php?action=activate&amp;plugin=' . urlencode($plugin_path), 'activate-plugin_' . $plugin_path);
 							$html[] = sprintf('<a href="%s">%s</a>', $activate_url, $required_plugins[$plugin_path]);
 						}
 						echo '<strong>Activate:</strong> ' . implode(' | ', $html);
@@ -231,10 +230,12 @@ function theme_setup() {
 			];
 			foreach ($remove_menus as $parent_slug => $submenus) {
 				foreach ($submenus as $submenu_slug) {
-					foreach ($submenu[$parent_slug] as $k => $sub) {
-						if (in_array($submenu_slug, $submenu[$parent_slug][$k])) {
-							$admin_submenu_backup[$parent_slug][$k] = $submenu[$parent_slug][$k];
-							unset($submenu[$parent_slug][$k]);
+					if (isset($submenu[$parent_slug])) {
+						foreach ($submenu[$parent_slug] as $k => $sub) {
+							if (in_array($submenu_slug, $submenu[$parent_slug][$k])) {
+								$admin_submenu_backup[$parent_slug][$k] = $submenu[$parent_slug][$k];
+								unset($submenu[$parent_slug][$k]);
+							}
 						}
 					}
 				}

@@ -64,8 +64,7 @@ function remove_empty_settings($settings) {
 			if (\lqx\util\array_is_list($value)) {
 				// If value is a list array, remove it if empty (do not traverse it)
 				if (!count($value)) unset($settings[$key]);
-			}
-			else {
+			} else {
 				// Traverse associative arrays
 				$value = remove_empty_settings($value);
 				if (!count($value)) {
@@ -87,14 +86,16 @@ function remove_empty_settings($settings) {
 // Recursively merge seetings and overrides
 // Only associative arrays (not list/sequential) are traversed
 function merge_settings($settings, $override) {
+	$settings = is_array($settings) ? $settings : [];
+	$override = is_array($override) ? $override : [];
+
 	# Assumes settings are associative arrays
 	foreach ($override as $key => $value) {
 		if (is_array($value)) {
 			if (\lqx\util\array_is_list($value)) {
 				// If value is a list array, replace the value, do not traverse it
 				$settings[$key] = $value;
-			}
-			else {
+			} else {
 				if (isset($settings[$key])) {
 					// If the setting is being overrident, traverse associative arrays
 					$settings[$key] = merge_settings($settings[$key], $value);
@@ -115,7 +116,7 @@ function merge_settings($settings, $override) {
 // Get the settings for a block
 function get_settings($block, $post_id = null) {
 	// If $block is a string, convert it to an array
-	if(is_string($block)) {
+	if (is_string($block)) {
 		$block = [
 			'name' => $block,
 			'anchor' => '',
@@ -124,7 +125,7 @@ function get_settings($block, $post_id = null) {
 	}
 
 	// For some reason get_field doesn't work when passing the post ID for the current post
-	if($post_id === get_the_ID()) $post_id = null;
+	if ($post_id === get_the_ID()) $post_id = null;
 
 	// Get the block name by removing the lqx/ prefix
 	$block_name = substr($block['name'], 4);
@@ -175,13 +176,13 @@ function get_settings($block, $post_id = null) {
 
 function get_content($block, $post_id = null) {
 	// If $block is a string, convert it to an array
-	if(is_string($block)) $block = ['name' => $block];
+	if (is_string($block)) $block = ['name' => $block];
 
 	// Remove the lqx/ prefix from the block name
 	$block_name = substr($block['name'], 4);
 
 	// For some reason get_field doesn't work when passing the post ID for the current post
-	if($post_id === get_the_ID()) $post_id = null;
+	if ($post_id === get_the_ID()) $post_id = null;
 
 	return get_field($block_name . '_block_content', $post_id);
 }

@@ -78,17 +78,7 @@ add_action('save_post', function ($post_ID) {
 		$blocks = parse_blocks($content);
 
 		foreach ($blocks as $block) {
-			if (isset($block['attrs']['data'])) {
-				foreach ($block['attrs']['data'] as $name => $val) {
-					if (is_string($val)) {
-						if (strpos($val, 'tailwind_') === 0) {
-							$classes[] = str_replace('tailwind_', '', $val);
-						} elseif (strpos($name, 'tailwind_') === 0 && $val) {
-							$classes[] = str_replace('tailwind_', '', $name) . $val;
-						}
-					}
-				}
-			}
+			$classes = collectClasses($block, $classes);
 		}
 
 		// Extract the classes and add them to the array
@@ -135,6 +125,29 @@ add_action('save_post', function ($post_ID) {
 		file_put_contents($whitelistPath, $updatedContent);
 	}
 });
+
+/**
+ * Collect Tailwind classes from Gutenberg blocks.
+ */
+function collectClasses($block, $classes) {
+	if (count($block['innerBlocks'])) {
+		foreach ($block['innerBlocks'] as $innerBlock) {
+			$classes = collectClasses($innerBlock, $classes);
+		}
+	}
+	if (isset($block['attrs']['data'])) {
+		foreach ($block['attrs']['data'] as $name => $val) {
+			if (is_string($val)) {
+				if (strpos($val, 'tailwind_') === 0) {
+					$classes[] = str_replace('tailwind_', '', $val);
+				} elseif (strpos($name, 'tailwind_') === 0 && $val) {
+					$classes[] = str_replace('tailwind_', '', $name) . $val;
+				}
+			}
+		}
+	}
+	return $classes;
+}
 
 /**
  * Delete Tailwind classes from whitelist.html when a post is deleted.
