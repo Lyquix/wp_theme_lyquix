@@ -23,110 +23,6 @@
 //  DO NOT MODIFY THIS FILE!
 
 /**
- * Enqueue tailwind cdn assets in the Editor.
- */
-add_action('enqueue_block_editor_assets', function () {
-	if (is_admin()) {
-		wp_enqueue_script(
-			'tailwind-cdn',
-			'https://cdn.tailwindcss.com'
-		);
-		wp_enqueue_script(
-			'tailwind-config',
-			get_template_directory_uri() . '/css/tailwind/editor.cdn.js'
-		);
-		wp_enqueue_script(
-			'tailwind-editor',
-			get_template_directory_uri() . '/css/tailwind/editor.js',
-			['wp-blocks', 'wp-data', 'wp-edit-post', 'acf-input', 'jquery']
-		);
-	}
-});
-
-/**
- * Save Tailwind classes from Gutenberg to whitelist.html.
- *
- * @param int $post_id The ID of the post being saved.
- */
-add_action('save_post', function ($post_ID) {
-	// Check if it's a revision, autosave, or if the save is an AJAX request (like Quick Edit)
-	if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
-	if (defined('DOING_AJAX') && DOING_AJAX) return;
-	if (wp_is_post_revision($post_ID)) return;
-
-	// Get the content of the post
-	$post = get_post($post_ID);
-	$content = $post->post_content;
-
-	if ($content) {
-		// Ensure it's a post type that uses Gutenberg
-		if (!in_array($post->post_type, ['post', 'page'])) return;
-
-		// Load the content into a DOMDocument
-		$doc = new DOMDocument();
-		@$doc->loadHTML($content);  // The '@' suppresses warnings that might be thrown for invalid HTML
-
-		// Initialize an array to hold the classes
-		$classes = [];
-
-		// Find all the elements with a class attribute
-		$xpath = new DOMXPath($doc);
-		$elements = $xpath->query('//*[@class]');
-
-		// Extract the classes from the block json
-
-		$blocks = parse_blocks($content);
-
-		foreach ($blocks as $block) {
-			$classes = collectClasses($block, $classes);
-		}
-
-		// Extract the classes and add them to the array
-		foreach ($elements as $element) {
-			$class_string = $element->getAttribute('class');
-			$class_array = explode(' ', $class_string);
-			$classes = array_merge($classes, $class_array);
-		}
-
-		// Match the "className" attribute in all Gutenberg blocks
-		preg_match_all('/"className":"(.*?)"/', $content, $matches);
-
-		if (isset($matches[1])) {
-			foreach ($matches[1] as $match) {
-				// Split the classes and merge with our result array
-				$classes = array_merge($classes, explode(' ', $match));
-			}
-		}
-
-		// Remove duplicate classes
-		$classes = array_unique($classes);
-		// Create the string for the class attribute
-		$class_string = implode(' ', $classes);
-
-		// Load the existing whitelist.html content
-		$whitelistPath = get_template_directory() . '/css/tailwind/whitelist.html';
-		$whitelistContent = file_exists($whitelistPath) ? file_get_contents($whitelistPath) : '';
-
-		// Create the new div string
-		$newDiv = count($classes) ? "<div id=\"{$post_ID}\" class=\"{$class_string}\"></div>" : '';
-
-		// Regex to find an existing div for this post
-		$regex = "/<div id=\"{$post_ID}\" class=\"[^\"]*\"><\/div>/";
-
-		if (preg_match($regex, $whitelistContent)) {
-			// If the div exists, replace it
-			$updatedContent = preg_replace($regex, $newDiv, $whitelistContent);
-		} else {
-			// If the div doesn't exist, append the new div
-			$updatedContent = $whitelistContent . $newDiv;
-		}
-
-		// Save the updated HTML back to whitelist.html
-		file_put_contents($whitelistPath, $updatedContent);
-	}
-});
-
-/**
  * Collect Tailwind classes from Gutenberg blocks.
  */
 function collectClasses($block, $classes) {
@@ -149,40 +45,146 @@ function collectClasses($block, $classes) {
 	return $classes;
 }
 
-/**
- * Delete Tailwind classes from whitelist.html when a post is deleted.
- *
- * @param int $post_id The ID of the post being deleted.
- */
-add_action('delete_post', function ($post_ID) {
-	// Load the existing whitelist.html content
-	$whitelistPath = get_template_directory() . '/css/tailwind/whitelist.html';
-	$whitelistContent = file_exists($whitelistPath) ? file_get_contents($whitelistPath) : '';
+if (get_theme_mod('feat_tailwind', '1') === '1') {
+	/**
+	 * Enqueue tailwind cdn assets in the Editor.
+	 */
+	add_action('enqueue_block_editor_assets', function () {
+		if (is_admin()) {
+			wp_enqueue_script(
+				'tailwind-cdn',
+				'https://cdn.tailwindcss.com'
+			);
+			wp_enqueue_script(
+				'tailwind-config',
+				get_template_directory_uri() . '/css/tailwind/editor.cdn.js'
+			);
+			wp_enqueue_script(
+				'tailwind-editor',
+				get_template_directory_uri() . '/css/tailwind/editor.js',
+				['wp-blocks', 'wp-data', 'wp-edit-post', 'acf-input', 'jquery']
+			);
+		}
+	});
 
-	// Regex to find the div for this post
-	$regex = "/<div data-post=\"{$post_ID}\" class=\"[^\"]*\"><\/div>/";
+	/**
+	 * Save Tailwind classes from Gutenberg to whitelist.html.
+	 *
+	 * @param int $post_id The ID of the post being saved.
+	 */
+	add_action('save_post', function ($post_ID) {
+		// Check if it's a revision, autosave, or if the save is an AJAX request (like Quick Edit)
+		if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+		if (defined('DOING_AJAX') && DOING_AJAX) return;
+		if (wp_is_post_revision($post_ID)) return;
 
-	// Remove the div (if it exists)
-	$updatedContent = preg_replace($regex, '', $whitelistContent);
+		// Get the content of the post
+		$post = get_post($post_ID);
+		$content = $post->post_content;
 
-	// Save the updated HTML back to whitelist.html
-	file_put_contents($whitelistPath, $updatedContent);
-});
+		if ($content) {
+			// Ensure it's a post type that uses Gutenberg
+			if (!in_array($post->post_type, ['post', 'page'])) return;
 
-/**
- * Remove version from Tailwind script
- */
-add_filter('script_loader_tag', function ($tag, $handle, $src) {
+			// Load the content into a DOMDocument
+			$doc = new DOMDocument();
+			@$doc->loadHTML($content);  // The '@' suppresses warnings that might be thrown for invalid HTML
 
-	if (in_array($handle, ['tailwind-cdn'])) {
-		// Use regular expression to remove the 'ver' query parameter
-		$tag = preg_replace("/(\?|&amp;|&)ver=[^&'\" ]+/", "", $tag);
-	}
+			// Initialize an array to hold the classes
+			$classes = [];
 
-	if (in_array($handle, ['tailwind-config'])) {
-		// Modify script tag type attr to 'module'
-		$tag = '<script type="module" src="' . $src . '"></script>';
-	}
+			// Find all the elements with a class attribute
+			$xpath = new DOMXPath($doc);
+			$elements = $xpath->query('//*[@class]');
 
-	return $tag;
-}, 10, 3);
+			// Extract the classes from the block json
+
+			$blocks = parse_blocks($content);
+
+			foreach ($blocks as $block) {
+				$classes = collectClasses($block, $classes);
+			}
+
+			// Extract the classes and add them to the array
+			foreach ($elements as $element) {
+				$class_string = $element->getAttribute('class');
+				$class_array = explode(' ', $class_string);
+				$classes = array_merge($classes, $class_array);
+			}
+
+			// Match the "className" attribute in all Gutenberg blocks
+			preg_match_all('/"className":"(.*?)"/', $content, $matches);
+
+			if (isset($matches[1])) {
+				foreach ($matches[1] as $match) {
+					// Split the classes and merge with our result array
+					$classes = array_merge($classes, explode(' ', $match));
+				}
+			}
+
+			// Remove duplicate classes
+			$classes = array_unique($classes);
+			// Create the string for the class attribute
+			$class_string = implode(' ', $classes);
+
+			// Load the existing whitelist.html content
+			$whitelistPath = get_template_directory() . '/css/tailwind/whitelist.html';
+			$whitelistContent = file_exists($whitelistPath) ? file_get_contents($whitelistPath) : '';
+
+			// Create the new div string
+			$newDiv = count($classes) ? "<div id=\"{$post_ID}\" class=\"{$class_string}\"></div>" : '';
+
+			// Regex to find an existing div for this post
+			$regex = "/<div id=\"{$post_ID}\" class=\"[^\"]*\"><\/div>/";
+
+			if (preg_match($regex, $whitelistContent)) {
+				// If the div exists, replace it
+				$updatedContent = preg_replace($regex, $newDiv, $whitelistContent);
+			} else {
+				// If the div doesn't exist, append the new div
+				$updatedContent = $whitelistContent . $newDiv;
+			}
+
+			// Save the updated HTML back to whitelist.html
+			file_put_contents($whitelistPath, $updatedContent);
+		}
+	});
+
+	/**
+	 * Delete Tailwind classes from whitelist.html when a post is deleted.
+	 *
+	 * @param int $post_id The ID of the post being deleted.
+	 */
+	add_action('delete_post', function ($post_ID) {
+		// Load the existing whitelist.html content
+		$whitelistPath = get_template_directory() . '/css/tailwind/whitelist.html';
+		$whitelistContent = file_exists($whitelistPath) ? file_get_contents($whitelistPath) : '';
+
+		// Regex to find the div for this post
+		$regex = "/<div data-post=\"{$post_ID}\" class=\"[^\"]*\"><\/div>/";
+
+		// Remove the div (if it exists)
+		$updatedContent = preg_replace($regex, '', $whitelistContent);
+
+		// Save the updated HTML back to whitelist.html
+		file_put_contents($whitelistPath, $updatedContent);
+	});
+
+	/**
+	 * Remove version from Tailwind script
+	 */
+	add_filter('script_loader_tag', function ($tag, $handle, $src) {
+
+		if (in_array($handle, ['tailwind-cdn'])) {
+			// Use regular expression to remove the 'ver' query parameter
+			$tag = preg_replace("/(\?|&amp;|&)ver=[^&'\" ]+/", "", $tag);
+		}
+
+		if (in_array($handle, ['tailwind-config'])) {
+			// Modify script tag type attr to 'module'
+			$tag = '<script type="module" src="' . $src . '"></script>';
+		}
+
+		return $tag;
+	}, 10, 3);
+}
