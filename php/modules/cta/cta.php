@@ -27,8 +27,8 @@ namespace lqx\modules\cta;
 // Set the Style Preset values for the Lyquix Modules
 add_filter('acf/load_field', function ($field) {
 	// Field keys
-	$user = ''; // style field
-	$choice = ''; // style_name field
+	$user = 'field_658c719dc8329'; // style field
+	$choice = 'field_65c11d5f554f8'; // style_name field
 
 	if ($field['key'] == $user) {
 		$choice_field = get_field_object($choice);
