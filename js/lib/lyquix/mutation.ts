@@ -54,7 +54,7 @@ export const mutation = (() => {
 			// check for mutationObserver support , if exists, user the mutation observer object, if not use the listener method.
 			if (typeof mo !== 'undefined') {
 				vars.mutation.observer = new mo(handler);
-				vars.mutation.observer.observe(document, { childList: true, subtree: true, attributes: true });
+				vars.mutation.observer.observe(document.body, { childList: true, subtree: true, attributes: true });
 			}
 		}
 
@@ -63,6 +63,7 @@ export const mutation = (() => {
 	};
 
 	const addHandler = (type, selector, callback) => {
+		// TODO Data validation
 		vars.mutation[type].push({ 'selector': selector, 'callback': callback });
 		log('Adding handler for mutation ' + type + ' for ' + selector);
 	};
