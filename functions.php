@@ -36,9 +36,7 @@ nocache_headers();
 require_once get_template_directory() . '/php/util.php';
 
 // Remove comments
-if (get_theme_mod('feat_disable_comments', '1') === '1') {
-	require_once get_template_directory() . '/php/comments.php';
-}
+require_once get_template_directory() . '/php/comments.php';
 
 // Theme setup
 require_once get_template_directory() . '/php/setup.php';
@@ -53,39 +51,16 @@ require_once get_template_directory() . '/php/widgets.php';
 require_once get_template_directory() . '/php/customizer.php';
 
 // Blocks
-if (get_theme_mod('feat_gutenberg_blocks', '1') === '1') {
-	require_once get_template_directory() . '/php/blocks.php';
-}
+require_once get_template_directory() . '/php/blocks.php';
 
 // Layouts
-if (get_theme_mod('feat_gutenberg_layout_blocks', '1') === '1') {
-	require_once get_template_directory() . '/php/layouts.php';
-}
+require_once get_template_directory() . '/php/layouts.php';
 
 // Modules
-if (get_theme_mod('feat_modules', '1') === '1') {
-	require_once get_template_directory() . '/php/modules.php';
-}
+require_once get_template_directory() . '/php/modules.php';
 
 // Tailwind
-if (get_theme_mod('feat_tailwind', '1') === '1') {
-	require_once get_template_directory() . '/php/tailwind.php';
-}
-
-// Custom functions.php
-if (file_exists(get_template_directory() . '/php/custom/functions.php')) {
-	require_once get_template_directory() . '/php/custom/functions.php';
-}
-
-// Shortcodes
-if (file_exists(get_template_directory() . '/php/custom/shortcodes.php')) {
-	require_once get_template_directory() . '/php/custom/shortcodes.php';
-}
-
-// Updates checker
-if (get_theme_mod('feat_theme_update', '1') === '1') {
-	require_once get_template_directory() . '/php/update.php';
-}
+require_once get_template_directory() . '/php/tailwind.php';
 
 // Prepare meta tags
 require_once get_template_directory() . '/php/meta.php';
@@ -109,6 +84,17 @@ require_once get_template_directory() . '/php/router.php';
 require_once get_template_directory() . '/php/browsers.php';
 
 // Livereload
-if (get_theme_mod('feat_livereload', '1') === '1') {
-	require_once get_template_directory() . '/php/livereload.php';
+require_once get_template_directory() . '/php/livereload.php';
+
+// Custom functions.php
+if (file_exists(get_template_directory() . '/php/custom/functions.php')) {
+	require_once get_template_directory() . '/php/custom/functions.php';
 }
+
+// Shortcodes
+if (file_exists(get_template_directory() . '/php/custom/shortcodes.php')) {
+	require_once get_template_directory() . '/php/custom/shortcodes.php';
+}
+
+// Updates checker
+require_once get_template_directory() . '/php/update.php';

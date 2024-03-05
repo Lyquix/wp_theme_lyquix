@@ -128,7 +128,7 @@ function get_settings($block, $post_id = null) {
 	if ($post_id === get_the_ID()) $post_id = null;
 
 	// Get the block name by removing the lqx/ prefix
-	$block_name = substr($block['name'], 4);
+	$block_name = str_replace('lqx/', '', $block['name']);
 
 	// Initialize the settings array
 	$settings = [
@@ -187,108 +187,109 @@ function get_content($block, $post_id = null) {
 	return get_field($block_name . '_block_content', $post_id);
 }
 
-// Register the Lyquix Modules block category
-add_filter('block_categories_all', function ($categories) {
-	$categories[] = [
-		'slug'  => 'lqx-module-blocks',
-		'title' => 'Lyquix Modules'
-	];
+if (get_theme_mod('feat_gutenberg_blocks', '1') === '1') {
+	// Register the Lyquix Modules block category
+	add_filter('block_categories_all', function ($categories) {
+		$categories[] = [
+			'slug'  => 'lqx-module-blocks',
+			'title' => 'Lyquix Modules'
+		];
 
-	return $categories;
-});
+		return $categories;
+	});
 
-// Register ACF blocks
-add_action('init', function () {
-	// Use glob to find 'block.json' files in the 'blocks' directory
-	$matches = array_merge(glob(__DIR__ . '/blocks/*/block.json'), glob(__DIR__ . 'custom/blocks/*/block.json'));
+	// Register ACF blocks
+	add_action('init', function () {
+		// Use glob to find 'block.json' files in the 'blocks' directory
+		$matches = array_merge(glob(__DIR__ . '/blocks/*/block.json'), glob(__DIR__ . 'custom/blocks/*/block.json'));
 
-	// Check if any matches were found
-	if (!empty($matches)) {
-		foreach ($matches as $match) {
-			// Get the directory name for each match
-			register_block_type(dirname($match));
-		}
-	}
-});
-
-// Set the Style Preset values for the Lyquix Modules
-add_filter('acf/load_field', function ($field) {
-	$field_keys = [
-		// Accordion
-		[ // style and style_name fields
-			'user' => 'field_656c9b99e9e1f',
-			'choice' => 'field_656e7cb6b285f'
-		],
-		[ // preset and preset_name fields
-			'user' => 'field_656c9bb1e9e20',
-			'choice' => 'field_656d01578aa30'
-		],
-
-		// Banner
-		[ // style and style_name fields
-			'user' => 'field_657727e6739ff',
-			'choice' => 'field_65806108a3e5d'
-		],
-		[ // preset and preset_name fields
-			'user' => 'field_657727e673a6d',
-			'choice' => 'field_656d01578aa30'
-		],
-
-		// Hero
-		[ // style and style_name fields
-			'user' => 'field_657217f48ca53',
-			'choice' => 'field_657761228bf9d'
-		],
-		[ // preset and preset_name fields
-			'user' => 'field_657218058ca54',
-			'choice' => 'field_657766304a9cc'
-		],
-
-		// Gallery
-		[ // style and style_name fields
-			'user' => 'field_6577582aed940',
-			'choice' => 'field_65806199e7ed0'
-		],
-		[ // preset and preset_name fields
-			'user' => 'field_6577582aed9a8',
-			'choice' => 'field_658061d6e7ed2'
-		],
-
-		// Tabs
-		[ //  style and style_name fields
-			'user' => 'field_656f866617343',
-			'choice' => 'field_656f879ccf606'
-		],
-		[ // preset and preset_name fields
-			'user' => 'field_656f866617344',
-			'choice' => 'field_656f87fcef854'
-		],
-
-		// Slider
-		[ //  style and style_name fields
-			'user' => 'field_659d51caf3d2a',
-			'choice' => 'field_659d2fcdd2f8e'
-		],
-		[ // preset and preset_name fields
-			'user' => 'field_659d5299a2521',
-			'choice' => 'field_659d3012b3e36'
-		]
-	];
-
-	foreach ($field_keys as $k) {
-		if ($field['key'] == $k['user']) {
-			$choice_field = get_field_object($k['choice']);
-
-			// Add an empty choice
-			$field['choices'] = ['' => 'Select'];
-
-			while (have_rows($choice_field['parent'], 'option')) {
-				the_row();
-				$value = get_sub_field($k['choice'], 'option');
-				$field['choices'][$value] = $value;
+		// Check if any matches were found
+		if (!empty($matches)) {
+			foreach ($matches as $match) {
+				// Get the directory name for each match
+				register_block_type(dirname($match));
 			}
 		}
-	}
-	return $field;
-});
+	});
 
+	// Set the Style Preset values for the Lyquix Modules
+	add_filter('acf/load_field', function ($field) {
+		$field_keys = [
+			// Accordion
+			[ // style and style_name fields
+				'user' => 'field_656c9b99e9e1f',
+				'choice' => 'field_656e7cb6b285f'
+			],
+			[ // preset and preset_name fields
+				'user' => 'field_656c9bb1e9e20',
+				'choice' => 'field_656d01578aa30'
+			],
+
+			// Banner
+			[ // style and style_name fields
+				'user' => 'field_657727e6739ff',
+				'choice' => 'field_65806108a3e5d'
+			],
+			[ // preset and preset_name fields
+				'user' => 'field_657727e673a6d',
+				'choice' => 'field_656d01578aa30'
+			],
+
+			// Hero
+			[ // style and style_name fields
+				'user' => 'field_657217f48ca53',
+				'choice' => 'field_657761228bf9d'
+			],
+			[ // preset and preset_name fields
+				'user' => 'field_657218058ca54',
+				'choice' => 'field_657766304a9cc'
+			],
+
+			// Gallery
+			[ // style and style_name fields
+				'user' => 'field_6577582aed940',
+				'choice' => 'field_65806199e7ed0'
+			],
+			[ // preset and preset_name fields
+				'user' => 'field_6577582aed9a8',
+				'choice' => 'field_658061d6e7ed2'
+			],
+
+			// Tabs
+			[ //  style and style_name fields
+				'user' => 'field_656f866617343',
+				'choice' => 'field_656f879ccf606'
+			],
+			[ // preset and preset_name fields
+				'user' => 'field_656f866617344',
+				'choice' => 'field_656f87fcef854'
+			],
+
+			// Slider
+			[ //  style and style_name fields
+				'user' => 'field_659d51caf3d2a',
+				'choice' => 'field_659d2fcdd2f8e'
+			],
+			[ // preset and preset_name fields
+				'user' => 'field_659d5299a2521',
+				'choice' => 'field_659d3012b3e36'
+			]
+		];
+
+		foreach ($field_keys as $k) {
+			if ($field['key'] == $k['user']) {
+				$choice_field = get_field_object($k['choice']);
+
+				// Add an empty choice
+				$field['choices'] = ['' => 'Select'];
+
+				while (have_rows($choice_field['parent'], 'option')) {
+					the_row();
+					$value = get_sub_field($k['choice'], 'option');
+					$field['choices'][$value] = $value;
+				}
+			}
+		}
+		return $field;
+	});
+}

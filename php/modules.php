@@ -25,15 +25,17 @@
 
 namespace lqx\modules;
 
-// Get directories under php/modules
-$modules = array_merge(
-	glob(get_template_directory() . '/php/modules/*'),
-	glob(get_template_directory() . '/php/custom/modules/*')
-);
-$modules = array_filter($modules, 'is_dir');
-$modules = array_map('basename', $modules);
+if (get_theme_mod('feat_modules', '1') === '1') {
+	// Get directories under php/modules
+	$modules = array_merge(
+		glob(get_template_directory() . '/php/modules/*'),
+		glob(get_template_directory() . '/php/custom/modules/*')
+	);
+	$modules = array_filter($modules, 'is_dir');
+	$modules = array_map('basename', $modules);
 
-// Load each module once
-foreach ($modules as $module) {
-	require_once get_template_directory() . '/php/modules/' . $module . '/' . $module . '.php';
+	// Load each module once
+	foreach ($modules as $module) {
+		require_once get_template_directory() . '/php/modules/' . $module . '/' . $module . '.php';
+	}
 }

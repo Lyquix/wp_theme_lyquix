@@ -48,6 +48,6 @@ function theme_update_notice() {
 }
 
 // Check if the user is an admin viewing a dashboard page
-if (is_admin() && current_user_can('manage_options') && !wp_doing_ajax() && (!defined('DOING_AJAX') || !DOING_AJAX)) {
+if (get_theme_mod('feat_theme_update', '1') === '1' && is_admin() && current_user_can('manage_options') && !wp_doing_ajax() && (!defined('DOING_AJAX') || !DOING_AJAX)) {
 	add_action('admin_notices', '\lqx\update\theme_update_notice');
 }

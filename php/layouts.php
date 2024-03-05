@@ -48,38 +48,39 @@ function get_tailwind_classes() {
 	return implode(' ', $classes);
 }
 
+if (get_theme_mod('feat_gutenberg_layout_blocks', '1') === '1') {
+	// Register the Lyquix Layouts blocks category
+	add_filter('block_categories_all', function ($categories) {
+		$categories[] = [
+			'slug'  => 'lqx-layout-blocks',
+			'title' => 'Lyquix Layouts'
+		];
 
-// Register the Lyquix Layouts blocks category
-add_filter('block_categories_all', function ($categories) {
-	$categories[] = [
-		'slug'  => 'lqx-layout-blocks',
-		'title' => 'Lyquix Layouts'
-	];
-
-	return $categories;
-});
+		return $categories;
+	});
 
 
-/**
- * Register ACF blocks
- */
-add_action('init', function () {
-	// Use glob to find 'block.json' files in the 'blocks' directory
-	$matches = array_merge(glob(__DIR__ . '/layouts/*/block.json'));
+	/**
+	 * Register ACF blocks
+	 */
+	add_action('init', function () {
+		// Use glob to find 'block.json' files in the 'blocks' directory
+		$matches = array_merge(glob(__DIR__ . '/layouts/*/block.json'));
 
-	// Check if any matches were found
-	if (!empty($matches)) {
-		foreach ($matches as $match) {
-			// Get the directory name for each match
-			register_block_type(dirname($match));
+		// Check if any matches were found
+		if (!empty($matches)) {
+			foreach ($matches as $match) {
+				// Get the directory name for each match
+				register_block_type(dirname($match));
+			}
 		}
-	}
-});
+	});
 
-// ACF Inner Blocks should wrap
-add_filter('acf/blocks/wrap_frontend_innerblocks', function ($wrap, $name) {
-	if (str_contains($name, 'lqx/')) {
-		return false;
-	}
-	return true;
-}, 10, 2);
+	// ACF Inner Blocks should wrap
+	add_filter('acf/blocks/wrap_frontend_innerblocks', function ($wrap, $name) {
+		if (str_contains($name, 'lqx/')) {
+			return false;
+		}
+		return true;
+	}, 10, 2);
+}
