@@ -61,11 +61,6 @@ function render($settings, $content) {
 	if ($s['isValid']) $s = $s['data'];
 	else throw new \Exception('Invalid block settings');
 
-	$c = [
-		'lighbox_slug' => \lqx\util\validate_data($content['lightbox_slug'], \lqx\util\schema_str_req_emp)['data'],
-		'slides' => []
-	];
-
 	// Get the top level items first
 	$c = \lqx\util\validate_data($content, [
 		'type' => 'object',
