@@ -112,16 +112,16 @@ export const responsive = (() => {
 		const o = window.screen.orientation.type;
 		if (o.indexOf(vars.responsive.orientation) == -1) {
 			switch (o) {
-			case 'portrait-primary':
-			case 'portrait-secondary':
-				vars.responsive.orientation = 'portrait';
-				vars.body.attr('orientation', 'portrait');
-				break;
-			case 'landscape-primary':
-			case 'landscape-secondary':
-				vars.responsive.orientation = 'landscape';
-				vars.body.attr('orientation', 'landscape');
-				break;
+				case 'portrait-primary':
+				case 'portrait-secondary':
+					vars.responsive.orientation = 'portrait';
+					vars.body.attr('orientation', 'portrait');
+					break;
+				case 'landscape-primary':
+				case 'landscape-secondary':
+					vars.responsive.orientation = 'landscape';
+					vars.body.attr('orientation', 'landscape');
+					break;
 			}
 			log('Screen orientation changed' + vars.responsive.orientation);
 		}

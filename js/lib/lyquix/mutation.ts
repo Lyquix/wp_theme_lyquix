@@ -74,34 +74,34 @@ export const mutation = (() => {
 		}
 		mutRecs.forEach((mutRec) => {
 			switch (mutRec.type) {
-			case 'childList': {
-				// Handle nodes added
-				if (mutRec.addedNodes.length > 0) {
-					const nodes = nodesArray(mutRec.addedNodes);
-					nodes.forEach((e) => {
-						vars.mutation.addNode.forEach((h) => {
-							if (jQuery(e).is(h.selector)) h.callback(e);
+				case 'childList': {
+					// Handle nodes added
+					if (mutRec.addedNodes.length > 0) {
+						const nodes = nodesArray(mutRec.addedNodes);
+						nodes.forEach((e) => {
+							vars.mutation.addNode.forEach((h) => {
+								if (jQuery(e).is(h.selector)) h.callback(e);
+							});
 						});
-					});
+					}
+
+					// Handle nodes removed
+					if (mutRec.removedNodes.length > 0) {
+						const nodes = nodesArray(mutRec.removedNodes);
+						nodes.forEach((e) => {
+							vars.mutation.removeNode.forEach((h) => {
+								if (jQuery(e).is(h.selector)) h.callback(e);
+							});
+						});
+					}
+					break;
 				}
 
-				// Handle nodes removed
-				if (mutRec.removedNodes.length > 0) {
-					const nodes = nodesArray(mutRec.removedNodes);
-					nodes.forEach((e) => {
-						vars.mutation.removeNode.forEach((h) => {
-							if (jQuery(e).is(h.selector)) h.callback(e);
-						});
+				case 'attributes':
+					vars.mutation.modAttrib.forEach((h) => {
+						if (mutRec.target.matches(h.selector)) h.callback(mutRec.target);
 					});
-				}
-				break;
-			}
-
-			case 'attributes':
-				vars.mutation.modAttrib.forEach((h) => {
-					if (mutRec.target.matches(h.selector)) h.callback(mutRec.target);
-				});
-				break;
+					break;
 			}
 		});
 	};
