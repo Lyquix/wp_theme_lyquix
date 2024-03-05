@@ -237,7 +237,7 @@ function get_browser_version($browser) {
 		$ver = implode('.', $ver);
 
 		// Add version to array if not already there
-		if(!in_array($ver, $versions)) $versions[] = $ver;
+		if (!in_array($ver, $versions)) $versions[] = $ver;
 	}
 
 	// Sort the versions array using the version_compare function
@@ -279,8 +279,8 @@ function browser_outdated() {
 
 	if (array_key_exists($res['browser'], $browser_data)) {
 		// A browser will be considered outdated if it is older than the last 3 versions
-		if(array_key_exists('accepted', $_GET)) $accepted_versions = intval($_GET['accepted']);
-		if(!$accepted_versions) $accepted_versions = 3;
+		if (array_key_exists('accepted', $_GET)) $accepted_versions = intval($_GET['accepted']);
+		if (!$accepted_versions) $accepted_versions = 3;
 		$res['accepted_version'] = $browser_data[$res['browser']]['version'][$accepted_versions - 1];
 
 		// Known browser with outdated version
@@ -294,7 +294,7 @@ function browser_outdated() {
 	// Unknown browser
 	else $res['outdated'] =  null;
 
-	if($res['outdated']) {
+	if ($res['outdated']) {
 		$res['info'] = array_map(function($item) {
 			return [
 				'name' => $item['name'],

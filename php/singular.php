@@ -29,7 +29,7 @@ the_post();
 $blocks = parse_blocks(get_the_content());
 $has_hero_block = false;
 foreach($blocks as $b) {
-	if($b['blockName'] == 'lqx/hero') {
+	if ($b['blockName'] == 'lqx/hero') {
 		$has_hero_block = true;
 		break;
 	}

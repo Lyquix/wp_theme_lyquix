@@ -115,8 +115,8 @@ add_action('wp_enqueue_scripts', '\lqx\css\enqueue_styles', 100);
 
 function render_page_custom_css() {
 	// Render page custom CSS
-	if(function_exists('get_field')) {
+	if (function_exists('get_field')) {
 		$custom_css = get_field('custom_css');
-		if($custom_css) echo "<style>\n" . $custom_css . "\n</style>";
+		if ($custom_css) echo "<style>\n" . $custom_css . "\n</style>";
 	}
 }

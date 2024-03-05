@@ -33,7 +33,7 @@ function add_widget_positions() {
 	if (file_exists(get_template_directory() . '/php/custom/widgets.php')) {
 		require get_template_directory() . '/php/custom/widgets.php';
 
-		if(count($custom_widget_positions)) {
+		if (count($custom_widget_positions)) {
 			$widget_positions = array_merge($widget_positions, $custom_widget_positions);
 		}
 	}

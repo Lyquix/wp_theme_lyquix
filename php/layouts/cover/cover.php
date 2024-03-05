@@ -24,7 +24,7 @@
 
 // Get a list of used Tailwind classes
 $classes = \lqx\layouts\get_tailwind_classes();
-if($block['className']) $classes .= ' ' . $block['className'];
+if ($block['className']) $classes .= ' ' . $block['className'];
 
 ?>
 <div id="<?= esc_attr($block['anchor']) ?>" class="cover-l <?= $classes ?>">

@@ -80,11 +80,11 @@ function get_platform($url) {
  */
 function get_share_link($platform, $url = null, $title = null) {
 	// Return if no platform is provided
-	if(!$platform) return null;
+	if (!$platform) return null;
 
 	// Default values for $url and $title
-	if(!$url) $url = get_permalink();
-	if(!$title) $title = get_the_title();
+	if (!$url) $url = get_permalink();
+	if (!$title) $title = get_the_title();
 
 	// Encode $url and $title
 	$url = urlencode($url);

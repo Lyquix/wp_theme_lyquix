@@ -133,7 +133,7 @@ function render($settings = null, $content = null) {
 
 		// Skip if display logic and exceptions are not met
 		$display = true;
-		if($v['data']['display_logic'] == 'hide') $display = false;
+		if ($v['data']['display_logic'] == 'hide') $display = false;
 
 		if (count($v['data']['display_exceptions'])) {
 			foreach($v['data']['display_exceptions'] as $e) {

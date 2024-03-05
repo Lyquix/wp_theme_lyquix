@@ -24,7 +24,7 @@
 
 // Get a list of used Tailwind classes
 $classes = \lqx\layouts\get_tailwind_classes();
-if($block['className']) $classes .= ' ' . $block['className'];
+if ($block['className']) $classes .= ' ' . $block['className'];
 
 ?>
 <span id="<?= esc_attr($block['anchor']) ?>" class="icon-l <?= $classes ?>">

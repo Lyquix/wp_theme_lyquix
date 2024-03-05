@@ -154,7 +154,7 @@ function render_social_share($settings = null) {
 		<ul class="share-list <?= $s['style'] ?>" style="<?= get_inline_style($s) ?>">
 			<?php foreach ($s['platforms'] as $p) :
 				$share_link = get_share_link($p['platform_name']['value']);
-				if($share_link) :	?>
+				if ($share_link) : ?>
 				<li>
 					<a class="link-<?= $p['platform_name']['value'] ?>"
 						href="<?= $share_link ?>"
