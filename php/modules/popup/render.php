@@ -29,14 +29,10 @@ namespace lqx\modules\popup;
  * Render popup
  *  heading_style - string, style of heading: p, h1, h2, h3, h4, h5, h6
  */
-function render($settings = null) {
-	// Get settings
-	if ($settings == null) $settings = get_field('popup_module_settings', 'option');
-
+function render() {
 ?>
 	<section id="lqx-module-popup">
-		<div class="popup">
-		</div>
+		<div class="popup"></div>
 	</section>
 <?php
 }
