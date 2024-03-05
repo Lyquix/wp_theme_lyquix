@@ -29,43 +29,59 @@ namespace lqx\blocks\cards;
  * Render function for Lyquix cards block
  *
  * @param array $settings - block settings
- * @param array $content - block content
+ *              processed: Processed settings
+ *                 anchor: A custom id for the cards block
+ *                 class: Additional classes to add to the cards block
+ *                 hash: A unique hash of the cards block
+ *                 slider: Whether to use a slider
+ *                 swiper_options_override: Swiper options override
+ *                 heading_style: Style of the heading
+ *                 subheading_style: Style of the subheading
+ *                 heading_clickable: Whether the heading is clickable
+ *                 image_clickable: Whether the image is clickable
+ *                 responsive_rules: Responsive rules (array of objects)
+ *                     screens: Array of screens to apply the rule to (xs, sm, md, lg, xl)
+ *                     columns: Number of columns
+ *                     image_position: Image position (left, right, top)
+ *                     icon_image_position: Icon image position (left, right, center)
  *
- * anchor: The anchor of the cards
- * class: Additional classes to add to the cards
- * hash: A unique hash of the cards
+ * @param array $content - array of cards
+ *              heading: Heading
+ *              subheading: Subheading
+ *              image: Image
+ *              icon_image: Icon image
+ *              video: Video
+ *              body: Body
+ *              links: Links
+ *              labels: Labels
+ *
  */
 function render($settings, $content) {
 	// Get and validate processed settings
-	$s = (\lqx\util\validate_data($settings['processed'], [
+	$s = \lqx\util\validate_data($settings['processed'], [
 		'type' => 'object',
 		'required' => true,
 		'keys' => [
-			'anchor' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-			'class' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+			'anchor' => \lqx\util\schema_str_req_emp,
+			'class' => \lqx\util\schema_str_req_emp,
 			'hash' => [
 				'type' => 'string',
 				'required' => true,
 				'default' => 'id-' . md5(json_encode([$settings, $content, random_int(1000, 9999)]))
 			],
-			'slider' => [
-				'type' => 'string',
-				'required' => true,
-				'default' => 'n',
-				'allowed' => ['y', 'n']
-			],
-			'swiper_options_override' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+			'slider' => \lqx\util\schema_str_req_n,
+			'swiper_options_override' => \lqx\util\schema_str_req_emp,
 			'heading_style' => [
 				'type' => 'string',
 				'required' => true,
 				'default' => 'h3',
-				'allowed' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p']
+				'allowed' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
 			],
 			'subheading_style' => [
 				'type' => 'string',
 				'required' => true,
 				'default' => 'p',
-				'allowed' => ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p']
+				'allowed' => ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
 			],
 			'heading_clickable' => [
 				'type' => 'string',
@@ -73,15 +89,9 @@ function render($settings, $content) {
 				'default' => 'y',
 				'allowed' => ['y', 'n']
 			],
-			'image_clickable' => [
-				'type' => 'string',
-				'required' => true,
-				'default' => 'y',
-				'allowed' => ['y', 'n']
-			],
+			'image_clickable' => \lqx\util\schema_str_req_y,
 			'responsive_rules' => [
 				'type' => 'array',
-				'required' => true,
 				'default' => [],
 				'elems' => [
 					'type' => 'object',
@@ -97,14 +107,31 @@ function render($settings, $content) {
 								'allowed' => ['xs', 'sm', 'md', 'lg', 'xl']
 							]
 						],
-						'columns' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-						'image_position' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-						'icon_image_position' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING
+						'columns' => [
+							'type' => 'integer',
+							'required' => true,
+							'default' => 3,
+							'range' => [1, 12]
+						],
+						'image_position' => [
+							'type' => 'string',
+							'required' => true,
+							'allowed' => ['', 'left', 'right', 'top']
+						],
+						'icon_image_position' => [
+							'type' => 'string',
+							'required' => true,
+							'allowed' => ['', 'left', 'right', 'center']
+						]
 					]
 				]
 			]
 		]
-	]))['data'];
+	]);
+
+	// If valid settings, use them, otherwise throw exception
+	if ($s['isValid']) $s = $s['data'];
+	else throw new \Exception('Invalid block settings');
 
 	// Generate CSS classes for responsive rules
 	$css_classes = [];
@@ -118,23 +145,22 @@ function render($settings, $content) {
 		}
 	}
 
-	// Filter out any content missing heading or content
-	$c = \lqx\util\validate_data($content, [
-		'type' => 'array',
-		'required' => true,
-		'default' => [],
-		'elems' => [
+	// Get content and filter our invalid content
+	$c = array_filter(array_map(function($item) {
+		$v = \lqx\util\validate_data($item, [
 			'type' => 'object',
 			'keys' => [
-				'heading' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-				'subheading' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+				'heading' => \lqx\util\schema_str_req_emp,
+				'subheading' => \lqx\util\schema_str_req_emp,
 				'image' => [
 					'type' => 'object',
-					'keys' => LQX_VALIDATE_DATA_SCHEMA_IMAGE
+					'default' => [],
+					'keys' => \lqx\util\schema_data_image
 				],
 				'icon_image' => [
 					'type' => 'object',
-					'keys' => LQX_VALIDATE_DATA_SCHEMA_IMAGE
+					'default' => [],
+					'keys' => \lqx\util\schema_data_image
 				],
 				'video' => [
 					'type' => 'object',
@@ -144,33 +170,31 @@ function render($settings, $content) {
 							'required' => true,
 							'default' => 'url'
 						],
-						'url' => [
-							'type' => 'string',
-							'default' => ''
-						],
+						'url' => \lqx\util\schema_str_req_emp,
 						'upload' => [
 							'type' => 'object',
-							'keys' => LQX_VALIDATE_DATA_SCHEMA_VIDEO_UPLOAD
+							'default' => [],
+							'keys' => \lqx\util\schema_data_video
 						]
 					]
 				],
-				'body' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+				'body' => \lqx\util\schema_str_req_emp,
 				'links' => [
 					'type' =>	'array',
-					'required' => false,
 					'default' => [],
 					'elems' => [
 						'type' => 'object',
-						'required' => true,
 						'keys' => [
 							'type' => [
 								'type' => 'string',
 								'required' => true,
-								'default' => 'button'
+								'default' => 'button',
+								'allowed' => ['button', 'link']
 							],
 							'link' => [
 								'type' => 'object',
-								'keys' => LQX_VALIDATE_DATA_SCHEMA_LINK
+								'required' => true,
+								'keys' => \lqx\util\schema_data_link
 							]
 						]
 					]
@@ -182,14 +206,15 @@ function render($settings, $content) {
 						'type' => 'object',
 						'required' => true,
 						'keys' => [
-							'label' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-							'value' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING
+							'label' => \lqx\util\schema_str_req_emp,
+							'value' => \lqx\util\schema_str_req_emp
 						]
 					]
 				]
 			]
-		]
-	])['data'];
+		]);
+		return $v['isValid'] ? $v['data'] : null;
+	}, $content));
 
 	if (!empty($c)) : ?>
 		<section
@@ -226,7 +251,7 @@ function render($settings, $content) {
 
 							// First link URL
 							$first_link = '';
-							if(!empty($item['links'])) {
+							if (count($item['links'])) {
 								$first_link = $item['links'][0]['link']['url'];
 							}
 						?>
@@ -287,7 +312,7 @@ function render($settings, $content) {
 									<?= $item['body'] ?>
 								</div>
 
-								<?php if (!empty($item['links'])) : ?>
+								<?php if (count($item['links'])) : ?>
 									<ul class="links">
 										<?php foreach ($item['links'] as $link) : ?>
 											<li>

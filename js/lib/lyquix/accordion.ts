@@ -89,6 +89,7 @@ export const accordion = (() => { // Change the accordion name
 
 					// The panel element
 					const panelElem = jQuery('#' + headerElem.attr('id').replace('-header-', '-panel-'));
+					// TODO Handle missing panel
 					const panelId = panelElem.attr('id');
 
 					// Add click listener
@@ -110,6 +111,7 @@ export const accordion = (() => { // Change the accordion name
 		const panelElem = jQuery('#' + panelId);
 		const headerElem = jQuery('#' + panelId.replace('-panel-', '-header-'));
 		const accElem = panelElem.parent();
+		// TODO Handle missing elements
 
 		// Remove closed class
 		panelElem.removeClass('closed');
@@ -122,6 +124,7 @@ export const accordion = (() => { // Change the accordion name
 
 		// Auto scroll top
 		const autoScrollScreens = (accElem.attr('data-auto-scroll') || '').split(',');
+		// TODO Handle invalid autoScrollScreens
 
 		if (autoScrollScreens.includes(responsive.screen)) {
 			// TODO: Auto Scroll functionality
@@ -157,6 +160,7 @@ export const accordion = (() => { // Change the accordion name
 		// The elements
 		const panelElem = jQuery('#' + panelId);
 		const headerElem = jQuery('#' + panelId.replace('-panel-', '-header-'));
+		// TODO Handle missing elements
 
 		// Add closed class
 		panelElem.addClass('closed');

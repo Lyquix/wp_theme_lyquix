@@ -26,24 +26,52 @@
 namespace lqx\modules\alerts;
 
 /**
- * Render alerts
+ * Render function for Lyquix Alerts module
+ * @param array $settings - module settings
  * 	autoplay - boolean, whether to autoplay alerts
  * 	autoplay_delay - integer, delay in seconds between alerts
  *  swiper_options_override - string, a JSON object to override Swiper options
  * 	heading_style - string, style of heading: p, h1, h2, h3, h4, h5, h6
+ *
  */
 function render($settings = null) {
 	// Get settings
 	if ($settings == null) $settings = get_field('alerts_module_settings', 'option');
 
+	// Validate the settings
+	$s = \lqx\util\validate_data($settings, [
+		'type' => 'object',
+		'required' => true,
+		'keys' => [
+			'autoplay' => \lqx\util\schema_str_req_y,
+			'autoplay_delay' => [
+				'type' => 'integer',
+				'required' => true,
+				'default' => 15,
+				'range' => [0, 60]
+			],
+			'swiper_options_override' => \lqx\util\schema_str_req_emp,
+			'heading_style' => [
+				'type' => 'string',
+				'required' => true,
+				'default' => 'h3',
+				'allowed' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+			]
+		]
+	]);
+
+	// If valid settings, use them, otherwise throw exception
+	if ($s['isValid']) $s = $s['data'];
+	else throw new \Exception('Invalid block settings');
+
 	?>
 	<section id="lqx-module-alerts">
 		<div
 			class="alerts hidden"
-			data-autoplay="<?= $settings['autoplay'] ?>"
-			data-autoplay-delay="<?= $settings['autoplay_delay'] ?>"
-			data-swiper-options-override="<?= htmlspecialchars($settings['swiper_options_override']) ?>"
-			data-heading-style="<?= $settings['heading_style'] ?>">
+			data-autoplay="<?= $s['autoplay'] ?>"
+			data-autoplay-delay="<?= $s['autoplay_delay'] ?>"
+			data-swiper-options-override="<?= htmlspecialchars($s['swiper_options_override']) ?>"
+			data-heading-style="<?= $s['heading_style'] ?>">
 			<button class="close">Close</button>
 			<div class="swiper">
 				<div class="swiper-wrapper"></div>

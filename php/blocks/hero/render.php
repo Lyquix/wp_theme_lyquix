@@ -42,111 +42,105 @@ namespace lqx\blocks\hero;
  */
 function render($settings, $content) {
 	// Get and validate processed settings
-	$s = (\lqx\util\validate_data($settings['processed'], [
+	$s = \lqx\util\validate_data($settings['processed'], [
 		'type' => 'object',
 		'required' => true,
 		'keys' => [
-			'anchor' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-			'class' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+			'anchor' => \lqx\util\schema_str_req_emp,
+			'class' => \lqx\util\schema_str_req_emp,
 			'hash' => [
 				'type' => 'string',
 				'required' => true,
 				'default' => 'id-' . md5(json_encode([$settings, $content, random_int(1000, 9999)]))
 			],
-			'show_image' => [
-				'type' => 'string',
-				'required' => true,
-				'default' => 'n',
-				'allowed' => ['y', 'n']
-			],
+			'show_image' => \lqx\util\schema_str_req_y,
 			'breadcrumbs' => [
 				'type' => 'object',
 				'required' => true,
 				'elems' => [
-					'show_breadcrumbs' => [
-						'type' => 'string',
-						'required' => true,
-						'default' => 'y',
-						'allowed' => ['y', 'n']
-					],
+					'show_breadcrumbs' => \lqx\util\schema_str_req_n,
 					'type' => [
 						'type' => 'string',
 						'required' => true,
 						'default' => 'parent',
 						'allowed' => ['parent', 'category', 'post-type', 'post-type-category']
 					],
-					'depth' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-					'show_current' => [
-						'type' => 'string',
+					'depth' => [
+						'type' => 'integer',
 						'required' => true,
-						'default' => 'n',
-						'allowed' => ['y', 'n']
-					]
+						'default' => 3,
+						'range' => [1, 5]
+					],
+					'show_current' => \lqx\util\schema_str_req_n
 				]
 			]
 		]
-	]))['data'];
+	]);
+
+	// If valid settings, use them, otherwise throw exception
+	if ($s['isValid']) $s = $s['data'];
+	else throw new \Exception('Invalid block settings');
 
 	// Filter out any content missing heading or content
 	$c = \lqx\util\validate_data($content, [
 		'type' => 'object',
 		'required' => true,
-		'default' => [],
-		'elems' => [
-			'type' => 'object',
-			'keys' => [
-				'breadcrumbs_override' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-				'heading_override' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-				'image_override' => [
-					'type' => 'object',
-					'keys' => LQX_VALIDATE_DATA_SCHEMA_IMAGE
-				],
-				'image_mobile' => [
-					'type' => 'object',
-					'keys' => LQX_VALIDATE_DATA_SCHEMA_IMAGE
-				],
-				'video' => [
+		'keys' => [
+			'breadcrumbs_override' => \lqx\util\schema_str_req_emp,
+			'heading_override' => \lqx\util\schema_str_req_emp,
+			'image_override' => [
+				'type' => 'object',
+				'default' => [],
+				'keys' => \lqx\util\schema_data_image
+			],
+			'image_mobile' => [
+				'type' => 'object',
+				'default' => [],
+				'keys' => \lqx\util\schema_data_image
+			],
+			'video' => [
+				'type' => 'object',
+				'keys' => [
+					'type' => [
+						'type' => 'string',
+						'required' => true,
+						'default' => 'url'
+					],
+					'url' => \lqx\util\schema_str_req_emp,
+					'upload' => [
+						'type' => 'object',
+						'default' => [],
+						'keys' => \lqx\util\schema_data_video
+					]
+				]
+			],
+			'links' => [
+				'type' =>	'array',
+				'default' => [],
+				'elems' => [
 					'type' => 'object',
 					'keys' => [
 						'type' => [
 							'type' => 'string',
 							'required' => true,
-							'default' => 'url'
+							'default' => 'button',
+							'allowed' => ['button', 'link']
 						],
-						'url' => [
-							'type' => 'string',
-							'default' => ''
-						],
-						'upload' => [
+						'link' => [
 							'type' => 'object',
-							'keys' => LQX_VALIDATE_DATA_SCHEMA_VIDEO_UPLOAD
+							'required' => true,
+							'keys' => \lqx\util\schema_data_link
 						]
 					]
-				],
-				'links' => [
-					'type' =>	'array',
-					'required' => false,
-					'default' => [],
-					'elems' => [
-						'type' => 'object',
-						'required' => true,
-						'keys' => [
-							'type' => [
-								'type' => 'string',
-								'required' => true,
-								'default' => 'button'
-							],
-							'link' => [
-								'type' => 'object',
-								'keys' => LQX_VALIDATE_DATA_SCHEMA_LINK
-							]
-						]
-					]
-				],
-				'intro_text' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING
-			]
+				]
+			],
+			'intro_text' => \lqx\util\schema_str_req_emp
 		]
-	])['data'];
+	]);
+
+	// If valid content, use it, otherwise return
+	if ($c['isValid']) $c = $c['data'];
+	else return;
 
 	// Video attributes
 	$video_attrs = '';
@@ -214,25 +208,25 @@ function render($settings, $content) {
 					<?php if ($c['video']['type'] == 'upload' && $c['video']['upload']) : ?>
 						<video
 							autoplay loop muted playsinline
-							poster="<?= is_array($c['image_override']) ? $c['image_override']['url'] : get_the_post_thumbnail_url() ?>">
+							poster="<?= array_key_exists('url', $c['image_override']) ? $c['image_override']['url'] : get_the_post_thumbnail_url() ?>">
 							<source
 								src="<?= $c['video']['upload']['url'] ?>"
 								type="<?= $c['video']['upload']['mime_type'] ?>">
 						</video>
 					<?php else: ?>
-						<?php if (is_array($c['image_override'])) : ?>
+						<?php if (array_key_exists('url', $c['image_override'])) : ?>
 							<img
 								src="<?= $c['image_override']['url'] ?>"
 								alt="<?= htmlspecialchars($c['image_override']['alt']) ?>"
-								class="<?= is_array($c['image_mobile']) ? 'xs-hide sm-hide' : '' ?>" />
+								class="<?= array_key_exists('url', $c['image_mobile']) ? 'xs:hidden sm:hidden' : '' ?>" />
 						<?php else :
-							the_post_thumbnail('post-thumbnail', ['class' => $c['image_mobile'] !== false ? 'xs-hide sm-hide' : '']);
+							the_post_thumbnail('post-thumbnail', ['class' => $c['image_mobile'] !== false ? 'xs:hidden sm:hidden' : '']);
 						endif; ?>
-						<?php if (is_array($c['image_mobile'])) : ?>
+						<?php if (array_key_exists('url', $c['image_mobile'])) : ?>
 							<img
 								src="<?= $c['image_mobile']['url'] ?>"
 								alt="<?= htmlspecialchars($c['image_mobile']['alt']) ?>"
-								class="hide xs-show sm-show" />
+								class="md:hidden lg:hidden xl:hidden" />
 						<?php endif; ?>
 					<?php endif; ?>
 				</div>

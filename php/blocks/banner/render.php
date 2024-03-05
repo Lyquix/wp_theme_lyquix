@@ -32,12 +32,12 @@ namespace lqx\blocks\banner;
  */
 function render($settings, $content) {
 	// Get and validate processed settings
-	$s = (\lqx\util\validate_data($settings['processed'],[
+	$s = \lqx\util\validate_data($settings['processed'], [
 		'type' => 'object',
 		'required' => true,
 		'keys' => [
-			'anchor' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-			'class' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+			'anchor' => \lqx\util\schema_str_req_emp,
+			'class' => \lqx\util\schema_str_req_emp,
 			'hash' => [
 				'type' => 'string',
 				'required' => true,
@@ -47,70 +47,77 @@ function render($settings, $content) {
 				'type' => 'string',
 				'required' => true,
 				'default' => 'h3',
-				'allowed' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6' ]
+				'allowed' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
 			]
 		]
-	]))['data'];
+	]);
+
+	// If valid settings, use them, otherwise throw exception
+	if ($s['isValid']) $s = $s['data'];
+	else throw new \Exception('Invalid block settings');
 
 	// Filter out any content missing heading or content
 	$c = \lqx\util\validate_data($content, [
 		'type' => 'object',
-		'required' => true,
-		'default' => [],
-		'elems' => [
-			'type' => 'object',
-			'keys' => [
-				'heading' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-				'image' => [
-					'type' => 'object',
-					'keys' => LQX_VALIDATE_DATA_SCHEMA_IMAGE
-				],
-				'image_mobile' => [
-					'type' => 'object',
-					'keys' => LQX_VALIDATE_DATA_SCHEMA_IMAGE
-				],
-				'video' => [
+		'keys' => [
+			'heading' => \lqx\util\schema_str_req_emp,
+			'image' => [
+				'type' => 'object',
+				'default' => [],
+				'keys' => \lqx\util\schema_data_image
+			],
+			'image_mobile' => [
+				'type' => 'object',
+				'default' => [],
+				'keys' => \lqx\util\schema_data_image
+			],
+			'video' => [
+				'type' => 'object',
+				'keys' => [
+					'type' => [
+						'type' => 'string',
+						'required' => true,
+						'default' => 'url'
+					],
+					'url' => \lqx\util\schema_str_req_emp,
+					'upload' => [
+						'type' => 'object',
+						'default' => [],
+						'keys' => \lqx\util\schema_data_video
+					]
+				]
+			],
+			'links' => [
+				'type' =>	'array',
+				'default' => [],
+				'elems' => [
 					'type' => 'object',
 					'keys' => [
 						'type' => [
 							'type' => 'string',
 							'required' => true,
-							'default' => 'url'
+							'default' => 'button',
+							'allowed' => ['button', 'link']
 						],
-						'url' => [
-							'type' => 'string',
-							'default' => ''
-						],
-						'upload' => [
+						'link' => [
 							'type' => 'object',
-							'keys' => LQX_VALIDATE_DATA_SCHEMA_VIDEO_UPLOAD
+							'required' => true,
+							'keys' => \lqx\util\schema_data_link
 						]
 					]
-				],
-				'links' => [
-					'type' =>	'array',
-					'required' => false,
-					'default' => [],
-					'elems' => [
-						'type' => 'object',
-						'required' => true,
-						'keys' => [
-							'type' => [
-								'type' => 'string',
-								'required' => true,
-								'default' => 'button'
-							],
-							'link' => [
-								'type' => 'object',
-								'keys' => LQX_VALIDATE_DATA_SCHEMA_LINK
-							]
-						]
-					]
-				],
-				'intro_text' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING
-			]
+				]
+			],
+			'intro_text' => \lqx\util\schema_str_req_emp
 		]
-	])['data'];
+	]);
+
+	// If valid content, use it, otherwise return
+	if ($c['isValid']) $c = $c['data'];
+	else return;
+
+
+	// If no content, return
+	if (!$c['heading'] && !$c['image'] && !$c['links'] && !$c['intro_text']) return;
 
 	// Video attributes
 	$video_attrs = '';
@@ -135,7 +142,7 @@ function render($settings, $content) {
 			data-heading-style="<?= $s['heading_style'] ?>">
 
 			<div class="text">
-				<?php if($c['heading']): ?>
+				<?php if ($c['heading']): ?>
 				<<?= $s['heading_style'] ?> class="title"><?= $c['heading'] ?></<?= $s['heading_style'] ?>>
 				<?php endif; ?>
 				<div class="intro"><?= $c['intro_text'] ?></div>
@@ -155,7 +162,7 @@ function render($settings, $content) {
 				<?php endif; ?>
 			</div>
 
-			<?php if (is_array($c['image'])) : ?>
+			<?php if (array_key_exists('url', $c['image'])) : ?>
 				<div class="image" <?= $video_attrs ?>>
 					<?php if ($c['video']['type'] == 'upload' && $c['video']['upload']) : ?>
 						<video
@@ -169,12 +176,12 @@ function render($settings, $content) {
 						<img
 							src="<?= $c['image']['url'] ?>"
 							alt="<?= htmlspecialchars($c['image']['alt']) ?>"
-							class="<?= is_array($c['image_mobile']) ? 'xs-hide sm-hide' : '' ?>" />
-						<?php if (is_array($c['image_mobile'])) : ?>
+							class="<?= array_key_exists('url', $c['image_mobile']) ? 'xs:hidden sm:hidden' : '' ?>" />
+						<?php if (array_key_exists('url', $c['image_mobile'])) : ?>
 							<img
 								src="<?= $c['image_mobile']['url'] ?>"
 								alt="<?= htmlspecialchars($c['image_mobile']['alt']) ?>"
-								class="hide xs-show sm-show" />
+								class="md:hidden lg:hidden xl:hidden" />
 						<?php endif; ?>
 					<?php endif; ?>
 				</div>

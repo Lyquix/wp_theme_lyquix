@@ -89,11 +89,14 @@ function get_data_type($data) {
  *                - 'object' : An associative array
  *
  *              - 'allowed' (array, optional): Applicable only if 'type' is 'string', 'integer', or 'float;. Defines a list
- *                 of the allowed values. If the string is not one of the allowed values, it will be considered mistyped.
+ *                 of the allowed values. If the value is not one of the allowed values, it will be considered invalid.
  *
  *              - 'range' (array, optional): Applicable only if 'type' is 'integer' or 'float'. Defines the allowed range
  *                of values by setting a minimum and maximum. If the value is outside the range, it will be considered
- *                mistyped.
+ *                invalid. If either end of the range array is set to null, then the range only checks minimum/maximum.
+ *
+ *              - 'match' (string, optional): Applicable only if 'type' is 'string'. Defines a regular expression pattern.
+ *                If the value doesn't match the regular expression, it will be considered invalid.
  *
  *              - 'default' (mixed, optional): Provides a default value for the field when it's required and it's either
  *                missing in the incoming data or the value is of the wrong type. If no default is provided for a required
@@ -128,18 +131,118 @@ function validate_data($data, $schema, $field = 'root') {
 	$isValid = true;
 	$isFixed = false;
 
-	// Return false if there's no type in schema
-	if (!array_key_exists('type', $schema)) {
-		echo 'validate_data: no type in schema';
-		return false;
+	// Check the keys of the schema
+	foreach (array_keys($schema) as $key) {
+		switch($key) {
+			case 'type':
+				if (!in_array($schema['type'], ['string', 'integer', 'float', 'boolean', 'array', 'object'])) {
+					throw new \Exception('validate_data: invalid type ' . $schema['type'] . ' in schema');
+				}
+				break;
+
+			case 'required':
+				if (gettype($schema['required']) !== 'boolean') {
+					throw new \Exception('validate_data: invalid required in schema');
+				}
+				break;
+
+			case 'default':
+				break;
+
+			case 'keys':
+				if (gettype($schema['keys']) !== 'array') {
+					throw new \Exception('validate_data: invalid keys in schema');
+				}
+				break;
+
+			case 'elems':
+				if (gettype($schema['elems']) !== 'array') {
+					throw new \Exception('validate_data: invalid elems in schema');
+				}
+				break;
+
+			case 'allowed':
+				if (gettype($schema['allowed']) !== 'array') {
+					throw new \Exception('validate_data: invalid allowed in schema');
+				}
+				if (count($schema['allowed']) === 0) {
+					throw new \Exception('validate_data: empty allowed array');
+				}
+				break;
+
+			case 'range':
+				if (gettype($schema['range']) !== 'array') {
+					throw new \Exception('validate_data: invalid range in schema');
+				}
+				if (count($schema['range']) !== 2) {
+					throw new \Exception('validate_data: invalid range in schema');
+				}
+				if ($schema['range'][0] !== null && gettype($schema['range'][0]) !== 'integer' && gettype($schema['range'][0]) !== 'float') {
+					throw new \Exception('validate_data: invalid range in schema');
+				}
+				if ($schema['range'][1] !== null && gettype($schema['range'][1]) !== 'integer' && gettype($schema['range'][1]) !== 'float') {
+					throw new \Exception('validate_data: invalid range in schema');
+				}
+				break;
+
+			case 'match':
+				if (gettype($schema['match']) !== 'string') {
+					throw new \Exception('validate_data: invalid match in schema');
+				}
+				if (@preg_match($schema['match'], '') === false) {
+					throw new \Exception('validate_data: invalid match in schema');
+				}
+				break;
+
+			default:
+				throw new \Exception('validate_data: unexpected key in schema: ' . $key);
+		}
 	}
 
-	// The only valid keys in schema are 'type', 'required', 'default', 'keys', and 'elems'
-	// Return false if other keys are found
-	foreach (array_keys($schema) as $key) {
-		if (!in_array($key, ['type', 'required', 'default', 'keys', 'elems', 'allowed', 'range'])) {
-			echo 'validate_data: invalid key in schema: ' . $key;
-			return false;
+	// Throw error if there's no type in schema
+	if (!array_key_exists('type', $schema)) {
+		throw new \Exception('validate_data: no type in schema');
+	}
+
+	// required defaults to false if not set
+	if (!array_key_exists('required', $schema)) $schema['required'] = false;
+
+	// Attempt to coerce the data to the expected type
+	if (get_data_type($data) !== $schema['type']) {
+		switch ($schema['type']) {
+			case 'string':
+				if (is_numeric($data)) {
+					$data = strval($data);
+					$isFixed = true;
+				} elseif (is_bool($data)) {
+					$data = $data ? 'true' : 'false';
+					$isFixed = true;
+				}
+				break;
+
+			case 'integer':
+				if (is_numeric($data) && intval($data) == floatval($data)) {
+					$data = intval($data);
+					$isFixed = true;
+				}
+				break;
+
+			case 'float':
+				if (is_numeric($data)) {
+					$data = floatval($data);
+					$isFixed = true;
+				}
+				break;
+
+			case 'boolean':
+				if ($data === 0 || $data === '0' || $data === 'false') {
+					$data = false;
+					$isFixed = true;
+				} elseif ($data === 1 || $data === '1' || $data === 'true') {
+					$data = true;
+					$isFixed = true;
+				}
+				break;
 		}
 	}
 
@@ -179,7 +282,34 @@ function validate_data($data, $schema, $field = 'root') {
 		// Handle allowed range
 		if (in_array($schema['type'], ['integer', 'float'])) {
 			if (array_key_exists('range', $schema)) {
-				if ($data < $schema['range'][0] || $data > $schema['range'][1]) {
+				// Check if the value is in the range
+				$min = $schema['range'][0];
+				$max = $schema['range'][1];
+
+				if (
+					($min === null && is_numeric($max) && $data > $max) ||
+					($max === null && is_numeric($min) && $data < $min) ||
+					(is_numeric($min) && is_numeric($max) && ($data < $min || $data > $max))
+				) {
+					// Add the key to the invalid array
+					$invalid[] = $field;
+
+					// Attempt to fix by using the default value if available
+					if (array_key_exists('default', $schema)) {
+						$data = $schema['default'];
+						$fixed[] = $field;
+						$isFixed = true;
+					} else {
+						$isValid = false;
+					}
+				}
+			}
+		}
+
+		// Handle regular expression match
+		if ($schema['type'] === 'string') {
+			if (array_key_exists('match', $schema)) {
+				if (!preg_match($schema['match'], $data)) {
 					// Add the key to the invalid array
 					$invalid[] = $field;
 
@@ -227,6 +357,9 @@ function validate_data($data, $schema, $field = 'root') {
 				foreach ($schema['keys'] as $key => $config) {
 					// Check if the key exists in the received data
 					if (!array_key_exists($key, $data)) {
+						// required defaults to false if not set
+						if (!array_key_exists('required', $config)) $config['required'] = false;
+
 						// If the key is required, add it to the missing array
 						if ($config['required']) {
 							$missing[] = $field . '/' . $key;
@@ -277,56 +410,66 @@ function validate_data($data, $schema, $field = 'root') {
 	];
 }
 
-define('LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING', [
-	'type' => 'string',
-	'required' => true,
-	'default' => ''
+// Schema: string
+define('lqx\util\schema_str', ['type' => 'string']);
+// Schema: string, required, no default
+define('lqx\util\schema_str_req', ['type' => 'string', 'required' => true]);
+// Schema: string, required, default=''
+define('lqx\util\schema_str_req_emp', ['type' => 'string', 'required' => true, 'default' => '']);
+// Schema: string, required, match: non empty
+define('lqx\util\schema_str_req_notemp', ['type' => 'string', 'required' => true, 'match' => '/.+/']);
+// Schema: string, required, default=y, allowed=[y,n]
+define('lqx\util\schema_str_req_y', ['type' => 'string', 'required' => true, 'default' => 'y', 'allowed' => ['y', 'n']]);
+// Schema: string, required, default=n, allowed=[y,n]
+define('lqx\util\schema_str_req_n', ['type' => 'string', 'required' => true, 'default' => 'n', 'allowed' => ['y', 'n']]);
+// Schema: integer
+define('lqx\util\schema_int', ['type' => 'integer']);
+// Schema: integer, required, no default
+define('lqx\util\schema_int_req', ['type' => 'integer', 'required' => true]);
+// Regex to match hex color strings
+define('lqx\util\schema_hex_color', ['type' => 'string', 'required' => true, 'match' => '/^#([A-Fa-f0-9]{8}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{4}|[A-Fa-f0-9]{3})$/']);
+// Schema: link
+define('lqx\util\schema_data_link', [
+	'title' => \lqx\util\schema_str_req_emp,
+	'url' => \lqx\util\schema_str_req,
+	'target' => \lqx\util\schema_str_req_emp
 ]);
-define('LQX_VALIDATE_DATA_SCHEMA_REQUIRED_INTEGER', [
-	'type' => 'integer',
-	'required' => true,
-	'default' => ''
-]);
-define('LQX_VALIDATE_DATA_SCHEMA_LINK', [
-	'title' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-	'url' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-	'target' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING
-]);
-define('LQX_VALIDATE_DATA_SCHEMA_IMAGE', [
-	'title' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-	'filename' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-	'url' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-	'mime_type' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-	'alt' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-	'width' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_INTEGER,
-	'height' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_INTEGER,
+// Schema: image
+define('lqx\util\schema_data_image', [
+	'title' => \lqx\util\schema_str_req_emp,
+	'filename' => \lqx\util\schema_str_req_emp,
+	'url' => \lqx\util\schema_str_req,
+	'mime_type' => \lqx\util\schema_str_req_emp,
+	'alt' => \lqx\util\schema_str_req,
+	'width' => \lqx\util\schema_int,
+	'height' => \lqx\util\schema_int,
 	'sizes' => [
 		'type'	=> 'object',
-		'required' => true,
 		'keys' => [
-			'small' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-			'small-width' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_INTEGER,
-			'small-height' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_INTEGER,
-			'medium' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-			'medium-width' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_INTEGER,
-			'medium-height' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_INTEGER,
-			'large' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-			'large-width' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_INTEGER,
-			'large-height' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_INTEGER,
-			'thumbnail' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-			'thumbnail-width' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_INTEGER,
-			'thumbnail-height' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_INTEGER
+			'small' => \lqx\util\schema_str_req_emp,
+			'small-width' => \lqx\util\schema_int,
+			'small-height' => \lqx\util\schema_int,
+			'medium' => \lqx\util\schema_str_req_emp,
+			'medium-width' => \lqx\util\schema_int,
+			'medium-height' => \lqx\util\schema_int,
+			'large' => \lqx\util\schema_str_req_emp,
+			'large-width' => \lqx\util\schema_int,
+			'large-height' => \lqx\util\schema_int,
+			'thumbnail' => \lqx\util\schema_str_req_emp,
+			'thumbnail-width' => \lqx\util\schema_int,
+			'thumbnail-height' => \lqx\util\schema_int
 		]
 	]
 ]);
-define('LQX_VALIDATE_DATA_SCHEMA_VIDEO_UPLOAD', [
-	'title' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-	'filename' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-	'url' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-	'mime_type' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-	'alt' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-	'width' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_INTEGER,
-	'height' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_INTEGER
+// Schema: video (uploaded video file)
+define('lqx\util\schema_data_video', [
+	'title' => \lqx\util\schema_str_req_emp,
+	'filename' => \lqx\util\schema_str_req_emp,
+	'url' => \lqx\util\schema_str_req,
+	'mime_type' => \lqx\util\schema_str_req_emp,
+	'alt' => \lqx\util\schema_str_req_emp,
+	'width' => \lqx\util\schema_int,
+	'height' => \lqx\util\schema_int
 ]);
 
 /**
@@ -473,28 +616,20 @@ function get_breadcrumbs($post_id = null, $type = 'parent', $depth = 3, $show_cu
 function slugify($string, $delimiter = '-') {
 	// Get the string locale
 	$locale = setlocale(LC_ALL, 0);
-
 	// Set locale to UTF-8
 	setlocale(LC_ALL, 'en_US.UTF-8');
-
 	// Remove accents
 	$slug = iconv('UTF-8', 'ASCII//TRANSLIT', $string);
-
 	// Remove non-alphanumeric characters except spaces, dashes
 	$slug = preg_replace('/[^a-zA-Z0-9\s-]/', '', $slug);
-
 	// Replace spaces with delimeter
 	$slug = preg_replace('/\s+/', $delimiter, $slug);
-
 	// Convert to lowercase
 	$slug = strtolower($slug);
-
 	// Trim delimeter from beginning and end
 	$slug = trim($slug, $delimiter);
-
 	// Revert back to the old locale
 	setlocale(LC_ALL, $locale);
-
 	return $slug;
 }
 

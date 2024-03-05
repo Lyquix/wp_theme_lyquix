@@ -83,6 +83,8 @@ export const popup = (() => {
 			},
 			success: (data) => {
 				if (data.length > 0) {
+					// TODO Data validation
+
 					// Get now
 					const now = new Date().getTime();
 
@@ -93,6 +95,8 @@ export const popup = (() => {
 
 						// Skip if popup has expired
 						if (popup.expiration != '' && now > dayjs(popup.expiration).valueOf()) return;
+
+						// TODO Skip if there's no content
 
 						// Skip if display logic and exceptions are not met
 						let display = true;
@@ -145,9 +149,9 @@ export const popup = (() => {
 						const popupElem = jQuery(html).appendTo(popupModuleElem);
 						log('Popup added', popupElem);
 
-						// Show and hide delays
-						if (!popup.show_delay) open(popup.id);
-						else if (popup.show_delay > 0) {
+						// Show delay
+						if (isNaN(popup.show_delay)) open(popup.id);
+						else if (parseInt(popup.show_delay) > 0) {
 							window.setTimeout(() => {
 								open(popup.id);
 							}, parseInt(popup.show_delay) * 1000);
@@ -178,6 +182,7 @@ export const popup = (() => {
 
 	const open = (popupId) => {
 		const popupElem = jQuery('#' + popupId);
+		// TODO Handle element not found
 
 		// Popup opened
 		popupElem.removeClass('closed');
@@ -185,7 +190,7 @@ export const popup = (() => {
 
 		// Hide delay
 		const hideDelay = popupElem.attr('data-hide-delay');
-		if (hideDelay != '') {
+		if (!isNaN(hideDelay)) {
 			window.setTimeout(() => {
 				close(popupId);
 			}, parseInt(hideDelay) * 1000);
@@ -209,6 +214,7 @@ export const popup = (() => {
 
 	const close = (popupId) => {
 		const popupElem = jQuery('#' + popupId);
+		// TODO Handle element not found
 
 		// Skip if it is already closed
 		if (popupElem.hasClass('closed')) return;

@@ -135,6 +135,7 @@ export const geolocate = (() => {
 				// Do not overwrite existing GPS location
 				if (vars.geolocate.location.source !== 'gps' && vars.geolocate.location.source !== 'gps-cookie') {
 					vars.geolocate.location = data;
+					// TODO Data validation
 					vars.geolocate.location.source = 'ip2geo';
 				}
 
@@ -160,6 +161,7 @@ export const geolocate = (() => {
 			vars.geolocate.status.gps = 'wait';
 
 			window.navigator.geolocation.getCurrentPosition((position) => {
+				// TODO Data validation
 				vars.geolocate.location.lat = position.coords.latitude;
 				vars.geolocate.location.lon = position.coords.longitude;
 				vars.geolocate.location.radius = position.coords.accuracy / 1000; // in km
@@ -208,6 +210,7 @@ export const geolocate = (() => {
 
 	// Check if a point is inside a circle
 	const inCircle = (test, center, radius) => {
+		// TODO Data validation
 		/** Accepts:
 		 * test: location to test, object with keys lat and lon
 		 * center: circle center point, object with keys lat and lon
@@ -225,6 +228,7 @@ export const geolocate = (() => {
 
 	// Check if a point is inside a square
 	const inSquare = (test, corner1, corner2) => {
+		// TODO Data validation
 		/** Accepts:
 		 * test: location to test, object with keys lat and lon
 		 * corner1: a corner of the square, object with keys lat and lon
@@ -239,6 +243,7 @@ export const geolocate = (() => {
 
 	// Check if a point is inside a polygon
 	const inPolygon = (test, poly) => {
+		// TODO Data validation
 		/** Accepts:
 		 * test: location to test, object with keys lat and lon
 		 * poly: defines the polygon, array of objects, each with keys lat and lon
@@ -309,6 +314,8 @@ export const geolocate = (() => {
 		// Parse geoJSON
 		geoJSON = JSON.parse(geoJSON);
 
+		// TODO Data validation
+
 		// Loop through features
 		geoJSON.features.forEach((feature) => {
 			// Get region name
@@ -362,6 +369,8 @@ export const geolocate = (() => {
 		 * 		}
 		 * }
 		 */
+
+		// TODO Data validation
 
 		// Get current lat / lon
 		const here = {

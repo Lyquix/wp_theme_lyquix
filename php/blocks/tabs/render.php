@@ -41,12 +41,12 @@ namespace lqx\blocks\tabs;
  */
 function render($settings, $content) {
 	// Get the processed settings
-	$s = (\lqx\util\validate_data($settings['processed'],[
+	$s = \lqx\util\validate_data($settings['processed'], [
 		'type' => 'object',
 		'required' => true,
 		'keys' => [
-			'anchor' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-			'class' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+			'anchor' => \lqx\util\schema_str_req_emp,
+			'class' => \lqx\util\schema_str_req_emp,
 			'hash' => [
 				'type' => 'string',
 				'required' => true,
@@ -56,51 +56,47 @@ function render($settings, $content) {
 				'type' => 'string',
 				'required' => true,
 				'default' => 'h3',
-				'allowed' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6' ]
+				'allowed' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
 			],
-			'browser_history' => [
-				'type' => 'string',
-				'required' => true,
-				'default' => 'n',
-				'allowed' => ['y', 'n']
-			],
+			'browser_history' => \lqx\util\schema_str_req_n,
 			'convert_to_accordion' => [
 				'type' => 'array',
 				'required' => true,
 				'default' => [],
-				'allowed' => ['xs', 'sm', 'md', 'lg', 'xl']
+				'elems' => [
+					'type' => 'string',
+					'allowed' => ['xs', 'sm', 'md', 'lg', 'xl']
+				]
 			],
 			'auto_scroll' => [
 				'type' => 'array',
 				'required' => true,
 				'default' => [],
-				'allowed' => ['xs', 'sm', 'md', 'lg', 'xl']
-			]
-		]
-	]))['data'];
-
-	// Get and validate processed content
-	$c = (\lqx\util\validate_data($content,[
-			'type' => 'array',
-			'required' => true,
-			'elems' => [
-				'type' => 'object',
-				'required' => true,
-				'keys' => [
-					'label' => [
-						'type' => 'string',
-						'required' => false,
-						'default' => 'Something'
-					],
-					'heading' => [
-						'type' => 'string',
-						'required' => false,
-						'default' => ''
-					],
-					'content' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+				'elems' => [
+					'type' => 'string',
+					'allowed' => ['xs', 'sm', 'md', 'lg', 'xl']
 				]
 			]
-	]))['data'];
+		]
+	]);
+
+	// If valid settings, use them, otherwise throw exception
+	if ($s['isValid']) $s = $s['data'];
+	else throw new \Exception('Invalid block settings');
+
+	// Get content and filter our invalid content
+	$c = array_filter(array_map(function($item) {
+		$v = \lqx\util\validate_data($item, [
+			'type' => 'object',
+			'required' => true,
+			'keys' => [
+				'label' => \lqx\util\schema_str_req_notemp,
+				'heading' => \lqx\util\schema_str_req_emp,
+				'content' => \lqx\util\schema_str_req_notemp,
+			]
+		]);
+		return $v['isValid'] ? $v['data'] : null;
+	}, $content));
 
 	if (!empty($c)) : ?>
 		<section
@@ -142,7 +138,7 @@ function render($settings, $content) {
 						role="tabpanel"
 						tabindex="0">
 
-						<?php if($s['convert_to_accordion'] == 'y') : ?>
+						<?php if ($s['convert_to_accordion'] == 'y') : ?>
 							<button
 								class="accordion-header"
 								id="<?= $s['hash'] . '-header-' . $idx ?>"

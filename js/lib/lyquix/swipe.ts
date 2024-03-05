@@ -20,7 +20,7 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-import { vars, cfg, log } from './core';
+import { vars, cfg, log, warn } from './core';
 
 export const swipe = (() => {
 
@@ -59,6 +59,8 @@ export const swipe = (() => {
 	// Enable swipe detection
 	const add = (sel, callback, customCfg) => {
 		log(`Setting up swipe detection for ${sel}`);
+
+		// TODO Data validation
 
 		// Create a swipes object for selector
 		const swipes: {
@@ -150,6 +152,8 @@ export const swipe = (() => {
 	};
 
 	const update = (sel, callback, customCfg) => {
+		// TODO Data validation
+
 		// Remove current swipes
 		swipe.remove(sel);
 
@@ -158,6 +162,11 @@ export const swipe = (() => {
 	};
 
 	const remove = (sel) => {
+		if (!(sel in vars.swipe.swipes)) {
+			warn(`Selector ${sel} doesn't have an active swiper event`);
+			return;
+		}
+
 		// Remove event listeners
 		vars.swipe.swipes[sel].elems.forEach((swipe) => {
 			swipe.elem.removeEventListener('touchstart', swipe.touchstart);

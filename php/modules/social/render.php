@@ -24,7 +24,6 @@
 
 namespace lqx\modules\social;
 
-
 /**
  * Render social icons
  * @param  array $settings - social icons settings
@@ -39,15 +38,17 @@ function render_social_icons($settings = null) {
 	// Get settings
 	if ($settings == null) $settings = get_field('social_icons_module', 'option');
 
-	$s = (\lqx\util\validate_data($settings,[
+	// Validate settings
+	$s = \lqx\util\validate_data($settings, [
 		'type' => 'object',
 		'required' => true,
 		'keys' => [
 			'links' => [
 				'type' => 'array',
 				'required' => true,
+				'default' => [],
 				'keys' => [
-					'url' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING
+					'url' => \lqx\util\schema_str_req_notemp
 				]
 			],
 			'style' => [
@@ -56,15 +57,19 @@ function render_social_icons($settings = null) {
 				'default' => 'square',
 				'allowed' => ['square', 'circle', 'rounded']
 			],
-			'background_color' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-			'icon_color' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-			'hover_icon_color' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-			'hover_background_color' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING
+			'background_color' => \lqx\util\schema_hex_color,
+			'icon_color' => \lqx\util\schema_hex_color,
+			'hover_icon_color' => \lqx\util\schema_hex_color,
+			'hover_background_color' => \lqx\util\schema_hex_color
 		]
-	]))['data'];
+	]);
+
+	// If valid settings, use them, otherwise throw exception
+	if ($s['isValid']) $s = $s['data'];
+	else throw new \Exception('Invalid module settings');
 
 	// Check if there are any social links configured
-	if (empty($s['links'])) return;
+	if (!count($s['links'])) return;
 ?>
 	<div class="lqx-social-icons">
 		<ul class="icons-list <?= $s['style'] ?>" style="<?= get_inline_style($s) ?>">
@@ -104,7 +109,9 @@ function render_social_icons($settings = null) {
 function render_social_share($settings = null) {
 	// Get settings
 	if ($settings == null) $settings = get_field('social_share_module', 'option');
-	$s = (\lqx\util\validate_data($settings,[
+
+	// Validate settings
+	$s = \lqx\util\validate_data($settings, [
 		'type' => 'object',
 		'required' => true,
 		'keys' => [
@@ -115,9 +122,10 @@ function render_social_share($settings = null) {
 					'platform_name' => [
 						'type' => 'object',
 						'required' => true,
+						'default' => [],
 						'keys' => [
-							'value' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-							'label' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING
+							'value' => \lqx\util\schema_str_req_notemp,
+							'label' => \lqx\util\schema_str_req_notemp
 						]
 					]
 				]
@@ -128,12 +136,16 @@ function render_social_share($settings = null) {
 				'default' => 'square',
 				'allowed' => ['square', 'circle', 'rounded']
 			],
-			'icon_color' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-			'background_color' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-			'hover_icon_color' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-			'hover_background_color' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING
+			'icon_color' => \lqx\util\schema_hex_color,
+			'background_color' => \lqx\util\schema_hex_color,
+			'hover_icon_color' => \lqx\util\schema_hex_color,
+			'hover_background_color' => \lqx\util\schema_hex_color
 		]
-	]))['data'];
+	]);
+
+	// If valid settings, use them, otherwise throw exception
+	if ($s['isValid']) $s = $s['data'];
+	else throw new \Exception('Invalid module settings');
 
 	// Check if there are any platforms configured
 	if (empty($s['platforms'])) return;

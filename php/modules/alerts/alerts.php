@@ -34,9 +34,11 @@ function rest_route() {
 		// Add a unuque id to alert
 		$alert['id'] = 'alert-' . md5(json_encode($alert));
 
+		$alertExpiration = strtotime($alert['expiration']);
+
 		// Convert expiration to UTC
-		if ($alert['expiration'] != '') {
-			$alert['expiration'] = date('c', strtotime($alert['expiration'] . ' ' . get_option('timezone_string')));
+		if ($alertExpiration !== false) {
+			$alert['expiration'] = date('c', $alertExpiration . ' ' . get_option('timezone_string'));
 		}
 
 		return $alert;
@@ -44,7 +46,13 @@ function rest_route() {
 
 	// Filter out alerts that are not enabled or have expired
 	$content = array_filter($content, function ($alert) {
-		return $alert['enabled'] == 'y' && ($alert['expiration'] == '' || time() <= strtotime($alert['expiration']));
+		// Skip items that aren't enabled
+		if ($alert['enabled'] != 'y') return false;
+		// Skip items with no content
+		if (!$alert['heading'] && !$alert['body']) return false;
+		// Skip items that have expired
+		if ($alert['expiration'] != '' && time() > strtotime($alert['expiration'])) return false;
+		return true;
 	});
 
 	return $content;

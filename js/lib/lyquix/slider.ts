@@ -85,6 +85,7 @@ export const slider = (() => {
 				// Get the settings
 				const autoplay = sliderElem.attr('data-autoplay') === 'y';
 				const autoplayDelay = parseInt(sliderElem.attr('data-autoplay-delay'));
+				// TODO Handle invalid autoplayDelay
 				const loop = sliderElem.attr('data-loop') === 'y';
 				const pagination = sliderElem.attr('data-pagination') === 'y';
 				const navigation = sliderElem.attr('data-navigation') === 'y';

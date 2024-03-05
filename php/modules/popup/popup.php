@@ -35,9 +35,11 @@ function rest_route() {
 		// Add a unique id to popup
 		$popup['id'] = 'popup-' . md5(json_encode($popup));
 
+		$popupExpiration = strtotime($popup['expiration']);
+
 		// Convert expiration to UTC
-		if ($popup['expiration'] != '') {
-			$popup['expiration'] = date('c', strtotime($popup['expiration'] . ' ' . get_option('timezone_string')));
+		if ($popupExpiration !== false) {
+			$popup['expiration'] = date('c', $popupExpiration . ' ' . get_option('timezone_string'));
 		}
 
 		// Convert zero hide delay and dismiss duration to blank

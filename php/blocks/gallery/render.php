@@ -34,79 +34,87 @@ namespace lqx\blocks\gallery;
  */
 function render($settings, $content) {
 	// Get and validate processed settings
-	$s = (\lqx\util\validate_data($settings['processed'], [
+	$s = \lqx\util\validate_data($settings['processed'], [
 		'type' => 'object',
 		'required' => true,
 		'keys' => [
-			'anchor' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-			'class' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+			'anchor' => \lqx\util\schema_str_req_emp,
+			'class' => \lqx\util\schema_str_req_emp,
 			'hash' => [
 				'type' => 'string',
 				'required' => true,
 				'default' => 'id-' . md5(json_encode([$settings, $content, random_int(1000, 9999)]))
 			],
-			'slider' => [
-				'type' => 'string',
-				'required' => true,
-				'default' => 'n',
-				'allowed' => ['y', 'n']
-			],
-			'swiper_options_override' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+			'slider' => \lqx\util\schema_str_req_n,
+			'swiper_options_override' => \lqx\util\schema_str_req_emp,
 			'heading_style' => [
 				'type' => 'string',
 				'required' => true,
 				'default' => 'h3',
-				'allowed' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p']
+				'allowed' => ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
 			],
-			'browser_history' => [
-				'type' => 'string',
+			'browser_history' => \lqx\util\schema_str_req_n
+		]
+	]);
+
+	// If valid settings, use them, otherwise throw exception
+	if ($s['isValid']) $s = $s['data'];
+	else throw new \Exception('Invalid block settings');
+
+	$c = [
+		'lighbox_slug' => \lqx\util\validate_data($content['lightbox_slug'], \lqx\util\schema_str_req_emp)['data'],
+		'slides' => []
+	];
+
+	// Get the top level items first
+	$c = \lqx\util\validate_data($content, [
+		'type' => 'object',
+		'required' => true,
+		'keys' => [
+			'lightbox_slug' => \lqx\util\schema_str_req_emp,
+			'slides' => [
+				'type' =>	'array',
 				'required' => true,
-				'default' => 'n',
-				'allowed' => ['y', 'n']
+				'default' => []
 			]
 		]
-	]))['data'];
+	])['data'];
+
+	// Get content and filter our invalid content
+	$c['slides'] = array_filter(array_map(function($item) {
+		$v = \lqx\util\validate_data($item, [
+			'type' => 'object',
+			'keys' => [
+				'title' => \lqx\util\schema_str_req_emp,
+				'slug' => \lqx\util\schema_str_req_emp,
+				'image' => [
+					'type' => 'object',
+					'default' => [],
+					'keys' => \lqx\util\schema_data_image
+				],
+				'video' => \lqx\util\schema_str_req_emp,
+				'caption' => \lqx\util\schema_str_req_emp,
+				'thumbnail' => [
+					'type' => 'object',
+					'default' => [],
+					'keys' => \lqx\util\schema_data_image
+				],
+				'teaser' => \lqx\util\schema_str_req_emp
+			]
+		]);
+
+		// Skip if data is not valid
+		if (!$v['isValid']) return null;
+
+		// Skip slide if both image and video are missing
+		if (!$v['data']['image']['url'] && !$v['data']['video']) return null;
+
+		return $v['data'];
+	}, $c['slides']));
 
 	// Heading style
 	$heading_tag_open  = $s['heading_style'] == 'p' ? '<p class="title"><strong>' : '<' . $s['heading_style'] . '>';
 	$heading_tag_close  = $s['heading_style'] == 'p' ? '</strong></p>' : '</' . $s['heading_style'] . '>';
-
-	// Filter out any content missing heading or content
-	$c = \lqx\util\validate_data($content, [
-		'type' => 'array',
-		'required' => true,
-		'default' => [],
-		'elems' => [
-			'type' => 'object',
-			'keys' => [
-				'lightbox_slug' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-				'slides' => [
-					'type' =>	'array',
-					'required' => false,
-					'default' => [],
-					'elems' => [
-						'type' => 'object',
-						'required' => true,
-						'keys' => [
-							'title' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-							'slug' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-							'image' => [
-								'type' => 'object',
-								'keys' => LQX_VALIDATE_DATA_SCHEMA_IMAGE
-							],
-							'video' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-							'caption' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-							'thumbnail' => [
-								'type' => 'object',
-								'keys' => LQX_VALIDATE_DATA_SCHEMA_IMAGE
-							],
-							'teaser' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING
-						]
-					]
-				]
-			]
-		]
-	])['data'];
 	?>
 	<section
 		id="<?= $s['anchor'] ?>"

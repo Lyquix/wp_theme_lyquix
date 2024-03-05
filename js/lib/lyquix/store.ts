@@ -78,10 +78,13 @@ export const store = (() => {
 
 		// Get data from localStorage
 		let lqxStore: any = window.localStorage.getItem(cfg.store.itemName);
-		if (lqxStore) lqxStore = JSON.parse(lqxStore);
+		if (lqxStore) {
+			lqxStore = JSON.parse(lqxStore);
+			// TODO Handle invalid JSON
+		}
 		else lqxStore = {};
 
-		if (typeof lqxStore[objName] == 'undefined') return undefined;
+		if (!(objName in lqxStore)) return undefined;
 
 		return lqxStore[objName];
 	};
@@ -117,7 +120,10 @@ export const store = (() => {
 
 		// Get data from localStorage
 		let lqxStore: any = window.localStorage.getItem(cfg.store.itemName);
-		if (lqxStore) lqxStore = JSON.parse(lqxStore);
+		if (lqxStore) {
+			lqxStore = JSON.parse(lqxStore);
+			// TODO Handle invalid JSON
+		}
 		else lqxStore = {};
 
 		// Set the value
@@ -145,7 +151,10 @@ export const store = (() => {
 
 		// Get data from localStorage
 		let lqxStore: any = window.localStorage.getItem(cfg.store.itemName);
-		if (lqxStore) lqxStore = JSON.parse(lqxStore);
+		if (lqxStore) {
+			lqxStore = JSON.parse(lqxStore);
+			// TODO Handle invalid JSON
+		}
 		else lqxStore = {};
 
 		// Delete objName/prop from lqxStore and vars.store.tracked

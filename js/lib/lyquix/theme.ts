@@ -75,6 +75,8 @@ export const theme = (() => {
 	};
 
 	const set = (userPref: 'dark' | 'light') => {
+		// TODO Data validation
+
 		vars.theme.userPref = userPref;
 		setAttribute();
 		store.set('lqx.vars.theme.userPref');

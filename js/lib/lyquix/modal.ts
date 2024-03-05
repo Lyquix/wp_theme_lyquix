@@ -82,11 +82,15 @@ export const modal = (() => {
 
 					// Loop through the modal
 					data.forEach((modal) => {
+						// TODO Data validation
+
 						// Skip if modal has been dismissed
 						if (util.cookie(modal.id) !== null) return;
 
 						// Skip if modal has expired
 						if (modal.expiration != '' && now > dayjs(modal.expiration).valueOf()) return;
+
+						// TODO Skip if there's no content
 
 						// Skip if display logic and exceptions are not met
 						let display = true;
@@ -142,8 +146,8 @@ export const modal = (() => {
 						log('Modal added', modalElem);
 
 						// Show and hide delays
-						if (!modal.show_delay) open(modal.id);
-						else if (modal.show_delay > 0) {
+						if (isNaN(modal.show_delay)) open(modal.id);
+						else if (parseInt(modal.show_delay) > 0) {
 							window.setTimeout(() => {
 								open(modal.id);
 							}, parseInt(modal.show_delay) * 1000);
@@ -177,6 +181,7 @@ export const modal = (() => {
 
 	const open = (modalId) => {
 		const modalElem = jQuery('#' + modalId);
+		// TODO Handle element not found
 
 		// Modal opened
 		modalElem.get(0).showModal();
@@ -185,7 +190,7 @@ export const modal = (() => {
 
 		// Hide delay
 		const hideDelay = modalElem.attr('data-hide-delay');
-		if (hideDelay != '') {
+		if (!isNaN(hideDelay)) {
 			window.setTimeout(() => {
 				close(modalId);
 			}, parseInt(hideDelay) * 1000);
@@ -195,6 +200,7 @@ export const modal = (() => {
 		if (cfg.modal.analytics.enabled && cfg.modal.analytics.onOpen) {
 			// Get the heading
 			const headingStyle = modalElem.attr('data-heading-style');
+			// TODO Data validation
 			const heading = modalElem.find(headingStyle == 'p' ? 'p.title strong' : headingStyle).text();
 
 			// Send event
@@ -209,6 +215,7 @@ export const modal = (() => {
 
 	const close = (modalId) => {
 		const modalElem = jQuery('#' + modalId);
+		// TODO Handle element not found
 
 		// Skip if it is already closed
 		if (modalElem.attr('open') === undefined) return;
@@ -230,6 +237,7 @@ export const modal = (() => {
 		if (cfg.modal.analytics.enabled && cfg.modal.analytics.onClose) {
 			// Get the heading
 			const headingStyle = modalElem.attr('data-heading-style');
+			// TODO Data validation
 			const heading = modalElem.find(headingStyle == 'p' ? 'p.title strong' : headingStyle).text();
 
 			// Send event

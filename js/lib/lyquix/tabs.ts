@@ -91,6 +91,8 @@ export const tabs = (() => {
 
 					// The panel id
 					const panelId = tabElem.attr('id').replace('-tab-', '-panel-');
+					// TODO Handle missing panel element
+					// TODO Check that all the other needed elements exist
 
 					// Add click listener
 					jQuery(tabElem).on('click', () => {
@@ -101,7 +103,7 @@ export const tabs = (() => {
 
 				// Convert to accordion?
 				const accordionScreens = (tabsElem.attr('data-convert-to-accordion') || '').split(',');
-				console.log(accordionScreens);
+				// TODO Handle invalid accordionScreens
 
 				if(accordionScreens.length) {
 					// Function to enable/disable elements for accordion and tabs
@@ -152,6 +154,7 @@ export const tabs = (() => {
 		const panelElem = jQuery('#' + panelId);
 		const tabElem = jQuery('#' + panelId.replace('-panel-', '-tab-'));
 		const tabsElem = panelElem.parent();
+		// TODO Handle missing elements
 
 		// Toggle aria-hidden
 		panelElem.attr('aria-hidden', 'false');
@@ -164,11 +167,13 @@ export const tabs = (() => {
 
 		// Accordion behavior
 		const accordionScreens = (tabsElem.attr('data-convert-to-accordion') || '').split(',');
+		// TODO Handle invalid accordionScreens
 
 		if(accordionScreens.includes(responsive.screen)) {
 			// The elements
 			const headerElem = jQuery('#' + panelId.replace('-panel-', '-header-'));
 			const contentElem = jQuery('#' + panelId.replace('-panel-', '-content-'));
+			// TODO Handle missing elements
 
 			// Toggle aria-hidden
 			contentElem.attr('aria-hidden', 'false');
@@ -179,6 +184,7 @@ export const tabs = (() => {
 
 		// Auto scroll top
 		const autoScrollScreens = (tabsElem.attr('data-auto-scroll') || '').split(',');
+		// TODO Handle invalid autoScrollScreens
 
 		if(autoScrollScreens.includes(responsive.screen)) {
 			// TODO: Auto Scroll functionality
@@ -210,6 +216,7 @@ export const tabs = (() => {
 
 		// The elements
 		const panelElem = jQuery('#' + panelId);
+		// TODO Handle element not found
 		const tabElem = jQuery('#' + panelId.replace('-panel-', '-tab-'));
 		const tabsElem = panelElem.parent();
 
@@ -226,11 +233,13 @@ export const tabs = (() => {
 
 		// Accordion behavior
 		const accordionScreens = (tabsElem.attr('data-convert-to-accordion') || '').split(',');
+		// TODO Handle invalid accordionScreens
 
 		if(accordionScreens.includes(responsive.screen)) {
 			// The elements
 			const headerElem = jQuery('#' + panelId.replace('-panel-', '-header-'));
 			const contentElem = jQuery('#' + panelId.replace('-panel-', '-content-'));
+			// TODO Handle missing elements
 
 			// Toggle aria-hidden
 			contentElem.attr('aria-hidden', 'true');

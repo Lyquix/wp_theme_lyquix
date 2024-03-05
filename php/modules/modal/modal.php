@@ -35,9 +35,11 @@ function rest_route() {
 		// Add hash to modal
 		$modal['id'] = 'modal-' . md5(json_encode($modal));
 
+		$modalExpiration = strtotime($modal['expiration']);
+
 		// Convert expiration to UTC
-		if ($modal['expiration'] != '') {
-			$modal['expiration'] = date('c', strtotime($modal['expiration'] . ' ' . get_option('timezone_string')));
+		if ($modalExpiration !== false) {
+			$modal['expiration'] = date('c', $modalExpiration . ' ' . get_option('timezone_string'));
 		}
 
 		// Convert zero hide delay and dismiss duration to blank
@@ -69,7 +71,6 @@ add_action('rest_api_init', function () {
 // Set the Style Preset values for the Lyquix Modules
 add_filter('acf/load_field', function ($field) {
 	// Field keys
-	// TODO: Change these to the correct field keys
 	$user = 'field_65c11d4eadade'; // style field
 	$choice = 'field_65c11d5f554f8'; // style_name field
 

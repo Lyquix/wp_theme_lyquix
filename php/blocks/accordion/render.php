@@ -43,64 +43,54 @@ namespace lqx\blocks\accordion;
 function render($settings, $content) {
 
 	// Get and validate processed settings
-	$s = (\lqx\util\validate_data($settings['processed'],[
+	$s = \lqx\util\validate_data($settings['processed'], [
 		'type' => 'object',
 		'required' => true,
 		'keys' => [
-			'anchor' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-			'class' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
+			'anchor' => \lqx\util\schema_str_req_emp,
+			'class' => \lqx\util\schema_str_req_emp,
 			'hash' => [
 				'type' => 'string',
 				'required' => true,
 				'default' => 'id-' . md5(json_encode([$settings, $content, random_int(1000, 9999)]))
 			],
-			'open_on_load' => [
-				'type' => 'string',
-				'required' => true,
-				'default' => 'n',
-				'allowed' => ['y', 'n']
-			],
-			'open_multiple' => [
-				'type' => 'string',
-				'required' => true,
-				'default' => 'n',
-				'allowed' => ['y', 'n']
-			],
+			'open_on_load' => \lqx\util\schema_str_req_n,
+			'open_multiple' => \lqx\util\schema_str_req_y,
 			'heading_style' => [
 				'type' => 'string',
 				'required' => true,
 				'default' => 'h3',
-				'allowed' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6' ]
+				'allowed' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
 			],
-			'browser_history' => [
-				'type' => 'string',
-				'required' => true,
-				'default' => 'n',
-				'allowed' => ['y', 'n']
-			],
+			'browser_history' => \lqx\util\schema_str_req_n,
 			'auto_scroll' => [
 				'type' => 'array',
 				'required' => true,
 				'default' => [],
-				'allowed' => ['xs', 'sm', 'md', 'lg', 'xl']
+				'elems' => [
+					'type' => 'string',
+					'allowed' => ['xs', 'sm', 'md', 'lg', 'xl']
+				]
 			]
 		]
-	]))['data'];
+	]);
 
-	// Get the processed content
-	$c = \lqx\util\validate_data($content,[
-		'type' => 'array',
-		'required' => true,
-		'default' => [],
-		'elems' => [
+	// If valid settings, use them, otherwise throw exception
+	if ($s['isValid']) $s = $s['data'];
+	else throw new \Exception('Invalid block settings');
+
+	// Get content and filter our invalid content
+	$c = array_filter(array_map(function($item) {
+		$v = \lqx\util\validate_data($item,[
 			'type' => 'object',
 			'required' => true,
 			'keys' => [
-				'heading' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING,
-				'content' => LQX_VALIDATE_DATA_SCHEMA_REQUIRED_STRING
+				'heading' => \lqx\util\schema_str_req_notemp,
+				'content' => \lqx\util\schema_str_req_notemp
 			]
-		]
-	])['data'];
+		]);
+		return $v['isValid'] ? $v['data'] : null;
+	}, $content));
 
 	if (!empty($c)) : ?>
 		<section

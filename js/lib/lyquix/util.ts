@@ -174,19 +174,14 @@ export const util = (() => {
 	const slugify = (str: string, delimiter: string = '-'): string => {
 		// Remove accents
 		let slug = str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-
 		// Remove non-alphanumeric characters except spaces, dashes
 		slug = str.replace(/[^a-zA-Z0-9\s-]/g, '');
-
 		// Replace spaces with delimiter
 		slug = slug.replace(/\s+/g, delimiter);
-
 		// Convert to lowercase
 		slug = slug.toLowerCase();
-
 		// Trim delimiter from beginning and end
 		slug = slug.replace(new RegExp(`^${delimiter}|${delimiter}$`, 'g'), '');
-
 		return slug;
 	};
 
@@ -275,13 +270,16 @@ export const util = (() => {
 	 *                - 'object' : An associative array
 	 *
 	 *              - 'allowed' (array, optional): Applicable only if 'type' is 'string', 'integer', or 'float;. Defines a list
-	 *                 of the allowed values. If the string is not one of the allowed values, it will be considered mistyped.
+	 *                 of the allowed values. If the value is not one of the allowed values, it will be considered invalid.
 	 *
 	 *              - 'range' (array, optional): Applicable only if 'type' is 'integer' or 'float'. Defines the allowed range
 	 *                of values by setting a minimum and maximum. If the value is outside the range, it will be considered
-	 *                mistyped.
+	 *                invalid. If either end of the range array is set to null, then the range only checks minimum/maximum.
 	 *
-	 *              - 'default' (mixed, optional): Provides a default value for the field when it's required and it's either
+	 *              - 'match' (string, optional): Applicable only if 'type' is 'string'. Defines a regular expression pattern.
+	 *                If the value doesn't match the regular expression, it will be considered invalid.
+	 *
+		 *              - 'default' (mixed, optional): Provides a default value for the field when it's required and it's either
 	 *                missing in the incoming data or the value is of the wrong type. If no default is provided for a required
 	 *                field, the data will not be considered fixed.
 	 *
@@ -332,17 +330,113 @@ export const util = (() => {
 		let isValid: boolean = true;
 		let isFixed: boolean = false;
 
+		Object.keys(schema).forEach(key => {
+			switch (key) {
+				case 'type':
+					if (!['string', 'integer', 'float', 'boolean', 'array', 'object'].includes(schema.type)) {
+						error(`validateData: invalid type ${schema.type} in schema`, schema);
+						return false;
+					}
+					break;
+
+				case 'required':
+					if (typeof schema.required !== 'boolean') {
+						error('validateData: invalid required value in schema', schema);
+					}
+					break;
+
+				case 'default':
+					break;
+
+				case 'keys':
+					if (typeof schema.keys !== 'object') {
+						error('validateData: invalid keys value in schema', schema);
+					}
+					break;
+
+				case 'elems':
+					if (typeof schema.elems !== 'object') {
+						error('validateData: invalid elems value in schema', schema);
+					}
+					break;
+
+				case 'allowed':
+					if (!Array.isArray(schema.allowed)) {
+						error('validateData: invalid allowed value in schema', schema);
+					}
+					if (schema.allowed.length === 0) {
+						error('validateData: empty allowed value in schema', schema);
+					}
+					break;
+
+				case 'range':
+					if (!Array.isArray(schema.range) || schema.range.length !== 2) {
+						error('validateData: invalid range value in schema', schema);
+					}
+					if (schema.range[0] === null && typeof schema.range[1] !== 'number') {
+						error('validateData: both range values are null in schema', schema);
+					}
+					if (schema.range[1] === null && typeof schema.range[0] !== 'number') {
+						error('validateData: both range values are null in schema', schema);
+					}
+					break;
+
+				case 'match':
+					if (!(schema.match instanceof RegExp)) {
+						error('validateData: invalid match value in schema', schema);
+					}
+					break;
+
+				default:
+					error(`validateData: unexpected key ${key} in schema`, schema);
+			}
+		});
+
 		// Return false if there's no type in schema
 		if (!('type' in schema)) {
 			error('validateData: missing type in schema', schema);
-			return false;
 		}
 
-		// Return false if unexpected keys are found in schema
-		for (const key in schema) {
-			if (!['type', 'required', 'default', 'keys', 'elems', 'allowed', 'range'].includes(key)) {
-				error(`validateData: unexpected key ${key} in schema`, schema);
-				return false;
+		// required defaults to false if not set
+		if (!('required' in schema)) schema['required'] = false;
+
+		// Attempt to coerce the data to the expected type
+		if (getDataType(data) !== schema.type) {
+			switch (schema.type) {
+				case 'string':
+					if (typeof data === 'number' || typeof data === 'bigint') {
+						data = data.toString();
+						isFixed = true;
+					} else if (typeof data === 'boolean') {
+						data = data ? 'true' : 'false';
+						isFixed = true;
+					}
+					break;
+
+				case 'integer':
+					if (!isNaN(data) && parseInt(data) == parseFloat(data)) {
+						data = parseInt(data);
+						isFixed = true;
+					}
+					break;
+
+				case 'float':
+					if (!isNaN(data)) {
+						data = parseFloat(data);
+						isFixed = true;
+					}
+					break;
+
+				case 'boolean':
+					if (data === 0 || data === '0' || data === 'false') {
+						data = false;
+						isFixed = true;
+					}
+					if (data === 1 || data === '1' || data === 'true') {
+						data = true;
+						isFixed = true;
+					}
+					break;
 			}
 		}
 
@@ -384,8 +478,35 @@ export const util = (() => {
 			// Handle allowed range
 			if (['integer', 'float'].includes(schema.type)) {
 				if ('range' in schema) {
-					// Check if the value is allowed
-					if (data < schema.range[0] || data > schema.range[1]) {
+					// Check if the value is in the range
+					const min = schema.range[0];
+					const max = schema.range[1];
+
+					if (
+						(min === null && !isNaN(max) && data > max) ||
+						(max === null && !isNaN(min) && data < min) ||
+						(!isNaN(min) && !isNaN(max) && (data < min || data > max))
+					) {
+						// Add the key to the invalid array
+						invalid.push(field);
+
+						// Attempt to fix by using the default value if available
+						if ('default' in schema) {
+							data = schema.default;
+							fixed.push(field);
+							isFixed = true;
+						} else {
+							isValid = false;
+						}
+					}
+				}
+			}
+
+			// Handle regular expression match
+			if (schema.type == 'string') {
+				if ('match' in schema) {
+					// Check if the value matches the regular expression
+					if (!schema.match.test(data)) {
 						// Add the key to the invalid array
 						invalid.push(field);
 
@@ -433,6 +554,9 @@ export const util = (() => {
 					for (const key in schema.keys) {
 						// Check if the key exists in the received data
 						if (!(key in data)) {
+							// required defaults to false if not set
+							if (!('required' in schema.keys[key])) schema.keys[key]['required'] = false;
+
 							// If the key is required, add it to the missing array
 							if (schema.keys[key].required) {
 								missing.push(key);
@@ -483,6 +607,25 @@ export const util = (() => {
 		};
 	};
 
+	// Schema: string
+	const schemaStr = { type: 'string' };
+	// Schema: string, required, no default
+	const schemaStrReq = { type: 'string', required: true };
+	// Schema: string, required, default=''
+	const schemaStrReqEmp = { type: 'string', required: true, default: '' };
+	// Schema: string, required, match: non empty
+	const schemaStrReqNotEmp = { type: 'string', required: true, match: /.+/ };
+	// Schema: string, required, default=y, allowed=[y,n]
+	const schemaStrReqY = { type: 'string', required: true, default: 'y', allowed: ['y', 'n'] };
+	// Schema: string, required, default=n, allowed=[y,n]
+	const schemaStrReqN = { type: 'string', required: true, default: 'n', allowed: ['y', 'n'] };
+	// Schema: integer
+	const schemaInt = { type: 'integer' };
+	// Schema: integer, required, no default
+	const schemaIntReq = { type: 'integer', required: true };
+	// Regex to match hex color strings
+	const schemaHexColor = { type: 'string', required: true, match: /^#([A-Fa-f0-9]{8}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{4}|[A-Fa-f0-9]{3})$/ };
+
 	// Compares version strings
 	// Returns:
 	// 0: equal
@@ -525,7 +668,16 @@ export const util = (() => {
 		uniqueStr,
 		uniqueUrl,
 		validateData,
-		versionCompare
+		versionCompare,
+		schemaStr,
+		schemaStrReq,
+		schemaStrReqEmp,
+		schemaStrReqNotEmp,
+		schemaStrReqY,
+		schemaStrReqN,
+		schemaInt,
+		schemaIntReq,
+		schemaHexColor
 	};
 
 })();

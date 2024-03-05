@@ -230,6 +230,8 @@ export const analytics = (() => {
 		if (vars.analytics.status == 'ready') {
 			log('Sending page view to GA', pageInfo);
 
+			// TODO Data validation
+
 			if (pageInfo.url && pageInfo.title) {
 				const url = new URL(pageInfo.url, window.location.href);
 
@@ -282,6 +284,8 @@ export const analytics = (() => {
 			Object.keys(ga4PropMap).forEach((prop) => {
 				if (prop in eventInfo && eventInfo[prop]) eventParams[ga4PropMap[prop]] = eventInfo[prop];
 			});
+
+			// TODO Data validation
 
 			const eventName = ('eventName' in eventInfo && eventInfo.eventName) ? eventInfo.eventName : eventInfo.eventAction;
 

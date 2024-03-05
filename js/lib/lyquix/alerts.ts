@@ -94,17 +94,23 @@ export const alerts = (() => {
 					const autoplay = alertsModuleElem.attr('data-autoplay') === 'y';
 					const autoplayDelay = parseInt(alertsModuleElem.attr('data-autoplay-delay'));
 					const headingStyle = alertsModuleElem.attr('data-heading-style');
+					// TODO Handle invalid autoplayDelay and headingStyle
 
 					// Get now
 					const now = new Date().getTime();
 
 					// Loop through the alerts
 					data.forEach((alert) => {
+						// TODO Data validation
+
 						// Skip if alert has been closed
 						if (util.cookie(alert.id) !== null) return;
 
 						// Skip if alert has expired
 						if (alert.expiration != '' && now <= dayjs(alert.expiration).valueOf()) return;
+
+						// Skip if alert has no content
+						if (!alert.heading && !alert.body) return;
 
 						// Prepare the HTML
 						let html = `<section id="${alert.id}" class="${cfg.alerts.swiperSlideClass}">`;
