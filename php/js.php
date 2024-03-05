@@ -193,7 +193,7 @@ function render_gtm_head_code() {
 			})(window, document, 'script', 'dataLayer', '<?= get_theme_mod('gtm_account') ?>');
 		</script>
 		<!-- End Google Tag Manager -->
-	<? endif;
+	<?php endif;
 }
 
 function render_gtm_body_code() {
@@ -202,7 +202,7 @@ function render_gtm_body_code() {
 		<!-- Google Tag Manager (noscript) -->
 		<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<?= get_theme_mod('gtm_account') ?>" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 		<!-- End Google Tag Manager (noscript) -->
-	<? endif;
+	<?php endif;
 }
 
 function render_page_custom_js() {
