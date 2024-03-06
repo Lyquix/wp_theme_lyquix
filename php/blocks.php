@@ -187,6 +187,60 @@ function get_content($block, $post_id = null) {
 	return get_field($block_name . '_block_content', $post_id);
 }
 
+function reset_global_settings_ajax() {
+	// Check nonce for security
+	check_ajax_referer('reset-global-settings');
+	$json_dir_path = get_stylesheet_directory() . '/acf-json';
+	$json_files    = glob($json_dir_path . '/*.json');
+	foreach ($json_files as $json_file) {
+		$json_content = file_get_contents($json_file);
+		$field_group  = json_decode($json_content, true);
+		if (!empty($field_group['fields'])) {
+			foreach ($field_group['fields'] as $field) {
+				if (strpos($field['name'], '_block_global') !== false || strpos($field['name'], '_module_settings') !== false) {
+					// Reset or Clear data
+					$value_to_set = isset($field['default_value']) ? $field['default_value'] : '';
+					update_field($field['key'], $value_to_set, 'option');
+				}
+			}
+		}
+	}
+	echo 'Done! The global settings of all Lyquix blocks and modules have been reset to their default values.';
+	wp_die();
+}
+
+function reset_global_settings_page() {
+	?>
+<div class="wrap">
+	<h1><?= __('Reset Global Settings'); ?></h1>
+	<hr class="wp-header-end">
+	<div class="wp-ui-notification" style="box-sizing: border-box; width: 100%; padding: 1em; border-radius: 0.5em; margin: 1em auto;">
+		<?= __('<strong>Warning!</strong><br>This will reset the global settings of all Lyquix blocks and modules.<br>This action cannot be undone. We recommend that you first take a database backup.'); ?>
+	</div>
+	<div>
+		<button class="custom-reset-button button button-primary wp-ui-notification" id="resetFieldsBtn">
+			Reset Global Settings
+		</button>
+	</div>
+</div>
+<script>
+	jQuery(document).ready(function() {
+		jQuery('#resetFieldsBtn').click(function() {
+			if (confirm("Are you sure you want to reset the global settings of all Lyquix blocks and modules to their default values?")) {
+				let data = {
+					action: "reset_global_settings",
+					_ajax_nonce: "<?php echo wp_create_nonce('reset-global-settings'); ?>",
+				};
+				jQuery.post(ajaxurl, data, function(response) {
+					alert(response);
+				});
+			}
+		});
+	});
+</script>
+<?php
+}
+
 if (get_theme_mod('feat_gutenberg_blocks', '1') === '1') {
 	// Register the Lyquix Modules block category
 	add_filter('block_categories_all', function ($categories) {
@@ -292,4 +346,19 @@ if (get_theme_mod('feat_gutenberg_blocks', '1') === '1') {
 		}
 		return $field;
 	});
+
+	// Add admin page for resetting global settings
+	add_action('admin_menu', function() {
+		add_submenu_page(
+			'site-settings',
+			'Reset Global Settings',
+			'Reset Global Settings',
+			'manage_options',
+			'reset-global-settings',
+			'\lqx\blocks\reset_global_settings_page'
+		);
+	}, 9999);
+
+	// Endpoint for resetting global settings AJAX
+	add_action('wp_ajax_reset_global_settings', '\lqx\blocks\reset_global_settings_ajax');
 }
