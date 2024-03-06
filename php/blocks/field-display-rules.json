@@ -1,0 +1,86 @@
+[
+	{
+		"settings": {
+			"block_name": "lqx/cards",
+			"content_field": "field_658db3b2c1203",
+			"global_field": "field_658db3c317b3c",
+			"presets_field": "field_658db3c317b95",
+			"user_field": "field_658db3cb6f46c",
+			"admin_field": "field_658db3baec514"
+		},
+		"rules": [
+			{
+				"field": "subheading",
+				"controller": "show_subheading",
+				"operator": "==",
+				"value": "y"
+			},
+			{
+				"field": "image",
+				"controller": "show_image",
+				"operator": "==",
+				"value": "y"
+			},
+			{
+				"field": "icon_image",
+				"controller": "show_icon_image",
+				"operator": "==",
+				"value": "y"
+			},
+			{
+				"field": "video",
+				"controller": "show_video",
+				"operator": "==",
+				"value": "y"
+			},
+			{
+				"field": "labels",
+				"controller": "show_labels",
+				"operator": "==",
+				"value": "y"
+			},
+			{
+				"field": "links",
+				"controller": "show_links",
+				"operator": "==",
+				"value": "y"
+			}
+		]
+	},
+	{
+		"settings": {
+			"block_name": "lqx/hero",
+			"content_field": "field_6541322b28452",
+			"global_field": "field_65413f3a9e679",
+			"presets_field": "field_6577644a0a231",
+			"user_field": "field_657217d28ca52",
+			"admin_field": "field_657218d86ffd3"
+		},
+		"rules": [
+			{
+				"field": "image_override",
+				"controller": "show_image",
+				"operator": "==",
+				"value": "y"
+			},
+			{
+				"field": "image_mobile",
+				"controller": "show_image",
+				"operator": "==",
+				"value": "y"
+			},
+			{
+				"field": "video",
+				"controller": "show_image",
+				"operator": "==",
+				"value": "y"
+			},
+			{
+				"field": "breadcrumbs_override",
+				"controller": "show_breadcrumbs",
+				"operator": "==",
+				"value": "y"
+			}
+		]
+	}
+]

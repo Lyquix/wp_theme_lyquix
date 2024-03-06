@@ -180,6 +180,37 @@
                     "layout": "horizontal"
                 },
                 {
+                    "key": "field_65e7cdaa39f1e",
+                    "label": "Show Subheading",
+                    "name": "show_subheading",
+                    "aria-label": "",
+                    "type": "button_group",
+                    "instructions": "Except for when there's a video, add a link to the image, using the first link URL (Default: Yes)",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "choices": {
+                        "y": "Yes",
+                        "n": "No"
+                    },
+                    "default_value": "y",
+                    "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "allow_null": 0,
+                    "acfe_permissions": "",
+                    "instruction_placement": "tooltip",
+                    "layout": "horizontal"
+                },
+                {
                     "key": "field_658f167ef4348",
                     "label": "Subheading Style",
                     "name": "subheading_style",
@@ -187,7 +218,15 @@
                     "type": "button_group",
                     "instructions": "Select the heading level for the subheading text (Default: P and STRONG)",
                     "required": 0,
-                    "conditional_logic": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_65e7cdaa39f1e",
+                                "operator": "==",
+                                "value": "y"
+                            }
+                        ]
+                    ],
                     "wrapper": {
                         "width": "",
                         "class": "",
@@ -247,9 +286,172 @@
                     "layout": "horizontal"
                 },
                 {
+                    "key": "field_65e7cdc239f1f",
+                    "label": "Show Image",
+                    "name": "show_image",
+                    "aria-label": "",
+                    "type": "button_group",
+                    "instructions": "Except for when there's a video, add a link to the image, using the first link URL (Default: Yes)",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "choices": {
+                        "y": "Yes",
+                        "n": "No"
+                    },
+                    "default_value": "y",
+                    "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "allow_null": 0,
+                    "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
+                    "layout": "horizontal"
+                },
+                {
                     "key": "field_658f1689f434a",
                     "label": "Image Clickable",
                     "name": "image_clickable",
+                    "aria-label": "",
+                    "type": "button_group",
+                    "instructions": "Except for when there's a video, add a link to the image, using the first link URL (Default: Yes)",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_65e7cdc239f1f",
+                                "operator": "==",
+                                "value": "y"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "choices": {
+                        "y": "Yes",
+                        "n": "No"
+                    },
+                    "default_value": "y",
+                    "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "allow_null": 0,
+                    "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
+                    "layout": "horizontal"
+                },
+                {
+                    "key": "field_65e7cdd239f20",
+                    "label": "Show Icon Image",
+                    "name": "show_icon_image",
+                    "aria-label": "",
+                    "type": "button_group",
+                    "instructions": "Except for when there's a video, add a link to the image, using the first link URL (Default: Yes)",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "choices": {
+                        "y": "Yes",
+                        "n": "No"
+                    },
+                    "default_value": "y",
+                    "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "allow_null": 0,
+                    "acfe_permissions": "",
+                    "instruction_placement": "tooltip",
+                    "layout": "horizontal"
+                },
+                {
+                    "key": "field_65e7cdde39f21",
+                    "label": "Show Video",
+                    "name": "show_video",
+                    "aria-label": "",
+                    "type": "button_group",
+                    "instructions": "Except for when there's a video, add a link to the image, using the first link URL (Default: Yes)",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "choices": {
+                        "y": "Yes",
+                        "n": "No"
+                    },
+                    "default_value": "y",
+                    "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "allow_null": 0,
+                    "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
+                    "layout": "horizontal"
+                },
+                {
+                    "key": "field_65e7cdec39f22",
+                    "label": "Show Labels",
+                    "name": "show_labels",
+                    "aria-label": "",
+                    "type": "button_group",
+                    "instructions": "Except for when there's a video, add a link to the image, using the first link URL (Default: Yes)",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "choices": {
+                        "y": "Yes",
+                        "n": "No"
+                    },
+                    "default_value": "y",
+                    "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "allow_null": 0,
+                    "acfe_permissions": "",
+                    "instruction_placement": "tooltip",
+                    "layout": "horizontal"
+                },
+                {
+                    "key": "field_65e7cdf539f23",
+                    "label": "Show Links",
+                    "name": "show_links",
                     "aria-label": "",
                     "type": "button_group",
                     "instructions": "Except for when there's a video, add a link to the image, using the first link URL (Default: Yes)",
@@ -558,5 +760,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1706589224
+    "modified": 1709690438
 }

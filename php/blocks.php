@@ -187,6 +187,17 @@ function get_content($block, $post_id = null) {
 	return get_field($block_name . '_block_content', $post_id);
 }
 
+function find_value_by_key($array, $keyToFind) {
+	$result = null;
+	array_walk_recursive($array, function ($value, $key) use ($keyToFind, &$result) {
+		if ($key === $keyToFind) {
+			$result = $value;
+			return;
+		}
+	});
+	return $result;
+}
+
 function reset_global_settings_ajax() {
 	// Check nonce for security
 	check_ajax_referer('reset-global-settings');
@@ -347,6 +358,40 @@ if (get_theme_mod('feat_gutenberg_blocks', '1') === '1') {
 		return $field;
 	});
 
+	// Load field display logic
+	add_action('acf/init', function () {
+		if (is_admin()) {
+			wp_enqueue_script('custom-acf-js', get_template_directory_uri() . '/php/blocks/field-display.js', ['wp-data', 'acf-input', 'jquery']);
+			// Passing to js the url+nonce required for ajax call and the json containing the fields dependencies
+			wp_localize_script('custom-acf-js', 'acfAjax', array(
+				'ajaxurl' => admin_url('admin-ajax.php'),
+				'nonce' => wp_create_nonce('acf_ajax_nonce'),
+				'json' => json_decode(file_get_contents(get_template_directory() . '/php/blocks/field-display-rules.json'))
+			));
+		}
+	});
+
+	// Endpoint for getting ACF fields through AJAX
+	add_action('wp_ajax_get_acf_field', function () {
+		// Check for nonce for security
+		if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'acf_ajax_nonce')) {
+			wp_die('Nonce validation failed');
+		}
+
+		// Check if field key is set
+		if (isset($_POST['field_key']) && $_POST['field_key'] != '') {
+			$field_key = sanitize_text_field($_POST['field_key']);
+			$value = get_field($field_key, 'options');
+			wp_send_json_success($value);
+		} elseif (isset($_POST['field_group'])) {
+			$field_group = sanitize_text_field($_POST['field_group']);
+			$fieldArray = get_field($field_group, 'options');
+			wp_send_json_success(find_value_by_key($fieldArray, $_POST['controller']));
+		} else {
+			wp_send_json_error('Field key not provided');
+		}
+	});
+
 	// Add admin page for resetting global settings
 	add_action('admin_menu', function() {
 		add_submenu_page(
@@ -362,3 +407,4 @@ if (get_theme_mod('feat_gutenberg_blocks', '1') === '1') {
 	// Endpoint for resetting global settings AJAX
 	add_action('wp_ajax_reset_global_settings', '\lqx\blocks\reset_global_settings_ajax');
 }
+
