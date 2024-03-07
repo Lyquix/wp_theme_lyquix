@@ -77,7 +77,7 @@ function render($settings, $content) {
 
 	// If valid settings, use them, otherwise throw exception
 	if ($s['isValid']) $s = $s['data'];
-	else throw new \Exception('Invalid block settings');
+	else throw new \Exception('Invalid block settings: ' . var_export($s, true));
 
 	// Get content and filter our invalid content
 	$c = array_filter(array_map(function($item) {

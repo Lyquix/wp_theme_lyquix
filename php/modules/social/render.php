@@ -66,7 +66,7 @@ function render_social_icons($settings = null) {
 
 	// If valid settings, use them, otherwise throw exception
 	if ($s['isValid']) $s = $s['data'];
-	else throw new \Exception('Invalid module settings');
+	else throw new \Exception('Invalid module settings: ' . var_export($s, true));
 
 	// Check if there are any social links configured
 	if (!count($s['links'])) return;
@@ -145,7 +145,7 @@ function render_social_share($settings = null) {
 
 	// If valid settings, use them, otherwise throw exception
 	if ($s['isValid']) $s = $s['data'];
-	else throw new \Exception('Invalid module settings');
+	else throw new \Exception('Invalid module settings: ' . var_export($s, true));
 
 	// Check if there are any platforms configured
 	if (empty($s['platforms'])) return;

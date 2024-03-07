@@ -62,7 +62,7 @@ function render($settings = null) {
 
 	// If valid settings, use them, otherwise throw exception
 	if ($s['isValid']) $s = $s['data'];
-	else throw new \Exception('Invalid block settings');
+	else throw new \Exception('Invalid block settings: ' . var_export($s, true));
 
 	?>
 	<section id="lqx-module-alerts">
