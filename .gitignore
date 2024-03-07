@@ -24,3 +24,4 @@ bun.lockb
 package.lock
 php/browsers/browsers.json
 php/ip2geo/GeoLite2-City.*
+php/update.json
