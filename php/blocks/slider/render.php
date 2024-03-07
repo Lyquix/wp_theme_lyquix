@@ -136,15 +136,15 @@ function render($settings, $content) {
 	}, $content));
 ?>
 	<section
-		id="<?= $s['anchor'] ?>"
-		class="lqx-block-slider <?= $s['class'] ?>">
+		id="<?= esc_attr($s['anchor']) ?>"
+		class="lqx-block-slider <?= esc_attr($s['class']) ?>">
 
 		<div
 			class="slider"
-			id="<?= $s['hash'] ?>"
+			id="<?= esc_attr($s['hash']) ?>"
 			data-autoplay="<?= $s['autoplay'] ?>"
 			data-autoplay-delay="<?= $s['autoplay_delay'] ?>"
-			data-swiper-options-override="<?= htmlspecialchars($s['swiper_options_override']) ?>"
+			data-swiper-options-override="<?= esc_attr($s['swiper_options_override']) ?>"
 			data-loop="<?= $s['loop'] ?>"
 			data-navigation="<?= $s['navigation'] ?>"
 			data-pagination="<?= $s['pagination'] ?>">
@@ -173,8 +173,8 @@ function render($settings, $content) {
 
 								<?php if ($item['image_link'] && $item['image_link']['url'] && $item['video']['type'] != 'url') : ?>
 									<a
-										href="<?= $item['image_link']['url'] ?>"
-										title="<?= htmlspecialchars($item['image_link']['title']) ?>"
+										href="<?= esc_attr($item['image_link']['url']) ?>"
+										title="<?= esc_attr($item['image_link']['title']) ?>"
 										target="<?= $item['image_link']['target'] ?>">
 								<?php endif; ?>
 
@@ -183,20 +183,20 @@ function render($settings, $content) {
 											autoplay loop muted playsinline
 											poster="<?= $item['image']['sizes']['large'] ?>">
 											<source
-												src="<?= $item['video']['upload']['url'] ?>"
-												type="<?= $item['video']['upload']['mime_type'] ?>">
+												src="<?= esc_attr($item['video']['upload']['url']) ?>"
+												type="<?= esc_attr($item['video']['upload']['mime_type']) ?>">
 										</video>
 									<?php else: ?>
 										<?php if (array_key_exists('url', $item['image'])) : ?>
 											<img
-												src="<?= $item['image']['url'] ?>"
-												alt="<?= htmlspecialchars($item['image']['alt']) ?>"
+												src="<?= esc_attr($item['image']['url']) ?>"
+												alt="<?= esc_attr($item['image']['alt']) ?>"
 												class="<?= array_key_exists('url', $item['image_mobile']) ? 'xs:hidden sm:hidden' : '' ?>" />
 										<?php endif;
 										if (array_key_exists('url', $item['image_mobile'])) : ?>
 											<img
-												src="<?= $item['image_mobile']['url'] ?>"
-												alt="<?= htmlspecialchars($item['image_mobile']['alt']) ?>"
+												src="<?= esc_attr($item['image_mobile']['url']) ?>"
+												alt="<?= esc_attr($item['image_mobile']['alt']) ?>"
 												class="md:hidden lg:hidden xl:hidden" />
 										<?php endif; ?>
 									<?php endif; ?>
@@ -222,7 +222,7 @@ function render($settings, $content) {
 										<li>
 											<a
 												class="<?= $link['type'] == 'button' ? 'button' : 'readmore' ?>"
-												href="<?= $link['link']['url'] ?>"
+												href="<?= esc_attr($link['link']['url']) ?>"
 												target="<?= $link['link']['target'] ?>">
 												<?= $link['link']['title'] ?>
 											</a>

@@ -92,6 +92,7 @@ function render($settings, $content) {
 			'image_clickable' => \lqx\util\schema_str_req_y,
 			'responsive_rules' => [
 				'type' => 'array',
+				'required' => true,
 				'default' => [],
 				'elems' => [
 					'type' => 'object',
@@ -218,19 +219,19 @@ function render($settings, $content) {
 
 	if (!empty($c)) : ?>
 		<section
-			id="<?= $s['anchor'] ?>"
-			class="lqx-block-cards <?= $s['class'] ?>">
+			id="<?= esc_attr($s['anchor']) ?>"
+			class="lqx-block-cards <?= esc_attr($s['class']) ?>">
 
 			<div
 				class="cards <?= implode(' ', $css_classes) ?>"
-				id="<?= $s['hash'] ?>"
+				id="<?= esc_attr($s['hash']) ?>"
 				data-slider="<?= $s['slider'] ?>"
-				data-swiper-options-override="<?= htmlspecialchars($s['swiper_options_override']) ?>"
+				data-swiper-options-override="<?= esc_attr($s['swiper_options_override']) ?>"
 				data-heading-style="<?= $s['heading_style'] ?>"
 				data-subheading-style="<?= $s['subheading_style'] ?>"
 				data-heading-clickable="<?= $s['heading_clickable'] ?>"
 				data-image-clickable="<?= $s['image_clickable'] ?>"
-				data-responsive-rules="<?= htmlspecialchars(json_encode($s['responsive_rules'])) ?>">
+				data-responsive-rules="<?= esc_attr(json_encode($s['responsive_rules'])) ?>">
 
 				<?= $s['slider'] == 'y' ? '<div class="swiper">' : '' ?>
 
@@ -277,14 +278,14 @@ function render($settings, $content) {
 												autoplay loop muted playsinline
 												poster="<?= $item['image']['sizes']['large'] ?>">
 												<source
-													src="<?= $item['video']['upload']['url'] ?>"
-													type="<?= $item['video']['upload']['mime_type'] ?>">
+													src="<?= esc_attr($item['video']['upload']['url']) ?>"
+													type="<?= esc_attr($item['video']['upload']['mime_type']) ?>">
 											</video>
 										<?php else: ?>
-											<?= $s['image_clickable'] == 'y' && $first_link ? '<a href="' . $first_link . '">' : '' ?>
+											<?= $s['image_clickable'] == 'y' && $first_link ? '<a href="' . esc_attr($first_link) . '">' : '' ?>
 											<img
-												src="<?= $item['image']['sizes']['large'] ?>"
-												alt="<?= htmlspecialchars($item['image']['alt']) ?>">
+												src="<?= esc_attr($item['image']['sizes']['large']) ?>"
+												alt="<?= esc_attr($item['image']['alt']) ?>">
 											<?= $s['image_clickable'] == 'y' && $first_link ? '</a>' : '' ?>
 										<?php endif; ?>
 									</div>
@@ -293,15 +294,15 @@ function render($settings, $content) {
 								<?php if ($item['icon_image']) : ?>
 									<div class="icon">
 										<img
-											src="<?= $item['icon_image']['sizes']['large'] ?>"
-											alt="<?= htmlspecialchars($item['icon_image']['alt']) ?>">
+											src="<?= esc_attr($item['icon_image']['sizes']['large']) ?>"
+											alt="<?= esc_attr($item['icon_image']['alt']) ?>">
 									</div>
 								<?php endif; ?>
 
 								<div class="text">
 									<?php if ($item['heading']) : ?>
 										<<?= $s['heading_style'] ?>>
-											<?= $s['heading_clickable'] == 'y' && $first_link ? sprintf('<a href="%s">%s</a>', $first_link, $item['heading']) : $item['heading'] ?>
+											<?= $s['heading_clickable'] == 'y' && $first_link ? sprintf('<a href="%s">%s</a>', esc_attr($first_link), $item['heading']) : $item['heading'] ?>
 										</<?= $s['heading_style'] ?>>
 									<?php endif; ?>
 									<?php if ($item['subheading']) : ?>
@@ -318,7 +319,7 @@ function render($settings, $content) {
 											<li>
 												<a
 													class="<?= $link['type'] == 'button' ? 'button' : 'readmore' ?>"
-													href="<?= $link['link']['url'] ?>"
+													href="<?= esc_attr($link['link']['url']) ?>"
 													target="<?= $link['link']['target'] ?>">
 													<?= $link['link']['title'] ?>
 												</a>

@@ -112,14 +112,14 @@ function render($settings, $content) {
 	$heading_tag_close  = $s['heading_style'] == 'p' ? '</strong></p>' : '</' . $s['heading_style'] . '>';
 	?>
 	<section
-		id="<?= $s['anchor'] ?>"
-		class="lqx-block-gallery <?= $s['class'] ?>">
+		id="<?= esc_attr($s['anchor']) ?>"
+		class="lqx-block-gallery <?= esc_attr($s['class']) ?>">
 
 		<div
 			class="gallery <?= $s['slider'] == 'y' ? 'slider' : '' ?>"
-			id="<?= $s['hash'] ?>"
+			id="<?= esc_attr($s['hash']) ?>"
 			data-slider="<?= $s['slider'] ?>"
-			data-swiper-options-override="<?= htmlspecialchars($s['swiper_options_override']) ?>"
+			data-swiper-options-override="<?= esc_attr($s['swiper_options_override']) ?>"
 			data-heading-style="<?= $s['heading_style'] ?>"
 			data-browser-history="<?= $s['browser_history'] ?>">
 
@@ -138,8 +138,8 @@ function render($settings, $content) {
 								'caption' => $item['caption']
 							])) ?>">
 							<img
-								src="<?= $item['thumbnail']['sizes']['large'] ?>"
-								alt="<?= htmlspecialchars($item['image']['alt']) ?>">
+								src="<?= esc_attr($item['thumbnail']['sizes']['large']) ?>"
+								alt="<?= esc_attr($item['image']['alt']) ?>">
 							<?= $heading_tag_open . $item['title'] . $heading_tag_close ?>
 							<?= '<p>' . $item['teaser'] . '</p>' ?>
 						</li>

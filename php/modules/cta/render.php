@@ -168,14 +168,14 @@ function render($settings = null, $content = null) {
 			<div class="image">
 				<?php if (array_key_exists('url', $cta['image'])) : ?>
 					<img
-						src="<?= $cta['image']['url'] ?>"
-						alt="<?= htmlspecialchars($cta['image']['alt']) ?>"
+						src="<?= esc_attr($cta['image']['url']) ?>"
+						alt="<?= esc_attr($cta['image']['alt']) ?>"
 						class="<?= array_key_exists('url', $cta['image_mobile']) ? 'xs-hide sm-hide' : '' ?>" />
 				<?php endif;
 				if (array_key_exists('url',$cta['image_mobile'])) : ?>
 					<img
-						src="<?= $cta['image_mobile']['url'] ?>"
-						alt="<?= htmlspecialchars($cta['image_mobile']['alt']) ?>"
+						src="<?= esc_attr($cta['image_mobile']['url']) ?>"
+						alt="<?= esc_attr($cta['image_mobile']['alt']) ?>"
 						class="hide xs-show sm-show" />
 				<?php endif; ?>
 			</div>
@@ -190,7 +190,7 @@ function render($settings = null, $content = null) {
 							<li>
 								<a
 									class="<?= $link['type'] == 'button' ? 'button': 'readmore' ?>"
-									href="<?= $link['link']['url'] ?>"
+									href="<?= esc_attr($link['link']['url']) ?>"
 									target="<?= $link['link']['target'] ?>">
 									<?= $link['link']['title'] ?>
 								</a>

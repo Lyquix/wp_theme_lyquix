@@ -70,7 +70,7 @@ function render($settings = null) {
 			class="alerts hidden"
 			data-autoplay="<?= $s['autoplay'] ?>"
 			data-autoplay-delay="<?= $s['autoplay_delay'] ?>"
-			data-swiper-options-override="<?= htmlspecialchars($s['swiper_options_override']) ?>"
+			data-swiper-options-override="<?= esc_attr($s['swiper_options_override']) ?>"
 			data-heading-style="<?= $s['heading_style'] ?>">
 			<button class="close">Close</button>
 			<div class="swiper">

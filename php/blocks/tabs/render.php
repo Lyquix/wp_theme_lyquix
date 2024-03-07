@@ -100,12 +100,12 @@ function render($settings, $content) {
 
 	if (!empty($c)) : ?>
 		<section
-			id="<?= $s['anchor'] ?>"
-			class="lqx-block-tabs  <?= $s['class'] ?>">
+			id="<?= esc_attr($s['anchor']) ?>"
+			class="lqx-block-tabs  <?= esc_attr($s['class']) ?>">
 
 			<div
 				class="tabs"
-				id="<?= $s['hash'] ?>"
+				id="<?= esc_attr($s['hash']) ?>"
 				data-browser-history="<?= $s['browser_history'] ?>"
 				data-convert-to-accordion="<?= implode(',', $s['convert_to_accordion']) ?>"
 				data-auto-scroll="<?= implode(',', $s['auto_scroll']) ?>">

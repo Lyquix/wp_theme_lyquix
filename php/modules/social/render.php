@@ -78,7 +78,7 @@ function render_social_icons($settings = null) {
 				if ($platform['code'] !== 'unknown'): ?>
 				<li>
 					<a class="link-<?= $platform['code'] ?>"
-						href="<?= $l['url'] ?>"
+						href="<?= esc_attr($l['url']) ?>"
 						target="_blank"
 						rel="noopener noreferrer"
 						aria-label="Follow us on <?= $platform['name'] ?>">

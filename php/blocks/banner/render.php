@@ -133,12 +133,12 @@ function render($settings, $content) {
 
 	?>
 	<section
-		id="<?= $s['anchor'] ?>"
-		class="lqx-block-banner <?= $s['class'] ?>">
+		id="<?= esc_attr($s['anchor']) ?>"
+		class="lqx-block-banner <?= esc_attr($s['class']) ?>">
 
 		<div
 			class="banner"
-			id="<?= $s['hash'] ?>"
+			id="<?= esc_attr($s['hash']) ?>"
 			data-heading-style="<?= $s['heading_style'] ?>">
 
 			<div class="text">
@@ -152,7 +152,7 @@ function render($settings, $content) {
 							<li>
 								<a
 									class="<?= $link['type'] == 'button' ? 'button' : 'readmore' ?>"
-									href="<?= $link['link']['url'] ?>"
+									href="<?= esc_attr($link['link']['url']) ?>"
 									target="<?= $link['link']['target'] ?>">
 									<?= $link['link']['title'] ?>
 								</a>
@@ -169,18 +169,18 @@ function render($settings, $content) {
 							autoplay loop muted playsinline
 							poster="<?= $c['image']['sizes']['large'] ?>">
 							<source
-								src="<?= $c['video']['upload']['url'] ?>"
-								type="<?= $c['video']['upload']['mime_type'] ?>">
+								src="<?= esc_attr($c['video']['upload']['url']) ?>"
+								type="<?= esc_attr($c['video']['upload']['mime_type']) ?>">
 						</video>
 					<?php else: ?>
 						<img
-							src="<?= $c['image']['url'] ?>"
-							alt="<?= htmlspecialchars($c['image']['alt']) ?>"
+							src="<?= esc_attr($c['image']['url']) ?>"
+							alt="<?= esc_attr($c['image']['alt']) ?>"
 							class="<?= array_key_exists('url', $c['image_mobile']) ? 'xs:hidden sm:hidden' : '' ?>" />
 						<?php if (array_key_exists('url', $c['image_mobile'])) : ?>
 							<img
-								src="<?= $c['image_mobile']['url'] ?>"
-								alt="<?= htmlspecialchars($c['image_mobile']['alt']) ?>"
+								src="<?= esc_attr($c['image_mobile']['url']) ?>"
+								alt="<?= esc_attr($c['image_mobile']['alt']) ?>"
 								class="md:hidden lg:hidden xl:hidden" />
 						<?php endif; ?>
 					<?php endif; ?>

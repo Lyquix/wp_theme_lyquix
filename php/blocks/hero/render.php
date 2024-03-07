@@ -162,7 +162,7 @@ function render($settings, $content) {
 			$breadcrumbs .= $c['breadcrumbs_override'];
 		} else {
 			$breadcrumbs .= implode(' &raquo; ', array_map(function ($b) {
-				if ($b['url']) return sprintf('<a href="%s">%s</a>', $b['url'], $b['title']);
+				if ($b['url']) return sprintf('<a href="%s">%s</a>', esc_attr($b['url']), $b['title']);
 				else return $b['title'];
 			}, \lqx\util\get_breadcrumbs(get_the_ID(), $s['breadcrumbs']['type'], $s['breadcrumbs']['depth'], $s['breadcrumbs']['show_current'])));
 		}
@@ -170,12 +170,12 @@ function render($settings, $content) {
 	}
 ?>
 	<section
-		id="<?= $s['anchor'] ?>"
-		class="lqx-block-hero <?= $s['class'] ?>">
+		id="<?= esc_attr($s['anchor']) ?>"
+		class="lqx-block-hero <?= esc_attr($s['class']) ?>">
 
 		<div
 			class="hero"
-			id="<?= $s['hash'] ?>"
+			id="<?= esc_attr($s['hash']) ?>"
 			data-show-image="<?= $s['show_image'] ?>"
 			data-breadcrumbs-show-breadcrumbs="<?= $s['breadcrumbs']['show_breadcrumbs'] ?>"
 			data-breadcrumbs-type="<?= $s['breadcrumbs']['type'] ?>"
@@ -193,7 +193,7 @@ function render($settings, $content) {
 							<li>
 								<a
 									class="<?= $link['type'] == 'button' ? 'button' : 'readmore' ?>"
-									href="<?= $link['link']['url'] ?>"
+									href="<?= esc_attr($link['link']['url']) ?>"
 									target="<?= $link['link']['target'] ?>">
 									<?= $link['link']['title'] ?>
 								</a>
@@ -210,22 +210,22 @@ function render($settings, $content) {
 							autoplay loop muted playsinline
 							poster="<?= array_key_exists('url', $c['image_override']) ? $c['image_override']['url'] : get_the_post_thumbnail_url() ?>">
 							<source
-								src="<?= $c['video']['upload']['url'] ?>"
+								src="<?= esc_attr($c['video']['upload']['url']) ?>"
 								type="<?= $c['video']['upload']['mime_type'] ?>">
 						</video>
 					<?php else: ?>
 						<?php if (array_key_exists('url', $c['image_override'])) : ?>
 							<img
-								src="<?= $c['image_override']['url'] ?>"
-								alt="<?= htmlspecialchars($c['image_override']['alt']) ?>"
+								src="<?= esc_attr($c['image_override']['url']) ?>"
+								alt="<?= esc_attr($c['image_override']['alt']) ?>"
 								class="<?= array_key_exists('url', $c['image_mobile']) ? 'xs:hidden sm:hidden' : '' ?>" />
 						<?php else :
 							the_post_thumbnail('post-thumbnail', ['class' => $c['image_mobile'] !== false ? 'xs:hidden sm:hidden' : '']);
 						endif; ?>
 						<?php if (array_key_exists('url', $c['image_mobile'])) : ?>
 							<img
-								src="<?= $c['image_mobile']['url'] ?>"
-								alt="<?= htmlspecialchars($c['image_mobile']['alt']) ?>"
+								src="<?= esc_attr($c['image_mobile']['url']) ?>"
+								alt="<?= esc_attr($c['image_mobile']['alt']) ?>"
 								class="md:hidden lg:hidden xl:hidden" />
 						<?php endif; ?>
 					<?php endif; ?>

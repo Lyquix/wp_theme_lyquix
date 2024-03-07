@@ -94,12 +94,12 @@ function render($settings, $content) {
 
 	if (!empty($c)) : ?>
 		<section
-			id="<?= $s['anchor'] ?>"
-			class="lqx-block-accordion <?= $s['class'] ?>">
+			id="<?= esc_attr($s['anchor']) ?>"
+			class="lqx-block-accordion <?= esc_attr($s['class']) ?>">
 
 			<div
 				class="accordion"
-				id="<?= $s['hash'] ?>"
+				id="<?= esc_attr($s['hash']) ?>"
 				data-open-on-load="<?= $s['open_on_load'] ?>"
 				data-open-multiple="<?= $s['open_multiple'] ?>"
 				data-browser-history="<?= $s['browser_history'] ?>"
