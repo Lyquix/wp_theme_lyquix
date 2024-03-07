@@ -198,25 +198,52 @@ function find_value_by_key($array, $keyToFind) {
 	return $result;
 }
 
+function reset_field($field, $ancestor) {
+	$log = [$field['name'], $field['key'], $field['type']];
+
+	// Cycle through the subfields and reset them
+	if ($field['type'] == 'group' &&  isset($field['sub_fields'])) {
+		foreach ($field['sub_fields'] as $sub_field) {
+			$log[] = \lqx\blocks\reset_field($sub_field, $ancestor . '_' . $field['name']);
+		}
+	}
+	else {
+		// Reset or Clear data
+		if (array_key_exists('default_value', $field)) {
+			$log[] = 'update: ' . print_r($field['default_value'], true);
+			$log[] = update_field($field['key'], $field['default_value'], 'option');
+		}
+		else {
+			$log[] = "delete";
+			$log[] = delete_field($field['key'], 'option');
+		}
+	}
+
+	return $log;
+}
+
 function reset_global_settings_ajax() {
+	$log = [];
 	// Check nonce for security
 	check_ajax_referer('reset-global-settings');
-	$json_dir_path = get_stylesheet_directory() . '/acf-json';
-	$json_files    = glob($json_dir_path . '/*.json');
+	$json_files = glob(get_stylesheet_directory() . '/acf-json/*.json');
 	foreach ($json_files as $json_file) {
-		$json_content = file_get_contents($json_file);
-		$field_group  = json_decode($json_content, true);
+		$field_group = json_decode(file_get_contents($json_file), true);
 		if (!empty($field_group['fields'])) {
 			foreach ($field_group['fields'] as $field) {
 				if (strpos($field['name'], '_block_global') !== false || strpos($field['name'], '_module_settings') !== false) {
-					// Reset or Clear data
-					$value_to_set = isset($field['default_value']) ? $field['default_value'] : '';
-					update_field($field['key'], $value_to_set, 'option');
+					$log[] = [$field['name'], $field['key'], $field['type']];
+					if (isset($field['sub_fields'])) {
+						foreach ($field['sub_fields'] as $sub_field) {
+							$log[] = \lqx\blocks\reset_field($sub_field, $field['name']);
+						}
+					}
 				}
 			}
 		}
 	}
 	echo 'Done! The global settings of all Lyquix blocks and modules have been reset to their default values.';
+	file_put_contents(__DIR__ . '/blocks-reset-global-settings.log', json_encode($log, JSON_PRETTY_PRINT));
 	wp_die();
 }
 
