@@ -6,7 +6,7 @@
     "page_title": "Modules",
     "menu_slug": "modules",
     "parent_slug": "none",
-    "advanced_configuration": 0,
+    "advanced_configuration": 1,
     "icon_url": "",
     "menu_title": "",
     "position": "",
@@ -14,9 +14,9 @@
     "description": "",
     "update_button": "Update",
     "updated_message": "Options Updated",
-    "capability": "edit_posts",
+    "capability": "publish_pages",
     "data_storage": "options",
     "post_id": "",
     "autoload": 0,
-    "modified": 1704850821
+    "modified": 1709837178
 }
