@@ -377,7 +377,8 @@ function validate_data($data, $schema, $field = 'root') {
 					}
 
 					// Handle object data by calling validate_data recursively
-					$keyResult = validate_data($data[$key], $config, $field . '/' . $key);
+					$keyResult = false;
+					if (array_key_exists($key, $data)) $keyResult = validate_data($data[$key], $config, $field . '/' . $key);
 
 					if ($keyResult !== false) {
 						foreach ($keyResult['missing'] as $f) $missing[] = $f;
@@ -427,7 +428,7 @@ define('lqx\util\schema_int', ['type' => 'integer']);
 // Schema: integer, required, no default
 define('lqx\util\schema_int_req', ['type' => 'integer', 'required' => true]);
 // Regex to match hex color strings
-define('lqx\util\schema_hex_color', ['type' => 'string', 'required' => true, 'match' => '/^#([A-Fa-f0-9]{8}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{4}|[A-Fa-f0-9]{3})$/']);
+define('lqx\util\schema_hex_color', ['type' => 'string', 'default' => '', 'match' => '/^#([A-Fa-f0-9]{8}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{4}|[A-Fa-f0-9]{3})$/']);
 // Schema: link
 define('lqx\util\schema_data_link', [
 	'title' => \lqx\util\schema_str_req_emp,

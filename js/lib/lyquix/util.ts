@@ -574,7 +574,8 @@ export const util = (() => {
 						}
 
 						// Handle object data by calling validateData recursively
-						const keyResult = validateData(data[key], schema.keys[key], `${field}/${key}`);
+						let keyResult: any = false;
+						if (key in data) keyResult = validateData(data[key], schema.keys[key], `${field}/${key}`);
 
 						if (keyResult !== false) {
 							keyResult.missing.forEach(f => missing.push(f));
@@ -624,7 +625,7 @@ export const util = (() => {
 	// Schema: integer, required, no default
 	const schemaIntReq = { type: 'integer', required: true };
 	// Regex to match hex color strings
-	const schemaHexColor = { type: 'string', required: true, match: /^#([A-Fa-f0-9]{8}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{4}|[A-Fa-f0-9]{3})$/ };
+	const schemaHexColor = { type: 'string', default: '', match: /^#([A-Fa-f0-9]{8}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{4}|[A-Fa-f0-9]{3})$/ };
 
 	// Compares version strings
 	// Returns:
