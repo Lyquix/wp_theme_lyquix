@@ -338,6 +338,12 @@ if (get_theme_mod('feat_gutenberg_blocks', '1') === '1') {
 			[ // preset and preset_name fields
 				'user' => 'field_659d5299a2521',
 				'choice' => 'field_659d3012b3e36'
+			],
+
+			// Logos
+			[ // style and style_name fields
+				'user' => 'field_65a05775a0471',
+				'choice' => 'field_65a0592361823'
 			]
 		];
 
