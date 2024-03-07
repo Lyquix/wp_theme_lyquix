@@ -57,7 +57,7 @@ function render($settings, $content) {
 			'breadcrumbs' => [
 				'type' => 'object',
 				'required' => true,
-				'elems' => [
+				'keys' => [
 					'show_breadcrumbs' => \lqx\util\schema_str_req_n,
 					'type' => [
 						'type' => 'string',

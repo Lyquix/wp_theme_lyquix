@@ -108,7 +108,7 @@ function render() {
 
 		// Page
 		elseif (is_page()) {
-			if (tmpl_file_exists('page-' . $wp_query->query['pagename'])) $tmpl_name = 'page-' . $wp_query->query['pagename'];
+			if (array_key_exists('pagename', $wp_query->query) && tmpl_file_exists('page-' . $wp_query->query['pagename'])) $tmpl_name = 'page-' . $wp_query->query['pagename'];
 			elseif (tmpl_file_exists('page')) $tmpl_name = 'page';
 		}
 

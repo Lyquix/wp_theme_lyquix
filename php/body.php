@@ -63,7 +63,7 @@ function classes() {
 					break;
 				case 'page':
 					$classes[] = $type;
-					$classes[] = $type . '-' . $wp_query->query['pagename'];
+					if (array_key_exists('pagename', $wp_query->query)) $classes[] = $type . '-' . $wp_query->query['pagename'];
 					break;
 				case 'attachment':
 					$classes[] = $type;

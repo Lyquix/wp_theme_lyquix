@@ -22,6 +22,8 @@
 //  DO NOT MODIFY THIS FILE!
 //  If you want to customize the theme, create a file called custom.php
 
+$lqx_page_template = '';
+
 if(file_exists(get_template_directory(). '/custom.php')) :
 	require get_template_directory() . '/custom.php';
 else :

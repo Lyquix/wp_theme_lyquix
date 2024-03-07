@@ -26,16 +26,36 @@ namespace lqx\css;
 
 // Convert relative URLs to absolute URLs
 function abs_url($rel, $base) {
-	if (parse_url($rel, PHP_URL_SCHEME) != '') return $rel;
-	if ($rel[0] == '#' || $rel[0] == '?') return $base . $rel;
-	extract(parse_url($base));
-	$path = preg_replace('#/[^/]*$#', '', $path);
-	if ($rel[0] == '/') $path = '';
-	$abs = $host . $path . '/' . $rel;
-	$re = ['#(/\.?/)#', '#/(?!\.\.)[^/]+/\.\./#'];
-	for ($n = 1; $n > 0; $abs = preg_replace($re, '/', $abs, -1, $n)) {
+	if (empty($base)) throw new \InvalidArgumentException("Base URL cannot be empty.");
+
+	// Parse base URL and ensure it has a valid scheme and host
+	$parts = parse_url($base);
+	if (!$parts || !isset($parts['scheme']) || !isset($parts['host'])) {
+		throw new \InvalidArgumentException("Invalid base URL.");
 	}
-	return $scheme . '://' . $abs;
+
+	// Return the base URL if the relative URL is empty
+	if (!$rel || !is_string($rel)) return $base;
+
+	// Check if the relative URL is already an absolute URL
+	if (filter_var($rel, FILTER_VALIDATE_URL)) return $rel;
+
+	// Relative is a hash
+	if ($rel[0] == '#') return explode('#', $base)[0] . $rel;
+
+	// Relative is a query string
+	if ($rel[0] == '?') return explode('?', $base)[0] . $rel;
+
+	// Relative is a path relative to the root
+	if ($rel[0] == '/') return (array_key_exists('path', $parts) ? explode($parts['path'], $base)[0] : $base ) . $rel;
+
+	// Relative is a path relative to the current directory
+	// Base has no path
+	if (!array_key_exists('path', $parts)) return $base . '/' . $rel;
+
+	// Base has a path
+	$path = preg_replace('#/[^/]*$#', '', $parts['path']);
+	return explode($parts['path'], $base)[0] . $path . '/' . $rel;
 }
 
 function enqueue_styles() {

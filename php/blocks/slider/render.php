@@ -30,6 +30,9 @@ namespace lqx\blocks\slider;
  * @param array $content - block content
  */
 function render($settings, $content) {
+	// Return if there is no content
+	if ($content === false) return;
+
 	// Get and validate processed settings
 	$s = \lqx\util\validate_data($settings['processed'], [
 		'type' => 'object',

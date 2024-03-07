@@ -65,6 +65,7 @@ add_action('rest_api_init', function () {
 	register_rest_route('wp/v2/options', '/modal', [
 		'methods' => 'GET',
 		'callback' => 'lqx\modules\modal\rest_route',
+		'permission_callback' => '__return_true',
 	]);
 });
 
