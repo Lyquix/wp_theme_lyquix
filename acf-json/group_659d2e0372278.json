@@ -36,6 +36,10 @@
             },
             "layout": "block",
             "acfe_seamless_style": 1,
+            "acfe_group_modal": 0,
+            "acfe_group_modal_close": 0,
+            "acfe_group_modal_button": "",
+            "acfe_group_modal_size": "large",
             "sub_fields": [
                 {
                     "key": "field_659d51caf3d2a",
@@ -56,47 +60,6 @@
                     "hide_instructions": "",
                     "hide_required": "",
                     "choices": {
-                        "Select": "Select",
-                        "": "Select"
-                    },
-                    "default_value": false,
-                    "return_format": "value",
-                    "multiple": 0,
-                    "max": "",
-                    "prepend": "",
-                    "append": "",
-                    "acfe_settings": "",
-                    "acfe_validate": "",
-                    "allow_null": 0,
-                    "instruction_placement": "tooltip",
-                    "acfe_permissions": "",
-                    "ui": 0,
-                    "ajax": 0,
-                    "placeholder": "",
-                    "allow_custom": 0,
-                    "search_placeholder": "",
-                    "min": ""
-                },
-                {
-                    "key": "field_659d5299a2521",
-                    "label": "Preset",
-                    "name": "preset",
-                    "aria-label": "",
-                    "type": "select",
-                    "instructions": "Select from the available settings for this block. Leave blank to use the default settings.",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "hide_field": "",
-                    "hide_label": "",
-                    "hide_instructions": "",
-                    "hide_required": "",
-                    "choices": {
-                        "Select": "Select",
                         "": "Select"
                     },
                     "default_value": false,
@@ -117,11 +80,7 @@
                     "search_placeholder": "",
                     "min": ""
                 }
-            ],
-            "acfe_group_modal": 0,
-            "acfe_group_modal_close": 0,
-            "acfe_group_modal_button": "",
-            "acfe_group_modal_size": "large"
+            ]
         }
     ],
     "location": [
@@ -150,5 +109,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1706575250
+    "modified": 1709775342
 }

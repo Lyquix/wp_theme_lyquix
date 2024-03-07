@@ -76,7 +76,7 @@
                     "aria-label": "",
                     "type": "text",
                     "instructions": "Clickable element that controls the opening and closing of the corresponding panel",
-                    "required": 1,
+                    "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
                         "width": "",
@@ -90,7 +90,6 @@
                     "default_value": "",
                     "acfe_settings": "",
                     "acfe_validate": "",
-                    "required_message": "",
                     "maxlength": "",
                     "instruction_placement": "tooltip",
                     "acfe_permissions": "",
@@ -172,5 +171,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1706556238
+    "modified": 1707485588
 }
