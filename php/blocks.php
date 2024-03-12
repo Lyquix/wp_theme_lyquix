@@ -198,52 +198,59 @@ function find_value_by_key($array, $keyToFind) {
 	return $result;
 }
 
-function reset_field($field, $ancestor) {
-	$log = [$field['name'], $field['key'], $field['type']];
+function get_global_field_groups() {
+	$field_groups = [];
 
-	// Cycle through the subfields and reset them
-	if ($field['type'] == 'group' &&  isset($field['sub_fields'])) {
-		foreach ($field['sub_fields'] as $sub_field) {
-			$log[] = \lqx\blocks\reset_field($sub_field, $ancestor . '_' . $field['name']);
-		}
-	}
-	else {
-		// Reset or Clear data
-		if (array_key_exists('default_value', $field)) {
-			$log[] = 'update: ' . print_r($field['default_value'], true);
-			$log[] = update_field($field['key'], $field['default_value'], 'option');
-		}
-		else {
-			$log[] = "delete";
-			$log[] = delete_field($field['key'], 'option');
-		}
-	}
-
-	return $log;
-}
-
-function reset_global_settings_ajax() {
-	$log = [];
-	// Check nonce for security
-	check_ajax_referer('reset-global-settings');
 	$json_files = glob(get_stylesheet_directory() . '/acf-json/*.json');
 	foreach ($json_files as $json_file) {
 		$field_group = json_decode(file_get_contents($json_file), true);
 		if (!empty($field_group['fields'])) {
 			foreach ($field_group['fields'] as $field) {
 				if (strpos($field['name'], '_block_global') !== false || strpos($field['name'], '_module_settings') !== false) {
-					$log[] = [$field['name'], $field['key'], $field['type']];
-					if (isset($field['sub_fields'])) {
-						foreach ($field['sub_fields'] as $sub_field) {
-							$log[] = \lqx\blocks\reset_field($sub_field, $field['name']);
-						}
-					}
+					$field_groups[] = $field;
 				}
 			}
 		}
 	}
-	echo 'Done! The global settings of all Lyquix blocks and modules have been reset to their default values.';
-	file_put_contents(__DIR__ . '/blocks-reset-global-settings.log', json_encode($log, JSON_PRETTY_PRINT));
+
+	return $field_groups;
+}
+
+function reset_field($field, $ancestors) {
+	$default_value = array_key_exists('default_value', $field) ? $field['default_value'] : '';
+	if (is_array($default_value) && !count($default_value)) $default_value = '';
+	$value = [$field['key'] => $default_value];
+	if (count($ancestors) > 1) {
+		for ($i = count($ancestors) - 1; $i > 0; $i--) {
+			$value = [$ancestors[$i] => $value];
+		}
+	}
+	update_field($ancestors[0], $value, 'option');
+
+	if ($field['type'] == 'group' && isset($field['sub_fields'])) {
+		foreach ($field['sub_fields'] as $sub_field) {
+			\lqx\blocks\reset_field($sub_field, array_merge($ancestors, [$field['key']]));
+		}
+	}
+}
+
+function reset_global_settings_ajax() {
+	// Check nonce for security
+	if (!check_ajax_referer('reset-global-settings')) wp_die('Nonce validation failed');
+
+	// Check if field key is set
+	if (!isset($_POST['field_groups'])) wp_send_json_error('Field groups not provided');
+
+	$field_groups = \lqx\blocks\get_global_field_groups();
+
+	foreach ($field_groups as $field_group) {
+		if (in_array($field_group['name'], $_POST['field_groups']) && isset($field_group['sub_fields'])) {
+			foreach ($field_group['sub_fields'] as $sub_field) {
+				\lqx\blocks\reset_field($sub_field, [$field_group['name']]);
+			}
+		}
+	}
+	echo 'Done! The global settings of the selected Lyquix blocks and modules have been reset to their default values.';
 	wp_die();
 }
 
@@ -256,6 +263,37 @@ function reset_global_settings_page() {
 		<?= __('<strong>Warning!</strong><br>This will reset the global settings of all Lyquix blocks and modules.<br>This action cannot be undone. We recommend that you first take a database backup.'); ?>
 	</div>
 	<div>
+		<p>
+			<input type="checkbox" id="toggleAll" checked> <label for="toggleAll">Toggle All</label><br>
+			<?php
+			$field_groups = array_map(function ($value) {
+				return $value['name'];
+			}, \lqx\blocks\get_global_field_groups());
+
+			// Separate the values into two arrays based on "block" or "module"
+			$block_values = array_filter($field_groups, function ($value) {
+				return strpos($value, '_block_global') !== false;
+			});
+			$module_values = array_filter($field_groups, function ($value) {
+				return strpos($value, '_module_settings') !== false;
+			});
+
+			// Sort the arrays alphabetically
+			sort($block_values);
+			sort($module_values);
+
+			// Combine the sorted arrays
+			$field_groups = array_merge($block_values, $module_values);
+
+			// Render the checkboxes
+			foreach ($field_groups as $field_group) {
+				echo str_replace(
+					'%s', $field_group,
+					'<input type="checkbox" name="field_groups[]" id="field_group_%s" value="%s" checked> <label for="field_group_%s">%s</label><br>'
+				);
+			}
+			?>
+		</p>
 		<button class="custom-reset-button button button-primary wp-ui-notification" id="resetFieldsBtn">
 			Reset Global Settings
 		</button>
@@ -263,12 +301,34 @@ function reset_global_settings_page() {
 </div>
 <script>
 	jQuery(document).ready(function() {
+		// Toggle All checkbox functionality
+		jQuery('#toggleAll').click(function() {
+			jQuery('input[name="field_groups[]"]').prop('checked', this.checked);
+		});
+
+		// Check if all checkboxes are checked
+		jQuery('input[name="field_groups[]"]').click(function() {
+			let allChecked = jQuery('input[name="field_groups[]"]').length === jQuery('input[name="field_groups[]"]:checked').length;
+			jQuery('#toggleAll').prop('checked', allChecked);
+		});
+
+		// Handle reset button click
 		jQuery('#resetFieldsBtn').click(function() {
+			let checkedCheckboxes = jQuery('input[name="field_groups[]"]:checked');
+			if (checkedCheckboxes.length === 0) {
+					alert('Please select at least one block or module.');
+					return;
+			}
+
 			if (confirm("Are you sure you want to reset the global settings of all Lyquix blocks and modules to their default values?")) {
 				let data = {
 					action: "reset_global_settings",
 					_ajax_nonce: "<?php echo wp_create_nonce('reset-global-settings'); ?>",
+					field_groups: checkedCheckboxes.map(function() {
+						return this.value;
+					}).get()
 				};
+
 				jQuery.post(ajaxurl, data, function(response) {
 					alert(response);
 				});
@@ -426,7 +486,7 @@ if (get_theme_mod('feat_gutenberg_blocks', '1') === '1') {
 	});
 
 	// Add admin page for resetting global settings
-	add_action('admin_menu', function() {
+	add_action('admin_menu', function () {
 		add_submenu_page(
 			'site-settings',
 			'Reset Global Settings',
@@ -440,4 +500,3 @@ if (get_theme_mod('feat_gutenberg_blocks', '1') === '1') {
 	// Endpoint for resetting global settings AJAX
 	add_action('wp_ajax_reset_global_settings', '\lqx\blocks\reset_global_settings_ajax');
 }
-

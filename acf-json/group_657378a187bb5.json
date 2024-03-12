@@ -5,7 +5,7 @@
         {
             "key": "field_657b659fe0b81",
             "label": "",
-            "name": "social_icons_module",
+            "name": "social_icons_module_settings",
             "aria-label": "",
             "type": "group",
             "instructions": "",
@@ -286,5 +286,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1706592743
+    "modified": 1710264522
 }

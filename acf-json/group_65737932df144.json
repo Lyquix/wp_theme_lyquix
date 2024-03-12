@@ -5,7 +5,7 @@
         {
             "key": "field_65775c078af28",
             "label": "",
-            "name": "social_share_module",
+            "name": "social_share_module_settings",
             "aria-label": "",
             "type": "group",
             "instructions": "",
@@ -258,5 +258,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1706592780
+    "modified": 1710264532
 }

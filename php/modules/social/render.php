@@ -36,7 +36,7 @@ namespace lqx\modules\social;
  */
 function render_social_icons($settings = null) {
 	// Get settings
-	if ($settings == null) $settings = get_field('social_icons_module', 'option');
+	if ($settings == null) $settings = get_field('social_icons_module_settings', 'option');
 
 	// Validate settings
 	$s = \lqx\util\validate_data($settings, [
@@ -108,7 +108,7 @@ function render_social_icons($settings = null) {
  */
 function render_social_share($settings = null) {
 	// Get settings
-	if ($settings == null) $settings = get_field('social_share_module', 'option');
+	if ($settings == null) $settings = get_field('social_share_module_settings', 'option');
 
 	// Validate settings
 	$s = \lqx\util\validate_data($settings, [
