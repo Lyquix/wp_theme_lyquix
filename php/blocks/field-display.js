@@ -36,7 +36,7 @@
 	function initBlocks(blocks) {
 		blocks.forEach((block) => {
 			// eslint-disable-next-line no-undef
-			acfAjax.json.forEach((item) => {
+			acfObj.json.forEach((item) => {
 				if (block.attributes.name === item.settings.block_name) {
 					updateBlock(item, block);
 				}
@@ -51,7 +51,7 @@
 			let block = select.getSelectedBlock();
 			if (block) {
 				// eslint-disable-next-line no-undef
-				acfAjax.json.forEach((item) => {
+				acfObj.json.forEach((item) => {
 					if (block.attributes.name === item.settings.block_name) {
 						updateBlock(item, block);
 					}
@@ -61,13 +61,13 @@
 	});
 
 	// Handle block dependency
-	const updateBlock = async (item, block) => {
+	const updateBlock = (item, block) => {
 		let blockEl = $('#block-' + block.clientId);
 
 		for (const rule of item.rules) {
 			let dependency = {};
 
-			let settings = await processSettings(item.settings, rule);
+			let settings = processSettings(item.settings, rule);
 
 			if (!block.fieldDependencies) {
 				block.fieldDependencies = [];
@@ -93,7 +93,7 @@
 					user_setting: {
 						field_value: block.attributes.data[userSettingKey],
 						setting_field: userSetting.user_preset_field,
-						global_presets_field: await getACFFieldValue(userSetting.global_presets_field),
+						global_presets_field: getACFFieldValue(userSetting.global_presets_field),
 					},
 					admin_setting: {
 						field_value: block.attributes.data[adminSettingKey],
@@ -139,29 +139,16 @@
 		}
 	};
 
-	const getACFFieldValue = async (fieldKey, fieldGroup, controller) => {
-		return new Promise((resolve, reject) => {
-			$.ajax({
-				// eslint-disable-next-line no-undef
-				url: acfAjax.ajaxurl,
-				type: 'post',
-				data: {
-					action: 'get_acf_field',
-					// eslint-disable-next-line no-undef
-					nonce: acfAjax.nonce,
-					field_key: fieldKey,
-					field_group: fieldGroup,
-					controller: controller
-				},
-				success: function (response) {
-					if (response.success) {
-						resolve(response.data);
-					} else {
-						reject('Error fetching ACF field value');
-					}
-				}
-			});
-		});
+	const getACFFieldValue = (fieldKey, fieldGroup, controller) => {
+		if(fieldKey) {
+			let field = acfObj.globalSettings.find(obj => obj.key === fieldKey);
+			return field.value;
+		}
+
+		if(fieldGroup) {
+			let field = acfObj.globalSettings.find(obj => obj.key === fieldGroup);
+			return findValueByKey(field, controller);
+		}
 	};
 
 	const findKeyByValue = (object, value) => {
@@ -185,10 +172,10 @@
 		return null;
 	};
 
-	const processSettings = async (settings, rule) => {
+	const processSettings = (settings, rule) => {
 		let processed = {};
 		processed.field_key = $('[data-key=' + settings.content_field + '] [data-name=' + rule.field + ']').attr('data-key');
-		processed.globalSetting = await getACFFieldValue(null, settings.global_field, rule.controller);
+		processed.globalSetting = getACFFieldValue(null, settings.global_field, rule.controller);
 		processed.userSetting = {};
 		processed.userSetting.global_presets_field = settings.presets_field;
 		processed.userSetting.user_preset_field = $('[data-key=' + settings.user_field + '] [data-name=preset]').attr('data-key');

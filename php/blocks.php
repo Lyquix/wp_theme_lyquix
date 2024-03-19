@@ -456,10 +456,21 @@ if (get_theme_mod('feat_gutenberg_blocks', '1') === '1') {
 		if (is_admin()) {
 			wp_enqueue_script('custom-acf-js', get_template_directory_uri() . '/php/blocks/field-display.js', ['wp-data', 'acf-input', 'jquery']);
 			// Passing to js the url+nonce required for ajax call and the json containing the fields dependencies
-			wp_localize_script('custom-acf-js', 'acfAjax', array(
-				'ajaxurl' => admin_url('admin-ajax.php'),
-				'nonce' => wp_create_nonce('acf_ajax_nonce'),
-				'json' => json_decode(file_get_contents(get_template_directory() . '/php/blocks/field-display-rules.json'))
+            $globalSettings = [];
+            $json = json_decode(file_get_contents(get_template_directory() . '/php/blocks/field-display-rules.json'));
+            foreach ($json as $item) {
+                $globalSettings[] = [
+                    'key' => $item->settings->global_field,
+                    'value' => get_field($item->settings->global_field, 'options')
+                ];
+                $globalSettings[] = [
+                    'key' => $item->settings->presets_field,
+                    'value' => get_field($item->settings->presets_field, 'options')
+                ];
+            }
+			wp_localize_script('custom-acf-js', 'acfObj', array(
+				'json' => $json,
+                'globalSettings' => $globalSettings
 			));
 		}
 	});
