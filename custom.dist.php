@@ -42,6 +42,7 @@
 	?>
 </head>
 <body class="<?= \lqx\body\classes() ?>">
+	<a href="#content" class="skip-to-content-link">Skip to Content</a>
 	<?php
 	// Render GTM body code
 	\lqx\js\render_gtm_body_code();
@@ -83,7 +84,7 @@
 
 		</header>
 
-		<main>
+		<main id="content">
 
 			<article>
 
