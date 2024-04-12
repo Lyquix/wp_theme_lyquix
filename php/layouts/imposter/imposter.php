@@ -1,7 +1,7 @@
 <?php
 
 /**
- * imposter.php - Lyquix imposter layout block - https://tailwind-layouts.dev/layouts/
+ * imposter.php - Lyquix imposter layout block - https://tailwind-layouts-plugin.netlify.app/
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix

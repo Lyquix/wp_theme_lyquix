@@ -1,7 +1,7 @@
 <?php
 
 /**
- * icon.php - Lyquix icon layout block - https://tailwind-layouts.dev/layouts/
+ * icon.php - Lyquix icon layout block - https://tailwind-layouts-plugin.netlify.app/
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix
