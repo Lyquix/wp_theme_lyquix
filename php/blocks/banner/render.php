@@ -176,12 +176,12 @@ function render($settings, $content) {
 						<img
 							src="<?= esc_attr($c['image']['url']) ?>"
 							alt="<?= esc_attr($c['image']['alt']) ?>"
-							class="<?= array_key_exists('url', $c['image_mobile']) ? 'xs:hidden sm:hidden' : '' ?>" />
+							class="<?= array_key_exists('url', $c['image_mobile']) ? 'xs:hidden md:block' : '' ?>" />
 						<?php if (array_key_exists('url', $c['image_mobile'])) : ?>
 							<img
 								src="<?= esc_attr($c['image_mobile']['url']) ?>"
 								alt="<?= esc_attr($c['image_mobile']['alt']) ?>"
-								class="md:hidden lg:hidden xl:hidden" />
+								class="xs:block md:hidden" />
 						<?php endif; ?>
 					<?php endif; ?>
 				</div>
