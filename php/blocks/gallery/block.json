@@ -25,7 +25,7 @@
 	"name": "lqx/gallery",
 	"title": "Lyquix Gallery",
 	"description": "A media gallery block with lightbox support",
-	"category": "lqx-module-blocks",
+	"category": "lqx-content-blocks",
 	"icon": "format-gallery",
 	"keywords": [
 		"media",

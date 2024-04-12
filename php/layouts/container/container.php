@@ -24,9 +24,9 @@
 
 // Get a list of used Tailwind classes
 $classes = \lqx\layouts\get_tailwind_classes();
-if ($block['className']) $classes .= ' ' . $block['className'];
+if (array_key_exists('className', $block) && !empty($block['className']) ) $classes .= ' ' . $block['className'];
 
 ?>
-<div id="<?= esc_attr($block['anchor']) ?>" class="container <?= $classes ?>">
+<div id="<?= esc_attr($block['anchor'] ?? '') ?>" class="container <?= $classes ?>">
 	<InnerBlocks />
 </div>

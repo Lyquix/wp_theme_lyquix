@@ -25,7 +25,7 @@
 	"name": "lqx/slider",
 	"title": "Lyquix Slider",
 	"description": "A slider block",
-	"category": "lqx-module-blocks",
+	"category": "lqx-content-blocks",
 	"icon": "slides",
 	"keywords": [
 		"slider"

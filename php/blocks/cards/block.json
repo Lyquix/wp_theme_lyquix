@@ -25,7 +25,7 @@
 	"name": "lqx/cards",
 	"title": "Lyquix Cards",
 	"description": "An cards block",
-	"category": "lqx-module-blocks",
+	"category": "lqx-content-blocks",
 	"icon": "screenoptions",
 	"keywords": [
 		"cards"

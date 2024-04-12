@@ -51,10 +51,10 @@ function get_tailwind_classes() {
 if (get_theme_mod('feat_gutenberg_layout_blocks', '1') === '1') {
 	// Register the Lyquix Layouts blocks category
 	add_filter('block_categories_all', function ($categories) {
-		$categories[] = [
+		array_splice($categories, 1, 0, [[
 			'slug'  => 'lqx-layout-blocks',
-			'title' => 'Lyquix Layouts'
-		];
+			'title' => 'Lyquix Layout Blocks'
+		]]);
 
 		return $categories;
 	});

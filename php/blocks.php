@@ -342,10 +342,10 @@ function reset_global_settings_page() {
 if (get_theme_mod('feat_gutenberg_blocks', '1') === '1') {
 	// Register the Lyquix Modules block category
 	add_filter('block_categories_all', function ($categories) {
-		$categories[] = [
-			'slug'  => 'lqx-module-blocks',
-			'title' => 'Lyquix Modules'
-		];
+		array_unshift($categories, [
+			'slug'  => 'lqx-content-blocks',
+			'title' => 'Lyquix Content Blocks'
+		]);
 
 		return $categories;
 	});

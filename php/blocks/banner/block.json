@@ -25,7 +25,7 @@
 	"name": "lqx/banner",
 	"title": "Lyquix Banner",
 	"description": "A banner block",
-	"category": "lqx-module-blocks",
+	"category": "lqx-content-blocks",
 	"icon": "cover-image",
 	"keywords": [
 		"banner"

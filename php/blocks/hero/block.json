@@ -25,7 +25,7 @@
 	"name": "lqx/hero",
 	"title": "Lyquix Hero",
 	"description": "A banner block meant for the top of the page",
-	"category": "lqx-module-blocks",
+	"category": "lqx-content-blocks",
 	"icon": "cover-image",
 	"keywords": [
 		"banner"
