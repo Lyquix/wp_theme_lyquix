@@ -264,8 +264,8 @@ function render($settings, $content) {
 									<ul class="labels">
 										<?php foreach ($item['labels'] as $label) : ?>
 											<li
-												data-label-value="<?= $label['label']['value'] ? $label['label']['value'] : \lqx\util\slugify($label['label']['label']) ?>">
-												<?= $label['label']['label'] ?>
+												data-label-value="<?= $label['value'] ? $label['value'] : \lqx\util\slugify($label['label']) ?>">
+												<?= $label['label'] ?>
 											</li>
 										<?php endforeach; ?>
 									</ul>
@@ -305,10 +305,12 @@ function render($settings, $content) {
 											<?= $s['heading_clickable'] == 'y' && $first_link ? sprintf('<a href="%s">%s</a>', esc_attr($first_link), $item['heading']) : $item['heading'] ?>
 										</<?= $s['heading_style'] ?>>
 									<?php endif; ?>
-									<?php if ($item['subheading']) : ?>
-										<<?= $s['subheading_style'] == 'p' ? 'p class="subtitle"><strong' : $s['subheading_style'] ?>>
-											<?= $item['subheading'] ?>
-										</<?= $s['subheading_style'] == 'p' ? 'strong></p' : $s['subheading_style'] ?>>
+									<?php if ($s['show_subheading'] == 'y'): ?>
+										<?php if ($item['subheading']) : ?>
+											<<?= $s['subheading_style'] == 'p' ? 'p class="subtitle"><strong' : $s['subheading_style'] ?>>
+												<?= $item['subheading'] ?>
+											</<?= $s['subheading_style'] == 'p' ? 'strong></p' : $s['subheading_style'] ?>>
+										<?php endif; ?>
 									<?php endif; ?>
 									<?= $item['body'] ?>
 								</div>
