@@ -127,7 +127,7 @@ function enqueue_styles() {
 
 	// Queue styles
 	foreach ($stylesheets as $css_url) {
-		wp_enqueue_style($css_url['handle'], $css_url['url'], [], array_key_exists('version', $css_url) ? $css_url['version'] : null);
+		wp_enqueue_style($css_url['handle'], $css_url['url'], [], $css_url['version'] ?? null);
 	}
 }
 

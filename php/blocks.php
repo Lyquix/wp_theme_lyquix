@@ -217,7 +217,7 @@ function get_global_field_groups() {
 }
 
 function reset_field($field, $ancestors) {
-	$default_value = array_key_exists('default_value', $field) ? $field['default_value'] : '';
+	$default_value = $field['default_value'] ?? '';
 	if (is_array($default_value) && !count($default_value)) $default_value = '';
 	$value = [$field['key'] => $default_value];
 	if (count($ancestors) > 1) {

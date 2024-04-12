@@ -280,14 +280,14 @@ function customizer_add($wp_customize) {
 			$wp_customize->add_setting($name, [
 				'type' => 'theme_mod',
 				'transport' => 'refresh',
-				'default' => array_key_exists('default', $options) ? $options['default'] : null
+				'default' => $options['default'] ?? null
 			]);
 			$wp_customize->add_control($name, [
-				'type' => array_key_exists('type', $options) ? $options['type'] : null,
+				'type' => $options['type'] ?? null,
 				'label' => __($options['label'], 'lyquix'),
 				'section' => 'lqx_' . strtolower($section),
 				'settings' => $name,
-				'choices' => array_key_exists('choices', $options) ? $options['choices'] : null
+				'choices' => $options['choices'] ?? null
 			]);
 		}
 	}

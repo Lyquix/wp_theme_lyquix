@@ -141,7 +141,7 @@ function enqueue_scripts() {
 
 	// Queue styles
 	foreach ($scripts as $js_url) {
-		wp_enqueue_script($js_url['handle'], $js_url['url'], [], array_key_exists('version', $js_url) ? $js_url['version'] : null, true);
+		wp_enqueue_script($js_url['handle'], $js_url['url'], [], $js_url['version'] ?? null, true);
 	}
 }
 add_action('wp_enqueue_scripts', '\lqx\js\enqueue_scripts', 100);
