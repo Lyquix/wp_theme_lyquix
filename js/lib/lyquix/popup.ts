@@ -176,7 +176,7 @@ export const popup = (() => {
 
 			},
 
-			url: vars.siteURL + '/wp-json/wp/v2/options/popup'
+			url: vars.siteURL + '/wp-json/lyquix/v3/popup'
 		});
 	};
 

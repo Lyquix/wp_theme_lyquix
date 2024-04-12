@@ -244,7 +244,7 @@ export const alerts = (() => {
 
 			},
 
-			url: vars.siteURL + '/wp-json/wp/v2/options/alerts'
+			url: vars.siteURL + '/wp-json/lyquix/v3/alerts'
 		});
 	};
 	return {

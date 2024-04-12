@@ -175,7 +175,7 @@ export const modal = (() => {
 
 			},
 
-			url: vars.siteURL + '/wp-json/wp/v2/options/modal'
+			url: vars.siteURL + '/wp-json/lyquix/v3/modal'
 		});
 	};
 

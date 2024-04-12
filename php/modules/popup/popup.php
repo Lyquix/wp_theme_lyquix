@@ -62,9 +62,9 @@ function rest_route() {
 
 // Register a REST API endpoint to get the popup from site options
 add_action('rest_api_init', function () {
-	register_rest_route('wp/v2/options', '/popup', [
+	register_rest_route('lyquix/v3', '/popup', [
 		'methods' => 'GET',
-		'callback' => 'lqx\modules\popup\rest_route',
+		'callback' => '\lqx\modules\popup\rest_route',
 		'permission_callback' => '__return_true',
 	]);
 });
