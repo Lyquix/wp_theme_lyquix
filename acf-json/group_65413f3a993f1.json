@@ -65,6 +65,9 @@
             "layout": "block",
             "acfe_seamless_style": 0,
             "acfe_group_modal": 0,
+            "acfe_group_modal_close": 0,
+            "acfe_group_modal_button": "",
+            "acfe_group_modal_size": "large",
             "sub_fields": [
                 {
                     "key": "field_65413f3ad0928",
@@ -120,6 +123,10 @@
                     "acfe_settings": "",
                     "instruction_placement": "",
                     "acfe_permissions": "",
+                    "acfe_group_modal": 0,
+                    "acfe_group_modal_close": 0,
+                    "acfe_group_modal_button": "",
+                    "acfe_group_modal_size": "large",
                     "sub_fields": [
                         {
                             "key": "field_65775f03bcde7",
@@ -276,16 +283,9 @@
                             "allow_null": 0,
                             "layout": "horizontal"
                         }
-                    ],
-                    "acfe_group_modal": 0,
-                    "acfe_group_modal_close": 0,
-                    "acfe_group_modal_button": "",
-                    "acfe_group_modal_size": "large"
+                    ]
                 }
-            ],
-            "acfe_group_modal_close": 0,
-            "acfe_group_modal_button": "",
-            "acfe_group_modal_size": "large"
+            ]
         },
         {
             "key": "field_6577644a0a231",
@@ -301,12 +301,19 @@
                 "class": "",
                 "id": ""
             },
+            "hide_field": "",
+            "hide_label": "",
+            "hide_instructions": "",
+            "hide_required": "",
             "acfe_repeater_stylised_button": 0,
             "layout": "block",
             "pagination": 0,
+            "acfe_settings": "",
             "min": 0,
             "max": 0,
-            "collapsed": "",
+            "instruction_placement": "",
+            "acfe_permissions": "",
+            "collapsed": "field_657766304a9cc",
             "button_label": "Add Row",
             "rows_per_page": 20,
             "sub_fields": [
@@ -388,5 +395,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1706589500
+    "modified": 1710384066
 }

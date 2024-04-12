@@ -146,7 +146,7 @@ function get_settings($block, $post_id = null) {
 		]
 	];
 
-	if ($settings['global'] != null) $settings['processed'] = array_merge($settings['processed'], $settings['global']);
+	if ($settings['global'] !== null) $settings['processed'] = array_merge($settings['processed'], $settings['global']);
 
 	// Check for user settings
 	if ($settings['local']['user'] !== null) {
@@ -166,7 +166,7 @@ function get_settings($block, $post_id = null) {
 	}
 
 	// Check for admin settings
-	if (!empty($settings['local']['admin'])) {
+	if ($settings['local']['admin'] !== null) {
 		// Process the overrides
 		$settings['processed'] = merge_settings($settings['processed'], remove_empty_settings(process_overrides($settings['local']['admin'])));
 	}

@@ -235,7 +235,7 @@
             "max": 0,
             "instruction_placement": "",
             "acfe_permissions": "",
-            "collapsed": "",
+            "collapsed": "field_658061d6e7ed2",
             "button_label": "Add Row",
             "rows_per_page": 20,
             "sub_fields": [
@@ -317,5 +317,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1710264809
+    "modified": 1710384058
 }
