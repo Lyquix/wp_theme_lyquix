@@ -29,10 +29,15 @@ import autoprefixer from 'autoprefixer';
 import sourcemaps from 'gulp-sourcemaps';
 import rename from 'gulp-rename';
 import terser from 'gulp-terser';
-import { exec } from 'child_process';
+import { execSync } from 'child_process';
 
 // Minify CSS
 gulp.task('css', () => {
+	for (let i = 0; i < 5; i++) {
+		const data = fs.readFileSync('css/styles.css', 'utf8');
+		if (!data.includes('theme(')) break;
+		execSync('npx tailwindcss -i css/custom.css -c css/tailwind/config.js -o css/styles.css');
+	}
 	const postCSSPlugins = [
 		cssnano({ preset: 'default' }),
 		autoprefixer()
@@ -71,42 +76,12 @@ gulp.task('vuejs', () => {
 		.pipe(gulp.dest('js'));
 });
 
-// Task to check for theme() and process with Tailwind if found
-gulp.task('tailwind-process', (done) => {
-	// Read the styles.css file
-	fs.readFile('css/styles.css', 'utf8', (err, data) => {
-		if (err) {
-			console.error(err);
-			return done(err);
-		}
-
-		// Check if the file contains 'theme('
-		if (data.includes('theme(')) {
-			// If 'theme(' is found, run Tailwind CLI to process the file
-			console.log('theme() found, running Tailwind...');
-			exec('tailwindcss -i css/styles.css -c css/tailwind/config.js -o css/styles.css', (err, stdout, stderr) => {
-				if (err) {
-					console.error(err);
-					return done(err);
-				}
-				console.log(stdout);
-				console.error(stderr);
-				done();
-			});
-		} else {
-			// No 'theme(' found, nothing to do
-			console.log('No theme() found, skipping Tailwind processing.');
-			done();
-		}
-	});
-});
-
 // Livereload
 gulp.task('livereload', () => {
 	livereload.listen(35729);
 
 	// Minify CSS
-	gulp.watch('css/styles.css', gulp.series('css', 'tailwind-process'));
+	gulp.watch('css/styles.css', gulp.parallel('css'));
 
 	// Minify JS
 	gulp.watch('js/lyquix.js', gulp.parallel('lyquixjs'));
