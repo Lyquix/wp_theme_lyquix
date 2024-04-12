@@ -33,32 +33,47 @@ if [ ! -f css/custom/custom.scss ]; then
 	cp css/custom/custom.dist.scss css/custom/custom.scss
 fi
 if [ ! -f css/custom.css ]; then
-	echo "# This file will be overwritten when SCSS is compiled" > css/custom.css
+	echo "/* This file will be overwritten when SCSS is compiled */" > css/custom.css
 fi
 if [ ! -f css/custom/editor.css ]; then
-	echo "# This file will be overwritten when SCSS is compiled" >  css/custom/editor.css
+	echo "/* This file will be overwritten when SCSS is compiled */" > css/custom/editor.css
 fi
 if [ ! -f css/tailwind/theme.js ]; then
 	cp css/tailwind/theme.dist.js css/tailwind/theme.js
 fi
 
-# Copy sample styles from css/lib to css/custom
-FILES=("vars" "base" "text" "lists" "tables" "forms" "utility" "buttons" "pagination" "breadcrumbs" \
-	"accordion" "alerts" "banner" "cards" "cta" "gallery" "hero" "layout" "lyqbox" "popup" "slider" \
-	"social" "tabs" "header" "footer" "filters" "home" "search" "404" "page" "blog" "blog-archive")
-for FILE in "${FILES[@]}"; do
-	# Check if the file exists in the css/custom directory
-	if [ ! -f "css/custom/$FILE.scss" ]; then
-		# Check if sample file exists in css/lib directory
-		if [ -f "css/lib/$FILE.dist.scss" ]; then
-			# Copy it from the css/lib directory
-			cp "css/lib/$FILE.dist.scss" "css/custom/$FILE.scss"
-		else
-			# Create a new one
-			# Capitalize the first letter of the file name
-			echo "/* $(tr '[:lower:]' '[:upper:]' <<< ${FILE:0:1})${FILE:1} styles\n */" >  "css/custom/$FILE.scss"
-		fi
+function handle_files {
+	DIR=$1
+	FILES=("${@:2}")
+
+	# Check if the directory exists, if not create it
+	if [ ! -d "css/custom/$DIR" ]; then
+		mkdir -p "css/custom/$DIR"
 	fi
-done
+
+	for FILE in "${FILES[@]}"; do
+		# Check if the file exists in the css/custom/$DIR directory
+		if [ ! -f "css/custom/$DIR/_$FILE.scss" ]; then
+			# Copy it from the css/lib/$DIR directory
+			cp "css/lib/$DIR/_$FILE.dist.scss" "css/custom/$DIR/_$FILE.scss"
+		fi
+	done
+}
+
+ABSTRACTS=("index" "mixins" "variables")
+BASE=("forms" "index" "print" "reset" "tables" "typography")
+COMPONENTS=("accordion" "alerts" "banner" "buttons" "cards" "cta" "gallery" "hero" "index" "logos" "popup" "slider" "social" "tabs")
+LAYOUTS=("footer" "header" "index" "layout")
+PAGES=("404" "contact" "home" "index" "search")
+THEMES=("index" "theme")
+VENDORS=("index" "swiper")
+
+handle_files "abstracts" "${ABSTRACTS[@]}"
+handle_files "base" "${BASE[@]}"
+handle_files "components" "${COMPONENTS[@]}"
+handle_files "layouts" "${LAYOUTS[@]}"
+handle_files "pages" "${PAGES[@]}"
+handle_files "themes" "${THEMES[@]}"
+handle_files "vendors" "${VENDORS[@]}"
 
 cd ${CURRDIR}

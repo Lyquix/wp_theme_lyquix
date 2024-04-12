@@ -1,0 +1,84 @@
+/**
+ * _tabs.dist.scss - Sample styles for the tabs block
+ *
+ * @version     3.0.0
+ * @package     wp_theme_lyquix
+ * @author      Lyquix
+ * @copyright   Copyright (C) 2015 - 2018 Lyquix
+ * @license     GNU General Public License version 2 or later
+ * @link        https://github.com/Lyquix/wp_theme_lyquix
+ */
+
+/*
+    .d8888b. 88888888888 .d88888b.  8888888b.   888
+   d88P  Y88b    888    d88P" "Y88b 888   Y88b  888
+   Y88b.         888    888     888 888    888  888
+    "Y888b.      888    888     888 888   d88P  888
+       "Y88b.    888    888     888 8888888P"   888
+         "888    888    888     888 888         Y8P
+   Y88b  d88P    888    Y88b. .d88P 888          "
+    "Y8888P"     888     "Y88888P"  888         888
+
+  DO NOT MODIFY THIS FILE!
+	Instead copy it to css/custom/components/_tabs.scss and make your changes there.
+*/
+
+.lqx-block-tabs {
+	.tabs {
+		@apply flex border-2 border-solid border-black;
+
+		.tabs-list {
+			background-color: #f1f1f1;
+
+			&[aria-hidden="true"] {
+				@apply hidden;
+			}
+
+			li {
+				.tab {
+					@apply p-6 pb-4 pt-4;
+					&[aria-selected="true"],
+					&:focus,
+					&:hover {
+						background-color: black;
+					}
+				}
+			}
+		}
+		.tab-panel {
+			@apply flex-1;
+
+			&[aria-hidden="false"] {
+				@apply grid;
+			}
+
+			&[aria-hidden="true"] {
+				grid-template-rows: 0fr;
+			}
+		}
+	}
+	.accordion {
+		@apply block border-0;
+	}
+
+	&:not(.lqx-block-accordion) {
+		.tab-panel {
+			&[aria-hidden="true"] {
+				@apply hidden;
+			}
+
+			.tab-content {
+				@apply p-6;
+			}
+		}
+	}
+}
+
+.lqx-block-tabs,
+.lqx-block-accordion {
+	.accordion-header {
+		&[aria-hidden="true"] {
+			@apply hidden;
+		}
+	}
+}

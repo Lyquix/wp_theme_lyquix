@@ -1,6 +1,5 @@
 /**
- * banner.dist.scss - Sample styles for the banner block
- *
+ * _index.dist.scss - Sample styles for the themes index folder
  * @version     3.0.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
@@ -20,5 +19,7 @@
     "Y8888P"     888     "Y88888P"  888         888
 
   DO NOT MODIFY THIS FILE!
-	Instead copy it to css/custom/banner.scss and make your changes there.
+	Instead copy it to css/custom/themes/_index.scss and make your changes there.
 */
+
+@forward "theme";

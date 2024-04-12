@@ -1,6 +1,5 @@
 /**
- * base.dist.scss - Sample base styles
- *
+ * _reset.dist.scss - Sample styles for the base styles
  * @version     3.0.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
@@ -20,7 +19,7 @@
     "Y8888P"     888     "Y88888P"  888         888
 
   DO NOT MODIFY THIS FILE!
-	Instead copy it to css/custom/base.scss and make your changes there.
+	Instead copy it to css/custom/base/_reset.scss and make your changes there.
 */
 
 *,
@@ -45,11 +44,11 @@ html {
 }
 
 html:focus-within {
-  scroll-behavior: smooth;
+	scroll-behavior: smooth;
 }
 
 body {
-  min-height: 100vh;
+	min-height: 100vh;
 }
 
 img {
@@ -65,22 +64,22 @@ img {
 
 hr {
 	/* text color / background color / border color / vertical margin */
-	@apply bg-color-base border-color-base my-base text-color-base;
+	@apply my-base border-color-base bg-color-base text-color-base;
 	border-width: 1px;
 	border-style: solid;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html:focus-within {
-   scroll-behavior: auto;
-  }
+	html:focus-within {
+		scroll-behavior: auto;
+	}
 
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
 }

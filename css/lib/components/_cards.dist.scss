@@ -1,0 +1,57 @@
+/**
+ * _cards.dist.scss - Sample cards styles
+ *
+ * @version     3.0.0
+ * @package     wp_theme_lyquix
+ * @author      Lyquix
+ * @copyright   Copyright (C) 2015 - 2018 Lyquix
+ * @license     GNU General Public License version 2 or later
+ * @link        https://github.com/Lyquix/wp_theme_lyquix
+ */
+
+/*
+    .d8888b. 88888888888 .d88888b.  8888888b.   888
+   d88P  Y88b    888    d88P" "Y88b 888   Y88b  888
+   Y88b.         888    888     888 888    888  888
+    "Y888b.      888    888     888 888   d88P  888
+       "Y88b.    888    888     888 8888888P"   888
+         "888    888    888     888 888         Y8P
+   Y88b  d88P    888    Y88b. .d88P 888          "
+    "Y8888P"     888     "Y88888P"  888         888
+
+  DO NOT MODIFY THIS FILE!
+	Instead copy it to css/custom/components/_cards.scss and make your changes there.
+*/
+
+@use "../abstracts/variables" as *;
+$cards-image-positions: left top right;
+$cards-image-icon-positions: left center right;
+
+.lqx-block-cards {
+	.cards-wrapper {
+		display: grid;
+		gap: 1em;
+		list-style: none;
+		padding: 0;
+	}
+
+	@each $size in $screen-sizes {
+		@screen #{$size} {
+			@for $i from 1 through 12 {
+				.#{$size}\:columns-#{$i} .cards-wrapper {
+					grid-template-columns: repeat(#{$i}, 1fr);
+				}
+			}
+			@each $i in $cards-image-positions {
+				.#{$size}\:image-position-#{$i} .image {
+					/* image position */
+				}
+			}
+			@each $i in $cards-image-icon-positions {
+				.#{$size}\:image-icon-position-#{$i} .icon {
+					/* image icon position */
+				}
+			}
+		}
+	}
+}

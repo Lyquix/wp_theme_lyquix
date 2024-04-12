@@ -1,6 +1,5 @@
 /**
- * layout.dist.scss - Sample container and box widths and margins
- *
+ * _header.dist.scss - Header styles
  * @version     3.0.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
@@ -20,17 +19,5 @@
     "Y8888P"     888     "Y88888P"  888         888
 
   DO NOT MODIFY THIS FILE!
-	Instead copy it to css/custom/layout.scss and make your changes there.
+	Instead copy it to css/custom/components/_header.scss and make your changes there.
 */
-
-@each $s in $screen-sizes {
-	.container {
-		@apply #{$s}:mx-container-#{$s} #{$s}:max-w-container-#{$s};
-	}
-}
-
-@each $s in $screen-sizes {
-	.box-l {
-		@apply #{$s}:p-#{$s} #{$s}:m-#{$s};
-	}
-}

@@ -1,6 +1,5 @@
 /**
- * cards.dist.scss - Sample cards styles
- *
+ * _logos.dist.scss - Grid of logos
  * @version     3.0.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
@@ -20,36 +19,23 @@
     "Y8888P"     888     "Y88888P"  888         888
 
   DO NOT MODIFY THIS FILE!
-	Instead copy it to css/custom/cards.scss and make your changes there.
+	Instead copy it to css/custom/components/_logos.scss and make your changes there.
 */
 
-$cards-image-positions: left top right;
-$cards-image-icon-positions: left center right;
-
-.lqx-block-cards {
-	.cards-wrapper {
-		display: grid;
+.lqx-block-logos {
+	.logos {
+		@apply m-0 flex flex-wrap justify-center p-0;
 		gap: 1em;
-		list-style: none;
-		padding: 0;
-	}
 
-	@each $size in $screen-sizes {
-		@screen #{$size} {
-			@for $i from 1 through 12 {
-				.#{$size}\:columns-#{$i} .cards-wrapper {
-					grid-template-columns: repeat(#{$i}, 1fr);
-				}
+		li {
+			@apply m-0 flex list-none items-center justify-center p-0 text-center;
+			flex: 1 1 300px;
+			background-color: #eee;
+			a {
+				@apply block;
 			}
-			@each $i in $cards-image-positions {
-				.#{$size}\:image-position-#{$i} .image {
-					/* image position */
-				}
-			}
-			@each $i in $cards-image-icon-positions {
-				.#{$size}\:image-icon-position-#{$i} .icon {
-					/* image icon position */
-				}
+			img {
+				@apply object-contain;
 			}
 		}
 	}

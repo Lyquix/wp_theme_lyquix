@@ -1,5 +1,5 @@
 /**
- * socials.dist.scss - Sample styles for the social icons
+ * _banner.dist.scss - Sample styles for the banner block
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix
@@ -20,36 +20,5 @@
     "Y8888P"     888     "Y88888P"  888         888
 
   DO NOT MODIFY THIS FILE!
-	Instead copy it to css/custom/social.scss and make your changes there.
+	Instead copy it to css/custom/components/_banner.scss and make your changes there.
 */
-
-.lqx-social-icons > .icons-list,
-.lqx-social-share > .share-list {
-	list-style: none;
-	display: flex;
-	gap: 0.25em;
-
-	svg {
-		width: 48px;
-		height: 48px;
-	}
-
-	&.circle {
-		svg {
-			border-radius: 50%;
-		}
-	}
-
-	&.rounded {
-		svg {
-			border-radius: 15%;
-		}
-	}
-
-	a:hover {
-		svg {
-			--bg-color: var(--hover-bg-color);
-			--icon-color: var(--hover-icon-color);
-		}
-	}
-}

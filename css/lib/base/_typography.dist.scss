@@ -1,5 +1,5 @@
 //
-// text.dist.scss - Sample text styles
+// _typography.dist.scss - Sample text styles
 //
 // @version     3.0.0
 // @package     wp_theme_lyquix
@@ -19,7 +19,7 @@
 //    "Y8888P"     888     "Y88888P"  888         888
 
 //  DO NOT MODIFY THIS FILE!
-//  Instead copy it to css/custom/text.scss and make your changes there.
+//  Instead copy it to css/custom/base/_typography.scss and make your changes there.
 
 html {
 	// Set default font-size to 10px, then use rem units for the rest of the stylesheet
@@ -28,7 +28,7 @@ html {
 
 body {
 	/* background color / font family / font weight / text color / text size / line height */
-	@apply bg-bg font-base font-weight-base text-color-base text-size-base leading-base;
+	@apply bg-bg font-base text-size-base font-weight-base leading-base text-color-base;
 }
 
 @each $s in $screen-sizes {
@@ -38,6 +38,23 @@ body {
 }
 
 p {
+	@apply my-base;
+}
+
+ul,
+ol {
+	@apply list-inside pl-list;
+}
+
+ul {
+	@apply list-disc;
+}
+
+ol {
+	@apply list-decimal;
+}
+
+li {
 	@apply my-base;
 }
 
@@ -64,13 +81,15 @@ a {
 }
 
 @each $h in $headings {
-	#{$h}, .#{$h} {
+	#{$h},
+	.#{$h} {
 		/* text color / font family / font weight / margin */
 		@apply text-color-#{$h} font-#{$h} font-weight-#{$h} my-headings;
 	}
 
 	@each $s in $screen-sizes {
-		#{$h}, .#{$h} {
+		#{$h},
+		.#{$h} {
 			/* text size / line height */
 			@apply #{$s}:text-size-#{$h}-#{$s} #{$s}:leading-#{$h}-#{$s};
 		}
