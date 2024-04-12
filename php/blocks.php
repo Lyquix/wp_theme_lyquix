@@ -387,6 +387,16 @@ if (get_theme_mod('feat_gutenberg_blocks', '1') === '1') {
 				'choice' => 'field_656d01578aa30'
 			],
 
+			// Cards
+			[ // style and style_name fields
+				'user' => 'field_658db3cbe1430',
+				'choice' => 'field_658db3c35c5ac'
+			],
+			[ // preset and preset_name fields
+				'user' => 'field_658db3cbe1486',
+				'choice' => 'field_658db3c5e9695'
+			],
+
 			// Hero
 			[ // style and style_name fields
 				'user' => 'field_657217f48ca53',
