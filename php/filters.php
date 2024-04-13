@@ -68,7 +68,7 @@ function get_acf_fields_as_options($field_details, &$choices, $depth = 0) {
 	$key = $field_details['key'];
 	$choices[$key] = str_repeat('- ', $depth) . ($field_details['label'] ? $field_details['label'] : $field_details['name']) . ' [' . $field_details['key'] . ']';
 
-	if ($field_details['sub_fields']) {
+	if ($field_details['sub_fields'] ?? false) {
 		foreach ($field_details['sub_fields'] as $sub_field_details) {
 			get_acf_fields_as_options($sub_field_details, $choices, $depth + 1);
 		}
