@@ -83,6 +83,9 @@ require_once get_template_directory() . '/php/router.php';
 // Outdated browser alert
 require_once get_template_directory() . '/php/browsers.php';
 
+// Filters
+require_once get_template_directory() . '/php/filters.php';
+
 // Livereload
 require_once get_template_directory() . '/php/livereload.php';
 

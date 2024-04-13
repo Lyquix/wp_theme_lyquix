@@ -114,7 +114,7 @@ function merge_settings($settings, $override) {
 }
 
 // Get the settings for a block
-function get_settings($block, $post_id = null) {
+function get_settings($block, $post_id = null, $forced_preset = null, $forced_style = null) {
 	// If $block is a string, convert it to an array
 	if (is_string($block)) {
 		$block = [
@@ -145,7 +145,12 @@ function get_settings($block, $post_id = null) {
 			'hash' => 'id-' . md5(json_encode([get_the_ID(), $block, random_int(1000, 9999)])) // Generate a unique hash for the block
 		]
 	];
-
+	if ($settings['local']['user'] == null) {
+		$settings['local']['user'] = [
+			'style' => $forced_style,
+			'preset' => $forced_preset
+		];
+	}
 	if ($settings['global'] !== null) $settings['processed'] = array_merge($settings['processed'], $settings['global']);
 
 	// Check for user settings
@@ -166,7 +171,7 @@ function get_settings($block, $post_id = null) {
 	}
 
 	// Check for admin settings
-	if ($settings['local']['admin'] !== null) {
+	if (!empty($settings['local']['admin'])) {
 		// Process the overrides
 		$settings['processed'] = merge_settings($settings['processed'], remove_empty_settings(process_overrides($settings['local']['admin'])));
 	}

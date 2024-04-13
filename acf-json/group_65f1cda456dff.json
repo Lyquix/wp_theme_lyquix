@@ -1,0 +1,50 @@
+{
+    "key": "group_65f1cda456dff",
+    "title": "Block: Filters",
+    "fields": [
+        {
+            "key": "field_65f1e8ae41a6f",
+            "label": "Filters Block",
+            "name": "",
+            "aria-label": "",
+            "type": "message",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "new_lines": "wpautop",
+            "esc_html": 0
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "block",
+                "operator": "==",
+                "value": "lqx\/filters"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "acfe_autosync": [
+        "json"
+    ],
+    "acfe_form": 1,
+    "acfe_display_title": "",
+    "acfe_meta": "",
+    "acfe_note": "",
+    "modified": 1710352694
+}
