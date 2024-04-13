@@ -111,14 +111,16 @@ function enqueue_scripts() {
 	}
 
 	// Lyquix
-	$scripts[] = [
-		'handle' => 'lyquix',
-		'url' => get_template_directory_uri() . '/js/lyquix' . ($non_min_js ? '' : '.min') . '.js',
-		'version' => date("YmdHis", filemtime(get_template_directory() . '/js/lyquix' . ($non_min_js ? '' : '.min') . '.js'))
-	];
+	if (file_exists(get_template_directory() . '/js/lyquix' . ($non_min_js ? '' : '.min') . '.js')) {
+		$scripts[] = [
+			'handle' => 'lyquix',
+			'url' => get_template_directory_uri() . '/js/lyquix' . ($non_min_js ? '' : '.min') . '.js',
+			'version' => date("YmdHis", filemtime(get_template_directory() . '/js/lyquix' . ($non_min_js ? '' : '.min') . '.js'))
+		];
+	}
 
 	// Vue
-	if (file_exists(get_template_directory() . '/js/vue.js')) {
+	if (file_exists(get_template_directory() . '/js/vue' . ($non_min_js ? '' : '.min') . '.js')) {
 		$scripts[] = [
 			'handle' => 'vue',
 			'url' => 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global' . ($non_min_js ? '' : '.prod') . '.js'
@@ -131,7 +133,7 @@ function enqueue_scripts() {
 	}
 
 	// Scripts
-	if (file_exists(get_template_directory() . '/js/scripts.js')) {
+	if (file_exists(get_template_directory() . '/js/scripts' . ($non_min_js ? '' : '.min') . '.js')) {
 		$scripts[] = [
 			'handle' => 'scripts',
 			'url' => get_template_directory_uri() . '/js/scripts' . ($non_min_js ? '' : '.min') . '.js',
