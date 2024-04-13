@@ -312,6 +312,7 @@ export const util = (() => {
 		required?: boolean;
 		keys: { [key: string]: validateDataSchema };
 		elems: validateDataSchema;
+		match?: RegExp;
 	}
 
 	const validateData = (data: any, schema: validateDataSchema, field: string = 'root'): {
