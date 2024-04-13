@@ -156,15 +156,15 @@ function customizer_add($wp_customize) {
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
 			],
-			'feat_gutenberg_blocks' => [
+			'feat_content_blocks' => [
 				'type' => 'radio',
-				'label' => 'Enable Gutenberg Blocks',
+				'label' => 'Enable Content Blocks',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
 			],
-			'feat_gutenberg_layout_blocks' => [
+			'feat_layout_blocks' => [
 				'type' => 'radio',
-				'label' => 'Enable Gutenberg Layout Blocks',
+				'label' => 'Enable Layout Blocks',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
 			],

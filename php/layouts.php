@@ -48,7 +48,7 @@ function get_tailwind_classes() {
 	return implode(' ', $classes);
 }
 
-if (get_theme_mod('feat_gutenberg_layout_blocks', '1') === '1') {
+if (get_theme_mod('feat_layout_blocks', '1') === '1') {
 	// Register the Lyquix Layouts blocks category
 	add_filter('block_categories_all', function ($categories) {
 		array_splice($categories, 1, 0, [[

@@ -25,7 +25,7 @@
 	"name": "lqx/filters",
 	"title": "Lyquix Filters",
 	"description": "A list of items with filters",
-	"category": "lqx-module-blocks",
+	"category": "lqx-content-blocks",
 	"icon": "list-view",
 	"keywords": [
 		"cards"

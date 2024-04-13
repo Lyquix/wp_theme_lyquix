@@ -344,7 +344,7 @@ function reset_global_settings_page() {
 <?php
 }
 
-if (get_theme_mod('feat_gutenberg_blocks', '1') === '1') {
+if (get_theme_mod('feat_content_blocks', '1') === '1') {
 	// Register the Lyquix Modules block category
 	add_filter('block_categories_all', function ($categories) {
 		array_unshift($categories, [
