@@ -38,4 +38,42 @@ if (get_theme_mod('feat_modules', '1') === '1') {
 	foreach ($modules as $module) {
 		require_once get_template_directory() . '/php/modules/' . $module . '/' . $module . '.php';
 	}
+
+	// Set the Style Preset values for the Lyquix modules
+	add_filter('acf/load_field', function ($field) {
+		$field_keys = [
+			// CTA
+			[
+				'user' => 'field_658c719dc8329', // style field
+				'choice' => 'field_6580708228a61' // style_name field
+			],
+			// Popups
+			[
+				'user' => 'field_658be723381f2', // style field
+				'choice' => 'field_658c740a049fa' // style_name field
+			],
+			// Modals
+			[
+				'user' => 'field_65c11d4eadade', // style field
+				'choice' => 'field_65c11d5f554f8' // style_name field
+			]
+		];
+		foreach ($field_keys as $k) {
+			if ($field['key'] == $k['user']) {
+				$choice_field = get_field_object($k['choice']);
+
+				// Because of the structure with the groups at the top of modules we need an extra level of going up
+				$top_field = get_field_object($choice_field['parent'])['parent'];
+
+				while (have_rows($top_field, 'option')) {
+					the_row();
+					foreach (get_sub_field($choice_field['parent'], 'option') as $sub_field) {
+						$value = $sub_field[$choice_field['name']];
+						$field['choices'][$value] = $value;
+					}
+				}
+			}
+		}
+		return $field;
+	});
 }

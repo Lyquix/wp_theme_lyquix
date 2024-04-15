@@ -369,7 +369,7 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 		}
 	});
 
-	// Set the Style Preset values for the Lyquix Modules
+	// Set the Style Preset values for the Lyquix blocks
 	add_filter('acf/load_field', function ($field) {
 		$field_keys = [
 			// Accordion

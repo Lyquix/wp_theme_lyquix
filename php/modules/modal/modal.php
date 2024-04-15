@@ -68,25 +68,3 @@ add_action('rest_api_init', function () {
 		'permission_callback' => '__return_true',
 	]);
 });
-
-// Set the Style Preset values for the Lyquix Modules
-add_filter('acf/load_field', function ($field) {
-	// Field keys
-	$user = 'field_65c11d4eadade'; // style field
-	$choice = 'field_65c11d5f554f8'; // style_name field
-
-	if ($field['key'] == $user) {
-		$choice_field = get_field_object($choice);
-
-		// Add an empty choice
-		$field['choices'][''] = 'Select';
-
-		while (have_rows($choice_field['parent'], 'option')) {
-			the_row();
-			$value = get_sub_field($choice, 'option');
-			$field['choices'][$value] = $value;
-
-		}
-	}
-	return $field;
-});

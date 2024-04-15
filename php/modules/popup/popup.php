@@ -69,29 +69,6 @@ add_action('rest_api_init', function () {
 	]);
 });
 
-// Set the Style Preset values for the Lyquix Modules
-add_filter('acf/load_field', function ($field) {
-	// Field keys
-	$user = 'field_658be723381f2'; // style field
-	$choice = 'field_658c740a049fa'; // style_name field
-
-	if ($field['key'] == $user) {
-		$choice_field = get_field_object($choice);
-
-		// Add an empty choice
-		$field['choices'][''] = 'Select';
-
-		while (have_rows($choice_field['parent'], 'option')) {
-			the_row();
-			$value = get_sub_field($choice, 'option');
-			$field['choices'][$value] = $value;
-
-		}
-	}
-	return $field;
-});
-
-
 if (file_exists(get_stylesheet_directory() . '/php/custom/modules/popup/render.php')) {
 	require_once get_stylesheet_directory() . '/php/custom/modules/popup/render.php';
 } else {
