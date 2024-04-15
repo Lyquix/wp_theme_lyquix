@@ -94,14 +94,34 @@ function render($settings) {
 			})('<?= json_encode(\lqx\filters\prepare_json_data($settings)) ?>');
 		</script>
 	<?php else : ?>
-		<div class="filters">
-			<?= render_filters($s) ?>
-		</div>
-		<ul class="posts">
-			<?= render_posts($s) ?>
-		</ul>
-		<div class="pagination">
-			<?= render_pagination($s) ?>
-		</div>
+		<section
+			id="<?= esc_attr($s['anchor']) ?>"
+			class="lqx-block-filters <?= esc_attr($s['class']) ?>">
+
+			<div
+				id="<?= esc_attr($s['hash']) ?>"
+				class="filters-wrapper">
+
+				<div
+					id="<?= esc_attr($s['hash']) ?>-filters"
+					class="filters">
+					<?= render_filters($s) ?>
+				</div>
+
+				<ul
+					id="<?= esc_attr($s['hash']) ?>-posts"
+					class="posts">
+					<?= render_posts($s) ?>
+				</ul>
+
+				<div
+					id="<?= esc_attr($s['hash']) ?>-pagination"
+					class="pagination">
+					<?= render_pagination($s) ?>
+				</div>
+
+			</div>
+
+		</section>
 	<?php endif;
 }

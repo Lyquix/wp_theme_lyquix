@@ -964,7 +964,7 @@ function get_posts_with_data($settings) {
 	$query = [
 		'post_type' => $settings['post_type'],
 		'post_status' => 'publish',
-		'posts_per_page' => $settings['posts_per_page'],
+		'posts_per_page' => $settings['pagination']['posts_per_page'],
 		'paged' => $settings['page'],
 		'orderby' => []
 	];
@@ -1044,16 +1044,38 @@ function get_posts_with_data($settings) {
 				case 'cards':
 					// Set the post object
 					$id = $post->ID;
-					//if content doesn't pass the metrics used by the cards render, we'll need to iterate and populate the needed keys
+
+					// If content doesn't pass the metrics used by the cards render, we'll need to iterate and populate the needed keys
 					$video_url = get_field($settings['render_cards']['video_url'], $id);
 					$video_upload = get_field($settings['render_cards']['video_upload'], $id);
-					//assemble links array
+
+					// Assemble links array
 					$links = [];
-					if ($settings['render_cards']['use_post_url'] == 'y') array_push($links, ['type' => 'text', 'link' => ['url' => get_permalink($id), 'title' => 'Read More', 'target' => null]]);
+
+					// Use the post URL as the first link
+					if ($settings['render_cards']['use_post_url'] == 'y') $links[] = [
+						'type' => 'text',
+						'link' => [
+							'url' => get_permalink($id),
+							'title' => 'Read More',
+							'target' => null
+						]
+					];
+
+					// Links field
 					$card_links = get_field($settings['render_cards']['links'], $id);
+					if (!is_array($card_links)) $card_links = [];
 					foreach ($card_links as $link) {
-						array_push($links, ['type' => 'text', 'link' => ['url' => $link['link']['url'], 'title' => $link['link']['title'], 'target' => $link['link']['target']]]);
+						$links[] = [
+							'type' => 'text',
+							'link' => [
+								'url' => $link['link']['url'],
+								'title' => $link['link']['title'],
+								'target' => $link['link']['target']
+							]
+						];
 					}
+
 					//for body we do need to have some additional support to allow for excerpt
 					//I don't think we should load main body content, this seems like it could be problematic but I can do that as well if need be?
 					$body = null;
@@ -1070,9 +1092,11 @@ function get_posts_with_data($settings) {
 							$body = get_field($settings['render_cards']['body'], $id);
 							break;
 					}
-					//for labels, we need to get both the associated taxonomies and any other fields used to build this out.
+
+					// For labels, we need to get both the associated taxonomies and any other fields used to build this out.
 					$labels = [];
-					$label_taxes = $settings['render_cards']['label_taxonomies'];
+
+					$label_taxes = $settings['render_cards']['label_taxonomies'] ?? [];
 
 					foreach ($label_taxes as $tax) {
 						$terms = get_the_terms($id, $tax->name);
@@ -1081,10 +1105,15 @@ function get_posts_with_data($settings) {
 						}
 					}
 
-					$field_label = get_field($settings['render_cards']['label'], $id);
+					$field_label = null;
+
+					if (array_key_exists('label', $settings['render_cards'])) $field_label = get_field($settings['render_cards']['label'], $id);
 
 					if (is_string($field_label)) {
-						array_push($labels, ['label' => $field_label, 'value' => \lqx\util\slugify($field_label)]);
+						$labels[] = [
+							'label' => $field_label,
+							'value' => \lqx\util\slugify($field_label)
+						];
 					}
 
 					$post = [

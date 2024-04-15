@@ -402,14 +402,14 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 				'choice' => 'field_658db3c5e9695'
 			],
 
-			// Hero
+			// Filters
 			[ // style and style_name fields
-				'user' => 'field_657217f48ca53',
-				'choice' => 'field_657761228bf9d'
+				'user' => 'field_65f1dd3000026',
+				'choice' => 'field_65f1ddf02e615'
 			],
 			[ // preset and preset_name fields
-				'user' => 'field_657218058ca54',
-				'choice' => 'field_657766304a9cc'
+				'user' => 'field_65f1e8893c299',
+				'choice' => 'field_65f20fbeb1be3'
 			],
 
 			// Gallery
@@ -422,14 +422,20 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 				'choice' => 'field_658061d6e7ed2'
 			],
 
-			// Tabs
-			[ //  style and style_name fields
-				'user' => 'field_656f866617343',
-				'choice' => 'field_656f879ccf606'
+			// Hero
+			[ // style and style_name fields
+				'user' => 'field_657217f48ca53',
+				'choice' => 'field_657761228bf9d'
 			],
 			[ // preset and preset_name fields
-				'user' => 'field_656f866617344',
-				'choice' => 'field_656f87fcef854'
+				'user' => 'field_657218058ca54',
+				'choice' => 'field_657766304a9cc'
+			],
+
+			// Logos
+			[ // style and style_name fields
+				'user' => 'field_65a05775a0471',
+				'choice' => 'field_65a0592361823'
 			],
 
 			// Slider
@@ -442,10 +448,14 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 				'choice' => 'field_659d3012b3e36'
 			],
 
-			// Logos
-			[ // style and style_name fields
-				'user' => 'field_65a05775a0471',
-				'choice' => 'field_65a0592361823'
+			// Tabs
+			[ //  style and style_name fields
+				'user' => 'field_656f866617343',
+				'choice' => 'field_656f879ccf606'
+			],
+			[ // preset and preset_name fields
+				'user' => 'field_656f866617344',
+				'choice' => 'field_656f87fcef854'
 			]
 		];
 
