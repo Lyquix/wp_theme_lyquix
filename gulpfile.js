@@ -35,7 +35,8 @@ import { execSync } from 'child_process';
 gulp.task('css', () => {
 	for (let i = 0; i < 5; i++) {
 		const data = fs.readFileSync('css/styles.css', 'utf8');
-		if (!data.includes('theme(')) break;
+		const themeRegex = /theme\s*\(\s*['"][^'"]*['"]\s*\)/g;
+		if (!themeRegex.test(data)) break;
 		execSync('npx tailwindcss -i css/custom.css -c css/tailwind/config.js -o css/styles.css');
 	}
 	const postCSSPlugins = [
