@@ -37,7 +37,7 @@ gulp.task('css', () => {
 		const data = fs.readFileSync('css/styles.css', 'utf8');
 		const themeRegex = /theme\s*\(\s*['"][^'"]*['"]\s*\)/g;
 		if (!themeRegex.test(data)) break;
-		execSync('npx tailwindcss -i css/custom.css -c css/tailwind/config.js -o css/styles.css');
+		execSync('npx tailwindcss -i css/styles.css -c css/tailwind/config.js -o css/styles.css');
 	}
 	const postCSSPlugins = [
 		cssnano({ preset: 'default' }),
