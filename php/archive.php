@@ -21,7 +21,7 @@
 //    "Y8888P"     888     "Y88888P"  888         888
 //
 //  DO NOT MODIFY THIS FILE!
-//  Instead create a file called archive.php in /php/custom/ and add your code there
+//  Instead create a file called archive.php in /php/custom/templates/ and add your code there
 
 ?>
 <h1><?php the_archive_title(); ?></h1>

@@ -21,7 +21,7 @@
 //    "Y8888P"     888     "Y88888P"  888         888
 //
 //  DO NOT MODIFY THIS FILE!
-//  Instead create a file called singular.php in /php/custom/ and add your code there
+//  Instead create a file called singular.php in /php/custom/templates/ and add your code there
 
 the_post();
 
