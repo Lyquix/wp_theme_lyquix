@@ -22,5 +22,14 @@
 	Instead copy it to css/custom/abstracts/_variables.scss and make your changes there.
 */
 
+// List of screen sizes
 $screen-sizes: xs sm md lg xl;
+
+// List of heading levels
 $headings: h1 h2 h3 h4 h5 h6;
+
+// List of number of grid columns per screen size
+$grid-columns: 14 14 14 14 14;
+
+// List of grid gaps per screen size
+$grid-gaps: 8px 8px 8px 8px 8px;

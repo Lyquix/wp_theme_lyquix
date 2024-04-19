@@ -186,13 +186,7 @@ const extend = {
 			/* Typography margins */
 			'base': '1em',
 			'headings': '0.67em',
-			'input': '0.25em',
-			/* Container margins */
-			'container-xs': '10px',
-			'container-sm': '30px',
-			'container-md': '30px',
-			'container-lg': '30px',
-			'container-xl': '0px'
+			'input': '0.25em'
 		},
 		padding: {
 			/* Block padding */
