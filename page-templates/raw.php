@@ -23,6 +23,4 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-$lqx_page_template = 'raw';
-
 \lqx\router\render();

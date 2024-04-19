@@ -48,7 +48,7 @@
 	\lqx\js\render_gtm_body_code();
 
 	// Chromeless page template
-	if ($lqx_page_template === 'chromeless') :
+	if ('chromeless' == ($lqx_page_template ?? '')) :
 		// Template router
 		\lqx\router\render();
 

@@ -109,6 +109,7 @@ function render() {
 		// Page
 		elseif (is_page()) {
 			if (array_key_exists('pagename', $wp_query->query) && tmpl_file_exists('page-' . $wp_query->query['pagename'])) $tmpl_name = 'page-' . $wp_query->query['pagename'];
+			elseif (get_page_template_slug() && tmpl_file_exists(str_replace('page-templates/', '', str_replace('.php', '', get_page_template_slug())))) $tmpl_name = str_replace('page-templates/', '', str_replace('.php', '', get_page_template_slug()));
 			elseif (tmpl_file_exists('page')) $tmpl_name = 'page';
 		}
 
