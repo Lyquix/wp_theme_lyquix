@@ -64,6 +64,7 @@ function classes() {
 				case 'page':
 					$classes[] = $type;
 					if (array_key_exists('pagename', $wp_query->query)) $classes[] = $type . '-' . $wp_query->query['pagename'];
+					if (get_page_template_slug()) $classes[] = str_replace('page-templates/', '', str_replace('.php', '', get_page_template_slug()));
 					break;
 				case 'attachment':
 					$classes[] = $type;
