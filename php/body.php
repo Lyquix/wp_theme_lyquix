@@ -70,6 +70,9 @@ function classes() {
 					$mime_type = explode('/', get_post_mime_type());
 					$classes[] = $type . '-' . $mime_type[0];
 					$classes[] = $type . '-' . $mime_type[0] . '-' . $wp_query->query['attachment'];
+				break;
+				case '404':
+					$classes[] = 'error404';
 					break;
 				default:
 					$classes[] = $type;
