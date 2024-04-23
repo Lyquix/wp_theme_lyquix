@@ -32,6 +32,9 @@ export default {
 				md: '720px',
 				lg: '1080px',
 				xl: '1620px'
+			},
+			layouts: {
+				baseSpacing: '0'
 			}
 		},
 	},
