@@ -25,10 +25,6 @@
 $settings = \lqx\blocks\get_settings($block);
 $content = \lqx\blocks\get_content($block);
 
-if (file_exists(get_stylesheet_directory() . '/php/custom/blocks/cards/render.php')) {
-	require_once get_stylesheet_directory() . '/php/custom/blocks/cards/render.php';
-} else {
-	require_once get_stylesheet_directory() . '/php/blocks/cards/render.php';
-}
+require_once \lqx\blocks\get_renderer('cards', $settings['local']['user']['preset']);
 
 \lqx\blocks\cards\render($settings, $content);

@@ -344,6 +344,40 @@ function reset_global_settings_page() {
 <?php
 }
 
+// Load the block renderer based on the selected preset and available overrides
+function get_renderer($block_name, $preset) {
+	$dir = get_stylesheet_directory() . '/php/custom/blocks/' . $block_name . '/';
+
+	if ($preset && file_exists($dir . $preset . '.php')) {
+		return $dir . $preset . '.php';
+	} elseif (file_exists($dir . 'default.php')) {
+		return $dir . 'default.php';
+	} else {
+		return get_stylesheet_directory() . '/php/blocks/' . $block_name . '/default.php';
+	}
+}
+
+// Load a template or sub-template for a block based on the selected preset and available overrides
+function get_template($block_name, $preset, $sub_template = null) {
+	$dir = get_stylesheet_directory() . '/php/custom/blocks/' . $block_name . '/';
+	$default_file = 'default';
+	$preset_file = $preset;
+	if ($sub_template) {
+		$preset_file .= '-' . $sub_template;
+		$default_file .= '-' . $sub_template;
+	}
+	$preset_file .= '.tmpl.php';
+	$default_file .= '.tmpl.php';
+
+	if ($preset && file_exists($dir . $preset_file)) {
+		return $dir . $preset_file;
+	} elseif (file_exists($dir . $default_file)) {
+		return $dir . $default_file;
+	} else {
+		return get_stylesheet_directory() . '/php/blocks/' . $block_name . '/' . $default_file;
+	}
+}
+
 if (get_theme_mod('feat_content_blocks', '1') === '1') {
 	// Register the Lyquix Modules block category
 	add_filter('block_categories_all', function ($categories) {
