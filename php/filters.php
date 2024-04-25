@@ -1154,6 +1154,8 @@ function render_filters($settings) {
 	$filters = $settings['filters'];
 	$html = '';
 
+	if (count($filters)) $html .= '<div class="filters" id="' . $settings['hash'] . '-filters">';
+
 	foreach ($filters as $filter) {
 		if ($filter['visible'] == 'y') {
 			$html .= '<div class="filter-wrapper" data-filter="' . $filter['slug'] . '" data-filter-type="' . $filter['type'] . '">';
@@ -1209,6 +1211,8 @@ function render_filters($settings) {
 		}
 	}
 
+	if (count($filters)) $html .= '</div>';
+
 	return $html;
 }
 
@@ -1217,16 +1221,15 @@ function render_filters($settings) {
  * @param  array $settings - settings and posts data
  */
 function render_posts($settings) {
-	if (file_exists(get_stylesheet_directory() . '/php/custom/blocks/cards/render.php')) {
-		require_once get_stylesheet_directory() . '/php/custom/blocks/cards/render.php';
-	} else {
-		require_once get_stylesheet_directory() . '/php/blocks/cards/render.php';
-	}
+	require_once \lqx\blocks\get_renderer('cards', $settings['render_cards']['preset']);
 
 	// For settings we need to get the preset settings from cards.
-	$cards_presets = \lqx\blocks\get_settings('cards', null, $settings['render_cards']['preset'], $settings['render_cards']['style']);
+	$cards_settings = \lqx\blocks\get_settings('cards', null, $settings['render_cards']['preset'], $settings['render_cards']['style']);
 
-	return \lqx\blocks\cards\render($cards_presets, $settings['posts']);
+	// Change the hash to use the same as the filters
+	$cards_settings['processed']['hash'] = $settings['hash'] . '-posts';
+
+	return \lqx\blocks\cards\render($cards_settings, $settings['posts']);
 }
 
 /**
@@ -1235,11 +1238,14 @@ function render_posts($settings) {
  */
 function render_pagination($settings) {
 	if ($settings['total_pages'] > 1) {
-		$html = '<ul class="pageslinks">';
-		$i = 1;
+		$html = '<div class="pagination" id="' . $settings['hash'] . '-pagination">';
+
+		$html .= '<ul class="pageslinks">';
+
 		$html .= '<li class="page first" aria-label="First Page">First</li>';
 		$html .= '<li class="page prev" aria-label="Previous Page">Prev</li>';
 
+		$i = 1;
 		while ($i <= $settings['total_pages']) {
 			$html .= '<li data-page="' . $i . '" aria-label="Page ' . $i . '">' . $i . '</li>';
 			$i++;
@@ -1247,7 +1253,10 @@ function render_pagination($settings) {
 
 		$html .= '<li class="page next" aria-label="Previous Page">Next</li>';
 		$html .= '<li class="page last" aria-label="Last Page">Last</li>';
+
 		$html .= '</ul>';
+
+		$html .= '</div>';
 
 		return $html;
 	}

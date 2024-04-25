@@ -98,29 +98,11 @@ function render($settings) {
 			id="<?= esc_attr($s['anchor']) ?>"
 			class="lqx-block-filters <?= esc_attr($s['class']) ?>">
 
-			<div
-				id="<?= esc_attr($s['hash']) ?>"
-				class="filters-wrapper">
+				<?= render_filters($s) ?>
 
-				<div
-					id="<?= esc_attr($s['hash']) ?>-filters"
-					class="filters">
-					<?= render_filters($s) ?>
-				</div>
+				<?= render_posts($s) ?>
 
-				<ul
-					id="<?= esc_attr($s['hash']) ?>-posts"
-					class="posts">
-					<?= render_posts($s) ?>
-				</ul>
-
-				<div
-					id="<?= esc_attr($s['hash']) ?>-pagination"
-					class="pagination">
-					<?= render_pagination($s) ?>
-				</div>
-
-			</div>
+				<?= render_pagination($s) ?>
 
 		</section>
 	<?php endif;
