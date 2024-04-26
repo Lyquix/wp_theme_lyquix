@@ -1,7 +1,7 @@
 <?php
 
 /**
- * render.php - Render function for Lyquix accordion block
+ * default.php - Render function for Lyquix accordion block
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix
@@ -21,7 +21,8 @@
 //    "Y8888P"     888     "Y88888P"  888         888
 //
 //  DO NOT MODIFY THIS FILE!
-//  If you need a custom renderer, copy this file to php/custom/blocks/accordion/render.php and modify it there
+//  If you need a custom renderer, copy this file to php/custom/blocks/accordion/default.php and modify it there
+//  You may also create custom renderer for specific presets, by copying this file to /php/custom/blocks/accordion/{preset}.php
 
 namespace lqx\blocks\accordion;
 
@@ -92,43 +93,7 @@ function render($settings, $content) {
 		return $v['isValid'] ? $v['data'] : null;
 	}, $content));
 
-	if (!empty($c)) : ?>
-		<section
-			id="<?= esc_attr($s['anchor']) ?>"
-			class="lqx-block-accordion <?= esc_attr($s['class']) ?>">
+	$preset = $settings['local']['user']['preset'];
 
-			<div
-				class="accordion"
-				id="<?= esc_attr($s['hash']) ?>"
-				data-open-on-load="<?= $s['open_on_load'] ?>"
-				data-open-multiple="<?= $s['open_multiple'] ?>"
-				data-browser-history="<?= $s['browser_history'] ?>"
-				data-auto-scroll="<?= implode(',', $s['auto_scroll']) ?>">
-
-				<?php foreach ($c as $idx => $item) : ?>
-					<<?= $s['heading_style'] ?>>
-						<button
-							class="accordion-header"
-							id="<?= $s['hash'] . '-header-' . $idx ?>"
-							aria-expanded="<?= $idx == 0 && $s['open_on_load'] == 'y' ? 'true' : 'false' ?>"
-							aria-controls="<?= $s['hash'] . '-panel-' . $idx ?>">
-							<?= $item['heading'] ?>
-						</button>
-					</<?= $s['heading_style'] ?>>
-
-					<section
-						class="accordion-panel <?= $idx == 0 && $s['open_on_load'] == 'y' ? '' : 'closed' ?>"
-						id="<?= $s['hash'] . '-panel-' . $idx ?>"
-						role="region"
-						aria-labelledby="<?= $s['hash'] . '-header-' . $idx ?>"
-						aria-hidden="<?= $idx == 0 && $s['open_on_load'] == 'y' ? 'false' : 'true' ?>">
-						<div>
-							<?= $item['content'] ?>
-						</div>
-					</section>
-				<?php endforeach; ?>
-			</div>
-
-		</section>
-<?php endif;
+	if (!empty($c)) require \lqx\blocks\get_template('accordion', $preset);
 }

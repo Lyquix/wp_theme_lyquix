@@ -1,7 +1,7 @@
 <?php
 
 /**
- * logos.php - Lyquix logos block
+ * default.tmpl.php - Default template for the Lyquix Filters block
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix
@@ -21,10 +21,18 @@
 //    "Y8888P"     888     "Y88888P"  888         888
 //
 //  DO NOT MODIFY THIS FILE!
+//  Instead, copy it to /php/custom/blocks/filters/default.tmpl.php to override it
+//  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/filters/{preset}.tmpl.php
 
-$settings = \lqx\blocks\get_settings($block);
-$content = \lqx\blocks\get_content($block);
+?>
+<section
+	id="<?= esc_attr($s['anchor']) ?>"
+	class="lqx-block-filters <?= esc_attr($s['class']) ?>">
 
-require_once \lqx\blocks\get_renderer('logos', $settings['local']['user']['preset']);
+		<?= render_filters($s) ?>
 
-\lqx\blocks\logos\render($settings, $content);
+		<?= render_posts($s) ?>
+
+		<?= render_pagination($s) ?>
+
+</section>

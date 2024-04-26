@@ -1,7 +1,7 @@
 <?php
 
 /**
- * render.php - Render function for Lyquix Logo block
+ * default.php - Render function for Lyquix Logo block
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix
@@ -21,7 +21,8 @@
 //    "Y8888P"     888     "Y88888P"  888         888
 //
 //  DO NOT MODIFY THIS FILE!
-//  If you need a custom renderer, copy this file to php/custom/blocks/logos/render.php and modify it there
+//  If you need a custom renderer, copy this file to php/custom/blocks/logos/default.php and modify it there
+//  You may also create custom renderer for specific presets, by copying this file to /php/custom/blocks/logos/{preset}.php
 
 namespace lqx\blocks\logos;
 
@@ -74,37 +75,7 @@ function render($settings, $content) {
 	if ($c['isValid']) $c = $c['data'];
 	else return;
 
-	// Render the block
-	if (!empty($c)) : ?>
-		<section
-			id="<?= $s['anchor']; ?>"
-			class="lqx-block-logos <?= $s['class']; ?>">
-			<ul
-				class="logos">
-				<?php foreach ($c as $item) :
-					$padding =  $item['tailwind_p-'] ? 'p-' . $item['tailwind_p-'] : '';
-				?>
-					<li>
-						<?php if (array_key_exists('url', $item['link'])) : ?>
-							<a
-								href="<?= esc_url($item['link']['url']) ?>"
-								target="<?= esc_attr($item['link']['target']) ?>">
-						<?php endif; ?>
-							<img
-								src="<?= esc_url($item['image']['url']) ?>"
-								alt="<?= esc_attr($item['image']['alt']) ?>"
-								class="<?= esc_attr($padding) ?>" />
-							<?php if ($item['title']) : ?>
-								<p><?= $item['title'] ?></p>
-							<?php endif; ?>
-						<?php if (array_key_exists('url', $item['link'])) : ?>
-							</a>
-						<?php endif; ?>
-					</li>
-				<?php endforeach; ?>
-			</ul>
-		</section>
-<?php endif;
-}
+	$preset = $settings['local']['user']['preset'];
 
-?>
+	if (!empty($c)) require \lqx\blocks\get_template('logos', $preset);
+}

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * render.php - Lyquix Socials module render functions
+ * default.php - Lyquix Socials module render functions
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix
@@ -21,7 +21,8 @@
 //    "Y8888P"     888     "Y88888P"  888         888
 //
 //  DO NOT MODIFY THIS FILE!
-//  If you need a custom renderer, copy this file to php/custom/blocks/gallery/render.php and modify it there
+//  If you need a custom renderer, copy this file to php/custom/blocks/gallery/default.php and modify it there
+//  You may also create custom renderer for specific presets, by copying this file to /php/custom/blocks/gallery/{preset}.php
 
 namespace lqx\blocks\gallery;
 
@@ -107,56 +108,7 @@ function render($settings, $content) {
 		return $v['data'];
 	}, $c['slides']));
 
-	// Heading style
-	$heading_tag_open  = $s['heading_style'] == 'p' ? '<p class="title"><strong>' : '<' . $s['heading_style'] . '>';
-	$heading_tag_close  = $s['heading_style'] == 'p' ? '</strong></p>' : '</' . $s['heading_style'] . '>';
-	?>
-	<section
-		id="<?= esc_attr($s['anchor']) ?>"
-		class="lqx-block-gallery <?= esc_attr($s['class']) ?>">
+	$preset = $settings['local']['user']['preset'];
 
-		<div
-			class="gallery <?= $s['slider'] == 'y' ? 'slider' : '' ?>"
-			id="<?= esc_attr($s['hash']) ?>"
-			data-slider="<?= $s['slider'] ?>"
-			data-swiper-options-override="<?= esc_attr($s['swiper_options_override']) ?>"
-			data-heading-style="<?= $s['heading_style'] ?>"
-			data-browser-history="<?= $s['browser_history'] ?>">
-
-			<?= $s['slider'] == 'y' ? '<div class="swiper">' : '' ?>
-				<ul class="<?= $s['slider'] == 'y' ? 'swiper-wrapper' : 'gallery-wrapper' ?>">
-					<?php foreach ($c['slides'] as $idx => $item) : ?>
-						<?php if ($item['video']) $video = \lqx\util\get_video_urls($item['video']); ?>
-						<li
-							class="<?= $s['slider'] == 'y' ? 'swiper-slide' : 'gallery-slide' ?>"
-							id="<?= $item['slug'] ? $item['slug'] : $s['hash'] . '-' . $idx ?>"
-							data-lyqbox="<?= htmlentities(json_encode([
-								'name' => $c['lightbox_slug'],
-								'type' => $video['url'] ? 'video' : 'image',
-								'url' => $video['url'] ? $video['url'] : $item['image']['sizes']['large'],
-								'title' => $item['title'],
-								'caption' => $item['caption']
-							])) ?>">
-							<img
-								src="<?= esc_attr($item['thumbnail']['sizes']['large']) ?>"
-								alt="<?= esc_attr($item['image']['alt']) ?>">
-							<?= $heading_tag_open . $item['title'] . $heading_tag_close ?>
-							<?= '<p>' . $item['teaser'] . '</p>' ?>
-						</li>
-					<?php endforeach; ?>
-				</ul>
-
-				<?php if ($s['slider'] == 'y') : ?>
-					<div class="controls">
-						<div class="swiper-button-prev"></div>
-						<div class="swiper-button-next"></div>
-					</div>
-				<?php endif; ?>
-
-			<?= $s['slider'] == 'y' ? '</div>' : '' ?>
-
-		</div>
-
-	</section>
-	<?php
+	require \lqx\blocks\get_template('gallery', $preset);
 }

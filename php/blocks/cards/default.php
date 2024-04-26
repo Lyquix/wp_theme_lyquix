@@ -1,7 +1,7 @@
 <?php
 
 /**
- * render.php - Render function for Lyquix cards block
+ * default.php - Render function for Lyquix cards block
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix
@@ -21,7 +21,8 @@
 //    "Y8888P"     888     "Y88888P"  888         888
 //
 //  DO NOT MODIFY THIS FILE!
-//  If you need a custom renderer, copy this file to php/custom/blocks/cards/render.php and modify it there
+//  If you need a custom renderer, copy this file to php/custom/blocks/cards/default.php and modify it there
+//  You may also create custom renderer for specific presets, by copying this file to /php/custom/cards/slider/{preset}.php
 
 namespace lqx\blocks\cards;
 
@@ -219,5 +220,5 @@ function render($settings, $content) {
 
 	$preset = $settings['local']['user']['preset'];
 
-	if (!empty($c)) include \lqx\blocks\get_template('cards', $preset);
+	if (!empty($c)) require \lqx\blocks\get_template('cards', $preset);
 }

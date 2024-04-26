@@ -25,10 +25,6 @@
 $settings = \lqx\blocks\get_settings($block);
 $content = \lqx\blocks\get_content($block);
 
-if (file_exists(get_stylesheet_directory() . '/php/custom/blocks/accordion/render.php')) {
-	require_once get_stylesheet_directory() . '/php/custom/blocks/accordion/render.php';
-} else {
-	require_once get_stylesheet_directory() . '/php/blocks/accordion/render.php';
-}
+require_once \lqx\blocks\get_renderer('accordion', $settings['local']['user']['preset']);
 
 \lqx\blocks\accordion\render($settings, $content);

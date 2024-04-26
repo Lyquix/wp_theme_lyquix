@@ -25,10 +25,6 @@
 
 $settings = \lqx\blocks\get_settings($block);
 
-if (file_exists(get_stylesheet_directory() . '/php/custom/blocks/filters/render.php')) {
-	require_once get_stylesheet_directory() . '/php/custom/blocks/filters/render.php';
-} else {
-	require_once get_stylesheet_directory() . '/php/blocks/filters/render.php';
-}
+require_once \lqx\blocks\get_renderer('filters', $settings['local']['user']['preset']);
 
 \lqx\blocks\filters\render($settings);

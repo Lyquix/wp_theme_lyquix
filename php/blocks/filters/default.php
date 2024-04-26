@@ -1,7 +1,7 @@
 <?php
 
 /**
- * render.php - Lyquix Filters module render functions
+ * default.php - Lyquix Filters module render functions
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix
@@ -21,7 +21,8 @@
 //    "Y8888P"     888     "Y88888P"  888         888
 //
 //  DO NOT MODIFY THIS FILE!
-//  If you need a custom renderer, copy this file to php/custom/blocks/filters/render.php and modify it there
+//  If you need a custom renderer, copy this file to php/custom/blocks/filters/default.php and modify it there
+//  You may also create custom renderer for specific presets, by copying this file to /php/custom/blocks/filters/{preset}.php
 
 namespace lqx\blocks\filters;
 
@@ -83,27 +84,8 @@ function render($settings) {
 	$s['posts'] = $post_info['posts'];
 	$s['total_pages'] =  $post_info['total_pages'];
 
-	file_put_contents(__DIR__ . '/render.log', json_encode(['$settings' => $settings, '$s' => $s], JSON_PRETTY_PRINT));
+	$preset = $settings['local']['user']['preset'];
 
-	if ($s['render_mode'] == 'custom_js') : ?>
-		<script>
-			((settings) => {
-				lqx.ready(() => {
-					lqx.filters.setup(JSON.parse(settings));
-				});
-			})('<?= json_encode(\lqx\filters\prepare_json_data($settings)) ?>');
-		</script>
-	<?php else : ?>
-		<section
-			id="<?= esc_attr($s['anchor']) ?>"
-			class="lqx-block-filters <?= esc_attr($s['class']) ?>">
-
-				<?= render_filters($s) ?>
-
-				<?= render_posts($s) ?>
-
-				<?= render_pagination($s) ?>
-
-		</section>
-	<?php endif;
+	if ($s['render_mode'] == 'custom_js') require \lqx\blocks\get_template('filters', $preset, 'js');
+	else require \lqx\blocks\get_template('filters', $preset);
 }

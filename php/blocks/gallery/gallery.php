@@ -25,10 +25,6 @@
 $settings = \lqx\blocks\get_settings($block, $post_id);
 $content = \lqx\blocks\get_content($block);
 
-if (file_exists(get_stylesheet_directory() . '/php/custom/blocks/gallery/render.php')) {
-	require_once get_stylesheet_directory() . '/php/custom/blocks/gallery/render.php';
-} else {
-	require_once get_stylesheet_directory() . '/php/blocks/gallery/render.php';
-}
+require_once \lqx\blocks\get_renderer('gallery', $settings['local']['user']['preset']);
 
 \lqx\blocks\gallery\render($settings, $content);

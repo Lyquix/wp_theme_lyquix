@@ -1,7 +1,7 @@
 <?php
 
 /**
- * logos.php - Lyquix logos block
+ * default-text.tmpl.php - Default template for the Lyquix Slider block, text sub-template
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix
@@ -21,10 +21,15 @@
 //    "Y8888P"     888     "Y88888P"  888         888
 //
 //  DO NOT MODIFY THIS FILE!
+//  Instead, copy it to /php/custom/blocks/slider/default-text.tmpl.php to override it
+//  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/slider/{preset}-text.tmpl.php
 
-$settings = \lqx\blocks\get_settings($block);
-$content = \lqx\blocks\get_content($block);
-
-require_once \lqx\blocks\get_renderer('logos', $settings['local']['user']['preset']);
-
-\lqx\blocks\logos\render($settings, $content);
+?>
+<div class="text">
+	<?php if ($item['heading']) : ?>
+		<<?= $s['heading_style'] ?>>
+			<?= $item['heading'] ?>
+		</<?= $s['heading_style'] ?>>
+	<?php endif; ?>
+	<?= $item['body'] ?>
+</div>

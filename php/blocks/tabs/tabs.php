@@ -25,10 +25,6 @@
 $settings = \lqx\blocks\get_settings($block);
 $content = \lqx\blocks\get_content($block);
 
-if (file_exists(get_stylesheet_directory() . '/php/custom/blocks/tabs/render.php')) {
-	require_once get_stylesheet_directory() . '/php/custom/blocks/tabs/render.php';
-} else {
-	require_once get_stylesheet_directory() . '/php/blocks/tabs/render.php';
-}
+require_once \lqx\blocks\get_renderer('tabs', $settings['local']['user']['preset']);
 
 \lqx\blocks\tabs\render($settings, $content);

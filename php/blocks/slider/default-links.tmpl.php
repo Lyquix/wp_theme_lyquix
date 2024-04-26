@@ -1,7 +1,7 @@
 <?php
 
 /**
- * logos.php - Lyquix logos block
+ * default-links.tmpl.php - Default template for the Lyquix Slider block, links sub-template
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix
@@ -21,10 +21,19 @@
 //    "Y8888P"     888     "Y88888P"  888         888
 //
 //  DO NOT MODIFY THIS FILE!
+//  Instead, copy it to /php/custom/blocks/slider/default-links.tmpl.php to override it
+//  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/slider/{preset}-links.tmpl.php
 
-$settings = \lqx\blocks\get_settings($block);
-$content = \lqx\blocks\get_content($block);
-
-require_once \lqx\blocks\get_renderer('logos', $settings['local']['user']['preset']);
-
-\lqx\blocks\logos\render($settings, $content);
+?>
+<ul class="links">
+	<?php foreach ($item['links'] as $link) : ?>
+		<li>
+			<a
+				class="<?= $link['type'] == 'button' ? 'button' : 'readmore' ?>"
+				href="<?= esc_attr($link['link']['url']) ?>"
+				target="<?= $link['link']['target'] ?>">
+				<?= $link['link']['title'] ?>
+			</a>
+		</li>
+	<?php endforeach; ?>
+</ul>
