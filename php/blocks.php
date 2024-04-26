@@ -345,7 +345,7 @@ function reset_global_settings_page() {
 }
 
 // Load the block renderer based on the selected preset and available overrides
-function get_renderer($block_name, $preset) {
+function get_renderer($block_name, $preset = null) {
 	$dir = get_stylesheet_directory() . '/php/custom/blocks/' . $block_name . '/';
 
 	if ($preset && file_exists($dir . $preset . '.php')) {
@@ -358,7 +358,7 @@ function get_renderer($block_name, $preset) {
 }
 
 // Load a template or sub-template for a block based on the selected preset and available overrides
-function get_template($block_name, $preset, $sub_template = null) {
+function get_template($block_name, $preset = null, $sub_template = null) {
 	$dir = get_stylesheet_directory() . '/php/custom/blocks/' . $block_name . '/';
 	$default_file = 'default';
 	$preset_file = $preset;

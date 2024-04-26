@@ -75,7 +75,5 @@ function render($settings, $content) {
 	if ($c['isValid']) $c = $c['data'];
 	else return;
 
-	$preset = $settings['local']['user']['preset'];
-
-	if (!empty($c)) require \lqx\blocks\get_template('logos', $preset);
+	if (!empty($c)) require \lqx\blocks\get_template('logos');
 }
