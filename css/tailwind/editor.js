@@ -53,10 +53,10 @@
 		blocks.forEach((block) => {
 			if (block.name.includes('lqx')) {
 				Object.entries(block.attributes.data).forEach(([key, value]) => {
-					if (key.indexOf(classPrefix) === 0 && value) {
+					if (typeof key === 'string' &&  key.indexOf(classPrefix) === 0 && value) {
 						value = key + value;
 					}
-					if (value.includes(classPrefix)) {
+					if (typeof value === 'string' && value.includes(classPrefix)) {
 						addClassName(block.clientId, value.replace(classPrefix, ''));
 					}
 				});

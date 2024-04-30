@@ -53,7 +53,14 @@
 				// eslint-disable-next-line no-undef
 				acfObj.json.forEach((item) => {
 					if (block.attributes.name === item.settings.block_name) {
-						updateBlock(item, block);
+						let blockEl = $('#block-' + block.clientId);
+						// Set an interval to check the condition every 500 milliseconds (0.5 seconds)
+						let interval = setInterval(function() {
+							if (blockEl.length === 1) {
+								updateBlock(item, block, blockEl);
+								clearInterval(interval); // Stop the interval after the condition is met and function is executed
+							}
+						}, 200);
 					}
 				});
 			}
@@ -61,9 +68,7 @@
 	});
 
 	// Handle block dependency
-	const updateBlock = (item, block) => {
-		let blockEl = $('#block-' + block.clientId);
-
+	const updateBlock = (item, block, blockEl) => {
 		for (const rule of item.rules) {
 			let dependency = {};
 
@@ -115,8 +120,8 @@
 	const handleFieldVisibility = (fieldKey, block, blockEl) => {
 		let dependency = block.fieldDependencies.find(obj => obj.key === fieldKey);
 		let globalSetting = dependency.global_setting;
-		let preset = dependency.user_setting.global_presets_field.find(obj => obj.preset_name === dependency.user_setting.field_value);
-		let userSetting = findValueByKey(preset, dependency.controller);
+		let preset = dependency.user_setting.global_presets_field ? dependency.user_setting.global_presets_field.find(obj => obj.preset_name === dependency.user_setting.field_value) : null;
+		let userSetting = preset ? findValueByKey(preset, dependency.controller) : null;
 		let adminSetting = dependency.admin_setting.field_value;
 
 		// Start with global setting
