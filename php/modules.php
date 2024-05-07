@@ -66,14 +66,16 @@ if (get_theme_mod('feat_modules', '1') === '1') {
 				$field['choices'] = ['' => 'Select'];
 
 				// Because of the structure with the groups at the top of modules we need an extra level of going up
-				$top_field_key = get_field_object($choice_field['parent'])['parent'];
+				$top_field_key = get_field_object($choice_field['parent'])['parent'] ?? '';
 
-				while (have_rows($top_field_key, 'option')) {
-					the_row();
-					$rows = get_sub_field($choice_field['parent'], 'option');
-					if ($rows) foreach ($rows as $row) {
-						$value = $row[$choice_field['name']];
-						$field['choices'][$value] = $value;
+				if ($top_field_key) {
+					while (have_rows($top_field_key, 'option')) {
+						the_row();
+						$rows = get_sub_field($choice_field['parent'], 'option');
+						if ($rows) foreach ($rows as $row) {
+							$value = $row[$choice_field['name']];
+							$field['choices'][$value] = $value;
+						}
 					}
 				}
 			}

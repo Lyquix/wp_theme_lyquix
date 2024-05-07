@@ -105,7 +105,8 @@ function render($settings, $content) {
 					'type' => [
 						'type' => 'string',
 						'required' => true,
-						'default' => 'url'
+						'default' => 'url',
+						'allowed' => ['url', 'upload']
 					],
 					'url' => \lqx\util\schema_str_req_emp,
 					'upload' => [
@@ -170,7 +171,7 @@ function render($settings, $content) {
 		$breadcrumbs .= '</div>';
 	}
 
-	$preset = $settings['local']['user']['preset'];
+	$preset = $settings['local']['user']['preset'] ?? '';
 
 	require \lqx\blocks\get_template('hero', $preset);
 }

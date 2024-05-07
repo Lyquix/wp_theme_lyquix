@@ -27,13 +27,4 @@
 //  Remember to change the Template Name in the comment block at the top of the file
 //  Do not modify the rest of this file, instead, create a new file with the exact same filesame name in the /php/custom/templates/ directory
 
-if(file_exists(get_template_directory(). '/custom.php')) :
-	require get_template_directory() . '/custom.php';
-else :
-?><!DOCTYPE html>
-<html>
-	<body>
-		File <span style="font-family: monospace;"><?php echo get_template_directory();?>/custom.php</span> not found.
-	</body>
-</html>
-<?php endif;
+require get_template_directory() . '/custom.php';

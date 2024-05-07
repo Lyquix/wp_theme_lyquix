@@ -108,7 +108,7 @@ function render($settings, $content) {
 		return $v['data'];
 	}, $c['slides']));
 
-	$preset = $settings['local']['user']['preset'];
+	$preset = $settings['local']['user']['preset'] ?? '';
 
 	require \lqx\blocks\get_template('gallery', $preset);
 }

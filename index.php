@@ -22,15 +22,4 @@
 //  DO NOT MODIFY THIS FILE!
 //  If you want to customize the theme, create a file called custom.php
 
-$lqx_page_template = '';
-
-if(file_exists(get_template_directory(). '/custom.php')) :
-	require get_template_directory() . '/custom.php';
-else :
-?><!DOCTYPE html>
-<html>
-	<body>
-		File <span style="font-family: monospace;"><?php echo get_template_directory();?>/custom.php</span> not found.
-	</body>
-</html>
-<?php endif;
+require get_template_directory() . '/custom.php';

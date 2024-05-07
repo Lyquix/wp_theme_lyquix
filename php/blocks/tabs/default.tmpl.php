@@ -33,7 +33,7 @@
 		class="tabs"
 		id="<?= esc_attr($s['hash']) ?>"
 		data-browser-history="<?= $s['browser_history'] ?>"
-		data-convert-to-tabs="<?= implode(',', $s['convert_to_tabs']) ?>"
+		data-convert-to-accordion="<?= implode(',', $s['convert_to_accordion']) ?>"
 		data-auto-scroll="<?= implode(',', $s['auto_scroll']) ?>">
 
 		<ul
@@ -64,9 +64,9 @@
 				role="tabpanel"
 				tabindex="0">
 
-				<?php if ($s['convert_to_tabs'] == 'y') : ?>
+				<?php if (count($s['convert_to_accordion'])) : ?>
 					<button
-						class="tabs-header"
+						class="accordion-header"
 						id="<?= $s['hash'] . '-header-' . $idx ?>"
 						aria-expanded="<?= $idx == 0 ? 'true' : 'false' ?>"
 						aria-controls="<?= $s['hash'] . '-panel-' . $idx ?>"

@@ -99,7 +99,7 @@ function render($settings, $content) {
 		return $v['isValid'] ? $v['data'] : null;
 	}, $content));
 
-	$preset = $settings['local']['user']['preset'];
+	$preset = $settings['local']['user']['preset'] ?? '';
 
 	if (!empty($c)) require \lqx\blocks\get_template('tabs', $preset);
 }

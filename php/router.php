@@ -136,45 +136,38 @@ function render() {
 	// Fallback to default templates
 	else {
 		if (is_home() || is_archive()) {
-			if (tmpl_file_exists('archive')) require get_template_directory() . '/php/custom/archive.php';
+			if (tmpl_file_exists('archive')) require get_template_directory() . '/php/custom/templates/archive.php';
 			else require get_template_directory() . '/php/archive.php';
 		} elseif (is_singular()) {
-			if (tmpl_file_exists('singular')) require get_template_directory() . '/php/custom/singular.php';
+			if (tmpl_file_exists('singular')) require get_template_directory() . '/php/custom/templates/singular.php';
 			else require get_template_directory() . '/php/singular.php';
 		}
 
 		// There was an unexpected template request, or the theme default templates are missing
 		else {
-			echo "<pre><strong>Error:</strong> no suitable template has been found!\n\n";
-			if (WP_DEBUG) {
-				foreach ([
-					'is_front_page',
-					'is_home',
-					'is_404',
-					'is_search',
-					'is_archive',
-					'is_post_type_archive',
-					'get_post_type',
-					'is_category',
-					'get_the_category',
-					'is_tax',
-					'is_tag',
-					'is_author',
-					'is_date',
-					'is_year',
-					'is_month',
-					'is_day',
-					'is_singular',
-					'is_single',
-					'is_page',
-					'is_attachment',
-					'get_post_mime_type'
-				] as $f) {
-					echo $f . ': ' . print_r($f(), true) . "\n";
-				}
-				echo "\n" . print_r($wp_query, true);
+			$msg = [
+				"<h1>Error: no suitable template found</h1>",
+				"<pre>",
+				'$wp_query: ' . print_r($wp_query, true),
+				'$tmpl_name: ' . $tmpl_name,
+				'get_page_template_slug(): ' . get_page_template_slug(),
+			];
+
+			foreach ([
+				'is_front_page', 'is_home', 'is_404', 'is_search',
+				'is_archive', 'is_post_type_archive', 'get_post_type',
+				'is_category', 'get_the_category', 'is_tax', 'is_tag',
+				'is_author', 'is_date', 'is_year', 'is_month', 'is_day',
+				'is_singular', 'is_single', 'is_page',
+				'is_attachment', 'get_post_mime_type'
+			] as $f) {
+				$msg[] = $f . '(): ' . print_r($f(), true);
 			}
-			echo '</pre>';
+
+			$msg[] = '</pre>';
+
+			// Throw a WordPress error
+			wp_die(implode("\n", $msg), 'No suitable template found');
 		}
 	}
 }

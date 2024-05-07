@@ -25,13 +25,4 @@
 
 $lqx_page_template = 'chromeless';
 
-if(file_exists(get_template_directory(). '/custom.php')) :
-	require get_template_directory() . '/custom.php';
-else :
-?><!DOCTYPE html>
-<html>
-	<body>
-		File <span style="font-family: monospace;"><?php echo get_template_directory();?>/custom.php</span> not found.
-	</body>
-</html>
-<?php endif;
+require get_template_directory() . '/custom.php';

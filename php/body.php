@@ -41,6 +41,9 @@ function classes() {
 		$f = 'is_' . $type;
 		if ($f()) {
 			switch ($type) {
+				case '404':
+					$classes[] = 'error-404';
+					break;
 				case 'home':
 					$classes[] = 'blog';
 					break;

@@ -145,13 +145,17 @@ function get_settings($block, $post_id = null, $forced_preset = null, $forced_st
 			'hash' => 'id-' . md5(json_encode([get_the_ID(), $block, random_int(1000, 9999)])) // Generate a unique hash for the block
 		]
 	];
-	if ($settings['local']['user'] == null) {
+
+	// Initialize the processed settings with the global settings
+	if ($settings['global'] !== null) $settings['processed'] = array_merge($settings['processed'], $settings['global']);
+
+	// Check for forced preset and style
+	if ($forced_preset !== null || $forced_style !== null) {
 		$settings['local']['user'] = [
 			'style' => $forced_style,
 			'preset' => $forced_preset
 		];
 	}
-	if ($settings['global'] !== null) $settings['processed'] = array_merge($settings['processed'], $settings['global']);
 
 	// Check for user settings
 	if ($settings['local']['user'] !== null) {
