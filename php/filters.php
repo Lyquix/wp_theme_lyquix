@@ -80,23 +80,33 @@ function get_acf_fields_as_options($field_details, &$choices, $depth = 0) {
  */
 add_filter('acf/load_field', function ($field) {
 	$field_keys = [
-		'field_65f1ea274754b', // pref_filters > acf_field
-		'field_65f1ebb9ef068', // filters > acf_field
-		'field_65f248687356f', // posts_order > acf_field
-		'field_65f3010821d84', // render_custom > post_fields > acf_field
-		'field_65f471bf7d99b', // render_cards > heading
-		'field_65f475117fcd5', // render_cards > subheading
-		'field_65f4752a7fcd6', // render_cards > image
-		'field_65f4752f7fcd7', // render_cards > icon_image
-		'field_65f475367fcd8', // render_cards > video_url
-		'field_65f4753d7fcd9', // render_cards > video_upload
-		'field_65f475457fcda', // render_cards > body
-		'field_65f4754e7fcdb', // render_cards > labels
-		'field_66393791fb81d', // render_cards > url
-		'field_65f475567fcdc' // render_cards > links
+		'field_65f1ea274754b' => null, // pref_filters > acf_field
+		'field_65f1ebb9ef068' => null, // filters > acf_field
+		'field_65f248687356f' => null, // posts_order > acf_field
+		'field_65f3010821d84' => null, // render_custom > post_fields > acf_field
+		'field_65f471bf7d99b' => 'text', // render_cards > heading
+		'field_65f475117fcd5' => 'text', // render_cards > subheading
+		'field_65f4752a7fcd6' => 'image', // render_cards > image
+		'field_65f4752f7fcd7' => 'image', // render_cards > icon_image
+		'field_65f475367fcd8' => 'link', // render_cards > video_url
+		'field_65f4753d7fcd9' => 'file', // render_cards > video_upload
+		'field_65f475457fcda' => 'text', // render_cards > body
+		'field_65f4754e7fcdb' => 'text', // render_cards > labels
+		'field_66393791fb81d' => 'link'  // render_cards > url
 	];
 
-	if (!in_array($field['key'], $field_keys)) return $field;
+	$field_types = [
+		'text' => [
+			'text', 'textarea', 'number', 'range', 'email', 'url', 'password', 'wysiwyg',
+			'select', 'checkbox', 'radio', 'button_group', 'date_picker', 'date_time_picker',
+			'time_picker', 'color_picker'
+		],
+		'image' => ['image'],
+		'file' => ['file'],
+		'link' => ['link']
+	];
+
+	if (!array_key_exists($field['key'], $field_keys)) return $field;
 
 	// Get all field groups
 	$field_groups = acf_get_field_groups();
@@ -114,10 +124,11 @@ add_filter('acf/load_field', function ($field) {
 		// Get the field group fields
 		$group['fields'] = acf_get_fields($group['key']);
 
-		// Loop through fields in group
+		// Loop through fields in group and filter out by field type
 		foreach ($group['fields'] as $field_details) {
-			// TODO some fields should accept only certain types of fields
-			\lqx\filters\get_acf_fields_as_options($field_details, $field['choices'][$group['title']]);
+			if ($field_keys[$field['key']] == null || in_array($field_details['type'], $field_types[$field_keys[$field['key']]])) {
+				\lqx\filters\get_acf_fields_as_options($field_details, $field['choices'][$group['title']]);
+			}
 		}
 	}
 
@@ -1172,14 +1183,19 @@ function get_posts_with_data($settings) {
 						case 'field':
 							$label_field_object = get_field_object($settings['render_cards']['label_field'], $post->ID);
 
-							switch ($label_field_object['type']) {
-								case text:
+							if (is_array($label_field_object['value'])) {
+								foreach ($label_field_object['value'] as $value) {
 									$p['labels'][] = [
-										'label' => $field_label,
-										'value' => \lqx\util\slugify($field_label)
+										'label' => $value,
+										'value' => \lqx\util\slugify($value)
 									];
-									break;
-							// TODO select, checkbox, radio, button group, true/false
+								}
+							}
+							else {
+								$p['labels'][] = [
+									'label' => $label_field_object['value'],
+									'value' => \lqx\util\slugify($label_field_object['value'])
+								];
 							}
 
 							break;
