@@ -35,10 +35,10 @@
 				type="<?= esc_attr($item['video']['upload']['mime_type']) ?>">
 		</video>
 	<?php else: ?>
-		<?= $s['image_clickable'] == 'y' && $first_link ? '<a href="' . esc_attr($first_link) . '">' : '' ?>
+		<?= $s['image_clickable'] == 'y' && $item['link']['url'] ? sprintf('<a href="%s" target ="%s">', esc_attr($item['link']['url']), $item['link']['target']) : '' ?>
 		<img
 			src="<?= esc_attr($item['image']['sizes']['large']) ?>"
 			alt="<?= esc_attr($item['image']['alt']) ?>">
-		<?= $s['image_clickable'] == 'y' && $first_link ? '</a>' : '' ?>
+		<?= $s['image_clickable'] == 'y' && $item['link']['url'] ? '</a>' : '' ?>
 	<?php endif; ?>
 </div>

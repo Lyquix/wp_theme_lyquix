@@ -53,6 +53,9 @@ require_once get_template_directory() . '/php/customizer.php';
 // Blocks
 require_once get_template_directory() . '/php/blocks.php';
 
+// Cards
+require_once get_template_directory() . '/php/cards.php';
+
 // Layouts
 require_once get_template_directory() . '/php/layouts.php';
 

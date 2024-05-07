@@ -56,12 +56,6 @@
 							'useHash' => false
 						])));
 					}
-
-					// First link URL
-					$first_link = '';
-					if (count($item['links'])) {
-						$first_link = $item['links'][0]['link']['url'];
-					}
 				?>
 
 				<?php require \lqx\blocks\get_template('cards', $preset, 'item'); ?>

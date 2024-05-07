@@ -26,5 +26,5 @@
 
 ?>
 <<?= $s['heading_style'] ?>>
-	<?= $s['heading_clickable'] == 'y' && $first_link ? sprintf('<a href="%s">%s</a>', esc_attr($first_link), $item['heading']) : $item['heading'] ?>
+	<?= $s['heading_clickable'] == 'y' && $item['link']['url'] ? sprintf('<a href="%s" target="%s">%s</a>', esc_attr($item['link']['url']), $item['link']['target'], $item['heading']) : $item['heading'] ?>
 </<?= $s['heading_style'] ?>>

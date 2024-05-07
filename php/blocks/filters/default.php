@@ -33,9 +33,7 @@ namespace lqx\blocks\filters;
  */
 function render_filters($s) {
 	if ($s['render_mode'] == 'cards') return \lqx\filters\render_filters($s);
-	else {
-		// Custom filters rendering here
-	}
+	// Custom filters rendering here
 }
 
 /**
@@ -45,9 +43,7 @@ function render_filters($s) {
  */
 function render_posts($s) {
 	if ($s['render_mode'] == 'cards') return \lqx\filters\render_posts($s);
-	else {
-		// Custom posts rendering here
-	}
+	// Custom posts rendering here
 }
 
 /**
@@ -57,9 +53,7 @@ function render_posts($s) {
  */
 function render_pagination($s) {
 	if ($s['render_mode'] == 'cards') return \lqx\filters\render_pagination($s);
-	else {
-		// Custom pagination rendering here
-	}
+	// Custom pagination rendering here
 }
 
 /**
@@ -70,21 +64,10 @@ function render($settings) {
 	// Return if no preset has been selected
 	if ($settings['local']['user']['preset'] == '') return;
 
-	// Validate settings
-	$s = \lqx\filters\validate_settings($settings);
+	// Get the settings and posts with data
+	$s = \lqx\filters\get_settings_and_posts($settings);
 
-	// Initialize settings
-	$s = \lqx\filters\init_settings($s);
-
-	// Get options
-	$s = \lqx\filters\get_options($s);
-
-	// Get the posts
-	$post_info = \lqx\filters\get_posts_with_data($s);
-	$s['posts'] = $post_info['posts'];
-	$s['total_pages'] =  $post_info['total_pages'];
-
-	$preset = $settings['local']['user']['preset'];
+	$preset = $settings['local']['user']['preset'] ?? '';
 
 	if ($s['render_mode'] == 'custom_js') require \lqx\blocks\get_template('filters', $preset, 'js');
 	else require \lqx\blocks\get_template('filters', $preset);

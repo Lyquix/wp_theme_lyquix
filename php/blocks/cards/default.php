@@ -170,7 +170,8 @@ function render($settings, $content) {
 						'type' => [
 							'type' => 'string',
 							'required' => true,
-							'default' => 'url'
+							'default' => 'url',
+							'allowed' => ['url', 'upload']
 						],
 						'url' => \lqx\util\schema_str_req_emp,
 						'upload' => [
@@ -181,25 +182,16 @@ function render($settings, $content) {
 					]
 				],
 				'body' => \lqx\util\schema_str_req_emp,
-				'links' => [
-					'type' =>	'array',
-					'default' => [],
-					'elems' => [
-						'type' => 'object',
-						'keys' => [
-							'type' => [
-								'type' => 'string',
-								'required' => true,
-								'default' => 'button',
-								'allowed' => ['button', 'link']
-							],
-							'link' => [
-								'type' => 'object',
-								'required' => true,
-								'keys' => \lqx\util\schema_data_link
-							]
-						]
-					]
+				'link' => [
+					'type' => 'object',
+					'required' => true,
+					'keys' => \lqx\util\schema_data_link
+				],
+				'link_style' => [
+					'type' => 'string',
+					'required' => true,
+					'default' => 'button',
+					'allowed' => ['button', 'link']
 				],
 				'labels' => [
 					'type' =>	'array',
@@ -218,7 +210,7 @@ function render($settings, $content) {
 		return $v['isValid'] ? $v['data'] : null;
 	}, $content));
 
-	$preset = $settings['local']['user']['preset'];
+	$preset = $settings['local']['user']['preset'] ?? '';
 
 	if (!empty($c)) require \lqx\blocks\get_template('cards', $preset);
 }

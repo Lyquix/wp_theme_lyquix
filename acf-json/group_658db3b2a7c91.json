@@ -239,6 +239,11 @@
                     "acfe_settings": "",
                     "instruction_placement": "tooltip",
                     "acfe_permissions": "",
+                    "acfe_group_modal": 0,
+                    "acfe_group_modal_close": 0,
+                    "acfe_group_modal_button": "",
+                    "acfe_group_modal_size": "large",
+                    "parent_repeater": "field_658db3b2c1203",
                     "sub_fields": [
                         {
                             "key": "field_658db8eb18769",
@@ -350,12 +355,7 @@
                             "file_count": 0,
                             "min": ""
                         }
-                    ],
-                    "acfe_group_modal": 0,
-                    "acfe_group_modal_close": 0,
-                    "acfe_group_modal_button": "",
-                    "acfe_group_modal_size": "large",
-                    "parent_repeater": "field_658db3b2c1203"
+                    ]
                 },
                 {
                     "key": "field_658db3b3ae1de",
@@ -402,6 +402,63 @@
                     "parent_repeater": "field_658db3b2c1203"
                 },
                 {
+                    "key": "field_66392f12893e5",
+                    "label": "Link",
+                    "name": "link",
+                    "aria-label": "",
+                    "type": "link",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "35",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "return_format": "array",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "instruction_placement": "",
+                    "acfe_permissions": "",
+                    "parent_repeater": "field_658db3b2c1203"
+                },
+                {
+                    "key": "field_663a31ebc8172",
+                    "label": "Link Style",
+                    "name": "link_style",
+                    "aria-label": "",
+                    "type": "button_group",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "25",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "choices": {
+                        "button": "Button",
+                        "link": "Link"
+                    },
+                    "default_value": "button",
+                    "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "allow_null": 0,
+                    "instruction_placement": "",
+                    "acfe_permissions": "",
+                    "layout": "horizontal",
+                    "parent_repeater": "field_658db3b2c1203"
+                },
+                {
                     "key": "field_658db8320c9b2",
                     "label": "Labels",
                     "name": "labels",
@@ -411,7 +468,7 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "50",
+                        "width": "40",
                         "class": "",
                         "id": ""
                     },
@@ -484,89 +541,6 @@
                         }
                     ],
                     "parent_repeater": "field_658db3b2c1203"
-                },
-                {
-                    "key": "field_658db84c0c9b4",
-                    "label": "Links",
-                    "name": "links",
-                    "aria-label": "",
-                    "type": "repeater",
-                    "instructions": "Up to 3 links or buttons",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "50",
-                        "class": "",
-                        "id": ""
-                    },
-                    "hide_field": "",
-                    "hide_label": "",
-                    "hide_instructions": "",
-                    "hide_required": "",
-                    "acfe_repeater_stylised_button": 0,
-                    "layout": "table",
-                    "acfe_settings": "",
-                    "min": 0,
-                    "max": 3,
-                    "instruction_placement": "tooltip",
-                    "acfe_permissions": "",
-                    "collapsed": "",
-                    "button_label": "Add Row",
-                    "rows_per_page": 20,
-                    "sub_fields": [
-                        {
-                            "key": "field_658db8570c9b5",
-                            "label": "Type",
-                            "name": "type",
-                            "aria-label": "",
-                            "type": "button_group",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "choices": {
-                                "button": "Button",
-                                "link": "Link"
-                            },
-                            "default_value": "button",
-                            "return_format": "value",
-                            "acfe_settings": "",
-                            "acfe_validate": "",
-                            "allow_null": 0,
-                            "layout": "horizontal",
-                            "parent_repeater": "field_658db84c0c9b4"
-                        },
-                        {
-                            "key": "field_658db8710c9b6",
-                            "label": "Link",
-                            "name": "link",
-                            "aria-label": "",
-                            "type": "link",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "acfe_permissions": "",
-                            "instruction_placement": "",
-                            "hide_field": "",
-                            "hide_label": "",
-                            "hide_instructions": "",
-                            "hide_required": "",
-                            "return_format": "array",
-                            "acfe_settings": "",
-                            "acfe_validate": "",
-                            "parent_repeater": "field_658db84c0c9b4"
-                        }
-                    ],
-                    "parent_repeater": "field_658db3b2c1203"
                 }
             ]
         }
@@ -597,5 +571,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1706563595
+    "modified": 1715090198
 }

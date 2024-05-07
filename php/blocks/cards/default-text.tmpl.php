@@ -33,6 +33,6 @@
 
 	<?= $item['body'] ?>
 
-	<?php if (count($item['links'])) require \lqx\blocks\get_template('cards', $preset, 'links'); ?>
+	<?php if ($item['link']) require \lqx\blocks\get_template('cards', $preset, 'link'); ?>
 
 </div>

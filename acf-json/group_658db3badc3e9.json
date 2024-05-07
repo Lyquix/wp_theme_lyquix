@@ -56,6 +56,10 @@
             "acfe_settings": "",
             "instruction_placement": "",
             "acfe_permissions": "",
+            "acfe_group_modal": 0,
+            "acfe_group_modal_close": 0,
+            "acfe_group_modal_button": "",
+            "acfe_group_modal_size": "large",
             "sub_fields": [
                 {
                     "key": "field_658dbc772a254",
@@ -417,37 +421,6 @@
                     "layout": "horizontal"
                 },
                 {
-                    "key": "field_65e7ceae3b839",
-                    "label": "Show Links",
-                    "name": "show_links",
-                    "aria-label": "",
-                    "type": "button_group",
-                    "instructions": "Except for when there's a video, add a link to the image, using the first link URL.",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "hide_field": "",
-                    "hide_label": "",
-                    "hide_instructions": "",
-                    "hide_required": "",
-                    "choices": {
-                        "y": "Yes",
-                        "n": "No"
-                    },
-                    "default_value": "",
-                    "return_format": "value",
-                    "acfe_settings": "",
-                    "acfe_validate": "",
-                    "allow_null": 1,
-                    "instruction_placement": "tooltip",
-                    "acfe_permissions": "",
-                    "layout": "horizontal"
-                },
-                {
                     "key": "field_658dbbdc2a252",
                     "label": "Responsive Rules",
                     "name": "responsive_rules",
@@ -615,11 +588,7 @@
                         }
                     ]
                 }
-            ],
-            "acfe_group_modal": 0,
-            "acfe_group_modal_close": 0,
-            "acfe_group_modal_button": "",
-            "acfe_group_modal_size": "large"
+            ]
         }
     ],
     "location": [
@@ -650,5 +619,5 @@
     ],
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1709690647
+    "modified": 1715089635
 }

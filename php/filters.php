@@ -79,7 +79,7 @@ function get_acf_fields_as_options($field_details, &$choices, $depth = 0) {
  * Populate the Field Name fields in the Filters settings
  */
 add_filter('acf/load_field', function ($field) {
-	if (!in_array($field['key'], [
+	$field_keys = [
 		'field_65f1ea274754b', // pref_filters > acf_field
 		'field_65f1ebb9ef068', // filters > acf_field
 		'field_65f248687356f', // posts_order > acf_field
@@ -92,8 +92,11 @@ add_filter('acf/load_field', function ($field) {
 		'field_65f4753d7fcd9', // render_cards > video_upload
 		'field_65f475457fcda', // render_cards > body
 		'field_65f4754e7fcdb', // render_cards > labels
+		'field_66393791fb81d', // render_cards > url
 		'field_65f475567fcdc' // render_cards > links
-	])) return $field;
+	];
+
+	if (!in_array($field['key'], $field_keys)) return $field;
 
 	// Get all field groups
 	$field_groups = acf_get_field_groups();
@@ -113,6 +116,7 @@ add_filter('acf/load_field', function ($field) {
 
 		// Loop through fields in group
 		foreach ($group['fields'] as $field_details) {
+			// TODO some fields should accept only certain types of fields
 			\lqx\filters\get_acf_fields_as_options($field_details, $field['choices'][$group['title']]);
 		}
 	}
@@ -163,6 +167,29 @@ function get_thumbnails_info($post_id, $sizes = ['Large']) {
 	}
 
 	return $thumbnails;
+}
+
+/**
+ * Perform the complete settings processing and get the posts with data
+ * @param  array $settings - settings data
+ * @return array - settings data with posts and total pages
+ */
+function get_settings_and_posts($settings) {
+	// Validate settings
+	$s = validate_settings($settings);
+
+	// Initialize settings
+	$s = init_settings($s);
+
+	// Get options
+	$s = get_options($s);
+
+	// Get the posts
+	$post_info = get_posts_with_data($s);
+	$s['posts'] = $post_info['posts'];
+	$s['total_pages'] =  $post_info['total_pages'];
+
+	return $s;
 }
 
 /**
@@ -343,10 +370,37 @@ function validate_settings($settings) {
 					'subheading' => \lqx\util\schema_str_req_emp,
 					'image' => \lqx\util\schema_str_req_emp,
 					'icon_image' => \lqx\util\schema_str_req_emp,
+					'video_type' => [
+						'type' => 'string',
+						'required' => true,
+						'default' => 'url',
+						'allowed' => ['url', 'upload']
+					],
 					'video_url' => \lqx\util\schema_str_req_emp,
 					'video_upload' => \lqx\util\schema_str_req_emp,
-					'labels' => \lqx\util\schema_str_req_emp,
-					'links' => \lqx\util\schema_str_req_emp
+					'label_type' => [
+						'type' => 'string',
+						'required' => true,
+						'default' => 'taxonomy',
+						'allowed' => ['taxonomy', 'field']
+					],
+					'label_field' => \lqx\util\schema_str_req_emp,
+					'label_taxonomies' => [
+						'type' => 'array',
+						'required' => true,
+						'default' => [],
+						'elems' => [
+							'type' => 'string'
+						]
+					],
+					'use_post_url' => \lqx\util\schema_str_req_y,
+					'link_style' => [
+						'type' => 'string',
+						'required' => true,
+						'default' => 'button',
+						'allowed' => ['button', 'link']
+					],
+					'link' => \lqx\util\schema_str_req_emp
 				]
 			],
 			'render_custom' => [
@@ -393,7 +447,13 @@ function validate_settings($settings) {
 								]
 							]
 						]
-					]
+					],
+					'link_style' => [
+						'type' => 'string',
+						'required' => true,
+						'default' => 'button',
+						'allowed' => ['button', 'link']
+					],
 				]
 			],
 		]
@@ -1002,22 +1062,23 @@ function get_posts_with_data($settings) {
 					// Set the post object
 					$post = [
 						'id' => $post->ID,
-						'author' => get_author_info($post->post_author, $settings['post_author']),
+						'author' => get_author_info($post->post_author, $settings['render_custom']['post_author']),
 						'date' => $post->post_date_gmt,
-						'content' => $settings['post_content'] == 'y' ? $post->post_content : '',
+						'content' => $settings['render_custom']['post_content'] == 'y' ? $post->post_content : '',
 						'title' => $post->post_title,
-						'excerpt' => $settings['post_excerpt'] == 'y' ? $post->post_excerpt : '',
+						'excerpt' => $settings['render_custom']['post_excerpt'] == 'y' ? $post->post_excerpt : '',
 						'slug' => $post->post_name,
 						'modified' => $post->post_modified_gmt,
-						'url' => $post->guid,
+						'link' => get_permalink($post->ID),
+						'link_style' => $settings['render_custom']['link_style'] ?? 'button',
 						'type' => $post->post_type,
-						'thumbnail' => $settings['post_thumbnail'] == 'y' ? get_thumbnails_info($post->ID, $settings['thumbnail_sizes']) : [],
+						'thumbnail' => $settings['render_custom']['post_thumbnail'] == 'y' ? get_thumbnails_info($post->ID, $settings['render_custom']['thumbnail_sizes']) : [],
 						'taxonomies' => [],
 						'fields' => []
 					];
 
 					// Get taxonomies
-					foreach ($settings['post_taxonomies'] as $taxonomy) {
+					foreach ($settings['render_custom']['post_taxonomies'] as $taxonomy) {
 						$terms = get_terms([
 							'taxonomy' => $taxonomy,
 							'object_ids' => $post['id']
@@ -1035,103 +1096,97 @@ function get_posts_with_data($settings) {
 					}
 
 					// Get fields
-					foreach ($settings['post_fields'] as $field_name => $field_obj) {
+					foreach ($settings['render_custom']['post_fields'] as $field_name => $field_obj) {
 						$post['fields'][$field_name] = get_field($field_obj['key'], $post['id']);
 					}
 
 					break;
 
 				case 'cards':
-					// Set the post object
-					$id = $post->ID;
+					// List of field names that represent WP_Post fields, not ACF fields
+					$wp_post_keys = ['post_content', 'post_title', 'post_excerpt', 'post_name'];
 
-					// If content doesn't pass the metrics used by the cards render, we'll need to iterate and populate the needed keys
-					$video_url = get_field($settings['render_cards']['video_url'], $id);
-					$video_upload = get_field($settings['render_cards']['video_upload'], $id);
-
-					// Assemble links array
-					$links = [];
-
-					// Use the post URL as the first link
-					if ($settings['render_cards']['use_post_url'] == 'y') $links[] = [
-						'type' => 'text',
-						'link' => [
-							'url' => get_permalink($id),
-							'title' => 'Read More',
-							'target' => null
+					// Set the defaults
+					$p = [
+						'id' => $post->ID,
+						'date' => $post->post_date_gmt,
+						'heading' => null,
+						'subheading' => null,
+						'slug' => $post->post_name,
+						'modified' => $post->post_modified_gmt,
+						'link' => get_permalink($post->ID),
+						'link_style' => $settings['render_cards']['link_style'] ?? 'button',
+						'body' => null,
+						'labels' => [],
+						'image' => null,
+						'icon_image' => null,
+						'video' => [
+							'type' => $settings['render_cards']['video_type'] ?? 'url'
 						]
 					];
 
-					// Links field
-					$card_links = get_field($settings['render_cards']['links'], $id);
-					if (!is_array($card_links)) $card_links = [];
-					foreach ($card_links as $link) {
-						$links[] = [
-							'type' => 'text',
-							'link' => [
-								'url' => $link['link']['url'],
-								'title' => $link['link']['title'],
-								'target' => $link['link']['target']
-							]
-						];
-					}
-
-					//for body we do need to have some additional support to allow for excerpt
-					//I don't think we should load main body content, this seems like it could be problematic but I can do that as well if need be?
-					$body = null;
-					switch ($settings['render_cards']['body']) {
-						case 'excerpt':
-							$body = get_the_excerpt($id);
-							break;
-
-						case 'content':
-							$body = get_the_content($id);
-							break;
-
-						default:
-							$body = get_field($settings['render_cards']['body'], $id);
-							break;
-					}
-
-					// For labels, we need to get both the associated taxonomies and any other fields used to build this out.
-					$labels = [];
-
-					$label_taxes = $settings['render_cards']['label_taxonomies'] ?? [];
-
-					foreach ($label_taxes as $tax) {
-						$terms = get_the_terms($id, $tax->name);
-						foreach ($terms as $term) {
-							array_push($labels, ['label' => $term->name, 'value' => $term->slug]);
+					foreach (['heading', 'subheading', 'image', 'icon_image', 'body'] as $key) {
+						if ($settings['render_cards'][$key]) {
+							if (in_array($settings['render_cards'][$key], $wp_post_keys)) {
+								$p[$key] = $post->$settings['render_cards'][$key];
+							} else {
+								$p[$key] = get_field($settings['render_cards'][$key], $post->ID);
+							}
 						}
 					}
 
-					$field_label = null;
+					// Handle the URL
+					if ($settings['render_cards']['use_post_url'] == 'n' && $settings['render_cards']['link']) $p['link'] = get_field($settings['render_cards']['link'], $post->ID);
+					else $p['link'] = null;
 
-					if (array_key_exists('label', $settings['render_cards'])) $field_label = get_field($settings['render_cards']['label'], $id);
-
-					if (is_string($field_label)) {
-						$labels[] = [
-							'label' => $field_label,
-							'value' => \lqx\util\slugify($field_label)
+					// Handle video
+					$video_url = get_field($settings['render_cards']['video_url'], $post->ID);
+					$video_upload = get_field($settings['render_cards']['video_upload'], $post->ID);
+					if ($settings['render_cards']['video_type'] == 'url' && $video_url) {
+						$p['video'] = [
+							'type' => 'url',
+							'url' => $video_url
+						];
+					}
+					elseif ($settings['render_cards']['video_type'] == 'upload' && $video_upload) {
+						$p['video'] = [
+							'type' => 'upload',
+							'upload' => $video_upload
 						];
 					}
 
-					$post = [
-						'id' => $post->ID,
-						'date' => $post->post_date_gmt,
-						'heading' => $post->post_title,
-						'subheading' => get_field($settings['render_cards']['subheading'], $id),
-						'slug' => $post->post_name,
-						'modified' => $post->post_modified_gmt,
-						'url' => $post->guid,
-						'body' => $body,
-						'links' => $links,
-						'labels' => $labels,
-						'image' => get_field($settings['render_cards']['image'], $id),
-						'icon_image' => get_field($settings['render_cards']['icon_image'], $id),
-						'labels' => $labels,
-						'video' => ['type' => ($video_url !== NULL && $video_url !== '' ? 'url' : ($video_upload !== NULL && $video_upload !== '' ? 'upload' : '')), 'url' => $video_url, 'upload' => $video_upload]
-					];
+					// Handle labels
+					switch ($settings['render_cards']['label_type']) {
+						case 'taxonomy':
+							foreach ($settings['render_cards']['label_taxonomies'] ?? [] as $tax) {
+								$terms = get_the_terms($post->ID, $tax->name);
+								foreach ($terms as $term) {
+									$p['labels'][] = [
+										'label' => $term->name,
+										'value' => $term->slug
+									];
+								}
+							}
+							break;
+
+						case 'field':
+							$label_field_object = get_field_object($settings['render_cards']['label_field'], $post->ID);
+
+							switch ($label_field_object['type']) {
+								case text:
+									$p['labels'][] = [
+										'label' => $field_label,
+										'value' => \lqx\util\slugify($field_label)
+									];
+									break;
+							// TODO select, checkbox, radio, button group, true/false
+							}
+
+							break;
+					}
+
+					$post = $p;
+
 					break;
 			}
 
@@ -1221,14 +1276,16 @@ function render_filters($settings) {
  * @param  array $settings - settings and posts data
  */
 function render_posts($settings) {
-	require_once \lqx\blocks\get_renderer('cards', $settings['render_cards']['preset']);
-
 	// For settings we need to get the preset settings from cards.
 	$cards_settings = \lqx\blocks\get_settings('cards', null, $settings['render_cards']['preset'], $settings['render_cards']['style']);
 
 	// Change the hash to use the same as the filters
 	$cards_settings['processed']['hash'] = $settings['hash'] . '-posts';
 
+	// Load the rendered for the specified preset
+	require_once \lqx\blocks\get_renderer('cards', $settings['render_cards']['preset']);
+
+	// Render the cards
 	return \lqx\blocks\cards\render($cards_settings, $settings['posts']);
 }
 
