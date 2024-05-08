@@ -382,6 +382,7 @@ export const lyqbox = (() => {
 		// Open the lightbox
 		lightbox.elem.get(0).showModal();
 		lightbox.elem.attr('aria-hidden', 'false');
+		lightbox.open = true;
 
 		// Load the slide
 		load(name, index);
