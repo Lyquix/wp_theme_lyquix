@@ -40,16 +40,20 @@
 		<?= $s['slider'] == 'y' ? '<div class="swiper">' : '' ?>
 			<ul class="<?= $s['slider'] == 'y' ? 'swiper-wrapper' : 'gallery-wrapper' ?>">
 				<?php foreach ($c['slides'] as $idx => $item) : ?>
-					<?php if ($item['video']) $video = \lqx\util\get_video_urls($item['video']); ?>
+					<?php
+					$video = null;
+					if ($item['video']) $video = \lqx\util\get_video_urls($item['video']); ?>
 					<li
-						class="<?= $s['slider'] == 'y' ? 'swiper-slide' : 'gallery-slide' ?>"
+						class="<?= $s['slider'] == 'y' ? 'swiper-slide' : 'gallery-slide' ?><?= is_array($video) ? ' video' : '' ?>"
 						id="<?= $item['slug'] ? $item['slug'] : $s['hash'] . '-' . $idx ?>"
 						data-lyqbox="<?= htmlentities(json_encode([
 							'name' => $c['lightbox_slug'],
-							'type' => $video['url'] ? 'video' : 'image',
-							'url' => $video['url'] ? $video['url'] : $item['image']['sizes']['large'],
+							'slug' => $item['slug'],
+							'type' => is_array($video) ? 'video' : 'image',
+							'url' => is_array($video) ? $video['url'] : $item['image']['sizes']['large'],
 							'title' => $item['title'],
-							'caption' => $item['caption']
+							'caption' => $item['caption'],
+							'thumb' => $item['thumbnail']['sizes']['large'],
 						])) ?>">
 						<img
 							src="<?= esc_attr($item['thumbnail']['sizes']['large']) ?>"
