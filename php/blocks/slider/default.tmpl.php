@@ -45,7 +45,7 @@
 
 				<?php foreach ($c as $idx => $item) : ?>
 
-					<div class="swiper-slide">
+					<div class="swiper-slide" data-slide-teaser="<?= $item['teaser_text']?>" <?= !empty($item['thumbnail']['url']) ? 'data-slide-thumbnail="'.$item['thumbnail']['url'].'"' : '' ?>>
 
 						<?php require \lqx\blocks\get_template('slider', $preset, 'image'); ?>
 
