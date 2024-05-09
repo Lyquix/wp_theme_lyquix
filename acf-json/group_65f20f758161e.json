@@ -242,7 +242,7 @@
                             "allow_level": "",
                             "field_type": "select",
                             "default_value": [],
-                            "return_format": "id",
+                            "return_format": "object",
                             "ui": 0,
                             "allow_null": 0,
                             "multiple": 0,
@@ -1093,8 +1093,8 @@
                 },
                 {
                     "key": "field_65f1eb2847552",
-                    "label": "Filters",
-                    "name": "filters",
+                    "label": "Controls",
+                    "name": "controls",
                     "aria-label": "",
                     "type": "repeater",
                     "instructions": "",
@@ -1111,6 +1111,7 @@
                     "hide_required": "",
                     "acfe_repeater_stylised_button": 0,
                     "layout": "block",
+                    "pagination": 0,
                     "acfe_settings": "",
                     "min": 0,
                     "max": 0,
@@ -1486,11 +1487,11 @@
                     "name": "show_search",
                     "aria-label": "",
                     "type": "button_group",
-                    "instructions": "Select whether to show the search bar before or after the filters, or not at all (Default: before)",
+                    "instructions": "Select whether to show the search bar or not (Default: Yes)",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "",
+                        "width": "20",
                         "class": "",
                         "id": ""
                     },
@@ -1499,11 +1500,10 @@
                     "hide_instructions": "",
                     "hide_required": "",
                     "choices": {
-                        "before": "Before",
-                        "after": "After",
+                        "y": "Yes",
                         "n": "No"
                     },
-                    "default_value": "before",
+                    "default_value": "y",
                     "return_format": "value",
                     "acfe_settings": "",
                     "acfe_validate": "",
@@ -1511,6 +1511,93 @@
                     "instruction_placement": "tooltip",
                     "acfe_permissions": "",
                     "layout": "horizontal"
+                },
+                {
+                    "key": "field_663ac7359e441",
+                    "label": "Search Placeholder",
+                    "name": "search_placeholder",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "Enter the text to be shown as placeholder on the search bar. (Default: Search by Keyword)",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "20",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "default_value": "Search by Keyword",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "maxlength": "",
+                    "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": ""
+                },
+                {
+                    "key": "field_663ac7af9e442",
+                    "label": "Show Clear",
+                    "name": "show_clear",
+                    "aria-label": "",
+                    "type": "button_group",
+                    "instructions": "Select whether to show the search bar before or after the filters, or not at all (Default: before)",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "20",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "choices": {
+                        "y": "Yes",
+                        "n": "No"
+                    },
+                    "default_value": "y",
+                    "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "allow_null": 0,
+                    "acfe_permissions": "",
+                    "instruction_placement": "tooltip",
+                    "layout": "horizontal"
+                },
+                {
+                    "key": "field_663ac85560fde",
+                    "label": "Clear Label",
+                    "name": "clear_label",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "Enter the text to be shown as placeholder on the search bar. (Default: Search by Keyword)",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "20",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "default_value": "Clear",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "maxlength": "",
+                    "acfe_permissions": "",
+                    "instruction_placement": "tooltip",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": ""
                 },
                 {
                     "key": "field_65f46f9d8afa3",
@@ -2083,6 +2170,83 @@
                             "min": ""
                         },
                         {
+                            "key": "field_663bccccebf4f",
+                            "label": "Link Title",
+                            "name": "link_title",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_65fc7bce49efa",
+                                        "operator": "==",
+                                        "value": "y"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "20",
+                                "class": "",
+                                "id": ""
+                            },
+                            "acfe_permissions": "",
+                            "instruction_placement": "",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
+                            "default_value": "Read More",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
+                            "maxlength": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": ""
+                        },
+                        {
+                            "key": "field_663bcce5ebf50",
+                            "label": "Link Target",
+                            "name": "link_target",
+                            "aria-label": "",
+                            "type": "button_group",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_65fc7bce49efa",
+                                        "operator": "==",
+                                        "value": "y"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "20",
+                                "class": "",
+                                "id": ""
+                            },
+                            "acfe_permissions": "",
+                            "instruction_placement": "",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
+                            "choices": {
+                                "_blank": "Blank",
+                                "_self": "Self",
+                                "_parent": "Parent",
+                                "_top": "Top"
+                            },
+                            "default_value": "",
+                            "return_format": "value",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
+                            "allow_null": 1,
+                            "layout": "horizontal"
+                        },
+                        {
                             "key": "field_663a4960f8c67",
                             "label": "Label Type",
                             "name": "label_type",
@@ -2620,5 +2784,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1715099634
+    "modified": 1715282521
 }

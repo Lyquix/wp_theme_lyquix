@@ -29,10 +29,21 @@
 	id="<?= esc_attr($s['anchor']) ?>"
 	class="lqx-block-filters <?= esc_attr($s['class']) ?>">
 
-		<?= render_filters($s) ?>
+	<div
+		class="filters"
+		id="<?= esc_attr($s['hash']) ?>">
 
-		<?= render_posts($s) ?>
+		<?php
+		if ($s['render_mode'] == 'cards') {
+			\lqx\blocks\filters\render_controls($s);
+			\lqx\blocks\filters\render_posts($s);
+			\lqx\blocks\filters\render_pagination($s);
+		}
+		else {
+			require \lqx\blocks\get_template('filters', $preset, 'js');
+		}
+		?>
 
-		<?= render_pagination($s) ?>
+	</div>
 
 </section>

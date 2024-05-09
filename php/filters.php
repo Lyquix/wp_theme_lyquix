@@ -183,10 +183,10 @@ function get_thumbnails_info($post_id, $sizes = ['Large']) {
 /**
  * Perform the complete settings processing and get the posts with data
  * @param  array $settings - settings data
- * @return array - settings data with posts and total pages
+ * @return array - processed settings data with posts and total pages
  */
 function get_settings_and_posts($settings) {
-	// Validate settings
+	// Validate settings / get processed settings
 	$s = validate_settings($settings);
 
 	// Initialize settings
@@ -204,8 +204,9 @@ function get_settings_and_posts($settings) {
 }
 
 /**
- * Validate the settings data
+ * Validate the settings data and return the processed settings
  * @param  array $settings - settings data
+ * @return array - processed settings data
  */
 function validate_settings($settings) {
 	// Get and validate processed settings
@@ -220,11 +221,6 @@ function validate_settings($settings) {
 				'required' => true,
 				'default' => 'id-' . md5(json_encode([$settings, random_int(1000, 9999)]))
 			],
-			'preset' => [
-				'type' => 'string',
-				'required' => true,
-				'default' => $settings['local']['user']['preset']
-			],
 			'post_type' => \lqx\util\schema_str_req_notemp,
 			'pre_filters' => [
 				'type' => 'array',
@@ -238,7 +234,25 @@ function validate_settings($settings) {
 							'required' => true,
 							'allowed' => ['author', 'date', 'field', 'taxonomy']
 						],
-						'taxonomy_term' => \lqx\util\schema_str_req_emp,
+						// TODO add validation for taxonomy_term
+						/*
+						'taxonomy_term' => [
+							'type' => 'object',
+							'keys' => [
+								'term_id' => \lqx\util\schema_int,
+								'name' => \lqx\util\schema_str_req_emp,
+								'slug' => \lqx\util\schema_str_req_emp,
+								'term_group' => \lqx\util\schema_int,
+								'term_taxonomy_id' => \lqx\util\schema_int,
+								'taxonomy' => \lqx\util\schema_str_req_emp,
+								'description' => \lqx\util\schema_str_req_emp,
+								'parent' => \lqx\util\schema_int,
+								'count' => \lqx\util\schema_int,
+								'filter' => \lqx\util\schema_str_req_emp,
+								'term_order' => \lqx\util\schema_int
+							]
+						],
+						*/
 						'acf_field' => \lqx\util\schema_str_req_emp,
 						'operator_simple' => [
 							'type' => 'string',
@@ -311,7 +325,7 @@ function validate_settings($settings) {
 					]
 				]
 			],
-			'filters' => [
+			'controls' => [
 				'type' => 'array',
 				'required' => true,
 				'default' => [],
@@ -359,12 +373,10 @@ function validate_settings($settings) {
 					]
 				]
 			],
-			'show_search' => [
-				'type' => 'string',
-				'required' => true,
-				'default' => 'before',
-				'allowed' => ['before', 'after', 'no']
-			],
+			'show_search' => \lqx\util\schema_str_req_y,
+			'search_placeholder' => \lqx\util\schema_str_req_emp,
+			'show_clear' => \lqx\util\schema_str_req_y,
+			'clear_label' => \lqx\util\schema_str_req_emp,
 			'render_mode' => [
 				'type' => 'string',
 				'required' => true,
@@ -379,6 +391,7 @@ function validate_settings($settings) {
 					'style' => \lqx\util\schema_str_req_emp,
 					'heading' => \lqx\util\schema_str_req_emp,
 					'subheading' => \lqx\util\schema_str_req_emp,
+					'body' => \lqx\util\schema_str_req_emp,
 					'image' => \lqx\util\schema_str_req_emp,
 					'icon_image' => \lqx\util\schema_str_req_emp,
 					'video_type' => [
@@ -411,7 +424,14 @@ function validate_settings($settings) {
 						'default' => 'button',
 						'allowed' => ['button', 'link']
 					],
-					'link' => \lqx\util\schema_str_req_emp
+					'link' => \lqx\util\schema_str_req_emp,
+					'link_title' => \lqx\util\schema_str_req_emp,
+					'link_target' => [
+						'type' => 'string',
+						'required' => true,
+						'default' => '',
+						'allowed' => ['', '_blank', '_self', '_parent', '_top']
+					]
 				]
 			],
 			'render_custom' => [
@@ -477,12 +497,12 @@ function validate_settings($settings) {
 
 /**
  * Get settings for the filters block
- * @param  array $settings - filters settings
+ * @param  array $s - processed settings
  * @param  int $post_id - post ID
  */
-function init_settings($settings) {
+function init_settings($s) {
 	// Clean pre-filters settings
-	foreach ($settings['pre_filters'] as $i => $pre_filter) {
+	foreach ($s['pre_filters'] as $i => $pre_filter) {
 		switch ($pre_filter['type']) {
 			case 'date':
 				foreach ([
@@ -546,11 +566,11 @@ function init_settings($settings) {
 				break;
 		}
 
-		$settings['pre_filters'][$i] = $pre_filter;
+		$s['pre_filters'][$i] = $pre_filter;
 	}
 
 	// Clean up posts order settings
-	foreach ($settings['posts_order'] as $i => $post_order) {
+	foreach ($s['posts_order'] as $i => $post_order) {
 		if (in_array($post_order['order_by'], [
 			'author',
 			'date',
@@ -565,57 +585,57 @@ function init_settings($settings) {
 
 		if ($post_order['order_by'] == 'rand') unset($post_order['order']);
 
-		$settings['posts_order'][$i] = $post_order;
+		$s['posts_order'][$i] = $post_order;
 	}
 
-	// Clean up filters settings and get filters labels and other details
-	foreach ($settings['filters'] as $i => $filter) {
+	// Clean up controls settings and get control labels and other details
+	foreach ($s['controls'] as $i => $control) {
 		// Add empty `selected` key
-		if (!array_key_exists('selected', $filter)) $filter['selected'] = '';
+		if (!array_key_exists('selected', $control)) $control['selected'] = '';
 
 		// Get the label and other details
-		switch ($filter['type']) {
+		switch ($control['type']) {
 			case 'taxonomy':
 				// Set the label
-				if (!isset($filter['label'])) $filter['label'] = get_taxonomy($filter['taxonomy'])->label;
+				if (!isset($control['label'])) $control['label'] = get_taxonomy($control['taxonomy'])->label;
 
 				// Remove non-taxonomy fields
-				unset($filter['acf_field']);
+				unset($control['acf_field']);
 				break;
 
 			case 'field':
 				// Get the field settings
-				$field = get_field_object($filter['acf_field'], null, true, false, false);
+				$field = get_field_object($control['acf_field'], null, true, false, false);
 
 				// Set the label
-				if (!isset($filter['label'])) $filter['label'] = $field['label'];
+				if (!isset($control['label'])) $control['label'] = $field['label'];
 
 				// Get key field settings
-				$filter['field_type'] = $field['type'];
-				$filter['field_name'] = $field['name'];
-				if (isset($field['choices'])) $filter['field_choices'] = $field['choices'];
+				$control['field_type'] = $field['type'];
+				$control['field_name'] = $field['name'];
+				if (isset($field['choices'])) $control['field_choices'] = $field['choices'];
 
 				// Remove non-field fields
-				unset($filter['taxonomy']);
+				unset($control['taxonomy']);
 				break;
 		}
 
-		// Create 'slug' string to use as name of filter in IDs, strings for active filters in hashes, etc
-		$filter['slug'] = \lqx\util\slugify($filter['label']);
+		// Create 'slug' string to use as name of control in IDs, strings for active controls in hashes, etc
+		$control['slug'] = \lqx\util\slugify($control['label']);
 
 		// Convert custom order into an array of values
-		$filter['custom_order'] = array_map(function ($value) {
+		$control['custom_order'] = array_map(function ($value) {
 			return $value['value'];
-		}, $filter['custom_order']);
+		}, $control['custom_order']);
 
-		$settings['filters'][$i] = $filter;
+		$s['controls'][$i] = $control;
 	}
 
-	if ($settings['render_mode'] !== 'cards') {
+	if ($s['render_mode'] !== 'cards') {
 		// Convert post_fields to an array of field objects
 		$post_fields = [];
 
-		foreach ($settings['post_fields'] as $field_obj) {
+		foreach ($s['render_custom']['post_fields'] as $field_obj) {
 			$field_obj = get_field_object($field_obj['acf_field'], null, true, false, false);
 
 			$post_fields[$field_obj['name']] = [
@@ -627,32 +647,32 @@ function init_settings($settings) {
 			];
 		}
 
-		$settings['post_fields'] = $post_fields;
+		$s['render_custom']['post_fields'] = $post_fields;
 	}
 
 	// Add an empty `search` key
-	if (!array_key_exists('search', $settings)) $settings['search'] = '';
+	if (!array_key_exists('search', $s)) $s['search'] = '';
 
 	// Set the page number
-	if (!array_key_exists('page', $settings)) $settings['page'] = 1;
+	if (!array_key_exists('page', $s)) $s['page'] = 1;
 
 	// Set the pagination object
-	if ($settings['show_all'] == 'y') {
+	if ($s['show_all'] == 'y') {
 		$pagination = [
 			'show_all' => 'y'
 		];
 	} else {
 		$pagination = [
 			'show_all' => 'n',
-			'pagination' => $settings['pagination'],
-			'pagination_details' => $settings['pagination_details'],
-			'show_posts_per_page' => $settings['show_posts_per_page']
+			'pagination' => $s['pagination'],
+			'pagination_details' => $s['pagination_details'],
+			'show_posts_per_page' => $s['show_posts_per_page']
 		];
 
-		if ($settings['show_posts_per_page'] == 'y') {
-			$pagination['posts_per_page_options'] = $settings['posts_per_page_options'];
+		if ($s['show_posts_per_page'] == 'y') {
+			$pagination['posts_per_page_options'] = $s['posts_per_page_options'];
 		} else {
-			$pagination['posts_per_page'] = $settings['posts_per_page'];
+			$pagination['posts_per_page'] = $s['posts_per_page'];
 		}
 	}
 
@@ -664,41 +684,41 @@ function init_settings($settings) {
 		'posts_per_page',
 		'posts_per_page_options'
 	] as $k) {
-		unset($settings[$k]);
+		unset($s[$k]);
 	}
 
-	$settings['pagination'] = $pagination;
+	$s['pagination'] = $pagination;
 
 	// Remove unused render mode data
-	if ($settings['render_mode'] == 'cards') {
-		unset($settings['render_custom']);
+	if ($s['render_mode'] == 'cards') {
+		unset($s['render_custom']);
 	} else {
-		unset($settings['render_cards']);
+		unset($s['render_cards']);
 	}
 
-	return $settings;
+	return $s;
 }
 
 /**
- * Get the options for each filter, from a given list of posts
- * @param  array $settings - filters settings
+ * Get the options for each control, from a given list of posts
+ * @param  array $s - controls settings
  * @param  array $posts - list of posts
  */
-function get_options($settings) {
+function get_options($s) {
 	global $wpdb;
 
 	// If no posts were passed
-	$posts = get_post_ids($settings);
+	$posts = get_post_ids($s);
 
-	// Cycle through filters
-	foreach ($settings['filters'] as $i => $filter) {
-		// Get filter options
+	// Cycle through controls
+	foreach ($s['controls'] as $i => $control) {
+		// Get control options
 		$options = [];
 
-		switch ($filter['type']) {
+		switch ($control['type']) {
 			case 'taxonomy':
 				$terms = get_terms([
-					'taxonomy' => $filter['taxonomy'],
+					'taxonomy' => $control['taxonomy'],
 					'object_ids' => $posts
 				]);
 
@@ -720,17 +740,17 @@ function get_options($settings) {
 				$sql = $wpdb->prepare(
 					"SELECT `meta_value`, COUNT(`post_id`) as `count` " .
 						"FROM $wpdb->postmeta " .
-						"WHERE `meta_key` = %s " . // TODO: are we handling sub-fields within groups and repeaters correctly?
+						"WHERE `meta_key` = %s " . // TODO: are we handling sub-fields within groups and repeaters correctly? We may need a LIKE operator here
 						"AND `post_id` IN (" . implode(',', array_map('intval', $posts)) . ") " .
 						"GROUP BY `meta_value`",
-					$filter['acf_field']
+					$control['acf_field']
 				);
 
 				// Execute the query
 				$field_values = $wpdb->get_results($sql);
 
 				if (is_array($field_values)) {
-					if ($filter['field_type'] == 'relation') {
+					if ($control['field_type'] == 'relation') {
 						foreach ($field_values as $field_value) {
 							// Relation fields returns ids and so we need to get the slug and name for the posts
 							$relation_values = unserialize($field_value->meta_value);
@@ -740,7 +760,7 @@ function get_options($settings) {
 										$title = get_the_title($relation_value);
 										$options[$relation_value] = [
 											'value' => $relation_value,
-											'slug' => get_post_field('post_name', $relation_value), // TODO should we get the actual post slug instead?
+											'slug' => get_post_field('post_name', $relation_value),
 											'text' => $title,
 											'disabled' => false,
 											'selected' => false,
@@ -758,7 +778,7 @@ function get_options($settings) {
 									if ($choice_key == $field_value->meta_value) {
 										$options[$field_value] = [
 											'value' => $choice_key,
-											'slug' => get_post_field('post_name', $choice_key), // TODO should we get the actual slug for the choice if available?
+											'slug' => get_post_field('post_name', $choice_key),
 											'text' => $choice,
 											'disabled' => false,
 											'selected' => false,
@@ -788,9 +808,9 @@ function get_options($settings) {
 		}
 
 		// Outside the cases because this will always be utilized regardless of the order
-		$order = $filter['order'];
+		$order = $control['order'];
 
-		switch ($filter['order_by']) {
+		switch ($control['order_by']) {
 			case 'alpha':
 				usort($options, function ($a, $b) use ($order) {
 					if ($order === 'asc') {
@@ -818,7 +838,7 @@ function get_options($settings) {
 				$new_options = [];
 				foreach ($options as $option) {
 					//get index within settings and assign it to the new array
-					$index = array_search($option['text'], $filter['custom_order']);
+					$index = array_search($option['text'], $control['custom_order']);
 					$new_options[$index] = $option;
 				}
 
@@ -828,40 +848,43 @@ function get_options($settings) {
 				break;
 		}
 
-		// Add options to filter
-		$filter['options'] = $options;
+		// Add options to control
+		$control['options'] = $options;
 
-		// Save the filter
-		$settings['filters'][$i] = $filter;
+		// Save the control
+		$s['controls'][$i] = $control;
 	}
 
-	return $settings;
+	return $s;
 }
 
 /**
  * Generate a WP Query object based on pre-filters, applied filters and passed arguments
- * @param  array $settings - filters settings
+ * @param  array $s - processed settings
  * @param  array $query - query arguments
  */
-function prepare_query($query, $settings) {
+function prepare_query($query, $s) {
 	// Pre-filters args
-	$pre_filters = $settings['pre_filters'];
+	$pre_filters = $s['pre_filters'];
 
 	foreach ($pre_filters as $pre_filter) {
 		switch ($pre_filter['type']) {
 			case 'taxonomy':
-				$tax_query = [
-					'taxonomy' => 'category',
-					'field' => 'term_id',
-					'terms' => $pre_filter['taxonomy_term'],
-				];
-
-				if (isset($query['tax_query'])) {
-					$query['tax_query']['relation'] = 'AND';
-					$query['tax_query'][] = $tax_query;
-				} else {
-					$query['tax_query'] = array();
-					$query['tax_query'][] = $tax_query;
+				// find the tax that the term belongs to
+				if ($pre_filter['taxonomy_term']->taxonomy !== null) {
+					$tax_query = [
+						'taxonomy' => $pre_filter['taxonomy_term']->taxonomy,
+						'field' => 'term_id',
+						'terms' => $pre_filter['taxonomy_term']->term_id,
+					];
+					// add the relevant query
+					if (isset($query['tax_query'])) {
+						$query['tax_query']['relation'] = 'AND';
+						$query['tax_query'][] = $tax_query;
+					} else {
+						$query['tax_query'] = array();
+						$query['tax_query'][] = $tax_query;
+					}
 				}
 				break;
 
@@ -954,21 +977,22 @@ function prepare_query($query, $settings) {
 		}
 	}
 
-	// Implement filters args
-	$filters = $settings['filters'];
+	// Implement controls args
+	$controls = $s['controls'];
 
-	foreach ($filters as $filter) {
+	foreach ($controls as $control) {
+		// TODO we will need to update this code to handle taxonomy object
 		// Ee only need to edit things if there is a value that has been set
-		if ($filter['selected'] !== '' && $filter['selected'] !== false) {
-			// Use different logic depending on the filter
+		if ($control['selected'] !== '' && $control['selected'] !== false) {
+			// Use different logic depending on the control
 			// CONSIDER: will we have pre-filtered values alongside selected values?
 			// In theory it should be okay because tax and field queries are arrays.
-			switch ($filter['type']) {
+			switch ($control['type']) {
 				case 'taxonomy':
 					$tax_query = [
-						'taxonomy' => 'category',
+						'taxonomy' => 'category', // TODO this needs to be the actual name of the taxonomy, not fixed to category
 						'field' => 'term_id',
-						'terms' => $filter['selected'],
+						'terms' => $control['selected'],
 					];
 
 					if (isset($query['tax_query'])) {
@@ -984,9 +1008,9 @@ function prepare_query($query, $settings) {
 
 				case 'field':
 					$acf_meta_query = [
-						'key' => get_field_object($filter['acf_field'])['name'],
+						'key' => get_field_object($control['acf_field'])['name'],
 						'compare' => 'LIKE',
-						'value' => $filter['selected']
+						'value' => $control['selected']
 					];
 
 					if (isset($query['meta_query'])) {
@@ -1001,23 +1025,23 @@ function prepare_query($query, $settings) {
 		}
 	}
 
-	// We need to iterate through the filters to see what has been selected and use that to narrow our query
+	// We need to iterate through the controls to see what has been selected and use that to narrow our query
 	return new \WP_Query($query);
 }
 
 /**
  * Get the list of post IDs
- * @param  array $settings - filters settings
+ * @param  array $s - processed settings
  */
-function get_post_ids($settings) {
+function get_post_ids($s) {
 	$query = [
-		'post_type' => $settings['post_type'],
+		'post_type' => $s['post_type'],
 		'post_status' => 'publish',
 		'posts_per_page' => -1,
 		'fields' => 'ids'
 	];
 
-	$query = prepare_query($query, $settings);
+	$query = prepare_query($query, $s);
 
 	$posts = $query->posts;
 
@@ -1028,22 +1052,22 @@ function get_post_ids($settings) {
 
 /**
  * Get a list of posts with the specified fields
- * @param  array $settings - filters settings
+ * @param  array $s - processed settings
  * @param  int $page - page number
  */
-function get_posts_with_data($settings) {
+function get_posts_with_data($s) {
 	$query = [
-		'post_type' => $settings['post_type'],
+		'post_type' => $s['post_type'],
 		'post_status' => 'publish',
-		'posts_per_page' => $settings['pagination']['posts_per_page'],
-		'paged' => $settings['page'],
+		'posts_per_page' => $s['pagination']['posts_per_page'],
+		'paged' => $s['page'],
 		'orderby' => []
 	];
 
 	// First things first, we need to iterate through post order to get each type and its priority.
 	// orderby has to be formatted as orderby => [type => order] to work as an array.
-	if (is_array($settings['posts_order'])) {
-		foreach ($settings['posts_order'] as $order) {
+	if (is_array($s['posts_order'])) {
+		foreach ($s['posts_order'] as $order) {
 			if ($order['order_by'] === 'field') {
 				$query['orderby']['meta_value'] = $order['order'];
 				// We need to get the name of the field, not its key!
@@ -1058,7 +1082,7 @@ function get_posts_with_data($settings) {
 		}
 	}
 
-	$query = prepare_query($query, $settings);
+	$query = prepare_query($query, $s);
 	$posts = [];
 
 	if ($query->have_posts()) {
@@ -1067,29 +1091,29 @@ function get_posts_with_data($settings) {
 
 			$post = get_post(get_the_ID());
 
-			switch ($settings['render_mode']) {
+			switch ($s['render_mode']) {
 				case 'custom_js':
 				case 'custom_php':
 					// Set the post object
 					$post = [
 						'id' => $post->ID,
-						'author' => get_author_info($post->post_author, $settings['render_custom']['post_author']),
+						'author' => get_author_info($post->post_author, $s['render_custom']['post_author']),
 						'date' => $post->post_date_gmt,
-						'content' => $settings['render_custom']['post_content'] == 'y' ? $post->post_content : '',
+						'content' => $s['render_custom']['post_content'] == 'y' ? $post->post_content : '',
 						'title' => $post->post_title,
-						'excerpt' => $settings['render_custom']['post_excerpt'] == 'y' ? $post->post_excerpt : '',
+						'excerpt' => $s['render_custom']['post_excerpt'] == 'y' ? $post->post_excerpt : '',
 						'slug' => $post->post_name,
 						'modified' => $post->post_modified_gmt,
 						'link' => get_permalink($post->ID),
-						'link_style' => $settings['render_custom']['link_style'] ?? 'button',
+						'link_style' => $s['render_custom']['link_style'] ?? 'button',
 						'type' => $post->post_type,
-						'thumbnail' => $settings['render_custom']['post_thumbnail'] == 'y' ? get_thumbnails_info($post->ID, $settings['render_custom']['thumbnail_sizes']) : [],
+						'thumbnail' => $s['render_custom']['post_thumbnail'] == 'y' ? get_thumbnails_info($post->ID, $s['render_custom']['thumbnail_sizes']) : [],
 						'taxonomies' => [],
 						'fields' => []
 					];
 
 					// Get taxonomies
-					foreach ($settings['render_custom']['post_taxonomies'] as $taxonomy) {
+					foreach ($s['render_custom']['post_taxonomies'] as $taxonomy) {
 						$terms = get_terms([
 							'taxonomy' => $taxonomy,
 							'object_ids' => $post['id']
@@ -1107,7 +1131,7 @@ function get_posts_with_data($settings) {
 					}
 
 					// Get fields
-					foreach ($settings['render_custom']['post_fields'] as $field_name => $field_obj) {
+					foreach ($s['render_custom']['post_fields'] as $field_name => $field_obj) {
 						$post['fields'][$field_name] = get_field($field_obj['key'], $post['id']);
 					}
 
@@ -1125,41 +1149,59 @@ function get_posts_with_data($settings) {
 						'subheading' => null,
 						'slug' => $post->post_name,
 						'modified' => $post->post_modified_gmt,
-						'link' => get_permalink($post->ID),
-						'link_style' => $settings['render_cards']['link_style'] ?? 'button',
+						'link' => [
+							'url' => get_permalink($post->ID),
+							'title' => $s['render_cards']['link_title'],
+							'target' => $s['render_cards']['link_target']
+						],
+						'link_style' => $s['render_cards']['link_style'] ?? 'button',
 						'body' => null,
 						'labels' => [],
 						'image' => null,
 						'icon_image' => null,
 						'video' => [
-							'type' => $settings['render_cards']['video_type'] ?? 'url'
+							'type' => $s['render_cards']['video_type'] ?? 'url'
 						]
 					];
 
-					foreach (['heading', 'subheading', 'image', 'icon_image', 'body'] as $key) {
-						if ($settings['render_cards'][$key]) {
-							if (in_array($settings['render_cards'][$key], $wp_post_keys)) {
-								$p[$key] = $post->$settings['render_cards'][$key];
+					// Handle heading, subheading and body
+					foreach (['heading', 'subheading', 'body'] as $key) {
+						if ($s['render_cards'][$key]) {
+							if (in_array($s['render_cards'][$key], $wp_post_keys)) {
+								$p[$key] = $post->{$s['render_cards'][$key]};
 							} else {
-								$p[$key] = get_field($settings['render_cards'][$key], $post->ID);
+								$p[$key] = get_field($s['render_cards'][$key], $post->ID);
+							}
+						}
+					}
+
+					// Handle image and icon_image
+					foreach (['image', 'icon_image'] as $key) {
+						if ($s['render_cards'][$key]) {
+							if ($s['render_cards'][$key] == 'thumbnail') {
+								$p[$key] = \lqx\util\get_thumbnail_image_object($post->ID);
+							} else {
+								$p[$key] = get_field($s['render_cards'][$key], $post->ID);
 							}
 						}
 					}
 
 					// Handle the URL
-					if ($settings['render_cards']['use_post_url'] == 'n' && $settings['render_cards']['link']) $p['link'] = get_field($settings['render_cards']['link'], $post->ID);
-					else $p['link'] = null;
+					if ($s['render_cards']['use_post_url'] == 'n'){
+						if ($s['render_cards']['link']) $p['link'] = get_field($s['render_cards']['link'], $post->ID);
+						else $p['link'] = null;
+					}
 
 					// Handle video
-					$video_url = get_field($settings['render_cards']['video_url'], $post->ID);
-					$video_upload = get_field($settings['render_cards']['video_upload'], $post->ID);
-					if ($settings['render_cards']['video_type'] == 'url' && $video_url) {
+					$video_url = get_field($s['render_cards']['video_url'], $post->ID);
+					$video_upload = get_field($s['render_cards']['video_upload'], $post->ID);
+					if ($s['render_cards']['video_type'] == 'url' && $video_url) {
 						$p['video'] = [
 							'type' => 'url',
 							'url' => $video_url
 						];
 					}
-					elseif ($settings['render_cards']['video_type'] == 'upload' && $video_upload) {
+					elseif ($s['render_cards']['video_type'] == 'upload' && $video_upload) {
 						$p['video'] = [
 							'type' => 'upload',
 							'upload' => $video_upload
@@ -1167,35 +1209,37 @@ function get_posts_with_data($settings) {
 					}
 
 					// Handle labels
-					switch ($settings['render_cards']['label_type']) {
+					switch ($s['render_cards']['label_type']) {
 						case 'taxonomy':
-							foreach ($settings['render_cards']['label_taxonomies'] ?? [] as $tax) {
-								$terms = get_the_terms($post->ID, $tax->name);
+							foreach ($s['render_cards']['label_taxonomies'] ?? [] as $tax) {
+								$terms = get_the_terms($post->ID, $tax);
 								foreach ($terms as $term) {
 									$p['labels'][] = [
 										'label' => $term->name,
-										'value' => $term->slug
+										'value' => $tax . ':' . $term->slug
 									];
 								}
 							}
 							break;
 
 						case 'field':
-							$label_field_object = get_field_object($settings['render_cards']['label_field'], $post->ID);
+							$label_field_object = get_field_object($s['render_cards']['label_field'], $post->ID);
 
-							if (is_array($label_field_object['value'])) {
-								foreach ($label_field_object['value'] as $value) {
+							if ($label_field_object != false) {
+								if (is_array($label_field_object['value'])) {
+									foreach ($label_field_object['value'] as $value) {
+										$p['labels'][] = [
+											'label' => $value,
+											'value' => \lqx\util\slugify($value)
+										];
+									}
+								}
+								else {
 									$p['labels'][] = [
-										'label' => $value,
-										'value' => \lqx\util\slugify($value)
+										'label' => $label_field_object['value'],
+										'value' => \lqx\util\slugify($label_field_object['value'])
 									];
 								}
-							}
-							else {
-								$p['labels'][] = [
-									'label' => $label_field_object['value'],
-									'value' => \lqx\util\slugify($label_field_object['value'])
-								];
 							}
 
 							break;
@@ -1217,139 +1261,170 @@ function get_posts_with_data($settings) {
 }
 
 /**
- * Default HTML render for filters and search bar
- * @param  array $settings - filters settings
+ * Default HTML render for controls and search bar
+ * @param  array $s - processed settings
  */
-function render_filters($settings) {
+function render_controls($s) {
 	// Iterate through each and output them according to their settings
-	$filters = $settings['filters'];
+	$controls = $s['controls'];
 	$html = '';
 
-	if (count($filters)) $html .= '<div class="filters" id="' . $settings['hash'] . '-filters">';
+	if (count($controls)) {
+		$html .= '<div class="controls" id="' . $s['hash'] . '-controls">';
 
-	foreach ($filters as $filter) {
-		if ($filter['visible'] == 'y') {
-			$html .= '<div class="filter-wrapper" data-filter="' . $filter['slug'] . '" data-filter-type="' . $filter['type'] . '">';
-			$options = $filter['options'];
-
-			switch ($filter['presentation']) {
-				case 'select':
-					// Label for the field, for accessability purposes
-					$html .= '<label for="' . $filter['label'] . '">' . $filter['label'] . '</label>';
-					$html .= '<select name="' . $filter['label'] . '" id="' . $filter['label'] . '">';
-
-					// Iterate through options
-					foreach ($options as $option) {
-						$html .= '<option value="' . $option['value'] . '"' . ($filter['selected'] == $option['value'] ? ' selected' : '') . '>' . $option['text'] . '</option>';
-					}
-
-					$html .= '</select>';
-
-					break;
-
-				case 'checkbox':
-					// Label for the field, for accessability purposes
-					foreach ($options as $option) {
-						$html .= '<label for="' . $filter['label'] . '">' . $option['text'] . '</label>';
-						$html .= '<input type="checkbox" id="' . $filter['slug'] . '_' . $option['value'] . '" name="radio_' . $filter['slug'] . '" value="' . $option['value'] . '" />';
-					}
-
-					break;
-
-				case 'radio':
-					// Label for the field, for accessability purposes
-					foreach ($options as $option) {
-						$html .= '<label for="' . $filter['slug'] . '_' . $option['value'] . '" id="label_' . $option['value'] . '">' . $option['text'] . '</label>';
-						$html .= '<input type="radio" id="' . $filter['slug'] . '_' . $option['value'] . '" name="radio_' . $filter['slug'] . '" value="' . $option['value'] . '" />';
-					}
-
-					break;
-
-				case 'list':
-					// Label for the field, for accessability purposes
-					$html .= '<ul class="filter-list" id="' . $filter['slug'] . '" role="combobox">';
-
-					foreach ($options as $option) {
-						$html .= '<li class="filter' . ($filter['selected'] == $option['value'] ? ' class' : '') . '" data-value="' . $option['value'] . '">' . $option['text'] . '</li>';
-					}
-
-					$html .= '</ul>';
-
-					break;
-			}
-
-			$html .= '</div>';
+		if ($s['show_search'] == 'y') {
+			$html .= '<div class="search-wrapper"><label for="' . $s['hash'] . '-search">' . $s['search_placeholder'] . '</label>';
+			$html .= '<input class="search" id="' . $s['hash'] . '-search" placeholder="' . esc_attr($s['search_placeholder']) . '">';
+			$html .= '<button id="' . $s['hash'] . '-search-button" class="search-button"></button></div>';
 		}
+
+		foreach ($controls as $c => $control) {
+			if ($control['visible'] == 'y') {
+				$html .= '<div class="control-wrapper" data-control="' . $control['slug'] . '" data-control-type="' . $control['type'] . '">';
+				$options = $control['options'];
+
+				switch ($control['presentation']) {
+					case 'select':
+						// Label for the field, for accessability purposes
+						// TODO review the way we compose the ID's
+						$html .= '<label for="' . $s['hash'] . '-control-' . $c . '"><span>' . $control['label'] . '</span>';
+						$html .= '<select name="' . $control['slug'] . '" id="' . $s['hash'] . '-control-' . $c . '">';
+						$html .= '<option value=""></option>';
+
+						// Iterate through options
+						foreach ($options as $option) {
+							$html .= '<option value="' . esc_attr($option['value']) . '"' . ($control['selected'] == $option['value'] ? ' selected' : '') . '>' . $option['text'] . '</option>';
+						}
+
+						$html .= '</select></label>';
+
+						break;
+
+					case 'checkbox':
+						// Label for the field, for accessability purposes
+						$html .= '<fieldset><legend>' . $control['label'] . '</legend>';
+
+						foreach ($options as $i => $option) {
+							$html .= '<label for="' . $s['hash'] . '-control-' . $c . '-' . $i . '">';
+							$html .= '<input type="checkbox" id="' . $s['hash'] . '-control-' . $c . '-' . $i . '" name="' . $control['slug'] . '" value="' . esc_attr($option['value']) . '" /> ';
+							$html .= '<span>' . $option['text'] . '</span></label>';
+						}
+
+						$html .= '</fieldset>';
+
+						break;
+
+					case 'radio':
+						// Label for the field, for accessability purposes
+						$html .= '<fieldset><legend>' . $control['label'] . '</legend>';
+
+						foreach ($options as $i => $option) {
+							$html .= '<label for="' . $s['hash'] . '-control-' . $c . '-' . $i . '">';
+							$html .= '<input type="radio" id="' . $s['hash'] . '-control-' . $c . '-' . $i . '" name="' . $control['slug'] . '" value="' . esc_attr($option['value']) . '" /> ';
+							$html .= '<span>' . $option['text'] . '</span></label>';
+						}
+
+						$html .= '</fieldset>';
+
+						break;
+
+					case 'list':
+						// Label for the field, for accessability purposes
+						$html .= '<label id="' . $s['hash'] . '-control-' . $c . '-label">' . $control['label'] . '</label>';
+
+						$html .= '<ul class="control-list" id="' . $s['hash'] . '-control-' . $c . '" role="combobox" aria-labelledby="' . $s['hash'] . '-control-' . $c . '-label">';
+
+						foreach ($options as $i => $option) {
+							$html .= '<li id="' . $s['hash'] . '-control-' . $c . '-' . $i . '" class="option' . ($control['selected'] == $option['value'] ? ' selected' : '') . '" data-value="' . esc_attr($option['value']) . '">' . $option['text'] . '</li>';
+						}
+
+						$html .= '</ul>';
+
+						break;
+				}
+
+				$html .= '</div>';
+			}
+		}
+
+		if ($s['show_clear'] == 'y') $html .= '<div class="clear-wrapper"><button id="' . $s['hash'] . '-clear" class="clear">' . $s['clear_label']. '</button></div>';
+
+		$html .= '</div>';
 	}
 
-	if (count($filters)) $html .= '</div>';
-
-	return $html;
+	echo $html;
 }
 
 /**
  * Default HTML render for posts using the Cards block
- * @param  array $settings - settings and posts data
+ * @param  array $s - processed settings and posts data
  */
-function render_posts($settings) {
+function render_posts($s) {
 	// For settings we need to get the preset settings from cards.
-	$cards_settings = \lqx\blocks\get_settings('cards', null, $settings['render_cards']['preset'], $settings['render_cards']['style']);
+	$cards_settings = \lqx\blocks\get_settings('cards', null, $s['render_cards']['preset'], $s['render_cards']['style']);
 
 	// Change the hash to use the same as the filters
-	$cards_settings['processed']['hash'] = $settings['hash'] . '-posts';
+	$cards_settings['processed']['hash'] = $s['hash'] . '-posts';
+
+	// Add class 'posts' to the classes array
+	$cards_settings['processed']['class'] = 'posts';
 
 	// Load the rendered for the specified preset
-	require_once \lqx\blocks\get_renderer('cards', $settings['render_cards']['preset']);
+	require_once \lqx\blocks\get_renderer('cards', $s['render_cards']['preset']);
 
 	// Render the cards
-	return \lqx\blocks\cards\render($cards_settings, $settings['posts']);
+	return \lqx\blocks\cards\render($cards_settings, $s['posts']);
 }
 
 /**
  * Default HTML render for the pagination, pagination details and posts per page selector
- * @param  array $settings - pagination settings
+ * @param  array $s - processed settings
  */
-function render_pagination($settings) {
-	if ($settings['total_pages'] > 1) {
-		$html = '<div class="pagination" id="' . $settings['hash'] . '-pagination">';
+function render_pagination($s) {
+	if ($s['total_pages'] > 1) {
+		$html = '<div class="pagination" id="' . $s['hash'] . '-pagination">';
 
 		$html .= '<ul class="pageslinks">';
 
-		$html .= '<li class="page first" aria-label="First Page">First</li>';
-		$html .= '<li class="page prev" aria-label="Previous Page">Prev</li>';
+		$html .= '<li class="page-first" data-page="1" aria-label="First Page">First</li>';
+		$html .= '<li class="page-prev" data-page="' . ($s['page'] > 1 ? $s['page'] - 1 : 1) . '" aria-label="Previous Page">Prev</li>';
 
 		$i = 1;
-		while ($i <= $settings['total_pages']) {
-			$html .= '<li data-page="' . $i . '" aria-label="Page ' . $i . '">' . $i . '</li>';
+		while ($i <= $s['total_pages']) {
+			$html .= '<li class="page-number' . ($i == $s['page'] ? ' current' : ''). '" data-page="' . $i . '" aria-label="Page ' . $i . '">' . $i . '</li>';
 			$i++;
 		}
 
-		$html .= '<li class="page next" aria-label="Previous Page">Next</li>';
-		$html .= '<li class="page last" aria-label="Last Page">Last</li>';
+		$html .= '<li class="page-next" data-page"' . ($s['page'] < $s['total_pages'] ? $s['page'] + 1 : $s['total_pages']) . '" aria-label="Previous Page">Next</li>';
+		$html .= '<li class="page-last" data-page="' . $i . '" aria-label="Last Page">Last</li>';
 
 		$html .= '</ul>';
 
+		// TODO: add pagination details and posts per page selector
+
 		$html .= '</div>';
 
-		return $html;
+		echo $html;
 	}
 }
 
 /**
  * Prepare the data for JSON
- * @param  array $settings - filters settings
+ * @param  array $s - processed settings
  */
 function prepare_json_data($s) {
-	// TODO: make sure we have the information we need both on the initial render and on API calls
-	$res = [
-		'preset_name' => $s['preset_name'],
-		'post_id' => $s['post_id'],
-		'filters' => $s['render_mode'] == 'custom_js' ? $s['filters'] : \lqx\blocks\filters\render_filters($s),
-		'posts' => $s['render_mode'] == 'custom_js' ? $s['posts'] : \lqx\blocks\filters\render_posts($s),
-		'pagination' => $s['render_mode'] == 'custom_js' ? $s['pagination'] : \lqx\blocks\filters\render_pagination($s)
-	];
+	$res = $s;
 
-	if ($s['render_mode'] == 'js') $res['show_search'] = $s['show_search'];
+	// Remove keys that are not needed or that should not be disclosed
+	foreach (['post_type', 'pre_filters', 'posts_order', 'render_cards'] as $key) unset($res[$key]);
+
+	// Handle server-side rendering
+	if ($s['render_mode'] !== 'js') {
+		unset($res['render_custom']);
+		$res['controls'] = \lqx\blocks\filters\render_controls($s);
+		$res['posts'] = \lqx\blocks\filters\render_posts($s);
+		$res['pagination'] = \lqx\blocks\filters\render_pagination($s);
+	}
 
 	return $res;
 }
@@ -1364,9 +1439,9 @@ function validate_payload($payload) {
 		'type' => 'object',
 		'required' => true,
 		'keys' => [
-			'preset_name' => \lqx\util\schema_str_req_notemp,
+			'preset' => \lqx\util\schema_str_req_notemp,
 			'post_id' => \lqx\util\schema_int_req,
-			'filters' => [
+			'controls' => [
 				'type' => 'array',
 				'required' => true,
 				'elems' => [
@@ -1397,10 +1472,10 @@ function validate_payload($payload) {
 
 /**
  * Merge the payload with the settings
- * @param  array $settings - filters settings
- * @param  array $payload - received payload
+ * @param  array $s - processed settings
+ * @param  array $p - received payload
  */
-function merge_settings($settings, $payload) {
+function merge_settings($s, $p) {
 	// TODO merge the payload with the settings
 	// TODO use \lqx\blocks\merge_settings as a model
 	// TODO the filters array need special handling
@@ -1416,7 +1491,7 @@ function handle_api_call($request) {
 
 	// Remove any keys that are not allowed
 	foreach (array_keys($payload) as $k) {
-		if (!in_array($k, ['preset_name', 'post_id', 'filters', 'search', 'page', 'pagination'])) unset($payload[$k]);
+		if (!in_array($k, ['preset', 'post_id', 'controls', 'search', 'page', 'pagination'])) unset($payload[$k]);
 
 		if ($k == 'pagination') {
 			foreach (array_keys($payload['pagination']) as $kk) {
@@ -1431,10 +1506,10 @@ function handle_api_call($request) {
 	$p = $p['data'];
 
 	// Get settings
-	$s = \lqx\blocks\get_settings('filters', $p['post_id']);
+	$settings = \lqx\blocks\get_settings('filters', $p['post_id']);
 
-	// Validate settings
-	$s = \lqx\filters\validate_settings($s);
+	// Validate settings / get processed settings
+	$s = \lqx\filters\validate_settings($settings);
 
 	// Initialize settings
 	$s = \lqx\filters\init_settings($s);
@@ -1451,11 +1526,7 @@ function handle_api_call($request) {
 	$s['total_pages'] =  $post_info['total_pages'];
 
 	// Load render functions from filters block
-	if (file_exists(get_stylesheet_directory() . '/php/custom/blocks/filters/render.php')) {
-		require_once get_stylesheet_directory() . '/php/custom/blocks/filters/render.php';
-	} else {
-		require_once get_stylesheet_directory() . '/php/blocks/filters/render.php';
-	}
+	require_once \lqx\blocks\get_renderer('filters', $settings['local']['user']['preset']);
 
 	// Prepare the JSON data
 	return \lqx\filters\prepare_json_data($s);

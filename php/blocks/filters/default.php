@@ -27,13 +27,13 @@
 namespace lqx\blocks\filters;
 
 /**
- * Render the filters
+ * Render the controls
  * THIS FUNCTION IS REQUIRED TO HANDLE PHP RENDERING FOR API CALLS
  * @param  array $settings Block settings
  */
-function render_filters($s) {
-	if ($s['render_mode'] == 'cards') return \lqx\filters\render_filters($s);
-	// Custom filters rendering here
+function render_controls($s) {
+	if ($s['render_mode'] == 'cards') return \lqx\filters\render_controls($s);
+	// Custom controls rendering here
 }
 
 /**
@@ -64,11 +64,10 @@ function render($settings) {
 	// Return if no preset has been selected
 	if ($settings['local']['user']['preset'] == '') return;
 
-	// Get the settings and posts with data
+	// Get the processed settings and posts with data
 	$s = \lqx\filters\get_settings_and_posts($settings);
 
 	$preset = $settings['local']['user']['preset'] ?? '';
 
-	if ($s['render_mode'] == 'custom_js') require \lqx\blocks\get_template('filters', $preset, 'js');
-	else require \lqx\blocks\get_template('filters', $preset);
+	require \lqx\blocks\get_template('filters', $preset);
 }
