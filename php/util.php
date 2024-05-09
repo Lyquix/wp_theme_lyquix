@@ -608,6 +608,54 @@ function get_breadcrumbs($post_id = null, $type = 'parent', $depth = 3, $show_cu
 	return $breadcrumbs;
 }
 
+function get_thumbnail_image_object($post_id) {
+	// Get the thumbnail ID
+	$post_thumbnail_id = get_post_thumbnail_id($post_id);
+
+	// No thumbnail, return null
+	if (!$post_thumbnail_id) return null;
+
+	// Get the WP Post object for the thumbnail
+	$post = get_post($post_thumbnail_id);
+
+	$image = [
+		'ID' => $post_thumbnail_id,
+		'id' => $post_thumbnail_id,
+		'title' => $post->post_title,
+		'filename' => basename(get_attached_file($post_thumbnail_id)),
+		'filesize' => filesize(get_attached_file($post_thumbnail_id)),
+		'url' => wp_get_attachment_url($post_thumbnail_id),
+		'link' => get_attachment_link($post_thumbnail_id),
+		'alt' => get_post_meta($post_thumbnail_id, '_wp_attachment_image_alt', true),
+		'author' => $post->post_author,
+		'description' => $post->post_content,
+		'caption' => $post->post_excerpt,
+		'name' => $post->post_name,
+		'status' => get_post_status($post_thumbnail_id),
+		'uploaded_to' => $post->post_parent,
+		'date' => $post->post_date,
+		'modified' => $post->post_modified,
+		'menu_order' => $post->menu_order,
+		'mime_type' => get_post_mime_type($post_thumbnail_id),
+		'type' => explode('/', get_post_mime_type($post_thumbnail_id))[0],
+		'subtype' => explode('/', get_post_mime_type($post_thumbnail_id))[1],
+		'icon' => wp_mime_type_icon('mime_type'),
+		'width' => wp_get_attachment_image_src($post_thumbnail_id, 'full')[1],
+		'height' => wp_get_attachment_image_src($post_thumbnail_id, 'full')[2],
+		'sizes' => []
+	];
+
+	// Set the sizes
+	foreach (get_intermediate_image_sizes() as $size) {
+		$s = wp_get_attachment_image_src( $post_thumbnail_id, $size);
+		$image['sizes'][$size] = $s[0];
+		$image['sizes'][$size . '-width'] = $s[1];
+		$image['sizes'][$size . '-height'] = $s[2];
+	}
+
+	return $image;
+}
+
 /**
  * Create a slug from a string
  * @param string $string The string to convert to a slug

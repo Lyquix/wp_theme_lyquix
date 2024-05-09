@@ -35,7 +35,7 @@ namespace lqx\cards;
  * 							- An associative array where the keys are the card object field names
  * 							- and the values are the ACF field names or field keys or WP_Post field names
  * @param array $fields_values - the values to use for the card object fields
- * 							- An associative array where the keys are the card object field names
+ * 							- An array of associative arrays where the keys are the card object field names
  * 							- and the values are the values to use for the card object fields
  * @return string - the rendered cards block
  */
@@ -60,13 +60,18 @@ function render($posts, $preset = null, $style = null, $fields_map = [], $fields
  *
  * @param array $posts - the array of WP_Post objects to process
  * @param array $fields_map - the fields map to use to process the WP_Post objects
+ * 							- An associative array where the keys are the card object field names
+ * 							- and the values are the ACF field names or field keys or WP_Post field names
+ * @param array $fields_values - the values to use for the card object fields
+ * 							- An array of associative arrays where the keys are the card object field names
+ * 							- and the values are the values to use for the card object fields
  * @return array - the processed card objects
  */
 function process_wp_posts($posts, $fields_map, $fields_values) {
 	$processed_posts = [];
 
-	foreach ($posts as $post) {
-		$processed_post = process_wp_post($post, $fields_map, $fields_values);
+	foreach ($posts as $i => $post) {
+		$processed_post = process_wp_post($post, $fields_map, $fields_values[$i]);
 		if ($processed_post) $processed_posts[] = $processed_post;
 	}
 
@@ -97,6 +102,9 @@ function process_wp_posts($posts, $fields_map, $fields_values) {
  * @param array $fields_map - the fields map to use to process the WP_Post object
  *  						- An associative array where the keys are the card object field names
  * 							- and the values are the ACF field names or field keys or WP_Post field names
+ * @param array $fields_values - the values to use for the card object fields
+ * 							- An associative array where the keys are the card object field names
+ * 							- and the values are the values to use for the card object fields
  * @return array - the processed card object
  */
 function process_wp_post($post, $fields_map, $fields_values) {
@@ -125,7 +133,7 @@ function process_wp_post($post, $fields_map, $fields_values) {
 		'link_style' => 'button',
 		'body' => $post-> post_excerpt,
 		'labels' => null,
-		'image' => get_thumbnail_image_object($post->ID),
+		'image' => \lqx\util\get_thumbnail_image_object($post->ID),
 		'icon_image' => null,
 		'video' => [
 			'type' => ''
@@ -153,50 +161,3 @@ function process_wp_post($post, $fields_map, $fields_values) {
 	return $card;
 }
 
-function get_thumbnail_image_object($post_id) {
-	// Get the thumbnail ID
-	$post_thumbnail_id = get_post_thumbnail_id($post_id);
-
-	// No thumbnail, return null
-	if (!$post_thumbnail_id) return null;
-
-	// Get the WP Post object for the thumbnail
-	$post = get_post($post_thumbnail_id);
-
-	$image = [
-		'ID' => $post_thumbnail_id,
-		'id' => $post_thumbnail_id,
-		'title' => $post->post_title,
-		'filename' => basename(get_attached_file($post_thumbnail_id)),
-		'filesize' => filesize(get_attached_file($post_thumbnail_id)),
-		'url' => wp_get_attachment_url($post_thumbnail_id),
-		'link' => get_attachment_link($post_thumbnail_id),
-		'alt' => get_post_meta($post_thumbnail_id, '_wp_attachment_image_alt', true),
-		'author' => $post->post_author,
-		'description' => $post->post_content,
-		'caption' => $post->post_excerpt,
-		'name' => $post->post_name,
-		'status' => get_post_status($post_thumbnail_id),
-		'uploaded_to' => $post->post_parent,
-		'date' => $post->post_date,
-		'modified' => $post->post_modified,
-		'menu_order' => $post->menu_order,
-		'mime_type' => get_post_mime_type($post_thumbnail_id),
-		'type' => explode('/', get_post_mime_type($post_thumbnail_id))[0],
-		'subtype' => explode('/', get_post_mime_type($post_thumbnail_id))[1],
-		'icon' => wp_mime_type_icon('mime_type'),
-		'width' => wp_get_attachment_image_src($post_thumbnail_id, 'full')[1],
-		'height' => wp_get_attachment_image_src($post_thumbnail_id, 'full')[2],
-		'sizes' => []
-	];
-
-	// Set the sizes
-	foreach (get_intermediate_image_sizes() as $size) {
-		$s = wp_get_attachment_image_src( $post_thumbnail_id, $size);
-		$image['sizes'][$size] = $s[0];
-		$image['sizes'][$size . '-width'] = $s[1];
-		$image['sizes'][$size . '-height'] = $s[2];
-	}
-
-	return $image;
-}

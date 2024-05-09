@@ -185,7 +185,8 @@ function render($settings, $content) {
 				'link' => [
 					'type' => 'object',
 					'required' => true,
-					'keys' => \lqx\util\schema_data_link
+					'keys' => \lqx\util\schema_data_link,
+					'default' => null
 				],
 				'link_style' => [
 					'type' => 'string',

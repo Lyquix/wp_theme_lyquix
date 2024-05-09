@@ -24,12 +24,13 @@
 //  Instead, copy it to /php/custom/blocks/cards/default-links.tmpl.php to override it
 //  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/cards/{preset}-links.tmpl.php
 
-?>
+if ($item['link']) : ?>
 <div class="card-link">
 	<a
-		class="<?= $link['link_style'] == 'button' ? 'button' : 'readmore' ?>"
-		href="<?= esc_attr($link['link']['url']) ?>"
-		target="<?= $link['link']['target'] ?>">
-		<?= $link['link']['title'] ?? 'Read More' ?>
+		class="<?= $item['link_style'] == 'button' ? 'button' : 'readmore' ?>"
+		href="<?= esc_attr($item['link']['url']) ?>"
+		target="<?= $item['link']['target'] ?? '' ?>">
+		<?= $item['link']['title'] ? $item['link']['title'] : 'Read More' ?>
 	</a>
 </div>
+<?php endif;
