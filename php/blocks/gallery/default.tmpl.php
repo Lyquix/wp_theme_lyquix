@@ -49,8 +49,8 @@
 						data-lyqbox="<?= htmlentities(json_encode([
 							'name' => $c['lightbox_slug'],
 							'slug' => $item['slug'],
-							'type' => is_array($video) ? 'video' : 'image',
-							'url' => is_array($video) ? $video['url'] : $item['image']['sizes']['large'],
+							'type' => isset($video) ? 'video' : 'image',
+							'url' => isset($video['url']) ? $video['url'] : $item['image']['sizes']['large'],
 							'title' => $item['title'],
 							'caption' => $item['caption'],
 							'thumb' => $item['thumbnail']['sizes']['large'],
@@ -60,7 +60,7 @@
 							alt="<?= esc_attr($item['image']['alt']) ?>">
 						<<?= $s['heading_style'] == 'p' ? 'p class="title"><strong' : $s['heading_style'] ?>>
 							<?= $item['title'] ?>
-						</<?= $s['heading_style'] == 'p' ? '/strong></p' : $s['heading_style'] ?>>
+						</<?= $s['heading_style'] == 'p' ? 'strong></p' : $s['heading_style'] ?>>
 						<?= '<p>' . $item['teaser'] . '</p>' ?>
 					</li>
 				<?php endforeach; ?>
