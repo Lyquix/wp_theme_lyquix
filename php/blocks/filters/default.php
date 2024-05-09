@@ -67,7 +67,5 @@ function render($settings) {
 	// Get the processed settings and posts with data
 	$s = \lqx\filters\get_settings_and_posts($settings);
 
-	$preset = $settings['local']['user']['preset'] ?? '';
-
-	require \lqx\blocks\get_template('filters', $preset);
+	require \lqx\blocks\get_template('filters', $s['preset']);
 }

@@ -133,7 +133,5 @@ function render($settings, $content) {
 		])));
 	}
 
-	$preset = $settings['local']['user']['preset'] ?? '';
-
-	require \lqx\blocks\get_template('banner', $preset);
+	require \lqx\blocks\get_template('banner', $s['preset']);
 }

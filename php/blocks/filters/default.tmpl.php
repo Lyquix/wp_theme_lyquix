@@ -40,7 +40,7 @@
 			\lqx\blocks\filters\render_pagination($s);
 		}
 		else {
-			require \lqx\blocks\get_template('filters', $preset, 'js');
+			require \lqx\blocks\get_template('filters', $s['preset'], 'js');
 		}
 		?>
 

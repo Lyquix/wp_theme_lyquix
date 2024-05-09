@@ -211,7 +211,5 @@ function render($settings, $content) {
 		return $v['isValid'] ? $v['data'] : null;
 	}, $content));
 
-	$preset = $settings['local']['user']['preset'] ?? '';
-
-	if (!empty($c)) require \lqx\blocks\get_template('cards', $preset);
+	if (!empty($c)) require \lqx\blocks\get_template('cards', $s['preset']);
 }

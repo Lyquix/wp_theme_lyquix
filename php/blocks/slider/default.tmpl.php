@@ -47,11 +47,11 @@
 
 					<li class="swiper-slide" data-slide-teaser="<?= esc_attr($item['teaser_text'] ?? '') ?>" data-slide-thumbnail="<?= esc_attr($item['thumbnail']['sizes']['large'] ?? '') ?>">
 
-						<?php require \lqx\blocks\get_template('slider', $preset, 'image'); ?>
+						<?php require \lqx\blocks\get_template('slider', $s['preset'], 'image'); ?>
 
-						<?php require \lqx\blocks\get_template('slider', $preset, 'text'); ?>
+						<?php require \lqx\blocks\get_template('slider', $s['preset'], 'text'); ?>
 
-						<?php if (count($item['links'])) require \lqx\blocks\get_template('slider', $preset, 'links'); ?>
+						<?php if (count($item['links'])) require \lqx\blocks\get_template('slider', $s['preset'], 'links'); ?>
 
 					</li>
 

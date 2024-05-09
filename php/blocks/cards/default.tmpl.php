@@ -58,13 +58,13 @@
 					}
 				?>
 
-				<?php require \lqx\blocks\get_template('cards', $preset, 'item'); ?>
+				<?php require \lqx\blocks\get_template('cards', $s['preset'], 'item'); ?>
 
 				<?php endforeach; ?>
 
 			</ul>
 
-			<?php if ($s['slider'] == 'y') require \lqx\blocks\get_template('cards', $preset, 'controls'); ?>
+			<?php if ($s['slider'] == 'y') require \lqx\blocks\get_template('cards', $s['preset'], 'controls'); ?>
 
 		<?= $s['slider'] == 'y' ? '</div>' : '' ?>
 

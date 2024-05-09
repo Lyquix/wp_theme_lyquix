@@ -29,12 +29,12 @@
 	class="<?= $s['slider'] == 'y' ? 'swiper-slide' : 'card' ?>"
 	id="<?= $s['hash'] . '-' . $idx ?>">
 
-	<?php if (!empty($item['labels'])) require \lqx\blocks\get_template('cards', $preset, 'labels'); ?>
+	<?php if (!empty($item['labels'])) require \lqx\blocks\get_template('cards', $s['preset'], 'labels'); ?>
 
-	<?php if ($item['image']) require \lqx\blocks\get_template('cards', $preset, 'image'); ?>
+	<?php if ($item['image']) require \lqx\blocks\get_template('cards', $s['preset'], 'image'); ?>
 
-	<?php if ($item['icon_image']) require \lqx\blocks\get_template('cards', $preset, 'icon-image'); ?>
+	<?php if ($item['icon_image']) require \lqx\blocks\get_template('cards', $s['preset'], 'icon-image'); ?>
 
-	<?php require \lqx\blocks\get_template('cards', $preset, 'text'); ?>
+	<?php require \lqx\blocks\get_template('cards', $s['preset'], 'text'); ?>
 
 </li>

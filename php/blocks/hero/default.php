@@ -171,7 +171,5 @@ function render($settings, $content) {
 		$breadcrumbs .= '</div>';
 	}
 
-	$preset = $settings['local']['user']['preset'] ?? '';
-
-	require \lqx\blocks\get_template('hero', $preset);
+	require \lqx\blocks\get_template('hero', $s['preset']);
 }
