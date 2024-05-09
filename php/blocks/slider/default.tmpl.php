@@ -45,7 +45,7 @@
 
 				<?php foreach ($c as $idx => $item) : ?>
 
-					<div class="swiper-slide">
+					<li class="swiper-slide" data-slide-teaser="<?= esc_attr($item['teaser_text'] ?? '') ?>" data-slide-thumbnail="<?= esc_attr($item['thumbnail']['sizes']['large'] ?? '') ?>">
 
 						<?php require \lqx\blocks\get_template('slider', $preset, 'image'); ?>
 
@@ -53,7 +53,7 @@
 
 						<?php if (count($item['links'])) require \lqx\blocks\get_template('slider', $preset, 'links'); ?>
 
-					</div>
+					</li>
 
 				<?php endforeach; ?>
 
