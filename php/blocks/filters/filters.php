@@ -25,6 +25,6 @@
 
 $settings = \lqx\blocks\get_settings($block);
 
-require_once \lqx\blocks\get_renderer('filters', $settings['local']['user']['preset']);
+require_once \lqx\blocks\get_renderer('filters', $settings['processed']['preset']);
 
 \lqx\blocks\filters\render($settings);

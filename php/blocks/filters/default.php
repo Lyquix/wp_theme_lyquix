@@ -62,7 +62,7 @@ function render_pagination($s) {
  */
 function render($settings) {
 	// Return if no preset has been selected
-	if ($settings['local']['user']['preset'] == '') return;
+	if ($settings['processed']['preset'] == '') return;
 
 	// Get the processed settings and posts with data
 	$s = \lqx\filters\get_settings_and_posts($settings);

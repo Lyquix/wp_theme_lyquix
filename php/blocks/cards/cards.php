@@ -25,6 +25,6 @@
 $settings = \lqx\blocks\get_settings($block);
 $content = \lqx\blocks\get_content($block);
 
-require_once \lqx\blocks\get_renderer('cards', $settings['local']['user']['preset']);
+require_once \lqx\blocks\get_renderer('cards', $settings['processed']['preset']);
 
 \lqx\blocks\cards\render($settings, $content);

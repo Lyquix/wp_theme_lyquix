@@ -37,7 +37,7 @@ function render($settings, $content) {
 			'hash' => [
 				'type' => 'string',
 				'required' => true,
-				'default' => 'id-' . md5(json_encode([$settings, $content, random_int(1000, 9999)]))
+				'default' => 'id-' . substr(md5(json_encode([$settings, $content, random_int(1000, 9999)])), 24)
 			]
 		]
 	]);

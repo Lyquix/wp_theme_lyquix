@@ -25,6 +25,6 @@
 $settings = \lqx\blocks\get_settings($block, $post_id);
 $content = \lqx\blocks\get_content($block);
 
-require_once \lqx\blocks\get_renderer('gallery', $settings['local']['user']['preset']);
+require_once \lqx\blocks\get_renderer('gallery', $settings['processed']['preset']);
 
 \lqx\blocks\gallery\render($settings, $content);
