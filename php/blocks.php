@@ -485,8 +485,8 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 				'choice' => 'field_659d2fcdd2f8e'
 			],
 			[ // preset and preset_name fields
-				'user' => 'field_659d5299a2521',
-				'choice' => 'field_659d3012b3e36'
+				'user' => 'field_663d0ad50e7bb',
+				'choice' => 'field_659fd4dcc3449'
 			],
 
 			// Tabs

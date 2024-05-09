@@ -113,14 +113,13 @@ export const slider = (() => {
 							const slideEl = this.slides[index];
 							const teaserText = slideEl.getAttribute('data-slide-teaser');
 							const thumbnail = slideEl.getAttribute('data-slide-thumbnail');
-
-							// Returning the HTML string for the bullet, conditionally rendering either an image with the thumbnail or the teaser text
+							 // Returning the HTML string for the bullet, conditionally rendering either an image with the thumbnail or the teaser text
 							return `<span class="${className}" role="button" aria-label="Go to slide ${index + 1}">` +
-								(thumbnail ? `<img src="${thumbnail}" alt="" />` : teaserText) +
-								'</span>';
+									(thumbnail ? `<img src="${thumbnail}" alt="" />` : teaserText) +
+									`</span>`;
 						},
 					};
-				}
+
 
 				if (navigation == true) {
 					swiperOptions['navigation'] = {
