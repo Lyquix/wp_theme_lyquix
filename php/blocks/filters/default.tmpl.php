@@ -35,9 +35,9 @@
 
 		<?php
 		if ($s['render_mode'] == 'cards') {
-			\lqx\blocks\filters\render_controls($s);
-			\lqx\blocks\filters\render_posts($s);
-			\lqx\blocks\filters\render_pagination($s);
+			require \lqx\blocks\get_template('filters', $s['preset'], 'controls');
+			require \lqx\blocks\get_template('filters', $s['preset'], 'posts');
+			require \lqx\blocks\get_template('filters', $s['preset'], 'pagination');
 		}
 		else {
 			require \lqx\blocks\get_template('filters', $s['preset'], 'js');

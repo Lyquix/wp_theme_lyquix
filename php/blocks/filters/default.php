@@ -27,36 +27,6 @@
 namespace lqx\blocks\filters;
 
 /**
- * Render the controls
- * THIS FUNCTION IS REQUIRED TO HANDLE PHP RENDERING FOR API CALLS
- * @param  array $settings Block settings
- */
-function render_controls($s) {
-	if ($s['render_mode'] == 'cards') return \lqx\filters\render_controls($s);
-	// Custom controls rendering here
-}
-
-/**
- * Render the posts
- * THIS FUNCTION IS REQUIRED TO HANDLE PHP RENDERING FOR API CALLS
- * @param  array $settings Block settings
- */
-function render_posts($s) {
-	if ($s['render_mode'] == 'cards') return \lqx\filters\render_posts($s);
-	// Custom posts rendering here
-}
-
-/**
- * Render the pagination
- * THIS FUNCTION IS REQUIRED TO HANDLE PHP RENDERING FOR API CALLS
- * @param  array $settings Block settings
- */
-function render_pagination($s) {
-	if ($s['render_mode'] == 'cards') return \lqx\filters\render_pagination($s);
-	// Custom pagination rendering here
-}
-
-/**
  * Render the filters block
  * @param  array $settings Block settings
  */

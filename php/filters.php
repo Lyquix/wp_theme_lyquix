@@ -198,7 +198,8 @@ function get_settings_and_posts($settings) {
 	// Get the posts
 	$post_info = get_posts_with_data($s);
 	$s['posts'] = $post_info['posts'];
-	$s['total_pages'] =  $post_info['total_pages'];
+	$s['pagination']['total_posts'] =  $post_info['total_posts'];
+	$s['pagination']['total_pages'] =  $post_info['total_pages'];
 
 	return $s;
 }
@@ -653,9 +654,6 @@ function init_settings($s) {
 	// Add an empty `search` key
 	if (!array_key_exists('search', $s)) $s['search'] = '';
 
-	// Set the page number
-	if (!array_key_exists('page', $s)) $s['page'] = 1;
-
 	// Set the pagination object
 	if ($s['show_all'] == 'y') {
 		$pagination = [
@@ -664,6 +662,7 @@ function init_settings($s) {
 	} else {
 		$pagination = [
 			'show_all' => 'n',
+			'page' => 1,
 			'pagination' => $s['pagination'],
 			'pagination_details' => $s['pagination_details'],
 			'show_posts_per_page' => $s['show_posts_per_page']
@@ -1060,7 +1059,7 @@ function get_posts_with_data($s) {
 		'post_type' => $s['post_type'],
 		'post_status' => 'publish',
 		'posts_per_page' => $s['pagination']['posts_per_page'],
-		'paged' => $s['page'],
+		'paged' => $s['pagination']['page'],
 		'orderby' => []
 	];
 
@@ -1254,10 +1253,15 @@ function get_posts_with_data($s) {
 		}
 	}
 
+	$total_posts = $query->found_posts;
 	$total_pages = $query->max_num_pages;
 	wp_reset_postdata();
 
-	return ['posts' => $posts, 'total_pages' => $total_pages];
+	return [
+		'posts' => $posts,
+		'total_posts' => $total_posts,
+		'total_pages' => $total_pages
+	];
 }
 
 /**
@@ -1265,94 +1269,14 @@ function get_posts_with_data($s) {
  * @param  array $s - processed settings
  */
 function render_controls($s) {
-	// Iterate through each and output them according to their settings
-	$controls = $s['controls'];
-	$html = '';
+	// Start output buffering
+	ob_start();
 
-	if (count($controls)) {
-		$html .= '<div class="controls" id="' . $s['hash'] . '-controls">';
+	// Render the controls
+	require \lqx\blocks\get_template('filters', $s['preset'], 'controls');
 
-		if ($s['show_search'] == 'y') {
-			$html .= '<div class="search-wrapper"><label for="' . $s['hash'] . '-search">' . $s['search_placeholder'] . '</label>';
-			$html .= '<input class="search" id="' . $s['hash'] . '-search" placeholder="' . esc_attr($s['search_placeholder']) . '">';
-			$html .= '<button id="' . $s['hash'] . '-search-button" class="search-button"></button></div>';
-		}
-
-		foreach ($controls as $c => $control) {
-			if ($control['visible'] == 'y') {
-				$html .= '<div class="control-wrapper" data-control="' . $control['slug'] . '" data-control-type="' . $control['type'] . '">';
-				$options = $control['options'];
-
-				switch ($control['presentation']) {
-					case 'select':
-						// Label for the field, for accessability purposes
-						// TODO review the way we compose the ID's
-						$html .= '<label for="' . $s['hash'] . '-control-' . $c . '"><span>' . $control['label'] . '</span>';
-						$html .= '<select name="' . $control['slug'] . '" id="' . $s['hash'] . '-control-' . $c . '">';
-						$html .= '<option value=""></option>';
-
-						// Iterate through options
-						foreach ($options as $option) {
-							$html .= '<option value="' . esc_attr($option['value']) . '"' . ($control['selected'] == $option['value'] ? ' selected' : '') . '>' . $option['text'] . '</option>';
-						}
-
-						$html .= '</select></label>';
-
-						break;
-
-					case 'checkbox':
-						// Label for the field, for accessability purposes
-						$html .= '<fieldset><legend>' . $control['label'] . '</legend>';
-
-						foreach ($options as $i => $option) {
-							$html .= '<label for="' . $s['hash'] . '-control-' . $c . '-' . $i . '">';
-							$html .= '<input type="checkbox" id="' . $s['hash'] . '-control-' . $c . '-' . $i . '" name="' . $control['slug'] . '" value="' . esc_attr($option['value']) . '" /> ';
-							$html .= '<span>' . $option['text'] . '</span></label>';
-						}
-
-						$html .= '</fieldset>';
-
-						break;
-
-					case 'radio':
-						// Label for the field, for accessability purposes
-						$html .= '<fieldset><legend>' . $control['label'] . '</legend>';
-
-						foreach ($options as $i => $option) {
-							$html .= '<label for="' . $s['hash'] . '-control-' . $c . '-' . $i . '">';
-							$html .= '<input type="radio" id="' . $s['hash'] . '-control-' . $c . '-' . $i . '" name="' . $control['slug'] . '" value="' . esc_attr($option['value']) . '" /> ';
-							$html .= '<span>' . $option['text'] . '</span></label>';
-						}
-
-						$html .= '</fieldset>';
-
-						break;
-
-					case 'list':
-						// Label for the field, for accessability purposes
-						$html .= '<label id="' . $s['hash'] . '-control-' . $c . '-label">' . $control['label'] . '</label>';
-
-						$html .= '<ul class="control-list" id="' . $s['hash'] . '-control-' . $c . '" role="combobox" aria-labelledby="' . $s['hash'] . '-control-' . $c . '-label">';
-
-						foreach ($options as $i => $option) {
-							$html .= '<li id="' . $s['hash'] . '-control-' . $c . '-' . $i . '" class="option' . ($control['selected'] == $option['value'] ? ' selected' : '') . '" data-value="' . esc_attr($option['value']) . '">' . $option['text'] . '</li>';
-						}
-
-						$html .= '</ul>';
-
-						break;
-				}
-
-				$html .= '</div>';
-			}
-		}
-
-		if ($s['show_clear'] == 'y') $html .= '<div class="clear-wrapper"><button id="' . $s['hash'] . '-clear" class="clear">' . $s['clear_label']. '</button></div>';
-
-		$html .= '</div>';
-	}
-
-	echo $html;
+	// Return the output
+	return ob_get_clean();
 }
 
 /**
@@ -1360,20 +1284,14 @@ function render_controls($s) {
  * @param  array $s - processed settings and posts data
  */
 function render_posts($s) {
-	// For settings we need to get the preset settings from cards.
-	$cards_settings = \lqx\blocks\get_settings('cards', null, $s['render_cards']['preset'], $s['render_cards']['style']);
+	// Start output buffering
+	ob_start();
 
-	// Change the hash to use the same as the filters
-	$cards_settings['processed']['hash'] = $s['hash'] . '-posts';
+	// Render the posts
+	require \lqx\blocks\get_template('filters', $s['preset'], 'posts');
 
-	// Add class 'posts' to the classes array
-	$cards_settings['processed']['class'] = 'posts';
-
-	// Load the rendered for the specified preset
-	require_once \lqx\blocks\get_renderer('cards', $s['render_cards']['preset']);
-
-	// Render the cards
-	return \lqx\blocks\cards\render($cards_settings, $s['posts']);
+	// Return the output
+	return ob_get_clean();
 }
 
 /**
@@ -1381,31 +1299,14 @@ function render_posts($s) {
  * @param  array $s - processed settings
  */
 function render_pagination($s) {
-	if ($s['total_pages'] > 1) {
-		$html = '<div class="pagination" id="' . $s['hash'] . '-pagination">';
+	// Start output buffering
+	ob_start();
 
-		$html .= '<ul class="pageslinks">';
+	// Render the pagination
+	require \lqx\blocks\get_template('filters', $s['preset'], 'pagination');
 
-		$html .= '<li class="page-first" data-page="1" aria-label="First Page">First</li>';
-		$html .= '<li class="page-prev" data-page="' . ($s['page'] > 1 ? $s['page'] - 1 : 1) . '" aria-label="Previous Page">Prev</li>';
-
-		$i = 1;
-		while ($i <= $s['total_pages']) {
-			$html .= '<li class="page-number' . ($i == $s['page'] ? ' current' : ''). '" data-page="' . $i . '" aria-label="Page ' . $i . '">' . $i . '</li>';
-			$i++;
-		}
-
-		$html .= '<li class="page-next" data-page"' . ($s['page'] < $s['total_pages'] ? $s['page'] + 1 : $s['total_pages']) . '" aria-label="Previous Page">Next</li>';
-		$html .= '<li class="page-last" data-page="' . $i . '" aria-label="Last Page">Last</li>';
-
-		$html .= '</ul>';
-
-		// TODO: add pagination details and posts per page selector
-
-		$html .= '</div>';
-
-		echo $html;
-	}
+	// Return the output
+	return ob_get_clean();
 }
 
 /**
@@ -1491,7 +1392,7 @@ function handle_api_call($request) {
 
 	// Remove any keys that are not allowed
 	foreach (array_keys($payload) as $k) {
-		if (!in_array($k, ['preset', 'post_id', 'controls', 'search', 'page', 'pagination'])) unset($payload[$k]);
+		if (!in_array($k, ['preset', 'post_id', 'controls', 'search', 'pagination'])) unset($payload[$k]);
 
 		if ($k == 'pagination') {
 			foreach (array_keys($payload['pagination']) as $kk) {
@@ -1523,7 +1424,8 @@ function handle_api_call($request) {
 	// Get the posts
 	$post_info = \lqx\filters\get_posts_with_data($s);
 	$s['posts'] = $post_info['posts'];
-	$s['total_pages'] =  $post_info['total_pages'];
+	$s['pagination']['total_posts'] = $post_info['total_posts'];
+	$s['pagination']['total_pages'] = $post_info['total_pages'];
 
 	// Load render functions from filters block
 	require_once \lqx\blocks\get_renderer('filters', $settings['local']['user']['preset']);
