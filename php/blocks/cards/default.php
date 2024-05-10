@@ -24,134 +24,99 @@
 //  If you need a custom renderer, copy this file to php/custom/blocks/cards/default.php and modify it there
 //  You may also create custom renderer for specific presets, by copying this file to /php/custom/cards/slider/{preset}.php
 
-namespace lqx\blocks\cards;
-
-/**
- * Render function for Lyquix cards block
- *
- * @param array $settings - block settings
- *              processed: Processed settings
- *                 anchor: A custom id for the cards block
- *                 class: Additional classes to add to the cards block
- *                 hash: A unique hash of the cards block
- *                 slider: Whether to use a slider
- *                 swiper_options_override: Swiper options override
- *                 heading_style: Style of the heading
- *                 subheading_style: Style of the subheading
- *                 heading_clickable: Whether the heading is clickable
- *                 image_clickable: Whether the image is clickable
- *                 responsive_rules: Responsive rules (array of objects)
- *                     screens: Array of screens to apply the rule to (xs, sm, md, lg, xl)
- *                     columns: Number of columns
- *                     image_position: Image position (left, right, top)
- *                     icon_image_position: Icon image position (left, right, center)
- *
- * @param array $content - array of cards
- *              heading: Heading
- *              subheading: Subheading
- *              image: Image
- *              icon_image: Icon image
- *              video: Video
- *              body: Body
- *              links: Links
- *              labels: Labels
- *
- */
-function render($settings, $content) {
-	// Get and validate processed settings
-	$s = \lqx\util\validate_data($settings['processed'], [
-		'type' => 'object',
-		'required' => true,
-		'keys' => [
-			'anchor' => \lqx\util\schema_str_req_emp,
-			'class' => \lqx\util\schema_str_req_emp,
-			'hash' => [
-				'type' => 'string',
+// Get and validate processed settings
+$s = \lqx\util\validate_data($settings['processed'], [
+	'type' => 'object',
+	'required' => true,
+	'keys' => [
+		'anchor' => \lqx\util\schema_str_req_emp,
+		'class' => \lqx\util\schema_str_req_emp,
+		'hash' => [
+			'type' => 'string',
+			'required' => true,
+			'default' => 'id-' . substr(md5(json_encode([$settings, $content, random_int(1000, 9999)])), 24)
+		],
+		'slider' => \lqx\util\schema_str_req_n,
+		'swiper_options_override' => \lqx\util\schema_str_req_emp,
+		'heading_style' => [
+			'type' => 'string',
+			'required' => true,
+			'default' => 'h3',
+			'allowed' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+		],
+		'subheading_style' => [
+			'type' => 'string',
+			'required' => true,
+			'default' => 'p',
+			'allowed' => ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+		],
+		'heading_clickable' => [
+			'type' => 'string',
+			'required' => true,
+			'default' => 'y',
+			'allowed' => ['y', 'n']
+		],
+		'image_clickable' => \lqx\util\schema_str_req_y,
+		'responsive_rules' => [
+			'type' => 'array',
+			'required' => true,
+			'default' => [],
+			'elems' => [
+				'type' => 'object',
 				'required' => true,
-				'default' => 'id-' . substr(md5(json_encode([$settings, $content, random_int(1000, 9999)])), 24)
-			],
-			'slider' => \lqx\util\schema_str_req_n,
-			'swiper_options_override' => \lqx\util\schema_str_req_emp,
-			'heading_style' => [
-				'type' => 'string',
-				'required' => true,
-				'default' => 'h3',
-				'allowed' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
-			],
-			'subheading_style' => [
-				'type' => 'string',
-				'required' => true,
-				'default' => 'p',
-				'allowed' => ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
-			],
-			'heading_clickable' => [
-				'type' => 'string',
-				'required' => true,
-				'default' => 'y',
-				'allowed' => ['y', 'n']
-			],
-			'image_clickable' => \lqx\util\schema_str_req_y,
-			'responsive_rules' => [
-				'type' => 'array',
-				'required' => true,
-				'default' => [],
-				'elems' => [
-					'type' => 'object',
-					'required' => true,
-					'keys' => [
-						'screens' => [
-							'type' => 'array',
-							'required' => true,
-							'default' => [],
-							'elems' => [
-								'type' => 'string',
-								'required' => true,
-								'allowed' => ['xs', 'sm', 'md', 'lg', 'xl']
-							]
-						],
-						'columns' => [
-							'type' => 'integer',
-							'required' => true,
-							'default' => 3,
-							'range' => [1, 12]
-						],
-						'image_position' => [
+				'keys' => [
+					'screens' => [
+						'type' => 'array',
+						'required' => true,
+						'default' => [],
+						'elems' => [
 							'type' => 'string',
 							'required' => true,
-							'allowed' => ['', 'left', 'right', 'top']
-						],
-						'icon_image_position' => [
-							'type' => 'string',
-							'required' => true,
-							'allowed' => ['', 'left', 'right', 'center']
+							'allowed' => ['xs', 'sm', 'md', 'lg', 'xl']
 						]
+					],
+					'columns' => [
+						'type' => 'integer',
+						'required' => true,
+						'default' => 3,
+						'range' => [1, 12]
+					],
+					'image_position' => [
+						'type' => 'string',
+						'required' => true,
+						'allowed' => ['', 'left', 'right', 'top']
+					],
+					'icon_image_position' => [
+						'type' => 'string',
+						'required' => true,
+						'allowed' => ['', 'left', 'right', 'center']
 					]
 				]
 			]
 		]
-	]);
+	]
+]);
 
-	// If valid settings, use them, otherwise throw exception
-	if ($s['isValid']) $s = $s['data'];
-	else throw new \Exception('Invalid block settings: ' . var_export($s, true));
+// If valid settings, use them, otherwise throw exception
+if ($s['isValid']) $s = $s['data'];
+else throw new \Exception('Invalid block settings: ' . var_export($s, true));
 
-	// Generate CSS classes for responsive rules
-	$css_classes = [];
-	foreach ($s['responsive_rules'] as $rule) {
-		foreach ($rule['screens'] as $screen) {
-			foreach ($rule as $prop => $value) {
-				if ($prop === 'screens') continue;
-				if ($value === '') continue;
-				$css_classes[] = $screen . ':' . str_replace('_', '-', $prop) . '-' . $value;
-			}
+// Generate CSS classes for responsive rules
+$css_classes = [];
+foreach ($s['responsive_rules'] as $rule) {
+	foreach ($rule['screens'] as $screen) {
+		foreach ($rule as $prop => $value) {
+			if ($prop === 'screens') continue;
+			if ($value === '') continue;
+			$css_classes[] = $screen . ':' . str_replace('_', '-', $prop) . '-' . $value;
 		}
 	}
-
-	// Get content and filter out invalid content
-	$c = array_filter(array_map(function($item) {
-		$v = \lqx\util\validate_data($item, \lqx\cards\schema);
-		return $v['isValid'] ? $v['data'] : null;
-	}, $content));
-
-	if (!empty($c)) require \lqx\blocks\get_template('cards', $s['preset']);
 }
+
+// Get content and filter out invalid content
+$c = array_filter(array_map(function($item) {
+	$v = \lqx\util\validate_data($item, \lqx\cards\schema);
+	return $v['isValid'] ? $v['data'] : null;
+}, $content));
+
+if (!empty($c)) require \lqx\blocks\get_template('cards', $s['preset']);

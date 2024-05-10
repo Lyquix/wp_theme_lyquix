@@ -22,9 +22,8 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-
+// Get block settings
 $settings = \lqx\blocks\get_settings($block);
 
-require_once \lqx\blocks\get_renderer('filters', $settings['processed']['preset']);
-
-\lqx\blocks\filters\render($settings);
+// Render the block
+\lqx\blocks\render_block($settings, null);

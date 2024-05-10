@@ -140,6 +140,7 @@ function get_settings($block, $post_id = null, $forced_preset = null, $forced_st
 			'admin' => get_field($block_name . '_block_admin', $post_id)
 		],
 		'processed' => [
+			'block' => $block_name,
 			'anchor' => isset($block['anchor']) ? esc_attr($block['anchor']) : '',
 			'class' => isset($block['className']) ? $block['className'] : '',
 			'hash' => 'id-' . substr(md5(json_encode([get_the_ID(), $block, random_int(1000, 9999)])), 24), // Generate a unique hash for the block
@@ -349,6 +350,11 @@ function reset_global_settings_page() {
 	});
 </script>
 <?php
+}
+
+function render_block($settings, $content) {
+	// Get the renderer based on the selected preset and available overrides
+	require get_renderer($settings['processed']['block'], $settings['processed']['preset']);
 }
 
 // Load the block renderer based on the selected preset and available overrides

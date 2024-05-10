@@ -33,8 +33,5 @@ $cards_settings['processed']['hash'] = $s['hash'] . '-posts';
 // Add class 'posts' to the classes array
 $cards_settings['processed']['class'] = 'posts';
 
-// Load the rendered for the specified preset
-require_once \lqx\blocks\get_renderer('cards', $s['render_cards']['preset']);
-
 // Render the cards
-\lqx\blocks\cards\render($cards_settings, $s['posts']);
+\lqx\blocks\render_block($cards_settings, $s['posts']);

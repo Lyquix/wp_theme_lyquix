@@ -24,56 +24,52 @@
 //  If you need a custom renderer, copy this file to php/custom/blocks/logos/default.php and modify it there
 //  You may also create custom renderer for specific presets, by copying this file to /php/custom/blocks/logos/{preset}.php
 
-namespace lqx\blocks\logos;
+// Get and validate processed settings
+$s = \lqx\util\validate_data($settings['processed'], [
+	'type' => 'object',
+	'required' => true,
+	'keys' => [
+		'anchor' => \lqx\util\schema_str_req_emp,
+		'class' => \lqx\util\schema_str_req_emp,
+		'hash' => [
+			'type' => 'string',
+			'required' => true,
+			'default' => 'id-' . substr(md5(json_encode([$settings, $content, random_int(1000, 9999)])), 24)
+		]
+	]
+]);
 
-function render($settings, $content) {
-	// Get and validate processed settings
-	$s = \lqx\util\validate_data($settings['processed'], [
+// If valid settings, use them, otherwise throw exception
+if ($s['isValid']) $s = $s['data'];
+else throw new \Exception('Invalid block settings: ' . var_export($s, true));
+
+// Get the processed content
+$c = \lqx\util\validate_data($content, [
+	'type' => 'array',
+	'required' => true,
+	'default' => [],
+	'elems' => [
 		'type' => 'object',
 		'required' => true,
 		'keys' => [
-			'anchor' => \lqx\util\schema_str_req_emp,
-			'class' => \lqx\util\schema_str_req_emp,
-			'hash' => [
-				'type' => 'string',
-				'required' => true,
-				'default' => 'id-' . substr(md5(json_encode([$settings, $content, random_int(1000, 9999)])), 24)
-			]
+			'image' => [
+				'type' => 'object',
+				'default' => [],
+				'keys' => \lqx\util\schema_data_image
+			],
+			'link' => [
+				'type' => 'object',
+				'default' => [],
+				'keys' => \lqx\util\schema_data_link
+			],
+			'tailwind_p-' => \lqx\util\schema_str_req_emp,
+			'title' => \lqx\util\schema_str_req_emp
 		]
-	]);
+	]
+]);
 
-	// If valid settings, use them, otherwise throw exception
-	if ($s['isValid']) $s = $s['data'];
-	else throw new \Exception('Invalid block settings: ' . var_export($s, true));
+// If valid content, use it, otherwise return
+if ($c['isValid']) $c = $c['data'];
+else return;
 
-	// Get the processed content
-	$c = \lqx\util\validate_data($content, [
-		'type' => 'array',
-		'required' => true,
-		'default' => [],
-		'elems' => [
-			'type' => 'object',
-			'required' => true,
-			'keys' => [
-				'image' => [
-					'type' => 'object',
-					'default' => [],
-					'keys' => \lqx\util\schema_data_image
-				],
-				'link' => [
-					'type' => 'object',
-					'default' => [],
-					'keys' => \lqx\util\schema_data_link
-				],
-				'tailwind_p-' => \lqx\util\schema_str_req_emp,
-				'title' => \lqx\util\schema_str_req_emp
-			]
-		]
-	]);
-
-	// If valid content, use it, otherwise return
-	if ($c['isValid']) $c = $c['data'];
-	else return;
-
-	if (!empty($c)) require \lqx\blocks\get_template('logos');
-}
+if (!empty($c)) require \lqx\blocks\get_template('logos');

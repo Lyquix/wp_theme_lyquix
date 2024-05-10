@@ -22,9 +22,9 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
+// Get block settings and content
 $settings = \lqx\blocks\get_settings($block);
 $content = \lqx\blocks\get_content($block);
 
-require_once \lqx\blocks\get_renderer('accordion', $settings['processed']['preset']);
-
-\lqx\blocks\accordion\render($settings, $content);
+// Render the block
+\lqx\blocks\render_block($settings, $content);
