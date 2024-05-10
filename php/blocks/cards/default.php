@@ -147,67 +147,9 @@ function render($settings, $content) {
 		}
 	}
 
-	// Get content and filter our invalid content
+	// Get content and filter out invalid content
 	$c = array_filter(array_map(function($item) {
-		$v = \lqx\util\validate_data($item, [
-			'type' => 'object',
-			'keys' => [
-				'heading' => \lqx\util\schema_str_req_emp,
-				'subheading' => \lqx\util\schema_str_req_emp,
-				'image' => [
-					'type' => 'object',
-					'default' => [],
-					'keys' => \lqx\util\schema_data_image
-				],
-				'icon_image' => [
-					'type' => 'object',
-					'default' => [],
-					'keys' => \lqx\util\schema_data_image
-				],
-				'video' => [
-					'type' => 'object',
-					'keys' => [
-						'type' => [
-							'type' => 'string',
-							'required' => true,
-							'default' => 'url',
-							'allowed' => ['url', 'upload']
-						],
-						'url' => \lqx\util\schema_str_req_emp,
-						'upload' => [
-							'type' => 'object',
-							'default' => [],
-							'keys' => \lqx\util\schema_data_video
-						]
-					]
-				],
-				'body' => \lqx\util\schema_str_req_emp,
-				'link' => [
-					'type' => 'object',
-					'required' => true,
-					'keys' => \lqx\util\schema_data_link,
-					'default' => null
-				],
-				'link_style' => [
-					'type' => 'string',
-					'required' => true,
-					'default' => 'button',
-					'allowed' => ['button', 'link']
-				],
-				'labels' => [
-					'type' =>	'array',
-					'default' => [],
-					'elems' => [
-						'type' => 'object',
-						'required' => true,
-						'keys' => [
-							'label' => \lqx\util\schema_str_req_emp,
-							'value' => \lqx\util\schema_str_req_emp
-						]
-					]
-				]
-			]
-		]);
+		$v = \lqx\util\validate_data($item, \lqx\cards\schema);
 		return $v['isValid'] ? $v['data'] : null;
 	}, $content));
 

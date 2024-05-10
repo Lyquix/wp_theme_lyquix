@@ -25,6 +25,67 @@
 
 namespace lqx\cards;
 
+// Schema for the cards block
+define('lqx\cards\schema', [
+	'type' => 'object',
+	'keys' => [
+		'heading' => \lqx\util\schema_str_req_emp,
+		'subheading' => \lqx\util\schema_str_req_emp,
+		'image' => [
+			'type' => 'object',
+			'default' => [],
+			'keys' => \lqx\util\schema_data_image
+		],
+		'icon_image' => [
+			'type' => 'object',
+			'default' => [],
+			'keys' => \lqx\util\schema_data_image
+		],
+		'video' => [
+			'type' => 'object',
+			'keys' => [
+				'type' => [
+					'type' => 'string',
+					'required' => true,
+					'default' => 'url',
+					'allowed' => ['url', 'upload']
+				],
+				'url' => \lqx\util\schema_str_req_emp,
+				'upload' => [
+					'type' => 'object',
+					'default' => [],
+					'keys' => \lqx\util\schema_data_video
+				]
+			]
+		],
+		'body' => \lqx\util\schema_str_req_emp,
+		'link' => [
+			'type' => 'object',
+			'required' => true,
+			'keys' => \lqx\util\schema_data_link,
+			'default' => null
+		],
+		'link_style' => [
+			'type' => 'string',
+			'required' => true,
+			'default' => 'button',
+			'allowed' => ['button', 'link']
+		],
+		'labels' => [
+			'type' =>	'array',
+			'default' => [],
+			'elems' => [
+				'type' => 'object',
+				'required' => true,
+				'keys' => [
+					'label' => \lqx\util\schema_str_req_emp,
+					'value' => \lqx\util\schema_str_req_emp
+				]
+			]
+		]
+	]
+]);
+
 /**
  * Render a cards block
  *
@@ -46,13 +107,17 @@ function render($posts, $preset = null, $style = null, $fields_map = [], $fields
 	// Process WP_Post objects or post IDs
 	$posts = process_wp_posts($posts, $fields_map, $fields_values);
 
-	// TODO validate posts
+	// Validate posts and filter out invalid content
+	$content = array_filter(array_map(function($item) {
+		$v = \lqx\util\validate_data($item, \lqx\cards\schema);
+		return $v['isValid'] ? $v['data'] : null;
+	}, $posts));
 
 	// Load the rendered for the specified preset
 	require_once \lqx\blocks\get_renderer('cards', $preset);
 
 	// Render the cards
-	return \lqx\blocks\cards\render($settings, $posts);
+	return \lqx\blocks\cards\render($settings, $content);
 }
 
 /**
@@ -140,14 +205,22 @@ function process_wp_post($post, $fields_map, $fields_values) {
 		]
 	];
 
-	// TODO we need to handle url, labels, video differently
-
 	// Handle values from post fields or ACF fields
 	foreach ($fields_map as $card_field => $post_field) {
 		if (array_key_exists($card_field, $card)) {
 			if ($post_field) {
-				if (in_array($post_field, $wp_post_keys)) $card[$card_field] = $post->$post_field;
-				else $card[$card_field] = get_field($post_field, $post->ID);
+				switch ($card_field) {
+					case 'image':
+					case 'icon_image':
+						if ($post_field == 'thumbnail') $card[$card_field] = \lqx\util\get_thumbnail_image_object($post->ID);
+						else $card[$card_field] = get_field($post_field, $post->ID);
+						break;
+
+					default:
+						if (in_array($post_field, $wp_post_keys)) $card[$card_field] = $post->$post_field;
+						else $card[$card_field] = get_field($post_field, $post->ID);
+						break;
+				}
 			}
 			else $card[$card_field] = null;
 		}
