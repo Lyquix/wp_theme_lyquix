@@ -48,7 +48,7 @@ export const gallery = (() => {
 			}
 		};
 		// Copy default opts and vars
-		if (customCfg) cfg.gallery = jQuery.extend(true, cfg.alert, customCfg);
+		if (customCfg) cfg.gallery = jQuery.extend(true, cfg.gallery, customCfg);
 
 		// Initialize only if enabled
 		if (cfg.gallery.enabled) {
@@ -114,7 +114,7 @@ export const gallery = (() => {
 					// Send event for gallery prev/next button click
 					if (cfg.gallery.analytics.enabled && cfg.gallery.analytics.onPrevNext) {
 						analytics.sendGAEvent({
-							'eventCategory': 'Alerts',
+							'eventCategory': 'Gallery',
 							'eventAction': jQuery(event.target).hasClass(cfg.gallery.swiperPrevSelector.replace('.', '')) ? 'Previous' : 'Next',
 							'eventLabel': '',
 							'nonInteraction': cfg.gallery.analytics.nonInteraction
