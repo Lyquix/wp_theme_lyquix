@@ -35,7 +35,7 @@ export const gallery = (() => {
 
 		cfg.gallery = {
 			enabled: true,
-			galleryBlockSelector: '.lqx-module-gallery > .gallery',
+			galleryBlockSelector: '.lqx-block-gallery > .gallery',
 			swiperWrapperSelector: '.swiper-wrapper',
 			swiperSelector: '.swiper',
 			swiperSlideClass: 'swiper-slide',
