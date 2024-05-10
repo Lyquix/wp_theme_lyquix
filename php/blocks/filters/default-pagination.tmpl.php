@@ -43,7 +43,7 @@ if ($p['total_pages'] > 1) : ?>
 
 	</ul>
 
-	<?php require \lqx\blocks\get_template('filters', $s['preset'], 'pagination-detail'); ?>
+	<?php if ($s['pagination']['pagination_details'] == 'y') require \lqx\blocks\get_template('filters', $s['preset'], 'pagination-detail'); ?>
 
 </div>
 <?php endif;
