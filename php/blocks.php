@@ -144,8 +144,9 @@ function get_settings($block, $post_id = null, $forced_preset = null, $forced_st
 			'anchor' => isset($block['anchor']) ? esc_attr($block['anchor']) : '',
 			'class' => isset($block['className']) ? $block['className'] : '',
 			'hash' => 'id-' . substr(md5(json_encode([get_the_ID(), $block, random_int(1000, 9999)])), 24), // Generate a unique hash for the block
-			'post_id' => $post_id,
-			'preset' => ''
+			'post_id' => $post_id ?? get_the_ID(),
+			'preset' => '',
+			'style' => ''
 		]
 	];
 
@@ -163,8 +164,11 @@ function get_settings($block, $post_id = null, $forced_preset = null, $forced_st
 	// Check for user settings
 	if ($settings['local']['user'] !== null) {
 		// Style and preset
-		if ($settings['local']['user']['style']) $settings['processed']['class'] .= ' ' . $settings['local']['user']['style'];
-		$settings['processed']['preset'] = $settings['local']['user']['preset'] ?? '';
+		if ($settings['local']['user']['style']) {
+			$settings['processed']['style'] = $settings['local']['user']['style'];
+			$settings['processed']['class'] .= ' ' . $settings['local']['user']['style'];
+		}
+		if ($settings['local']['user']['preset']) $settings['processed']['preset'] = $settings['local']['user']['preset'];
 
 		// Check for settings presets
 		if (isset($settings['local']['user']['preset']) && $settings['local']['user']['preset'] !== '') {

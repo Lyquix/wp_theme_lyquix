@@ -31,16 +31,20 @@
 
 	<div
 		class="filters"
-		id="<?= esc_attr($s['hash']) ?>">
+		id="<?= esc_attr($s['hash']) ?>"
+		data-settings="<?= esc_attr(json_encode(\lqx\filters\prepare_json_data($s))) ?>">
 
 		<?php
-		if ($s['render_mode'] == 'cards') {
-			require \lqx\blocks\get_template('filters', $s['preset'], 'controls');
-			require \lqx\blocks\get_template('filters', $s['preset'], 'posts');
-			require \lqx\blocks\get_template('filters', $s['preset'], 'pagination');
-		}
-		else {
-			require \lqx\blocks\get_template('filters', $s['preset'], 'js');
+		switch ($s['render_mode']) {
+			case 'php':
+				require \lqx\blocks\get_template('filters', $s['preset'], 'controls');
+				require \lqx\blocks\get_template('filters', $s['preset'], 'posts');
+				require \lqx\blocks\get_template('filters', $s['preset'], 'pagination');
+				break;
+
+			case 'js':
+				require \lqx\blocks\get_template('filters', $s['preset'], 'js');
+				break;
 		}
 		?>
 

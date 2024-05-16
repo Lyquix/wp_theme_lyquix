@@ -31,7 +31,7 @@ if (count($s['controls'])) : ?>
 	<?php if ($s['show_search'] == 'y') : ?>
 		<div class="search-wrapper">
 			<label for="<?= $s['hash'] ?>-search"><?= $s['search_placeholder'] ?></label>
-			<input class="search" id="<?= $s['hash'] ?>-search" placeholder="<?= esc_attr($s['search_placeholder']) ?>">
+			<input class="search" id="<?= $s['hash'] ?>-search" placeholder="<?= esc_attr($s['search_placeholder']) ?>" value="<?= esc_attr($s['search']) ?>">
 			<button class="search-button" id="<?= $s['hash'] ?>-search-button"></button>
 		</div>
 	<?php endif; ?>

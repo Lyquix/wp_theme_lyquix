@@ -25,7 +25,7 @@
 //  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/filters/{preset}-posts.tmpl.php
 
 // For settings we need to get the preset settings from cards.
-$cards_settings = \lqx\blocks\get_settings('cards', null, $s['render_cards']['preset'], $s['render_cards']['style']);
+$cards_settings = \lqx\blocks\get_settings('cards', null, $s['render_php']['preset'], $s['render_php']['style']);
 
 // Change the hash to use the same as the filters
 $cards_settings['processed']['hash'] = $s['hash'] . '-posts';

@@ -1131,7 +1131,7 @@
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
-                                "width": "30",
+                                "width": "20",
                                 "class": "",
                                 "id": ""
                             },
@@ -1163,7 +1163,7 @@
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
-                                "width": "30",
+                                "width": "20",
                                 "class": "",
                                 "id": ""
                             },
@@ -1203,7 +1203,7 @@
                                 ]
                             ],
                             "wrapper": {
-                                "width": "39",
+                                "width": "40",
                                 "class": "",
                                 "id": ""
                             },
@@ -1278,6 +1278,35 @@
                             "allow_custom": 0,
                             "search_placeholder": "",
                             "min": "",
+                            "parent_repeater": "field_65f1eb2847552"
+                        },
+                        {
+                            "key": "field_6643783e4e83b",
+                            "label": "Alias",
+                            "name": "alias",
+                            "aria-label": "",
+                            "type": "acfe_slug",
+                            "instructions": "Optional. A user-friendly alias to be used in the hash instead of the default control name (e.g. taxonomy name or field name)",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "20",
+                                "class": "",
+                                "id": ""
+                            },
+                            "acfe_permissions": "",
+                            "instruction_placement": "tooltip",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": "",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
                             "parent_repeater": "field_65f1eb2847552"
                         },
                         {
@@ -1482,6 +1511,37 @@
                     ]
                 },
                 {
+                    "key": "field_664377367f00a",
+                    "label": "Use Hash",
+                    "name": "use_hash",
+                    "aria-label": "",
+                    "type": "button_group",
+                    "instructions": "Set to Yes to read and update the URL hash to represent the selected controls, search and page (Default: No)",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "20",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "choices": {
+                        "y": "Yes",
+                        "n": "No"
+                    },
+                    "default_value": "n",
+                    "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "allow_null": 0,
+                    "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
+                    "layout": "horizontal"
+                },
+                {
                     "key": "field_65f98d2845751",
                     "label": "Show Search",
                     "name": "show_search",
@@ -1520,7 +1580,15 @@
                     "type": "text",
                     "instructions": "Enter the text to be shown as placeholder on the search bar. (Default: Search by Keyword)",
                     "required": 0,
-                    "conditional_logic": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_65f98d2845751",
+                                "operator": "==",
+                                "value": "y"
+                            }
+                        ]
+                    ],
                     "wrapper": {
                         "width": "20",
                         "class": "",
@@ -1546,7 +1614,7 @@
                     "name": "show_clear",
                     "aria-label": "",
                     "type": "button_group",
-                    "instructions": "Select whether to show the search bar before or after the filters, or not at all (Default: before)",
+                    "instructions": "Select whether to show the clear button used to reset all controls, search and page (Default: Yes)",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -1567,8 +1635,8 @@
                     "acfe_settings": "",
                     "acfe_validate": "",
                     "allow_null": 0,
-                    "acfe_permissions": "",
                     "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
                     "layout": "horizontal"
                 },
                 {
@@ -1577,9 +1645,17 @@
                     "name": "clear_label",
                     "aria-label": "",
                     "type": "text",
-                    "instructions": "Enter the text to be shown as placeholder on the search bar. (Default: Search by Keyword)",
+                    "instructions": "Enter the text to be shown on the clear button. (Default: Clear)",
                     "required": 0,
-                    "conditional_logic": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_663ac7af9e442",
+                                "operator": "==",
+                                "value": "y"
+                            }
+                        ]
+                    ],
                     "wrapper": {
                         "width": "20",
                         "class": "",
@@ -1593,8 +1669,8 @@
                     "acfe_settings": "",
                     "acfe_validate": "",
                     "maxlength": "",
-                    "acfe_permissions": "",
                     "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
                     "placeholder": "",
                     "prepend": "",
                     "append": ""
@@ -1605,7 +1681,7 @@
                     "name": "render_mode",
                     "aria-label": "",
                     "type": "button_group",
-                    "instructions": "Select the method that will be used for rendering. With PHP the filters and posts will be rendered server-side, taking advantage of the Cards block functionality. With JS the data is handled by JavaScript client-side. (Default: Cards Block)",
+                    "instructions": "Select the method that will be used for rendering. With PHP the filters and posts will be rendered server-side, taking advantage of the Cards block functionality. With JS the data is handled by JavaScript client-side. (Default: PHP)",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -1618,11 +1694,10 @@
                     "hide_instructions": "",
                     "hide_required": "",
                     "choices": {
-                        "cards": "Cards Block",
-                        "php": "Custom PHP",
-                        "js": "Custom JS"
+                        "php": "PHP",
+                        "js": "JS"
                     },
-                    "default_value": "cards",
+                    "default_value": "php",
                     "return_format": "value",
                     "acfe_settings": "",
                     "acfe_validate": "",
@@ -1634,7 +1709,7 @@
                 {
                     "key": "field_65f4717b47a68",
                     "label": "",
-                    "name": "render_cards",
+                    "name": "render_php",
                     "aria-label": "",
                     "type": "group",
                     "instructions": "",
@@ -1644,7 +1719,7 @@
                             {
                                 "field": "field_65f46f9d8afa3",
                                 "operator": "==",
-                                "value": "cards"
+                                "value": "php"
                             }
                         ]
                     ],
@@ -2379,7 +2454,7 @@
                 {
                     "key": "field_65f47103a2dd5",
                     "label": "",
-                    "name": "render_custom",
+                    "name": "render_js",
                     "aria-label": "",
                     "type": "group",
                     "instructions": "",
@@ -2390,13 +2465,6 @@
                                 "field": "field_65f46f9d8afa3",
                                 "operator": "==",
                                 "value": "js"
-                            }
-                        ],
-                        [
-                            {
-                                "field": "field_65f46f9d8afa3",
-                                "operator": "==",
-                                "value": "php"
                             }
                         ]
                     ],
@@ -2784,5 +2852,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1715282521
+    "modified": 1715885497
 }

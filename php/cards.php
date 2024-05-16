@@ -114,10 +114,7 @@ function render($posts, $preset = null, $style = null, $fields_map = [], $fields
 	}, $posts));
 
 	// Load the rendered for the specified preset
-	require_once \lqx\blocks\get_renderer('cards', $preset);
-
-	// Render the cards
-	return \lqx\blocks\cards\render($settings, $content);
+	require \lqx\blocks\get_renderer('cards', $preset);
 }
 
 /**

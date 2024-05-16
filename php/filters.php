@@ -83,16 +83,16 @@ add_filter('acf/load_field', function ($field) {
 		'field_65f1ea274754b' => null, // pref_filters > acf_field
 		'field_65f1ebb9ef068' => null, // filters > acf_field
 		'field_65f248687356f' => null, // posts_order > acf_field
-		'field_65f3010821d84' => null, // render_custom > post_fields > acf_field
-		'field_65f471bf7d99b' => 'text', // render_cards > heading
-		'field_65f475117fcd5' => 'text', // render_cards > subheading
-		'field_65f4752a7fcd6' => 'image', // render_cards > image
-		'field_65f4752f7fcd7' => 'image', // render_cards > icon_image
-		'field_65f475367fcd8' => 'link', // render_cards > video_url
-		'field_65f4753d7fcd9' => 'file', // render_cards > video_upload
-		'field_65f475457fcda' => 'text', // render_cards > body
-		'field_65f4754e7fcdb' => 'text', // render_cards > labels
-		'field_66393791fb81d' => 'link'  // render_cards > url
+		'field_65f3010821d84' => null, // render_js > post_fields > acf_field
+		'field_65f471bf7d99b' => 'text', // render_php > heading
+		'field_65f475117fcd5' => 'text', // render_php > subheading
+		'field_65f4752a7fcd6' => 'image', // render_php > image
+		'field_65f4752f7fcd7' => 'image', // render_php > icon_image
+		'field_65f475367fcd8' => 'link', // render_php > video_url
+		'field_65f4753d7fcd9' => 'file', // render_php > video_upload
+		'field_65f475457fcda' => 'text', // render_php > body
+		'field_65f4754e7fcdb' => 'text', // render_php > labels
+		'field_66393791fb81d' => 'link'  // render_php > url
 	];
 
 	$field_types = [
@@ -341,6 +341,7 @@ function validate_settings($settings) {
 						],
 						'taxonomy' => \lqx\util\schema_str_req_emp,
 						'acf_field' => \lqx\util\schema_str_req_emp,
+						'alias' => \lqx\util\schema_str_req_emp,
 						'presentation' => [
 							'type' => 'string',
 							'required' => true,
@@ -374,6 +375,7 @@ function validate_settings($settings) {
 					]
 				]
 			],
+			'use_hash' => \lqx\util\schema_str_req_n,
 			'show_search' => \lqx\util\schema_str_req_y,
 			'search_placeholder' => \lqx\util\schema_str_req_emp,
 			'show_clear' => \lqx\util\schema_str_req_y,
@@ -382,9 +384,9 @@ function validate_settings($settings) {
 				'type' => 'string',
 				'required' => true,
 				'default' => 'php',
-				'allowed' => ['cards', 'php', 'js']
+				'allowed' => ['php', 'js']
 			],
-			'render_cards' => [
+			'render_php' => [
 				'type' => 'object',
 				'required' => true,
 				'keys' => [
@@ -435,7 +437,7 @@ function validate_settings($settings) {
 					]
 				]
 			],
-			'render_custom' => [
+			'render_js' => [
 				'type' => 'object',
 				'required' => true,
 				'keys' => [
@@ -632,11 +634,11 @@ function init_settings($s) {
 		$s['controls'][$i] = $control;
 	}
 
-	if ($s['render_mode'] !== 'cards') {
+	if ($s['render_mode'] == 'js') {
 		// Convert post_fields to an array of field objects
 		$post_fields = [];
 
-		foreach ($s['render_custom']['post_fields'] as $field_obj) {
+		foreach ($s['render_js']['post_fields'] as $field_obj) {
 			$field_obj = get_field_object($field_obj['acf_field'], null, true, false, false);
 
 			$post_fields[$field_obj['name']] = [
@@ -648,7 +650,7 @@ function init_settings($s) {
 			];
 		}
 
-		$s['render_custom']['post_fields'] = $post_fields;
+		$s['render_js']['post_fields'] = $post_fields;
 	}
 
 	// Add an empty `search` key
@@ -689,10 +691,14 @@ function init_settings($s) {
 	$s['pagination'] = $pagination;
 
 	// Remove unused render mode data
-	if ($s['render_mode'] == 'cards') {
-		unset($s['render_custom']);
-	} else {
-		unset($s['render_cards']);
+	switch ($s['render_mode']) {
+		case 'php':
+			unset($s['render_js']);
+			break;
+
+		case 'js':
+			unset($s['render_php']);
+			break;
 	}
 
 	return $s;
@@ -739,7 +745,7 @@ function get_options($s) {
 				$sql = $wpdb->prepare(
 					"SELECT `meta_value`, COUNT(`post_id`) as `count` " .
 						"FROM $wpdb->postmeta " .
-						"WHERE `meta_key` = %s " . // TODO: are we handling sub-fields within groups and repeaters correctly? We may need a LIKE operator here
+						"WHERE `meta_key` = '%s' " . // TODO: are we handling sub-fields within groups and repeaters correctly? We may need a LIKE operator here
 						"AND `post_id` IN (" . implode(',', array_map('intval', $posts)) . ") " .
 						"GROUP BY `meta_value`",
 					$control['acf_field']
@@ -976,7 +982,7 @@ function prepare_query($query, $s) {
 		}
 	}
 
-	// Implement controls args
+	// Controls args
 	$controls = $s['controls'];
 
 	foreach ($controls as $control) {
@@ -989,7 +995,7 @@ function prepare_query($query, $s) {
 			switch ($control['type']) {
 				case 'taxonomy':
 					$tax_query = [
-						'taxonomy' => 'category', // TODO this needs to be the actual name of the taxonomy, not fixed to category
+						'taxonomy' => $control['taxonomy'],
 						'field' => 'term_id',
 						'terms' => $control['selected'],
 					];
@@ -1022,6 +1028,12 @@ function prepare_query($query, $s) {
 					break;
 			}
 		}
+	}
+
+	// Search args
+
+	if ($s['search'] !== '') {
+		$query['s'] = $s['search'];
 	}
 
 	// We need to iterate through the controls to see what has been selected and use that to narrow our query
@@ -1091,28 +1103,27 @@ function get_posts_with_data($s) {
 			$post = get_post(get_the_ID());
 
 			switch ($s['render_mode']) {
-				case 'custom_js':
-				case 'custom_php':
+				case 'js':
 					// Set the post object
 					$post = [
 						'id' => $post->ID,
-						'author' => get_author_info($post->post_author, $s['render_custom']['post_author']),
+						'author' => get_author_info($post->post_author, $s['render_js']['post_author']),
 						'date' => $post->post_date_gmt,
-						'content' => $s['render_custom']['post_content'] == 'y' ? $post->post_content : '',
+						'content' => $s['render_js']['post_content'] == 'y' ? $post->post_content : '',
 						'title' => $post->post_title,
-						'excerpt' => $s['render_custom']['post_excerpt'] == 'y' ? $post->post_excerpt : '',
+						'excerpt' => $s['render_js']['post_excerpt'] == 'y' ? $post->post_excerpt : '',
 						'slug' => $post->post_name,
 						'modified' => $post->post_modified_gmt,
 						'link' => get_permalink($post->ID),
-						'link_style' => $s['render_custom']['link_style'] ?? 'button',
+						'link_style' => $s['render_js']['link_style'] ?? 'button',
 						'type' => $post->post_type,
-						'thumbnail' => $s['render_custom']['post_thumbnail'] == 'y' ? get_thumbnails_info($post->ID, $s['render_custom']['thumbnail_sizes']) : [],
+						'thumbnail' => $s['render_js']['post_thumbnail'] == 'y' ? get_thumbnails_info($post->ID, $s['render_js']['thumbnail_sizes']) : [],
 						'taxonomies' => [],
 						'fields' => []
 					];
 
 					// Get taxonomies
-					foreach ($s['render_custom']['post_taxonomies'] as $taxonomy) {
+					foreach ($s['render_js']['post_taxonomies'] as $taxonomy) {
 						$terms = get_terms([
 							'taxonomy' => $taxonomy,
 							'object_ids' => $post['id']
@@ -1130,13 +1141,13 @@ function get_posts_with_data($s) {
 					}
 
 					// Get fields
-					foreach ($s['render_custom']['post_fields'] as $field_name => $field_obj) {
+					foreach ($s['render_js']['post_fields'] as $field_name => $field_obj) {
 						$post['fields'][$field_name] = get_field($field_obj['key'], $post['id']);
 					}
 
 					break;
 
-				case 'cards':
+				case 'php':
 					// List of field names that represent WP_Post fields, not ACF fields
 					$wp_post_keys = ['post_content', 'post_title', 'post_excerpt', 'post_name'];
 
@@ -1150,57 +1161,57 @@ function get_posts_with_data($s) {
 						'modified' => $post->post_modified_gmt,
 						'link' => [
 							'url' => get_permalink($post->ID),
-							'title' => $s['render_cards']['link_title'],
-							'target' => $s['render_cards']['link_target']
+							'title' => $s['render_php']['link_title'],
+							'target' => $s['render_php']['link_target']
 						],
-						'link_style' => $s['render_cards']['link_style'] ?? 'button',
+						'link_style' => $s['render_php']['link_style'] ?? 'button',
 						'body' => null,
 						'labels' => [],
 						'image' => null,
 						'icon_image' => null,
 						'video' => [
-							'type' => $s['render_cards']['video_type'] ?? 'url'
+							'type' => $s['render_php']['video_type'] ?? 'url'
 						]
 					];
 
 					// Handle heading, subheading and body
 					foreach (['heading', 'subheading', 'body'] as $key) {
-						if ($s['render_cards'][$key]) {
-							if (in_array($s['render_cards'][$key], $wp_post_keys)) {
-								$p[$key] = $post->{$s['render_cards'][$key]};
+						if ($s['render_php'][$key]) {
+							if (in_array($s['render_php'][$key], $wp_post_keys)) {
+								$p[$key] = $post->{$s['render_php'][$key]};
 							} else {
-								$p[$key] = get_field($s['render_cards'][$key], $post->ID);
+								$p[$key] = get_field($s['render_php'][$key], $post->ID);
 							}
 						}
 					}
 
 					// Handle image and icon_image
 					foreach (['image', 'icon_image'] as $key) {
-						if ($s['render_cards'][$key]) {
-							if ($s['render_cards'][$key] == 'thumbnail') {
+						if ($s['render_php'][$key]) {
+							if ($s['render_php'][$key] == 'thumbnail') {
 								$p[$key] = \lqx\util\get_thumbnail_image_object($post->ID);
 							} else {
-								$p[$key] = get_field($s['render_cards'][$key], $post->ID);
+								$p[$key] = get_field($s['render_php'][$key], $post->ID);
 							}
 						}
 					}
 
 					// Handle the URL
-					if ($s['render_cards']['use_post_url'] == 'n'){
-						if ($s['render_cards']['link']) $p['link'] = get_field($s['render_cards']['link'], $post->ID);
+					if ($s['render_php']['use_post_url'] == 'n'){
+						if ($s['render_php']['link']) $p['link'] = get_field($s['render_php']['link'], $post->ID);
 						else $p['link'] = null;
 					}
 
 					// Handle video
-					$video_url = get_field($s['render_cards']['video_url'], $post->ID);
-					$video_upload = get_field($s['render_cards']['video_upload'], $post->ID);
-					if ($s['render_cards']['video_type'] == 'url' && $video_url) {
+					$video_url = get_field($s['render_php']['video_url'], $post->ID);
+					$video_upload = get_field($s['render_php']['video_upload'], $post->ID);
+					if ($s['render_php']['video_type'] == 'url' && $video_url) {
 						$p['video'] = [
 							'type' => 'url',
 							'url' => $video_url
 						];
 					}
-					elseif ($s['render_cards']['video_type'] == 'upload' && $video_upload) {
+					elseif ($s['render_php']['video_type'] == 'upload' && $video_upload) {
 						$p['video'] = [
 							'type' => 'upload',
 							'upload' => $video_upload
@@ -1208,9 +1219,9 @@ function get_posts_with_data($s) {
 					}
 
 					// Handle labels
-					switch ($s['render_cards']['label_type']) {
+					switch ($s['render_php']['label_type']) {
 						case 'taxonomy':
-							foreach ($s['render_cards']['label_taxonomies'] ?? [] as $tax) {
+							foreach ($s['render_php']['label_taxonomies'] ?? [] as $tax) {
 								$terms = get_the_terms($post->ID, $tax);
 								foreach ($terms as $term) {
 									$p['labels'][] = [
@@ -1222,7 +1233,7 @@ function get_posts_with_data($s) {
 							break;
 
 						case 'field':
-							$label_field_object = get_field_object($s['render_cards']['label_field'], $post->ID);
+							$label_field_object = get_field_object($s['render_php']['label_field'], $post->ID);
 
 							if ($label_field_object != false) {
 								if (is_array($label_field_object['value'])) {
@@ -1317,14 +1328,12 @@ function prepare_json_data($s) {
 	$res = $s;
 
 	// Remove keys that are not needed or that should not be disclosed
-	foreach (['post_type', 'pre_filters', 'posts_order', 'render_cards'] as $key) unset($res[$key]);
+	foreach (['post_type', 'pre_filters', 'posts_order', 'render_php'] as $key) unset($res[$key]);
 
 	// Handle server-side rendering
-	if ($s['render_mode'] !== 'js') {
-		unset($res['render_custom']);
-		$res['controls'] = \lqx\blocks\filters\render_controls($s);
-		$res['posts'] = \lqx\blocks\filters\render_posts($s);
-		$res['pagination'] = \lqx\blocks\filters\render_pagination($s);
+	if ($s['render_mode'] == 'php') {
+		foreach(['anchor', 'block', 'class', 'clear_label', 'posts', 'render_js',
+		'search_placeholder', 'show_clear', 'show_search'] as $key) unset($res[$key]);
 	}
 
 	return $res;
@@ -1377,9 +1386,34 @@ function validate_payload($payload) {
  * @param  array $p - received payload
  */
 function merge_settings($s, $p) {
-	// TODO merge the payload with the settings
-	// TODO use \lqx\blocks\merge_settings as a model
-	// TODO the filters array need special handling
+	foreach ($p as $key => $value) {
+		if (is_array($value)) {
+			// List arrays
+			if (\lqx\util\array_is_list($value)) {
+				// Assumes that both lists must be the same length and same order
+				// Traverse the list
+				foreach ($value as $i => $v) {
+					// If the setting is being overriden, traverse list arrays
+					$s[$key][$i] = merge_settings($s[$key][$i], $v);
+				}
+			}
+			// Associative arrays
+			else {
+				if (isset($s[$key])) {
+					// If the setting is being overriden, traverse associative arrays
+					$s[$key] = merge_settings($s[$key], $value);
+				} else {
+					// Otherwise, just set the value
+					$s[$key] = $value;
+				}
+			}
+		} else {
+			// Set the value for primitive values
+			$s[$key] = $value;
+		}
+	}
+
+	return $s;
 }
 
 /**
@@ -1390,6 +1424,8 @@ function handle_api_call($request) {
 	// Get the payload
 	$payload = $request->get_json_params();
 
+	// TODO payload validation
+	/*
 	// Remove any keys that are not allowed
 	foreach (array_keys($payload) as $k) {
 		if (!in_array($k, ['preset', 'post_id', 'controls', 'search', 'pagination'])) unset($payload[$k]);
@@ -1405,9 +1441,11 @@ function handle_api_call($request) {
 	$p = validate_payload($payload);
 	if (!$p['isValid']) return null;
 	$p = $p['data'];
+	*/
+	$p = $payload;
 
 	// Get settings
-	$settings = \lqx\blocks\get_settings('filters', $p['post_id']);
+	$settings = \lqx\blocks\get_settings('filters', $p['post_id'], $p['preset'], $p['style']);
 
 	// Validate settings / get processed settings
 	$s = \lqx\filters\validate_settings($settings);
@@ -1427,11 +1465,19 @@ function handle_api_call($request) {
 	$s['pagination']['total_posts'] = $post_info['total_posts'];
 	$s['pagination']['total_pages'] = $post_info['total_pages'];
 
-	// Load render functions from filters block
-	require_once \lqx\blocks\get_renderer('filters', $settings['local']['user']['preset']);
-
 	// Prepare the JSON data
-	return \lqx\filters\prepare_json_data($s);
+	$res = \lqx\filters\prepare_json_data($s);
+
+	// Prepare JSON render
+	if ($s['render_mode'] == 'php') {
+		$res['render'] = [
+			'controls' => \lqx\util\minify_html(render_controls($s)),
+			'posts' => \lqx\util\minify_html(render_posts($s)),
+			'pagination' => \lqx\util\minify_html(render_pagination($s))
+		];
+	}
+
+	return $res;
 }
 
 /**

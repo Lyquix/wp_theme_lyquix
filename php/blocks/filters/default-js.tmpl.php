@@ -26,10 +26,10 @@
 
 ?>
 <script>
+	// Render filters
 	((settings) => {
 		lqx.ready(() => {
-			// TODO This needs to be a different function
-			lqx.filters.setup(JSON.parse(atob(settings)));
+			lqx.filters.render(JSON.parse(atob(settings)));
 		});
 	})('<?= base64_encode(json_encode(\lqx\filters\prepare_json_data($s))) ?>');
 </script>

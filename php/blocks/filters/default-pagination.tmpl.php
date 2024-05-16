@@ -35,7 +35,7 @@ if ($p['total_pages'] > 1) : ?>
 		<li class="page-prev" data-page="<?= $p['page'] > 1 ? $p['page'] - 1 : 1 ?>" aria-label="Previous Page">Prev</li>
 
 		<?php for ($i = 1; $i <= $p['total_pages']; $i++) : ?>
-		<li class="page-number<?= $i == $p['page'] ? ' current' : '' ?>" data-page="<?= $i ?>" aria-label="Page <?= $i ?>"><?= $i ?></li>
+		<li class="page-number <?= $i == $p['page'] ? ' current' : '' ?>" data-page="<?= $i ?>" aria-label="Page <?= $i ?>"><?= $i ?></li>
 		<?php endfor;	?>
 
 		<li class="page-next" data-page="<?= $p['page'] < $p['total_pages'] ? $p['page'] + 1 : $p['total_pages'] ?>" aria-label="Next Page">Next</li>

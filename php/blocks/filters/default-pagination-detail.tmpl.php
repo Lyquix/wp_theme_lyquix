@@ -30,6 +30,6 @@
 		Page <?= $p['page'] ?> of <?= $p['total_pages'] ?>
 	</div>
 	<div class="posts-details">
-		Posts <?= (($p['page'] - 1) * $p['posts_per_page']) + 1 ?> to <?= $p['page'] * $p['posts_per_page'] ?> of <?= $p['total_posts'] ?>
+		Posts <?= (($p['page'] - 1) * $p['posts_per_page']) + 1 ?> to <?= min($p['page'] * $p['posts_per_page'], $p['total_posts']) ?> of <?= $p['total_posts'] ?>
 	</div>
 </div>
