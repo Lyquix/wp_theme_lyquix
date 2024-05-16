@@ -658,6 +658,20 @@ export const util = (() => {
 		return 0;
 	};
 
+	/**
+	 * Add an error handler to the window object
+	 *
+	 * @param newHandler - The new error handler function
+	 */
+	const addErrorHandler = (newHandler) => {
+		const oldHandler = window.onerror || null;
+
+		window.onerror = (message, source, lineno, colno, error) => {
+			if (oldHandler) oldHandler(message, source, lineno, colno, error);
+			newHandler(message, source, lineno, colno, error);
+		};
+	};
+
 	return {
 		init,
 		cookie,
@@ -679,7 +693,8 @@ export const util = (() => {
 		schemaStrReqN,
 		schemaInt,
 		schemaIntReq,
-		schemaHexColor
+		schemaHexColor,
+		addErrorHandler
 	};
 
 })();

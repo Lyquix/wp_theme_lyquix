@@ -431,9 +431,8 @@ export const analytics = (() => {
 		// Track errors
 		if (cfg.analytics.errors.enabled) {
 			log('Setting JavaScript errors tracking');
-			// Add listener to window element for javascript errors
-			window.addEventListener('error', (e) => {
-				const errStr = e.message + ' [' + e.error + '] ' + e.filename + ':' + e.lineno + ':' + e.colno;
+
+			const sendJSError = (errStr) => {
 				const errHash = util.hash(errStr);
 				if (vars.analytics.errorHashes.indexOf(errHash) == -1 && vars.analytics.errorHashes.length < cfg.analytics.errors.maxErrors) {
 					vars.analytics.errorHashes.push(errHash);
@@ -444,7 +443,18 @@ export const analytics = (() => {
 						nonInteraction: true
 					});
 				}
-				return false;
+			};
+
+			// Add listener to window element for javascript loading errors
+			window.addEventListener('error', (e) => {
+				const errStr = `${e.message} ${e.error ? `[${e.error.toString()}] ` : ' '}${e.filename}:${e.lineno}:${e.colno}`;
+				sendJSError(errStr);
+			});
+
+			// Add handler function for runtime errors
+			util.addErrorHandler((message, source, lineno, colno, error) => {
+				const errStr = `${message} ${error ? `[${error.toString()}] ` : ' '}${source}:${lineno}:${colno}`;
+				sendJSError(errStr);
 			});
 		}
 
