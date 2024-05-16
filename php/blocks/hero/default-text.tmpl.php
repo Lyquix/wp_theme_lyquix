@@ -25,25 +25,23 @@
 //  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/hero/{preset}.tmpl.php
 
 ?>
-<section
-	id="<?= esc_attr($s['anchor']) ?>"
-	class="lqx-block-hero <?= esc_attr($s['class']) ?>">
+<div class="text">
+	<?= $breadcrumbs ?>
+	<h1 class="title"><?= $c['heading_override'] ? $c['heading_override'] : get_the_title() ?></h1>
+	<div class="intro"><?= $c['intro_text'] ?></div>
+	<?php if (count($c['links'])) : ?>
+		<ul class="links">
+			<?php foreach ($c['links'] as $link) : ?>
+				<li>
+					<a
+						class="<?= $link['type'] == 'button' ? 'button' : 'readmore' ?>"
+						href="<?= esc_attr($link['link']['url']) ?>"
+						target="<?= $link['link']['target'] ?>">
+						<?= $link['link']['title'] ?>
+					</a>
+				</li>
+			<?php endforeach; ?>
+		</ul>
+	<?php endif; ?>
+</div>
 
-	<div
-		class="hero"
-		id="<?= esc_attr($s['hash']) ?>"
-		data-show-image="<?= $s['show_image'] ?>"
-		data-breadcrumbs-show-breadcrumbs="<?= $s['breadcrumbs']['show_breadcrumbs'] ?>"
-		data-breadcrumbs-type="<?= $s['breadcrumbs']['type'] ?>"
-		data-breadcrumbs-depth="<?= $s['breadcrumbs']['depth'] ?>"
-		data-breadcrumbs-show-current="<?= $s['breadcrumbs']['show_current'] ?>"
-		>
-
-		<?php
-		require \lqx\blocks\get_template('hero', $s['preset'], 'text');
-		if ($s['show_image'] == 'y') require \lqx\blocks\get_template('hero', $s['preset'], 'image');
-		?>
-
-	</div>
-
-</section>

@@ -40,51 +40,18 @@
 			class="tabs-list"
 			role="tablist"
 			aria-hidden="false">
-			<?php foreach ($c as $idx => $item) : ?>
-				<li>
-					<button
-						class="tab"
-						id="<?= $s['hash'] . '-tab-' . $idx ?>"
-						aria-controls="<?= $s['hash'] . '-panel-' . $idx ?>"
-						aria-selected="<?= $idx == 0 ? 'true' : 'false' ?>"
-						role="tab"
-						tabindex="<?= $idx == 0 ? '' : '-1' ?>">
-						<?= $item['label'] ?>
-					</button>
-				</li>
-			<?php endforeach; ?>
+			<?php
+			foreach ($c as $idx => $item) {
+				require \lqx\blocks\get_template('tabs', $s['preset'], 'tab');
+			}
+			?>
 		</ul>
 
-		<?php foreach ($c as $idx => $item) : ?>
-			<section
-				class="tab-panel"
-				id="<?= $s['hash'] . '-panel-' . $idx ?>"
-				aria-labelledby="<?= $s['hash'] . '-tab-' . $idx ?>"
-				aria-hidden="<?= $idx == 0 ? 'false' : 'true' ?>"
-				role="tabpanel"
-				tabindex="0">
-
-				<?php if (count($s['convert_to_accordion'])) : ?>
-					<button
-						class="accordion-header"
-						id="<?= $s['hash'] . '-header-' . $idx ?>"
-						aria-expanded="<?= $idx == 0 ? 'true' : 'false' ?>"
-						aria-controls="<?= $s['hash'] . '-panel-' . $idx ?>"
-						aria-hidden="true">
-						<?= $item['label'] ?>
-					</button>
-				<?php endif; ?>
-
-				<div
-					class="tab-content"
-					id="<?= $s['hash'] . '-content-' . $idx ?>"
-					<?= $s['convert_to_tabs'] == 'y' ? 'aria-hidden="' . ($idx == 0 ? 'false' : 'true') . '"' : '' ?>>
-					<?= $item['heading'] ? sprintf('<%s>%s</%s>', $s['heading_style'], $item['heading'], $s['heading_style']) : '' ?>
-					<?= $item['content'] ?>
-				</div>
-
-			</section>
-		<?php endforeach; ?>
+		<?php
+		foreach ($c as $idx => $item) {
+			require \lqx\blocks\get_template('tabs', $s['preset'], 'panel');
+		}
+		?>
 
 	</div>
 

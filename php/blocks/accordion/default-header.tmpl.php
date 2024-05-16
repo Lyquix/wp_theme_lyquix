@@ -1,7 +1,7 @@
 <?php
 
 /**
- * default.tmpl.php - Default template for the Lyquix Banner block
+ * default-header.tmpl.php - Default template for the Lyquix Accordion block, header sub-template
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix
@@ -21,23 +21,16 @@
 //    "Y8888P"     888     "Y88888P"  888         888
 //
 //  DO NOT MODIFY THIS FILE!
-//  Instead, copy it to /php/custom/blocks/banner/default.tmpl.php to override it
-//  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/banner/{preset}.tmpl.php
+//  Instead, copy it to /php/custom/blocks/accordion/default-header.tmpl.php to override it
+//  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/accordion/{preset}-header.tmpl.php
 
 ?>
-<section
-	id="<?= esc_attr($s['anchor']) ?>"
-	class="lqx-block-banner <?= esc_attr($s['class']) ?>">
-
-	<div
-		class="banner"
-		id="<?= esc_attr($s['hash']) ?>"
-		data-heading-style="<?= $s['heading_style'] ?>">
-
-		<?php require \lqx\blocks\get_template('banner', $s['preset'], 'text') ?>
-
-		<?php if (array_key_exists('url', $c['image'])) require \lqx\blocks\get_renderer('banner', $s['preset'], 'text') ?>
-
-	</div>
-
-</section>
+<<?= $s['heading_style'] ?>>
+	<button
+		class="accordion-header"
+		id="<?= $s['hash'] . '-header-' . $idx ?>"
+		aria-expanded="<?= $idx == 0 && $s['open_on_load'] == 'y' ? 'true' : 'false' ?>"
+		aria-controls="<?= $s['hash'] . '-panel-' . $idx ?>">
+		<?= $item['heading'] ?>
+	</button>
+</<?= $s['heading_style'] ?>>

@@ -38,26 +38,11 @@
 		data-auto-scroll="<?= implode(',', $s['auto_scroll']) ?>">
 
 		<?php foreach ($c as $idx => $item) : ?>
-			<<?= $s['heading_style'] ?>>
-				<button
-					class="accordion-header"
-					id="<?= $s['hash'] . '-header-' . $idx ?>"
-					aria-expanded="<?= $idx == 0 && $s['open_on_load'] == 'y' ? 'true' : 'false' ?>"
-					aria-controls="<?= $s['hash'] . '-panel-' . $idx ?>">
-					<?= $item['heading'] ?>
-				</button>
-			</<?= $s['heading_style'] ?>>
 
-			<section
-				class="accordion-panel <?= $idx == 0 && $s['open_on_load'] == 'y' ? '' : 'closed' ?>"
-				id="<?= $s['hash'] . '-panel-' . $idx ?>"
-				role="region"
-				aria-labelledby="<?= $s['hash'] . '-header-' . $idx ?>"
-				aria-hidden="<?= $idx == 0 && $s['open_on_load'] == 'y' ? 'false' : 'true' ?>">
-				<div>
-					<?= $item['content'] ?>
-				</div>
-			</section>
+			<?php require \lqx\blocks\get_template('accordion', $s['preset'], 'header'); ?>
+
+			<?php require \lqx\blocks\get_template('accordion', $s['preset'], 'panel'); ?>
+
 		<?php endforeach; ?>
 	</div>
 

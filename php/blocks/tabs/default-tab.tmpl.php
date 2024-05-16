@@ -1,7 +1,7 @@
 <?php
 
 /**
- * default.tmpl.php - Default template for the Lyquix Banner block
+ * default-tab.tmpl.php - Default template for the Lyquix Tabs block, tab sub-template
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix
@@ -21,23 +21,18 @@
 //    "Y8888P"     888     "Y88888P"  888         888
 //
 //  DO NOT MODIFY THIS FILE!
-//  Instead, copy it to /php/custom/blocks/banner/default.tmpl.php to override it
-//  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/banner/{preset}.tmpl.php
+//  Instead, copy it to /php/custom/blocks/tabs/default-tab.tmpl.php to override it
+//  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/tabs/{preset}-tab.tmpl.php
 
 ?>
-<section
-	id="<?= esc_attr($s['anchor']) ?>"
-	class="lqx-block-banner <?= esc_attr($s['class']) ?>">
-
-	<div
-		class="banner"
-		id="<?= esc_attr($s['hash']) ?>"
-		data-heading-style="<?= $s['heading_style'] ?>">
-
-		<?php require \lqx\blocks\get_template('banner', $s['preset'], 'text') ?>
-
-		<?php if (array_key_exists('url', $c['image'])) require \lqx\blocks\get_renderer('banner', $s['preset'], 'text') ?>
-
-	</div>
-
-</section>
+<li>
+	<button
+		class="tab"
+		id="<?= $s['hash'] . '-tab-' . $idx ?>"
+		aria-controls="<?= $s['hash'] . '-panel-' . $idx ?>"
+		aria-selected="<?= $idx == 0 ? 'true' : 'false' ?>"
+		role="tab"
+		tabindex="<?= $idx == 0 ? '' : '-1' ?>">
+		<?= $item['label'] ?>
+	</button>
+</li>
