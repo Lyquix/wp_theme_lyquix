@@ -143,18 +143,11 @@ export const detect = (() => {
 				version: getFirstMatch(/(?:firefox)[ /](\d+(\.\d+)?)/i)
 			};
 		}
-		else if (!(/like android/i.test(ua)) && /android/i.test(ua)) {
-			browser = {
-				name: 'Android',
-				type: 'android',
-				version: getFirstMatch(/version\/(\d+(\.\d+)?)/i)
-			};
-		}
 		else if (/safari/i.test(ua)) {
 			browser = {
 				name: 'Safari',
 				type: 'safari',
-				version: getFirstMatch(/version\/(\d+(\.\d+)?)/i)
+				version: getFirstMatch(/safari\/(\d+(\.\d+)?)/i)
 			};
 		}
 		else {
