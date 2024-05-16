@@ -113,60 +113,60 @@ export const slider = (() => {
 							const slideEl = this.slides[index];
 							const teaserText = slideEl.getAttribute('data-slide-teaser');
 							const thumbnail = slideEl.getAttribute('data-slide-thumbnail');
-							 // Returning the HTML string for the bullet, conditionally rendering either an image with the thumbnail or the teaser text
+							// Returning the HTML string for the bullet, conditionally rendering either an image with the thumbnail or the teaser text
 							return `<span class="${className}" role="button" aria-label="Go to slide ${index + 1}">` +
-									(thumbnail ? `<img src="${thumbnail}" alt="" />` : teaserText) +
-									`</span>`;
+								(thumbnail ? `<img src="${thumbnail}" alt="" />` : teaserText) +
+								'</span>';
 						},
 					};
 
 
-				if (navigation == true) {
-					swiperOptions['navigation'] = {
-						enabled: true,
-						prevEl: cfg.slider.swiperPrevSelector,
-						nextEl: cfg.slider.swiperNextSelector
-					};
-				}
+					if (navigation == true) {
+						swiperOptions['navigation'] = {
+							enabled: true,
+							prevEl: cfg.slider.swiperPrevSelector,
+							nextEl: cfg.slider.swiperNextSelector
+						};
+					}
 
-				// Swiper options override
-				const swiperOptionsOverride = sliderElem.attr('data-swiper-options-override');
-				if (swiperOptionsOverride) {
-					try {
-						swiperOptions = jQuery.extend(true, swiperOptions, JSON.parse(swiperOptionsOverride));
-					} catch (e) {
-						warn('Swiper options override is not valid JSON');
+					// Swiper options override
+					const swiperOptionsOverride = sliderElem.attr('data-swiper-options-override');
+					if (swiperOptionsOverride) {
+						try {
+							swiperOptions = jQuery.extend(true, swiperOptions, JSON.parse(swiperOptionsOverride));
+						} catch (e) {
+							warn('Swiper options override is not valid JSON');
+						}
+					}
+
+					new Swiper('#' + sliderElem.attr('id') + ' ' + cfg.slider.swiperSelector, swiperOptions);
+
+					if (navigation == true) {
+						// Prev/Next button listeners
+						sliderElem.find(cfg.slider.swiperPrevSelector).click(() => {
+							// Send event for alerts previous button click
+							if (cfg.slider.analytics.enabled && cfg.slider.analytics.onPrevNext) {
+								analytics.sendGAEvent({
+									'eventCategory': 'Slider',
+									'eventAction': 'Previous',
+									'eventLabel': '',
+									'nonInteraction': cfg.slider.analytics.nonInteraction
+								});
+							}
+						});
+						sliderElem.find(cfg.slider.swiperNextSelector).click(() => {
+							// Send event for alerts next button click
+							if (cfg.slider.analytics.enabled && cfg.slider.analytics.onPrevNext) {
+								analytics.sendGAEvent({
+									'eventCategory': 'Slider',
+									'eventAction': 'Next',
+									'eventLabel': '',
+									'nonInteraction': cfg.slider.analytics.nonInteraction
+								});
+							}
+						});
 					}
 				}
-
-				new Swiper('#' + sliderElem.attr('id') + ' ' + cfg.slider.swiperSelector, swiperOptions);
-
-				if (navigation == true) {
-					// Prev/Next button listeners
-					sliderElem.find(cfg.slider.swiperPrevSelector).click(() => {
-						// Send event for alerts previous button click
-						if (cfg.slider.analytics.enabled && cfg.slider.analytics.onPrevNext) {
-							analytics.sendGAEvent({
-								'eventCategory': 'Slider',
-								'eventAction': 'Previous',
-								'eventLabel': '',
-								'nonInteraction': cfg.slider.analytics.nonInteraction
-							});
-						}
-					});
-					sliderElem.find(cfg.slider.swiperNextSelector).click(() => {
-						// Send event for alerts next button click
-						if (cfg.slider.analytics.enabled && cfg.slider.analytics.onPrevNext) {
-							analytics.sendGAEvent({
-								'eventCategory': 'Slider',
-								'eventAction': 'Next',
-								'eventLabel': '',
-								'nonInteraction': cfg.slider.analytics.nonInteraction
-							});
-						}
-					});
-				}
-
 			});
 		}
 	};
