@@ -89,8 +89,18 @@ gulp.task('livereload', () => {
 	gulp.watch('js/scripts.js', gulp.parallel('scriptsjs'));
 	gulp.watch('js/vue.js', gulp.parallel('vuejs'));
 
+	// Throttle livereload
+	var reloadTimer = null;
+	const reload = (...args) => {
+		if (reloadTimer) clearTimeout(reloadTimer);
+		reloadTimer = setTimeout(() => {
+			livereload.changed(...args);
+			console.log('\x1b[31m%s\x1b[0m', '\n ## PAGE RELOADED !!! ## \n');
+		}, 3000);
+	};
+
 	// Watch CSS, JS and PHP files
-	gulp.watch(['css/styles.css', 'css/tailwind/whitelist.html', 'js/**/*.js', './**/*.php']).on('change', livereload.changed);
+	gulp.watch(['css/styles.css', 'js/**/*.js', './**/*.php']).on('change', reload);
 });
 
 // Default task
