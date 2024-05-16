@@ -68,6 +68,7 @@ export const modal = (() => {
 	const setup = function () {
 		// Get the modal content
 		jQuery.ajax({
+			cache: false,
 			data: {},
 			dataType: 'json',
 			error: function (xhr, status, errorMsg) {

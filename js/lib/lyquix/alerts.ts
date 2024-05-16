@@ -83,6 +83,7 @@ export const alerts = (() => {
 
 		// Get the alerts content
 		jQuery.ajax({
+			cache: false,
 			data: {},
 			dataType: 'json',
 			error: function (xhr, status, errorMsg) {

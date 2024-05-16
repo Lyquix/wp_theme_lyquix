@@ -76,6 +76,7 @@ export const popup = (() => {
 
 		// Get the popup content
 		jQuery.ajax({
+			cache: false,
 			data: {},
 			dataType: 'json',
 			error: function (xhr, status, errorMsg) {
