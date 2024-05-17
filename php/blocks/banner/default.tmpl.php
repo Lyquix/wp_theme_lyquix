@@ -36,7 +36,7 @@
 
 		<?php require \lqx\blocks\get_template('banner', $s['preset'], 'text') ?>
 
-		<?php if (array_key_exists('url', $c['image'])) require \lqx\blocks\get_renderer('banner', $s['preset'], 'text') ?>
+		<?php if (array_key_exists('url', $c['image'])) require \lqx\blocks\get_template('banner', $s['preset'], 'image') ?>
 
 	</div>
 
