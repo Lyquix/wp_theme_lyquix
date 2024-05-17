@@ -292,7 +292,7 @@ export const filters = (() => {
 						});
 						// Open and close list
 						controlWrapper.find('label').on('click', () => {
-							control.toggleClass('open');
+							controlWrapper.toggleClass('open');
 						});
 						break;
 				}
