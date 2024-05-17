@@ -259,7 +259,11 @@ export const filters = (() => {
 						switch (control.attr('type')) {
 							case 'radio':
 								control.on('change', () => {
-									controlChange(id, controlName, control.val());
+									if (control.attr('checked')) {
+										controlChange(id, controlName, '');
+									} else {
+										controlChange(id, controlName, control.val());
+									}
 								});
 								break;
 
@@ -285,9 +289,14 @@ export const filters = (() => {
 						control.find('li').each((idx, li) => {
 							li = jQuery(li);
 							li.on('click', () => {
-								controlChange(id, controlName, li.attr('data-value'));
-								control.find('li').removeClass('selected');
-								li.addClass('selected');
+								if (li.hasClass('selected')) {
+									controlChange(id, controlName, '');
+									control.find('li').removeClass('selected');
+								} else {
+									controlChange(id, controlName, li.attr('data-value'));
+									control.find('li').removeClass('selected');
+									li.addClass('selected');
+								}
 							});
 						});
 						// Open and close list
