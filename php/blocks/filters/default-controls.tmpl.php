@@ -80,8 +80,11 @@ if (count($s['controls'])) : ?>
 	<?php foreach ($s['controls'] as $j => $control) : ?>
 		<?php if ($control['visible'] == 'y') : ?>
 
-			<div class="control-wrapper" id="<?= $s['hash'] ?>-control-wrapper-<?= $j ?>" data-control="<?= $control['slug'] ?>" data-control-type="<?= $control['type'] ?>">
-
+			<div
+				class="control-wrapper<?= $control['selected'] !== false && $control['selected'] !== '' ? ' selected': ''?>"
+				id="<?= $s['hash'] ?>-control-wrapper-<?= $j ?>"
+				data-control="<?= $control['slug'] ?>"
+				data-control-type="<?= $control['type'] ?>">
 			<?php
 
 			$options = $control['options'];
