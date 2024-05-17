@@ -98,7 +98,17 @@ if (count($s['controls'])) : ?>
 
 				case 'list': ?>
 
-					<label id="<?= $s['hash'] ?>-control-<?= $j ?>-label"><?= $control['label'] ?></label>
+					<?php
+					$selectedLabel = '';
+					$selected_index = array_search($control['selected'], array_column($options, 'value'));
+					if ($selected_index !== false) {
+						$selectedLabel = $options[$selected_index]['text'];
+					}
+					?>
+					<label id="<?= $s['hash'] ?>-control-<?= $j ?>-label">
+						<span class="default"><?= $control['label'] ?></span>
+						<span class="selected"><?= $selectedLabel ?></span>
+					</label>
 
 					<ul class="control-list" id="<?= $s['hash'] ?>-control-<?= $j ?>" role="combobox" aria-labelledby="<?= $s['hash'] ?>-control-<?= $j ?>-label">
 
