@@ -39,7 +39,7 @@ if (count($s['controls'])) : ?>
 	<?php foreach ($s['controls'] as $j => $control) : ?>
 		<?php if ($control['visible'] == 'y') : ?>
 
-			<div class="control-wrapper" data-control="<?= $control['slug'] ?>" data-control-type="<?= $control['type'] ?>">
+			<div class="control-wrapper<?= $control['selected'] !== false && $control['selected'] !== '' ? ' selected': ''?>" data-control="<?= $control['slug'] ?>" data-control-type="<?= $control['type'] ?>">
 
 			<?php
 
