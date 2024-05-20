@@ -1362,6 +1362,16 @@ function render_pagination($s) {
 }
 
 /**
+ * Get the label of the selected option
+ * @param  array $control - control settings
+ */
+function get_selected_option_label($control) {
+	$index = array_search($control['selected'], array_column($control['options'], 'value'));
+	if ($index !== false) return $control['options'][$index]['text'];
+	return '';
+}
+
+/**
  * Prepare the data for JSON
  * @param  array $s - processed settings
  */

@@ -93,7 +93,8 @@ if (count($s['controls'])) : ?>
 				case 'select': ?>
 
 					<label for="<?= $s['hash'] ?>-control-<?= $j ?>">
-						<span><?= $control['label'] ?></span>
+						<span class="label"><?= $control['label'] ?></span>
+						<span class="selected"><?= \lqx\filters\get_selected_option_label($control) ?></span>
 						<select name="<?= $control['slug'] ?>" id="<?= $s['hash'] ?>-control-<?= $j ?>">
 							<option value=""></option>
 
@@ -110,7 +111,10 @@ if (count($s['controls'])) : ?>
 
 					<fieldset>
 
-						<legend><?= $control['label'] ?></legend>
+						<legend>
+							<span class="label"><?= $control['label'] ?></span>
+							<span class="selected"><?= \lqx\filters\get_selected_option_label($control) ?></span>
+						</legend>
 
 						<?php foreach ($options as $i => $option) : ?>
 							<label for="<?= $s['hash'] ?>-control-<?= $j ?>-<?= $i ?>">
@@ -127,7 +131,10 @@ if (count($s['controls'])) : ?>
 
 					<fieldset>
 
-						<legend><?= $control['label'] ?></legend>
+						<legend>
+							<span class="label"><?= $control['label'] ?></span>
+							<span class="selected"><?= \lqx\filters\get_selected_option_label($control) ?></span>
+						</legend>
 
 						<?php foreach ($options as $i => $option) : ?>
 							<label for="<?= $s['hash'] ?>-control-<?= $j ?>-<?= $i ?>">
@@ -142,7 +149,10 @@ if (count($s['controls'])) : ?>
 
 				case 'list': ?>
 
-					<label id="<?= $s['hash'] ?>-control-<?= $j ?>-label"><?= $control['label'] ?></label>
+					<label id="<?= $s['hash'] ?>-control-<?= $j ?>-label">
+						<span class="label"><?= $control['label'] ?></span>
+						<span class="selected"><?= \lqx\filters\get_selected_option_label($control) ?></span>
+					</label>
 
 					<ul class="control-list" id="<?= $s['hash'] ?>-control-<?= $j ?>" role="combobox" aria-labelledby="<?= $s['hash'] ?>-control-<?= $j ?>-label">
 
