@@ -290,12 +290,17 @@ export const filters = (() => {
 					case 'input':
 						switch (control.attr('type')) {
 							case 'radio':
-								control.on('change', () => {
-									if (control.attr('checked')) {
+								control.on('click', () => {
+									// Check if this radio button is already checked
+									if (control.attr('value') == filterObj.controls.reduce((acc, curr) => {
+										if (curr.slug == controlName) return curr.selected;
+										return acc;
+									})) {
+
 										controlChange(id, controlName, '');
-									} else {
-										controlChange(id, controlName, control.val());
+										control.prop('checked', false);
 									}
+									else controlChange(id, controlName, control.val());
 								});
 								break;
 
