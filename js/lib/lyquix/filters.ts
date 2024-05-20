@@ -44,20 +44,27 @@ export const filters = (() => {
 		cfg.filters = {
 			enabled: true,
 			filtersSelector: '.lqx-block-filters > .filters',
+			// Controls
 			controlsSelector: '.controls',
+			openButtonSelector: '.controls > .open-close-wrapper > .open',
+			closeButtonSelector: '.controls > .open-close-wrapper > .close',
 			controlWrapperSelector: '.controls > .control-wrapper',
-			postsSelector: '.posts',
-			paginationSelector: '.pagination',
 			searchWrapperSelector: '.controls > .search-wrapper',
 			searchInputSelector: '.search',
 			searchButtonSelector: '.search-button',
 			clearWrapperSelector: '.clear-wrapper',
 			clearButtonSelector: '.clear',
+			// Posts
+			postsSelector: '.posts',
+			// Pagination
+			paginationSelector: '.pagination',
 			firstPageSelector: '.page-first',
 			prevPageSelector: '.page-prev',
 			nextPageSelector: '.page-next',
 			lastPageSelector: '.page-last',
 			pageNumberSelector: '.page-number',
+			postsPerPageWrapperSelector: '.pagination > .posts-per-page-wrapper',
+			postsPerPageSelector: '.posts-per-page',
 			analytics: {
 				enabled: true,
 				nonInteraction: true
@@ -81,6 +88,11 @@ export const filters = (() => {
 
 				// Check if there is a hash in the URL
 				parseHash();
+
+				// Add a hash change listener
+				vars.window.on('hashchange', () => {
+					if (vars.filters.useHashFilterId !== null && vars.filters.useHashFilterId in vars.filters.filters) parseHash();
+				});
 
 				// Add a mutation handler for filterss added to the DOM
 				mutation.addHandler('addNode', cfg.filters.filtersSelector, setup);
@@ -131,6 +143,7 @@ export const filters = (() => {
 				const filterObj = {
 					id,
 					elem: filterElem,
+					initial: jQuery.extend(true, {}, settings.controls), // Saves the initial controls, needed later for hashchange events
 					...settings
 				};
 
@@ -147,9 +160,17 @@ export const filters = (() => {
 	};
 
 	const render = (id) => {
+		if (!(id in vars.filters.filters)) {
+			warn('Filter ID not found', id);
+			return;
+		}
+
 		renderControls(id);
 		renderPosts(id);
 		renderPagination(id);
+
+		// Remove loading class from the filter element
+		vars.filters.filters[id].elem.removeClass('loading');
 	};
 
 	const renderControls = (id) => {
@@ -236,6 +257,17 @@ export const filters = (() => {
 		}
 
 		const filterObj = vars.filters.filters[id];
+
+		// Open and close filter controls
+		filterObj.elem.find(cfg.filters.openButtonSelector).on('click', (e) => {
+			e.preventDefault();
+			filterObj.elem.find(cfg.filters.controlsSelector).addClass('open');
+		});
+
+		filterObj.elem.find(cfg.filters.closeButtonSelector).on('click', (e) => {
+			e.preventDefault();
+			filterObj.elem.find(cfg.filters.controlsSelector).removeClass('open');
+		});
 
 		// Controls
 		filterObj.elem.find(cfg.filters.controlWrapperSelector).each((idx, controlWrapper) => {
@@ -376,6 +408,17 @@ export const filters = (() => {
 				pageChange(id, parseInt(jQuery(e.target).attr('data-page')));
 			});
 		});
+
+		// Posts per page
+		filterObj.elem.find(cfg.filters.postsPerPageWrapperSelector).each((idx, postsPerPageWrapper) => {
+			postsPerPageWrapper = jQuery(postsPerPageWrapper);
+
+			const postsPerPage = postsPerPageWrapper.find(cfg.filters.postsPerPageSelector);
+
+			postsPerPage.on('change', () => {
+				postsPerPageChange(id, postsPerPage.val());
+			});
+		});
 	};
 
 	// TODO do we need a way to change multiple controls, search, page at once?
@@ -504,8 +547,34 @@ export const filters = (() => {
 	};
 
 	// TODO
-	const postsPerPageChange = () => {
+	const postsPerPageChange = (id, postsPerPage) => {
+		log('Filters postsPerPageChange', id, postsPerPage);
 
+		if (!(id in vars.filters.filters)) {
+			warn('Filter ID not found', id);
+			return;
+		}
+
+		const filterObj = vars.filters.filters[id];
+
+		postsPerPage = parseInt(postsPerPage);
+
+		if (isNaN(postsPerPage) || !filterObj.pagination.posts_per_page_options.includes(postsPerPage)) {
+			warn('Invalid posts per page number', postsPerPage);
+			return;
+		}
+
+		// Update the filter search
+		filterObj.pagination.posts_per_page = postsPerPage;
+
+		// Return to page 1
+		filterObj.pagination.page = 1;
+
+		// Update the hash
+		if (id == vars.filters.useHashFilterId) updateHash();
+
+		// Call the API
+		callAPI(id);
 	};
 
 	const reset = (id) => {
@@ -650,7 +719,8 @@ export const filters = (() => {
 
 				// TODO in the future, handle multiple values for a control
 
-				// Check if the control name is valid
+				// Check if the control name is valid - use filterObj.initial to make sure we have all available options
+				filterObj.controls = jQuery.extend(true, [], filterObj.initial);
 				if (filterObj.controls.map((control) => control.slug).includes(controlName)) {
 					// Match the control slug to get the control value
 					let validControlValue = false;
@@ -725,7 +795,7 @@ export const filters = (() => {
 
 		// Update the hash
 		vars.filters.hash = hash.join('/');
-		window.location.hash = vars.filters.hash;
+		history.pushState(null, '', '#' + vars.filters.hash);
 	};
 
 	const callAPI = (id) => {
@@ -735,6 +805,9 @@ export const filters = (() => {
 			warn('Filter ID not found', id);
 			return;
 		}
+
+		// Add loading class to the filter element
+		vars.filters.filters[id].elem.addClass('loading');
 
 		// Prepare the payload
 		let payload = jQuery.extend(true, {}, vars.filters.filters[id]);
@@ -824,6 +897,14 @@ export const filters = (() => {
 
 		// Add listeners
 		addListeners(id);
+
+		// Scroll to top if necessary
+		const postsElem = vars.filters.filters[id].elem.find(cfg.filters.postsSelector);
+		if (postsElem.offset().top < jQuery(window).scrollTop() || postsElem.offset().top > jQuery(window).scrollTop() + jQuery(window).height() * 0.25) {
+			jQuery('html, body').animate({
+				scrollTop: postsElem.offset().top - jQuery(window).height() * 0.25
+			}, 500);
+		}
 	};
 
 	return {

@@ -289,43 +289,20 @@ function validate_settings($settings) {
 					]
 				]
 			],
-			'show_all' => \lqx\util\schema_str_req_n,
-			'pagination' => \lqx\util\schema_str_req_y,
-			'pagination_details' => \lqx\util\schema_str_req_y,
-			'show_posts_per_page' => \lqx\util\schema_str_req_n,
-			'posts_per_page' => [
-				'type' => 'integer',
-				'default' => 10,
-				'range' => [1, 100]
-			],
-			'posts_per_page_options' => \lqx\util\schema_str_req_notemp,
-			'posts_order' => [
-				'type' => 'array',
+			'use_hash' => \lqx\util\schema_str_req_n,
+			'show_open_close' => \lqx\util\schema_str_req_n,
+			'show_search' => \lqx\util\schema_str_req_y,
+			'show_clear' => \lqx\util\schema_str_req_y,
+			'layout' => [
+				'type' => 'string',
 				'required' => true,
-				'default' => [],
-				'elems' => [
-					'type' => 'object',
-					'keys' => [
-						'order_by' => [
-							'type' => 'string',
-							'required' => true,
-							'allowed' => ['date', 'title', 'name', 'author', 'rand', 'field', 'modified']
-						],
-						'order' => [
-							'type' => 'string',
-							'required' => true,
-							'allowed' => ['asc', 'desc']
-						],
-						'acf_field' => \lqx\util\schema_str_req_emp,
-						'data_type' => [
-							'type' => 'string',
-							'required' => true,
-							'allowed' => ['', 'NUMERIC', 'BINARY', 'DATE', 'DATETIME', 'DECIMAL', 'SIGNED', 'TIME', 'UNSIGNED'],
-							'default' => ''
-						]
-					]
-				]
+				'default' => 'stacked',
+				'allowed' => ['stacked', 'tabbed']
 			],
+			'open_label' => \lqx\util\schema_str_req_emp,
+			'close_label' => \lqx\util\schema_str_req_emp,
+			'search_placeholder' => \lqx\util\schema_str_req_emp,
+			'clear_label' => \lqx\util\schema_str_req_emp,
 			'controls' => [
 				'type' => 'array',
 				'required' => true,
@@ -375,11 +352,49 @@ function validate_settings($settings) {
 					]
 				]
 			],
-			'use_hash' => \lqx\util\schema_str_req_n,
-			'show_search' => \lqx\util\schema_str_req_y,
-			'search_placeholder' => \lqx\util\schema_str_req_emp,
-			'show_clear' => \lqx\util\schema_str_req_y,
-			'clear_label' => \lqx\util\schema_str_req_emp,
+			'show_all' => \lqx\util\schema_str_req_n,
+			'pagination' => \lqx\util\schema_str_req_y,
+			'page_numbers' => [
+				'type' => 'string',
+				'required' => true,
+				'default' => '3',
+				'allowed' => ['0', '1', '3', '5', '7', 'all']
+			],
+			'pagination_details' => \lqx\util\schema_str_req_y,
+			'show_posts_per_page' => \lqx\util\schema_str_req_n,
+			'posts_per_page' => [
+				'type' => 'integer',
+				'default' => 10,
+				'range' => [1, 100]
+			],
+			'posts_per_page_options' => \lqx\util\schema_str_req_notemp,
+			'posts_order' => [
+				'type' => 'array',
+				'required' => true,
+				'default' => [],
+				'elems' => [
+					'type' => 'object',
+					'keys' => [
+						'order_by' => [
+							'type' => 'string',
+							'required' => true,
+							'allowed' => ['date', 'title', 'name', 'author', 'rand', 'field', 'modified']
+						],
+						'order' => [
+							'type' => 'string',
+							'required' => true,
+							'allowed' => ['asc', 'desc']
+						],
+						'acf_field' => \lqx\util\schema_str_req_emp,
+						'data_type' => [
+							'type' => 'string',
+							'required' => true,
+							'allowed' => ['', 'NUMERIC', 'BINARY', 'DATE', 'DATETIME', 'DECIMAL', 'SIGNED', 'TIME', 'UNSIGNED'],
+							'default' => ''
+						]
+					]
+				]
+			],
 			'render_mode' => [
 				'type' => 'string',
 				'required' => true,
@@ -666,12 +681,35 @@ function init_settings($s) {
 			'show_all' => 'n',
 			'page' => 1,
 			'pagination' => $s['pagination'],
+			'page_numbers' => $s['page_numbers'],
 			'pagination_details' => $s['pagination_details'],
 			'show_posts_per_page' => $s['show_posts_per_page']
 		];
 
 		if ($s['show_posts_per_page'] == 'y') {
-			$pagination['posts_per_page_options'] = $s['posts_per_page_options'];
+			$pagination['posts_per_page_options'] = [];
+
+			// Process the list of posts per page options
+			foreach (explode(',', $s['posts_per_page_options']) as $option) {
+				// Trim the option
+				$option = trim($option);
+
+				// The default option contains an asterisk
+				if (strpos($option, '*') !== false) {
+					$option = str_replace('*', '', $option);
+					if (is_numeric($option)) {
+						$option = intval($option);
+						$pagination['posts_per_page_options'][] = $option;
+						$pagination['posts_per_page'] = $option;
+					}
+				}
+				else if (is_numeric($option)) {
+					$pagination['posts_per_page_options'][] = intval($option);
+				}
+			}
+
+			// If no default was set, pick the first option
+			if (!isset($pagination['posts_per_page'])) $pagination['posts_per_page'] = $pagination['posts_per_page_options'][0];
 		} else {
 			$pagination['posts_per_page'] = $s['posts_per_page'];
 		}
@@ -680,6 +718,7 @@ function init_settings($s) {
 	foreach ([
 		'show_all',
 		'pagination',
+		'page_numbers',
 		'pagination_details',
 		'show_posts_per_page',
 		'posts_per_page',
@@ -1223,11 +1262,13 @@ function get_posts_with_data($s) {
 						case 'taxonomy':
 							foreach ($s['render_php']['label_taxonomies'] ?? [] as $tax) {
 								$terms = get_the_terms($post->ID, $tax);
-								foreach ($terms as $term) {
-									$p['labels'][] = [
-										'label' => $term->name,
-										'value' => $tax . ':' . $term->slug
-									];
+								if ($terms !== false) {
+									foreach ($terms as $term) {
+										$p['labels'][] = [
+											'label' => $term->name,
+											'value' => $tax . ':' . $term->slug
+										];
+									}
 								}
 							}
 							break;

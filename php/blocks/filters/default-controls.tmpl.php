@@ -28,6 +28,13 @@ if (count($s['controls'])) : ?>
 
 	<div class="controls" id="<?= $s['hash'] ?>-controls">
 
+	<?php if ($s['show_open_close'] == 'y') : ?>
+		<div class="open-close-wrapper">
+			<button id="<?= $s['hash'] ?>-open" class="open"><?= $s['open_label'] ?></button>
+			<button id="<?= $s['hash'] ?>-close" class="close"><?= $s['close_label'] ?></button>
+		</div>
+	<?php endif; ?>
+
 	<?php if ($s['show_search'] == 'y') : ?>
 		<div class="search-wrapper">
 			<label for="<?= $s['hash'] ?>-search"><?= $s['search_placeholder'] ?></label>
@@ -36,10 +43,44 @@ if (count($s['controls'])) : ?>
 		</div>
 	<?php endif; ?>
 
+	<?php if ($s['layout'] == 'tabbed') :?>
+
+		<div class="control-tabs-wrapper">
+
+			<ul class="control-tabs" id="<?= $s['hash'] ?>-control-tabs" role="tablist">
+
+			<?php foreach ($s['controls'] as $j => $control) : ?>
+				<?php if ($control['visible'] == 'y') : ?>
+
+					<li role="presentation">
+						<button
+							id="<?= $s['hash'] ?>-control-tab-<?= $j ?>"
+							class="control-tab"
+							role="tab"
+							aria-controls="<?= $s['hash'] ?>-control-wrapper-<?= $j ?>"
+							aria-selected="<?= $j == 0 ? 'true' : 'false' ?>"
+							tabindex="<?= $j == 0 ? '' : '-1' ?>">
+							<?= $control['label'] ?>
+						</button>
+					</li>
+
+				<?php endif; ?>
+			<?php endforeach; ?>
+
+			</ul>
+
+		</div>
+
+	<?php endif; ?>
+
+	<?php if ($s['layout'] == 'tabbed') :?>
+		<div class="control-panels-wrapper">
+	<?php endif; ?>
+
 	<?php foreach ($s['controls'] as $j => $control) : ?>
 		<?php if ($control['visible'] == 'y') : ?>
 
-			<div class="control-wrapper<?= $control['selected'] !== false && $control['selected'] !== '' ? ' selected': ''?>" data-control="<?= $control['slug'] ?>" data-control-type="<?= $control['type'] ?>">
+			<div class="control-wrapper" id="<?= $s['hash'] ?>-control-wrapper-<?= $j ?>" data-control="<?= $control['slug'] ?>" data-control-type="<?= $control['type'] ?>">
 
 			<?php
 
@@ -98,17 +139,7 @@ if (count($s['controls'])) : ?>
 
 				case 'list': ?>
 
-					<?php
-					$selectedLabel = '';
-					$selected_index = array_search($control['selected'], array_column($options, 'value'));
-					if ($selected_index !== false) {
-						$selectedLabel = $options[$selected_index]['text'];
-					}
-					?>
-					<label id="<?= $s['hash'] ?>-control-<?= $j ?>-label">
-						<span class="default"><?= $control['label'] ?></span>
-						<span class="selected"><?= $selectedLabel ?></span>
-					</label>
+					<label id="<?= $s['hash'] ?>-control-<?= $j ?>-label"><?= $control['label'] ?></label>
 
 					<ul class="control-list" id="<?= $s['hash'] ?>-control-<?= $j ?>" role="combobox" aria-labelledby="<?= $s['hash'] ?>-control-<?= $j ?>-label">
 
@@ -127,6 +158,10 @@ if (count($s['controls'])) : ?>
 		<?php endif; ?>
 
 	<?php endforeach; ?>
+
+	<?php if ($s['layout'] == 'tabbed') :?>
+		</div>
+	<?php endif; ?>
 
 	<?php if ($s['show_clear'] == 'y') : ?>
 		<div class="clear-wrapper">

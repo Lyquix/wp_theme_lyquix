@@ -1,7 +1,7 @@
 <?php
 
 /**
- * default-pagination-detail.tmpl.php - Default template for the Lyquix Filters block, pagination-detail sub-template
+ * default-pagination-details.tmpl.php - Default template for the Lyquix Filters block, pagination-details sub-template
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix
@@ -21,8 +21,8 @@
 //    "Y8888P"     888     "Y88888P"  888         888
 //
 //  DO NOT MODIFY THIS FILE!
-//  Instead, copy it to /php/custom/blocks/filters/default-pagination-detail.tmpl.php to override it
-//  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/filters/{preset}-pagination-detail.tmpl.php
+//  Instead, copy it to /php/custom/blocks/filters/default-pagination-details.tmpl.php to override it
+//  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/filters/{preset}-pagination-details.tmpl.php
 
 ?>
 <div class="pagination-details">
