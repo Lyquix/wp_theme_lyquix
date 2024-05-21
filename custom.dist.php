@@ -110,7 +110,9 @@
 				</nav>
 			<?php endif; ?>
 
-			<?php \lqx\modules\social\render_social_icons(); ?>
+			<?php \lqx\modules\social\render(); ?>
+
+			<?php \lqx\modules\share\render(); ?>
 
 		</footer>
 

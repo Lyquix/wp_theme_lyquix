@@ -83,3 +83,31 @@ if (get_theme_mod('feat_modules', '1') === '1') {
 		return $field;
 	});
 }
+
+// Load a rendered for a module based on available overrides
+function get_renderer($module_name) {
+	$dir = get_stylesheet_directory() . '/php/custom/modules/' . $module_name . '/';
+	$filename = 'default.php';
+
+	if (file_exists($dir . $filename)) {
+		return $dir . $filename;
+	} else {
+		return get_stylesheet_directory() . '/php/modules/' . $module_name . '/' . $filename;
+	}
+}
+
+// Load a template or sub-template for a module based on available overrides
+function get_template($module_name, $sub_template = null) {
+	$dir = get_stylesheet_directory() . '/php/custom/modules/' . $module_name . '/';
+	$filename = 'default';
+	if ($sub_template) {
+		$filename = $sub_template;
+	}
+	$filename .= '.tmpl.php';
+
+	if (file_exists($dir . $filename)) {
+		return $dir . $filename;
+	} else {
+		return get_stylesheet_directory() . '/php/modules/' . $module_name . '/' . $filename;
+	}
+}

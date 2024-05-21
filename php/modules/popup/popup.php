@@ -69,8 +69,7 @@ add_action('rest_api_init', function () {
 	]);
 });
 
-if (file_exists(get_stylesheet_directory() . '/php/custom/modules/popup/render.php')) {
-	require_once get_stylesheet_directory() . '/php/custom/modules/popup/render.php';
-} else {
-	require_once get_stylesheet_directory() . '/php/modules/popup/render.php';
+// Render the alerts module
+function render() {
+	require \lqx\modules\get_renderer('popup');
 }

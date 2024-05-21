@@ -1,7 +1,7 @@
 <?php
 
 /**
- * social.php - Lyquix social icons module
+ * share.php - Lyquix social sharing module
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix
@@ -22,54 +22,55 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-namespace lqx\modules\social;
+namespace lqx\modules\share;
 
 /**
- * Get platform name from URL
- * @param  string $url - URL to check
+ * Get social share link from platform
+ * @param  string $platform - Platform to get link for
+ * @param  string $url - URL to share
+ * @param  string $title - Title to share
  */
-function get_platform($url) {
-	// Check if $url is a valid URL
-	if (!filter_var($url, FILTER_VALIDATE_URL)) return null;
+function get_share_link($platform, $url = null, $title = null) {
+	// Return if no platform is provided
+	if (!$platform) return null;
 
-	// Get the domain name from $url
-	$domain = parse_url($url, PHP_URL_HOST);
+	// Default values for $url and $title
+	if (!$url) $url = get_permalink();
+	if (!$title) $title = get_the_title();
 
-	$platform = null;
-	switch (true) {
-		case strpos($domain, 'facebook.com') !== false:
-			$platform = 'Facebook';
+	// Encode $url and $title
+	$url = urlencode($url);
+	$title = urlencode($title);
+
+	$share_link = '';
+	switch ($platform) {
+		case 'facebook':
+			$share_link = 'https://www.facebook.com/sharer/sharer.php?u=' . $url;
 			break;
-		case strpos($domain, 'linkedin.com') !== false:
-			$platform = 'LinkedIn';
+		case 'linkedin':
+			$share_link = 'https://www.linkedin.com/shareArticle?mini=true&url=' . $url;
 			break;
-		case strpos($domain, 'youtube.com') !== false:
-			$platform = 'YouTube';
+		case 'x':
+			$share_link = 'https://twitter.com/intent/tweet?url=' . $url . '&text=' . $title;
 			break;
-		case strpos($domain, 'twitter.com') !== false:
-		case strpos($domain, 'x.com') !== false:
-			$platform = 'X';
+		case 'reddit':
+			$share_link = 'https://www.reddit.com/submit?url=' . $url . '&title=' . $title;
 			break;
-		case strpos($domain, 'instagram.com') !== false:
-			$platform = 'Instagram';
+		case 'whatsapp':
+			$share_link = 'https://wa.me/?text=' . $title . '%20' . $url;
 			break;
-		case strpos($domain, 'github.com') !== false:
-			$platform = 'GitHub';
+		case 'telegram':
+			$share_link = 'https://t.me/share/url?url=' . $url . '&text=' . $title;
 			break;
-		case strpos($domain, 'threads.net') !== false:
-			$platform = 'Threads';
+		case 'email':
+			$share_link = 'mailto:?subject=' . $title . '&body=' . $url;
 			break;
-		case strpos($domain, 'tiktok.com') !== false:
-			$platform = 'TikTok';
+		case 'print':
+			$share_link = 'javascript:window.print()';
 			break;
-		default:
-			$platform = 'Unknown';
 	}
 
-	return [
-		'name' => $platform,
-		'code' => strtolower($platform)
-	];
+	return $share_link;
 }
 
 /**
@@ -96,5 +97,5 @@ function get_inline_style($settings) {
 
 // Render the alerts module
 function render($settings = null) {
-	require \lqx\modules\get_renderer('social');
+	require \lqx\modules\get_renderer('share');
 }

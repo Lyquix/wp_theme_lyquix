@@ -1,7 +1,7 @@
 <?php
 
 /**
- * render.php - Lyquix Socials module render functions
+ * default.tmpl.php - Lyquix Socials module render functions
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix
@@ -21,18 +21,9 @@
 //    "Y8888P"     888     "Y88888P"  888         888
 //
 //  DO NOT MODIFY THIS FILE!
-//  If you need a custom renderer, copy this file to php/custom/modules/popup/render.php and modify it there
+//  If you need a custom renderer, copy this file to php/custom/modules/popup/default.tmpl.php and modify it there
 
-namespace lqx\modules\popup;
-
-/**
- * Render popup
- *  heading_style - string, style of heading: p, h1, h2, h3, h4, h5, h6
- */
-function render() {
 ?>
-	<section id="lqx-module-popup">
-		<div class="popup"></div>
-	</section>
-<?php
-}
+<section id="lqx-module-popup">
+	<div class="popup"></div>
+</section>
