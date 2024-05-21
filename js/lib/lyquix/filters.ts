@@ -48,7 +48,8 @@ export const filters = (() => {
 			controlsSelector: '.controls',
 			openButtonSelector: '.controls > .open-close-wrapper > .open',
 			closeButtonSelector: '.controls > .open-close-wrapper > .close',
-			controlWrapperSelector: '.controls > .control-wrapper',
+			controlTabsSelector: '.controls .control-tabs',
+			controlWrapperSelector: '.controls .control-wrapper',
 			searchWrapperSelector: '.controls > .search-wrapper',
 			searchInputSelector: '.search',
 			searchButtonSelector: '.search-button',
@@ -267,6 +268,28 @@ export const filters = (() => {
 		filterObj.elem.find(cfg.filters.closeButtonSelector).on('click', (e) => {
 			e.preventDefault();
 			filterObj.elem.find(cfg.filters.controlsSelector).removeClass('open');
+		});
+
+		// Control tabs
+		filterObj.elem.find(cfg.filters.controlTabsSelector).each((idx, controlTabs) => {
+			controlTabs = jQuery(controlTabs);
+
+			controlTabs.find('button').on('click', (e) => {
+				e.preventDefault();
+				// The button element
+				const button = jQuery(e.target);
+
+				// Remove the active class from all tabs and add it to the clicked tab
+				controlTabs.find('li').removeClass('active');
+				button.parent().addClass('active');
+
+				const controlName = button.attr('data-control');
+				filterObj.elem.find(cfg.filters.controlWrapperSelector).each((idx, controlWrapper) => {
+					controlWrapper = jQuery(controlWrapper);
+					if (controlWrapper.attr('data-control') == controlName) controlWrapper.addClass('active');
+					else controlWrapper.removeClass('active');
+				});
+			});
 		});
 
 		// Controls

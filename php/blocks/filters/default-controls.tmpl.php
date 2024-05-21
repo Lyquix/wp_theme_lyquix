@@ -52,13 +52,15 @@ if (count($s['controls'])) : ?>
 			<?php foreach ($s['controls'] as $j => $control) : ?>
 				<?php if ($control['visible'] == 'y') : ?>
 
-					<li role="presentation">
+					<li role="presentation" class="<?= $j == 0 ? 'active' : '' ?>">
 						<button
 							id="<?= $s['hash'] ?>-control-tab-<?= $j ?>"
 							class="control-tab"
 							role="tab"
 							aria-controls="<?= $s['hash'] ?>-control-wrapper-<?= $j ?>"
 							aria-selected="<?= $j == 0 ? 'true' : 'false' ?>"
+							data-control="<?= $control['slug'] ?>"
+							data-control-type="<?= $control['type'] ?>"
 							tabindex="<?= $j == 0 ? '' : '-1' ?>">
 							<?= $control['label'] ?>
 						</button>
@@ -81,7 +83,7 @@ if (count($s['controls'])) : ?>
 		<?php if ($control['visible'] == 'y') : ?>
 
 			<div
-				class="control-wrapper<?= $control['selected'] !== false && $control['selected'] !== '' ? ' selected': ''?>"
+				class="control-wrapper<?= $control['selected'] !== false && $control['selected'] !== '' ? ' selected': ''?><?= $s['layout'] == 'tabbed' && $j == 0 ? ' active' : '' ?>"
 				id="<?= $s['hash'] ?>-control-wrapper-<?= $j ?>"
 				data-control="<?= $control['slug'] ?>"
 				data-control-type="<?= $control['type'] ?>">
