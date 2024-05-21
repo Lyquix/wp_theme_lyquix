@@ -292,11 +292,9 @@ export const filters = (() => {
 							case 'radio':
 								control.on('click', () => {
 									// Check if this radio button is already checked
-									if (control.attr('value') == filterObj.controls.reduce((acc, curr) => {
-										if (curr.slug == controlName) return curr.selected;
-										return acc;
-									})) {
-
+									const foundControl = filterObj.controls.find((curr) => curr.slug == controlName);
+									const reduced = foundControl ? foundControl.selected : undefined;
+									if (control.attr('value') == reduced) {
 										controlChange(id, controlName, '');
 										control.prop('checked', false);
 									}
