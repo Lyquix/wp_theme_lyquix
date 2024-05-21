@@ -22,6 +22,7 @@
 //  Instead copy it to css/custom/base/_typography.scss and make your changes there.
 
 @use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
 
 html {
 	// Set default font-size to 10px, then use rem units for the rest of the stylesheet

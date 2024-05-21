@@ -24,6 +24,8 @@
 */
 
 @use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
 $cards-image-positions: left top right;
 $cards-image-icon-positions: left center right;
 

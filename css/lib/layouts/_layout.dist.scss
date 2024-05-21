@@ -24,6 +24,7 @@
 */
 
 @use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
 @use "sass:math";
 
 @each $s in $screen-sizes {

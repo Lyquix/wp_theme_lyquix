@@ -22,6 +22,9 @@
 	Instead copy it to css/custom/base/_reset.scss and make your changes there.
 */
 
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
 *,
 *:before,
 *:after {

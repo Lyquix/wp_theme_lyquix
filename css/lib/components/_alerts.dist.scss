@@ -22,3 +22,8 @@
   DO NOT MODIFY THIS FILE!
 	Instead copy it to css/custom/components/_alerts.scss and make your changes there.
 */
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+.lqx-module-alerts {
+}

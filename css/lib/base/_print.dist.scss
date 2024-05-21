@@ -21,3 +21,6 @@
   DO NOT MODIFY THIS FILE!
 	Instead copy it to css/custom/base/_print.scss and make your changes there.
 */
+
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;

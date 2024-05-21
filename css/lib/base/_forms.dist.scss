@@ -22,6 +22,9 @@
 	Instead copy it to css/custom/components/_forms.scss and make your changes there.
 */
 
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
 input,
 textarea,
 select {

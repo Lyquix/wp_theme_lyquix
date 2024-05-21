@@ -23,6 +23,9 @@
 	Instead copy it to css/custom/_social.scss and make your changes there.
 */
 
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
 .lqx-social-icons > .icons-list,
 .lqx-social-share > .share-list {
 	list-style: none;

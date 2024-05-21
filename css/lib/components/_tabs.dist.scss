@@ -23,6 +23,9 @@
 	Instead copy it to css/custom/components/_tabs.scss and make your changes there.
 */
 
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
 .lqx-block-tabs {
 	.tabs {
 		@apply flex border-2 border-solid border-black;

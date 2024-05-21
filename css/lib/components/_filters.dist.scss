@@ -1,5 +1,5 @@
 /**
- * _gallery.dist.scss - Sample styles for the gallery block
+ * _filters.dist.scss - Sample styles for the filters block
  *
  * @version     3.0.0
  * @package     wp_theme_lyquix
@@ -20,11 +20,11 @@
     "Y8888P"     888     "Y88888P"  888         888
 
   DO NOT MODIFY THIS FILE!
-	Instead copy it to css/custom/components/_gallery.scss and make your changes there.
+	Instead copy it to css/custom/components/_filters.scss and make your changes there.
 */
 
 @use "../abstracts/variables" as *;
 @use "../abstracts/mixins" as *;
 
-.lqx-block-gallery {
+.lqx-block-filters {
 }

@@ -22,3 +22,9 @@
   DO NOT MODIFY THIS FILE!
 	Instead copy it to css/custom/components/_popup.scss and make your changes there.
 */
+
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+.lqx-module-popup {
+}

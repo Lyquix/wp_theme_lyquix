@@ -21,3 +21,14 @@
   DO NOT MODIFY THIS FILE!
 	Instead copy it to css/custom/components/_buttons.scss and make your changes there.
 */
+
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+button,
+[type="button"],
+[type="submit"],
+[type="reset"],
+.button,
+.btn {
+}

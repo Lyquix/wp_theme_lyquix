@@ -22,6 +22,9 @@
 	Instead copy it to css/custom/components/_logos.scss and make your changes there.
 */
 
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
 .lqx-block-logos {
 	.logos {
 		@apply m-0 flex flex-wrap justify-center p-0;
