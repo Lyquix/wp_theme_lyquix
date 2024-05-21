@@ -41,6 +41,12 @@ fi
 if [ ! -f css/tailwind/theme.js ]; then
 	cp css/tailwind/theme.dist.js css/tailwind/theme.js
 fi
+if [ ! -f php/custom/templates/404.php ]; then
+	cp php/custom/templates/404.dist.php php/custom/templates/404.php
+fi
+if [ ! -f php/custom/templates/search.php ]; then
+	cp php/custom/templates/search.dist.php php/custom/templates/search.php
+fi
 
 function handle_files {
 	DIR=$1
@@ -62,7 +68,7 @@ function handle_files {
 
 ABSTRACTS=("index" "mixins" "variables")
 BASE=("forms" "index" "print" "reset" "tables" "typography")
-COMPONENTS=("accordion" "alerts" "banner" "buttons" "cards" "cta" "gallery" "hero" "index" "logos" "popup" "slider" "social" "tabs")
+COMPONENTS=("accordion" "alerts" "banner" "buttons" "cards" "cta" "filters" "gallery" "hero" "index" "logos" "popup" "modal" "slider" "social" "tabs")
 LAYOUTS=("footer" "header" "index" "layout")
 PAGES=("404" "contact" "home" "index" "search")
 THEMES=("index" "theme")
