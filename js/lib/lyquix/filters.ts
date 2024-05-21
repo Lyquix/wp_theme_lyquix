@@ -22,7 +22,6 @@
 
 import { vars, cfg, log, warn, error } from './core';
 import { mutation } from './mutation';
-// TODO add analytics
 import { analytics } from './analytics';
 import { util } from './util';
 
@@ -68,7 +67,7 @@ export const filters = (() => {
 			postsPerPageSelector: '.posts-per-page',
 			analytics: {
 				enabled: true,
-				nonInteraction: true
+				nonInteraction: false
 			}
 		};
 
@@ -490,6 +489,16 @@ export const filters = (() => {
 
 		// Call the API
 		callAPI(id);
+
+		// Send analytics event
+		if (cfg.filters.analytics.enabled) {
+			analytics.sendGAEvent({
+				'eventCategory': 'Filters',
+				'eventAction': 'Control',
+				'eventLabel': `${controlName}:${controlValue}`,
+				'nonInteraction': cfg.filters.analytics.nonInteraction
+			});
+		}
 	};
 
 	const searchChange = (id, query) => {
@@ -513,6 +522,16 @@ export const filters = (() => {
 
 		// Call the API
 		callAPI(id);
+
+		// Send analytics event
+		if (cfg.filters.analytics.enabled) {
+			analytics.sendGAEvent({
+				'eventCategory': 'Filters',
+				'eventAction': 'Search',
+				'eventLabel': query,
+				'nonInteraction': cfg.filters.analytics.nonInteraction
+			});
+		}
 	};
 
 	const pageChange = (id, page) => {
@@ -570,9 +589,18 @@ export const filters = (() => {
 
 		// Call the API
 		callAPI(id);
+
+		// Send analytics event
+		if (cfg.filters.analytics.enabled) {
+			analytics.sendGAEvent({
+				'eventCategory': 'Filters',
+				'eventAction': 'Page',
+				'eventLabel': page.toString(),
+				'nonInteraction': cfg.filters.analytics.nonInteraction
+			});
+		}
 	};
 
-	// TODO
 	const postsPerPageChange = (id, postsPerPage) => {
 		log('Filters postsPerPageChange', id, postsPerPage);
 
@@ -601,6 +629,16 @@ export const filters = (() => {
 
 		// Call the API
 		callAPI(id);
+
+		// Send analytics event
+		if (cfg.filters.analytics.enabled) {
+			analytics.sendGAEvent({
+				'eventCategory': 'Filters',
+				'eventAction': 'Posts per Page',
+				'eventLabel': postsPerPage.toString(),
+				'nonInteraction': cfg.filters.analytics.nonInteraction
+			});
+		}
 	};
 
 	const reset = (id) => {
