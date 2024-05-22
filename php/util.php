@@ -27,12 +27,9 @@ namespace lqx\util;
 /**
  * Polyfill for PHP 7.3 array_is_list function
  */
-// check if function array_is_list doesn't exist
-if (!function_exists('array_is_list')) {
-	function array_is_list(array $arr) {
-		if ($arr === []) return true;
-		return array_keys($arr) === range(0, count($arr) - 1);
-	}
+function array_is_list(array $arr) {
+	if ($arr === []) return true;
+	return array_keys($arr) === range(0, count($arr) - 1);
 }
 
 /**
