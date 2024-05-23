@@ -24,6 +24,11 @@
 
 namespace lqx\js;
 
+
+/**
+ * Enqueue scripts
+ * This function is used to enqueue JavaScript libraries and custom scripts.
+ */
 function enqueue_scripts() {
 	// Prevent adding js libraries in wp_head()
 	global $wp_scripts;
@@ -149,6 +154,10 @@ function enqueue_scripts() {
 add_action('wp_enqueue_scripts', '\lqx\js\enqueue_scripts', 100);
 
 
+/**
+ * Render Lyquix options
+ * Sets Lyquix options for the theme
+ */
 function render_lyquix_options() {
 	// Set lqx options
 	$lqx_options = [
@@ -174,6 +183,11 @@ function render_lyquix_options() {
 	echo "\$lqx.init(JSON.parse(atob('" . base64_encode(json_encode($scripts_options)) . "')));</script>\n";
 }
 
+/**
+ * Renders the Google Tag Manager head code.
+ * It first checks if the GTM account is set in the theme settings.
+ * Then, it renders the GTM head code if the account is set.
+ */
 function render_gtm_head_code() {
 	// Load GTM head code
 	if (get_theme_mod('gtm_account', '')): ?>
@@ -198,6 +212,11 @@ function render_gtm_head_code() {
 	<?php endif;
 }
 
+/**
+ * Renders the Google Tag Manager body code.
+ * It first checks if the GTM account is set in the theme settings.
+ * Then, it renders the GTM body code if the account is set.
+ */
 function render_gtm_body_code() {
 	// Load GTM head code
 	if (get_theme_mod('gtm_account', '')): ?>
@@ -207,6 +226,11 @@ function render_gtm_body_code() {
 	<?php endif;
 }
 
+/**
+ * Renders the Microsoft Clarity code.
+ * It first checks if the Clarity account is set in the theme settings.
+ * Then, it renders the Clarity code if the account is set.
+ */
 function render_page_custom_js() {
 	// Render page custom CSS and JS
 	if (function_exists('get_field')) {

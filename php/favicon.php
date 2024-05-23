@@ -26,6 +26,14 @@
 
 namespace lqx\favicon;
 
+/**
+ * Renders the favicon links based on the available favicon images.
+ *
+ * Generates the HTML code for the favicon links based on the available favicon images in the theme directory.
+ * It checks for different sizes of favicon images and adds the corresponding link tags to the HTML output.
+ *
+ * @return void
+ */
 function render() {
 	$favicons_sizes = [57, 60, 72, 76, 114, 120, 144, 152, 180];
 

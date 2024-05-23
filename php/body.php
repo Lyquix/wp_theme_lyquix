@@ -24,6 +24,12 @@
 
 namespace lqx\body;
 
+/**
+ * Prepare body classes
+ *
+ * @param array $classes
+ * @return array
+ */
 function classes() {
 	global $wp_query;
 

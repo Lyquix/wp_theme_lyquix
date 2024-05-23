@@ -58,6 +58,18 @@ function abs_url($rel, $base) {
 	return explode($parts['path'], $base)[0] . $path . '/' . $rel;
 }
 
+
+/**
+ * Enqueues or dequeues CSS libraries for the WordPress theme.
+ *
+ * @param array $wp_styles - Global variable containing all registered styles.
+ * @param string $remove_css_libraries - The CSS libraries to remove, specified in the theme settings.
+ *
+ * The function first retrieves the CSS libraries to remove from the theme settings.
+ * Then, it dequeues any matching styles from the registered styles.
+ *
+ * @return void
+ */
 function enqueue_styles() {
 	global $wp_styles;
 
@@ -133,8 +145,8 @@ function enqueue_styles() {
 
 add_action('wp_enqueue_scripts', '\lqx\css\enqueue_styles', 100);
 
+// Renders custom CSS for the page
 function render_page_custom_css() {
-	// Render page custom CSS
 	if (function_exists('get_field')) {
 		$custom_css = get_field('custom_css');
 		if ($custom_css) echo "<style>\n" . $custom_css . "\n</style>";

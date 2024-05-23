@@ -20,9 +20,11 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
+// Rollup plugins
 import vue from 'rollup-plugin-vue';
 import css from 'rollup-plugin-css-only';
 
+// Rollup configuration
 export default [
 	{
 		input: 'js/lib/vue/index.js',

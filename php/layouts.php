@@ -60,9 +60,7 @@ if (get_theme_mod('feat_layout_blocks', '1') === '1') {
 	});
 
 
-	/**
-	 * Register ACF blocks
-	 */
+	//Register ACF blocks
 	add_action('init', function () {
 		// Use glob to find 'block.json' files in the 'blocks' directory
 		$matches = array_merge(glob(__DIR__ . '/layouts/*/block.json'));

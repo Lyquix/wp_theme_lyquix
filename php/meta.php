@@ -24,6 +24,7 @@
 
 namespace lqx\meta;
 
+// Render meta tags
 function render() {
 ?>
 	<meta charset="<?php bloginfo('charset'); ?>">
@@ -38,6 +39,7 @@ function render() {
 	if (get_theme_mod('add_meta_tags', '')) echo get_theme_mod('add_meta_tags', '') . "\n";
 	?>
 	<script>
+		// Add class js to html element
 		(function(html) {
 			html.className = html.className.replace(/\bno-js\b/, 'js')
 		})(document.documentElement);

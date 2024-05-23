@@ -26,6 +26,7 @@
 
 namespace lqx\widgets;
 
+//Add widget positions to the theme
 function add_widget_positions() {
 	$widget_positions = [];
 

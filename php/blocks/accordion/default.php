@@ -74,4 +74,5 @@ $c = array_filter(array_map(function($item) {
 	return $v['isValid'] ? $v['data'] : null;
 }, $content));
 
+// If there is content, render the accordion
 if (!empty($c)) require \lqx\blocks\get_template('accordion', $s['preset']);

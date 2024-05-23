@@ -20,6 +20,7 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
+// Load jQuery
 ((browsersData) => {
 	if ('outdated' in browsersData && browsersData.outdated) {
 		// Load CSS stylesheet

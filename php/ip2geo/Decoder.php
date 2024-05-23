@@ -26,6 +26,7 @@ class Decoder
         15 => 'float',
     ];
 
+    // The file handle is passed in so that we can read from a file or a string
     public function __construct(
         $fileStream,
         $pointerBase = 0,
@@ -38,6 +39,7 @@ class Decoder
         $this->switchByteOrder = $this->isPlatformLittleEndian();
     }
 
+    // Decode the database
     public function decode($offset)
     {
         list(, $ctrlByte) = unpack(
@@ -90,6 +92,7 @@ class Decoder
         return $this->decodeByType($type, $offset, $size);
     }
 
+    // Decode the database by type
     private function decodeByType($type, $offset, $size)
     {
         switch ($type) {
@@ -131,6 +134,7 @@ class Decoder
         }
     }
 
+    // Verify the size of the data section
     private function verifySize($expected, $actual)
     {
         if ($expected !== $actual) {
@@ -140,6 +144,7 @@ class Decoder
         }
     }
 
+    // Decode an array
     private function decodeArray($size, $offset)
     {
         $array = [];
@@ -152,11 +157,13 @@ class Decoder
         return [$array, $offset];
     }
 
+    // Decode a boolean
     private function decodeBoolean($size)
     {
         return $size === 0 ? false : true;
     }
 
+    // Decode a double
     private function decodeDouble($bits)
     {
         // XXX - Assumes IEEE 754 double on platform
@@ -165,6 +172,7 @@ class Decoder
         return $double;
     }
 
+    // Decode a float
     private function decodeFloat($bits)
     {
         // XXX - Assumes IEEE 754 floats on platform
@@ -173,6 +181,7 @@ class Decoder
         return $float;
     }
 
+    // Decode an int32
     private function decodeInt32($bytes)
     {
         $bytes = $this->zeroPadLeft($bytes, 4);
@@ -181,6 +190,7 @@ class Decoder
         return $int;
     }
 
+    // Decode a map
     private function decodeMap($size, $offset)
     {
         $map = [];
@@ -201,6 +211,7 @@ class Decoder
         4 => 0,
     ];
 
+    // Decode a pointer
     private function decodePointer($ctrlByte, $offset)
     {
         $pointerSize = (($ctrlByte >> 3) & 0x3) + 1;
@@ -219,6 +230,7 @@ class Decoder
         return [$pointer, $offset];
     }
 
+    // Decode a uint
     private function decodeUint($bytes)
     {
         list(, $int) = unpack('N', $this->zeroPadLeft($bytes, 4));
@@ -226,6 +238,7 @@ class Decoder
         return $int;
     }
 
+    // Decode a big uint
     private function decodeBigUint($bytes, $byteLength)
     {
         $maxUintBytes = log(PHP_INT_MAX, 2) / 8;
@@ -262,6 +275,7 @@ class Decoder
         return $integer;
     }
 
+    // Decode a string
     private function decodeString($bytes)
     {
         // XXX - NOOP. As far as I know, the end user has to explicitly set the
@@ -269,6 +283,7 @@ class Decoder
         return $bytes;
     }
 
+    // Get the size from the control byte
     private function sizeFromCtrlByte($ctrlByte, $offset)
     {
         $size = $ctrlByte & 0x1f;
@@ -288,16 +303,19 @@ class Decoder
         return [$size, $offset + $bytesToRead];
     }
 
+    // Zero pad a string to the left
     private function zeroPadLeft($content, $desiredLength)
     {
         return str_pad($content, $desiredLength, "\x00", STR_PAD_LEFT);
     }
 
+    // Maybe switch the byte order
     private function maybeSwitchByteOrder($bytes)
     {
         return $this->switchByteOrder ? strrev($bytes) : $bytes;
     }
 
+    // Check if the platform is little endian
     private function isPlatformLittleEndian()
     {
         $testint = 0x00FF;

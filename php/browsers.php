@@ -24,6 +24,7 @@
 
 namespace lqx\browsers;
 
+// Render alert for outdated browsers
 function render() {
 	if (get_theme_mod('browser_alert', 1)) : ?>
 	<script>

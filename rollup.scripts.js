@@ -20,8 +20,10 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
+// Rollup plugins
 import typescript from '@rollup/plugin-typescript';
 
+// Rollup configuration
 export default {
 	input: 'js/scripts.ts',
 	output: [

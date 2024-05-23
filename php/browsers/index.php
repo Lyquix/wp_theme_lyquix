@@ -77,16 +77,37 @@ $browser_data = [
 	],
 ];
 
+/**
+ * Retrieves the first match from a regular expression pattern in a user agent string.
+ *
+ * @param string $regex The regular expression pattern.
+ * @param string $ua The user agent string.
+ * @return string The first match found, or an empty string if no match is found.
+ */
 function get_first_match($regex, $ua) {
 	preg_match($regex, $ua, $match);
 	return isset($match[1]) ? $match[1] : '';
 }
 
+/**
+ * Retrieves the second match from a regular expression pattern in a user agent string.
+ *
+ * @param string $regex The regular expression pattern.
+ * @param string $ua The user agent string.
+ * @return string The second match found, or an empty string if no match is found.
+ */
 function get_second_match($regex, $ua) {
 	preg_match($regex, $ua, $match);
 	return isset($match[2]) ? $match[2] : '';
 }
 
+/**
+ * Detects the browser based on the user agent string.
+ *
+ * @return array An associative array containing the browser type and version.
+ *               - type (string): The type of the browser. Possible values are 'opera', 'msie', 'msedge', 'chrome', 'firefox', 'safari', or the browser name in lowercase if unknown.
+ *               - version (string): The version of the browser.
+ */
 function detect_browser() {
 	$ua = $_SERVER['HTTP_USER_AGENT'];
 	$browser = [];

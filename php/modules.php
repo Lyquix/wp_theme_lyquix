@@ -25,6 +25,7 @@
 
 namespace lqx\modules;
 
+// Load modules only if the feature is enabled
 if (get_theme_mod('feat_modules', '1') === '1') {
 	// Get directories under php/modules
 	$modules = array_merge(

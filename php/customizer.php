@@ -24,6 +24,11 @@
 
 namespace lqx\customizer;
 
+/**
+ * Add custom fields to the theme customizer
+ *
+ * @param WP_Customize_Manager $wp_customize
+ */
 function customizer_add($wp_customize) {
 	$add_settings = [
 		'CSS' => [

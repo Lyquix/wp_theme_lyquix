@@ -191,6 +191,7 @@ function get_settings($block, $post_id = null, $forced_preset = null, $forced_st
 	return $settings;
 }
 
+// Get the content for a block
 function get_content($block, $post_id = null) {
 	// If $block is a string, convert it to an array
 	if (is_string($block)) $block = ['name' => $block];
@@ -215,6 +216,12 @@ function find_value_by_key($array, $keyToFind) {
 	return $result;
 }
 
+/**
+ * Retrieves all global field groups from JSON files in the acf-json directory of the current theme.
+ * A field group is considered global if its name contains '_block_global' or '_module_settings'.
+ *
+ * @return array An array of global field groups. Each field group is an associative array with details about the field.
+ */
 function get_global_field_groups() {
 	$field_groups = [];
 
@@ -233,6 +240,13 @@ function get_global_field_groups() {
 	return $field_groups;
 }
 
+/**
+ * Resets the value of a given field to its default value.
+ * If the field is a group, it recursively resets all its sub-fields.
+ *
+ * @param array $field The field to reset. It's an associative array that includes the field's key, default value, type, and possibly sub-fields.
+ * @param array $ancestors An array of keys representing the field's ancestors in the case of nested groups.
+ */
 function reset_field($field, $ancestors) {
 	$default_value = $field['default_value'] ?? '';
 	if (is_array($default_value) && !count($default_value)) $default_value = '';
@@ -251,6 +265,7 @@ function reset_field($field, $ancestors) {
 	}
 }
 
+//Resets the global settings of all Lyquix blocks and modules to their default values.
 function reset_global_settings_ajax() {
 	// Check nonce for security
 	if (!check_ajax_referer('reset-global-settings')) wp_die('Nonce validation failed');
@@ -271,6 +286,7 @@ function reset_global_settings_ajax() {
 	wp_die();
 }
 
+//This function renders the Reset Global Settings page in the WordPress admin.
 function reset_global_settings_page() {
 	?>
 <div class="wrap">
@@ -356,6 +372,12 @@ function reset_global_settings_page() {
 <?php
 }
 
+/**
+ * Renders the block based on the selected preset and available overrides.
+ *
+ * @param array $settings The settings for the block.
+ * @param string $content The content for the block.
+*/
 function render_block($settings, $content) {
 	// Get the renderer based on the selected preset and available overrides
 	require get_renderer($settings['processed']['block'], $settings['processed']['preset']);

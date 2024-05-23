@@ -1,6 +1,7 @@
 <?php
 class Util
 {
+    // Read a given number of bytes from a stream
     public static function read($stream, $offset, $numberOfBytes)
     {
         if ($numberOfBytes === 0) {

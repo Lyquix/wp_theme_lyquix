@@ -112,6 +112,12 @@ class Reader
         return $this->resolveDataPointer($pointer);
     }
 
+    /**
+     * Find the address in the search tree.
+     * @param string $ipAddress
+     *
+     * @return int
+     */
     private function findAddressInTree($ipAddress)
     {
         // XXX - could simplify. Done as a byte array to ease porting
@@ -142,6 +148,11 @@ class Reader
         throw new InvalidDatabaseException('Something bad happened');
     }
 
+    /** Find the beginning node of the tree
+     *
+     * @param int $length
+     * @return int
+     */
     private function startNode($length)
     {
         // Check if we are looking up an IPv4 address in an IPv6 tree. If this
@@ -154,6 +165,7 @@ class Reader
         return 0;
     }
 
+    // Find the beginning node of the IPv4 tree
     private function ipV4StartNode()
     {
         // This is a defensive check. There is no reason to call this when you
@@ -175,6 +187,11 @@ class Reader
         return $node;
     }
 
+    /**Read a node from the tree
+     *
+     * @param int $nodeNumber
+     * @param int $index
+     */
     private function readNode($nodeNumber, $index)
     {
         $baseOffset = $nodeNumber * $this->metadata->nodeByteSize;
@@ -211,6 +228,12 @@ class Reader
         }
     }
 
+    /**
+     * Resolve the data pointer
+     *
+     * @param int $pointer
+     * @return array
+     */
     private function resolveDataPointer($pointer)
     {
         $resolved = $pointer - $this->metadata->nodeCount

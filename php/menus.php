@@ -26,6 +26,7 @@
 
 namespace lqx\menus;
 
+//Add menu positions
 function add_menu_positions() {
 	// Array of menu locations
 	$menus = [

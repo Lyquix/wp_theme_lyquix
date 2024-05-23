@@ -24,10 +24,21 @@
 
 namespace lqx\router;
 
+/**
+ * Check if a template file exists
+ *
+ * @param string $tmpl_name
+ * @return bool
+ */
 function tmpl_file_exists($tmpl_name) {
 	return file_exists(get_template_directory() . '/php/custom/templates/' . $tmpl_name . '.php');
 }
 
+/**
+ * Render template based on the current request
+ *
+ * @return void
+ */
 function render() {
 	global $wp_query;
 	$tmpl_name = '';

@@ -608,6 +608,11 @@ function get_breadcrumbs($post_id = null, $type = 'parent', $depth = 3, $show_cu
 	return $breadcrumbs;
 }
 
+/**
+ * Get the thumbnail image object for a post
+ * @param int $post_id The post ID for which to get the thumbnail image object
+ * @return array The thumbnail image object
+ */
 function get_thumbnail_image_object($post_id) {
 	// Get the thumbnail ID
 	$post_thumbnail_id = get_post_thumbnail_id($post_id);

@@ -12,6 +12,7 @@
 
 header('Content-Type: application/json');
 
+// Catch if database file does not exist
 if (!file_exists('config.php')) {
 	echo json_encode(['error' => 'Config file not found']);
 	exit;
@@ -41,6 +42,7 @@ if (!$db_file_exists || ($db_file_exists && (time() - filemtime($db) > $config['
 	rmdir($dir);
 }
 
+// Catch if database file does not exist
 if (!file_exists($db)) {
 	echo json_encode(['error' => 'Database file not found']);
 	exit;
@@ -53,17 +55,20 @@ if (array_key_exists('HTTP_CLIENT_IP', $_SERVER)) $ip = $_SERVER['HTTP_CLIENT_IP
 // Sanitize IP address
 $ip = filter_var($ip, FILTER_VALIDATE_IP);
 
+// Catch if IP address is invalid
 if (!$ip) {
 	echo json_encode(['error' => 'Invalid IP address']);
 	exit;
 }
 
+// Include required classes
 require_once 'Reader.php';
 require_once 'Decoder.php';
 require_once 'InvalidDatabaseException.php';
 require_once 'Metadata.php';
 require_once 'Util.php';
 
+// Get location data
 $reader = new Reader($db);
 $geo = $reader -> get($ip);
 $reader -> close();
