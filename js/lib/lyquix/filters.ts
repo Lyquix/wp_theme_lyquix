@@ -25,6 +25,17 @@ import { mutation } from './mutation';
 import { analytics } from './analytics';
 import { util } from './util';
 
+/**
+ * The below filters module provides functionality for managing filters on a web page, enabling users to refine content
+ * based on various criteria such as categories, tags, search queries, and pagination. It includes methods
+ * for initializing filters, handling user interactions, updating the UI based on filter selections, and
+ * making API calls to retrieve filtered content. The module supports both JavaScript and PHP rendering modes,
+ * hash-based navigation for preserving filter states, and analytics tracking for user interactions.
+ *
+ * @module filters
+ *
+ * @param {object} customCfg - Optional custom configuration for the filters module.
+ */
 export const filters = (() => {
 
 	const init = (customCfg?: object) => {

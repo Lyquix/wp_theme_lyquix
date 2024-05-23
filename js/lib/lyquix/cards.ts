@@ -26,6 +26,21 @@ import { analytics } from './analytics';
 
 declare const jQuery, Swiper;
 
+/**
+ * This module provides functionality for cards in a web page.
+ * It exports an object with a method to initialize the cards module.
+ *
+ * @module cards
+ *
+ * @param {object} customCfg - Optional custom configuration for the cards module.
+ *
+ * The module first checks if it has been initialized before. If not, it sets up the default configuration,
+ * which can be overridden by the customCfg parameter. It then initializes the cards if they are enabled.
+ *
+ * The setup function sets up the cards by adding a Swiper slider to each cards block.
+ * It also adds click listeners to the navigation buttons. When a button is clicked, an analytics event is sent
+ * if analytics are enabled.
+ */
 export const cards = (() => {
 	const init = (customCfg?: object) => {
 		// Run only once

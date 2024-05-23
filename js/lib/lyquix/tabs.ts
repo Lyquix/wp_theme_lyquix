@@ -25,6 +25,18 @@ import { mutation } from './mutation';
 import { analytics } from './analytics';
 import { responsive } from './responsive';
 
+/**
+ * Provides functionality for managing and controlling tabbed content on a web page.
+ * Enables initialization, opening, closing, and setup of tab elements with customizable configurations.
+ * Supports analytics tracking for tab interactions, dynamic conversion to accordion on specific
+ * screen sizes, and handling of DOM mutations. Also provides functionality for auto-scrolling.
+ *
+ * @module tabs
+ *
+ * @param {object} customCfg - Optional custom configuration for the tabs module.
+ *
+ * @returns {object} An object with methods to initialize, open, and setup tabs.
+ */
 export const tabs = (() => {
 
 	const init = (customCfg?: object) => {

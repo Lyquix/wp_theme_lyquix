@@ -22,6 +22,24 @@
 
 import { vars, cfg, log, warn } from './core';
 
+/**
+ * This module provides persistent data storage using localStorage.
+ * It exports an object with methods to initialize, get, set, unset, and update stored data.
+ *
+ * @module store
+ *
+ * @param {object} customCfg - Optional custom configuration for the store module.
+ *
+ * The init function initializes the store module by setting up the localStorage item and adding event listeners to update the stored data.
+ *
+ * The get function retrieves the value of a stored object.
+ *
+ * The set function stores the value of an object in localStorage.
+ *
+ * The unset function removes an object or property from localStorage.
+ *
+ * The update function updates the stored data in localStorage.
+ */
 export const store = (() => {
 
 	const init = (customCfg?: object) => {

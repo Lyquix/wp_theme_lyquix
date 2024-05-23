@@ -24,6 +24,14 @@ import { vars, cfg, log } from './core';
 import { util } from './util';
 declare let MobileDetect: (a: string) => void;
 
+/**
+ * This module provides detection of device, browser and O/S
+ * It exports an object with a method to initialize the detection module.
+ *
+ * @module detect
+ *
+ * @param {object} customCfg - Optional custom configuration for the detect module.
+ */
 export const detect = (() => {
 
 	const init = (customCfg?: object) => {

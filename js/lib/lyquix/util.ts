@@ -22,6 +22,15 @@
 
 import { vars, cfg, log, error } from './core';
 
+/**
+ * This utility module provides various helper functions and features
+ * such as cookie handling, parsing video URLs, generating hashes,
+ * parsing URL parameters, generating random strings, and more.
+ *
+ * @module util
+ *
+ * @param {object} customCfg - Optional custom configuration for the util module.
+ */
 export const util = (() => {
 
 	const init = (customCfg?: object) => {

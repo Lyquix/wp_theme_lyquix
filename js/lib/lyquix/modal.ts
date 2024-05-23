@@ -26,6 +26,25 @@ import { analytics } from './analytics';
 
 declare const dayjs, jQuery;
 
+/**
+ * This module provides functionality for modals in a web page.
+ * It exports an object with methods to initialize, open, and close modals.
+ *
+ * @module modal
+ *
+ * @param {object} customCfg - Optional custom configuration for the modal module.
+ *
+ * The setup function sets up the modals by fetching the modals from the site options and adding them to the DOM.
+ * It also adds click listeners to the close button and sets up the modals to open and close automatically.
+ * When a modal is closed, a cookie is set to prevent it from showing again. It also sends analytics events if
+ * analytics are enabled.
+ *
+ * The open function opens a modal by calling the showModal method on the dialog element. It also sends an analytics
+ * event if analytics are enabled and the onOpen option is set to true.
+ *
+ * The close function closes a modal by calling the close method on the dialog element. It also sends an analytics
+ * event if analytics are enabled and the onClose option is set to true.
+ */
 export const modal = (() => {
 	const init = (customCfg?: object) => {
 		// Run only once

@@ -25,6 +25,27 @@ import { mutation } from './mutation';
 import { analytics } from './analytics';
 import { responsive } from './responsive';
 
+/**
+ * Provides functionality for managing and controlling accordion components on a web page.
+ * Allows for initialization, opening, closing, and setup of accordion elements with customizable configurations.
+ * Additionally, supports analytics tracking for accordion interactions and dynamic handling of DOM mutations.
+ *
+ * @module accordion
+ *
+ * @param {object} customCfg - Optional custom configuration for the accordion module.
+ *
+ * The setup function sets up the accordions by adding click listeners to the header elements of each accordion.
+ * When a header is clicked, the corresponding panel is either opened or closed.
+ *
+ * The open function opens a panel by removing the 'closed' class, setting the 'aria-hidden' attribute to 'false',
+ * and the 'aria-expanded' attribute to 'true'. It also sends an analytics event if analytics are enabled.
+ *
+ * The close function closes a panel by adding the 'closed' class, setting the 'aria-hidden' attribute to 'true',
+ * and the 'aria-expanded' attribute to 'false'. It also sends an analytics event if analytics are enabled and
+ * the onClose option is set to true.
+ *
+ * The module also listens for accordions added to the DOM and sets them up automatically.
+ */
 export const accordion = (() => { // Change the accordion name
 
 	const init = (customCfg?: object) => {

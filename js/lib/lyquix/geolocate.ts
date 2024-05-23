@@ -25,6 +25,23 @@ import { mutation } from './mutation';
 import { util } from './util';
 declare const jQuery;
 
+/**
+ * This module provides functionality for geolocation and regionalization in a web page.
+ * It exports an object with methods to initialize, geolocate, and set regions.
+ *
+ * @module geolocate
+ *
+ * @param {object} customCfg - Optional custom configuration for the geolocate module.
+ *
+ * The ready function is a utility function that works like jQuery(document).ready(). It calls the callback
+ * function when the geolocation is ready.
+ *
+ * The setRegions function processes the regions definition data and finds the region of the current location.
+ *
+ * The regionDisplay function shows or hides elements based on the region of the current location.
+ *
+ * The geoJSONtoRegions function parses a geoJSON string and returns an object with regions definition.
+ */
 export const geolocate = (() => {
 
 	const init = (customCfg?: object) => {

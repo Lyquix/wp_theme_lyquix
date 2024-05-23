@@ -22,6 +22,20 @@
 
 import { vars, cfg, log } from './core';
 
+/**
+ * This module provides a mutation observer and handler for a web page.
+ * It exports an object with methods to initialize the mutation observer and add handlers for nodes added, nodes removed,
+ * and attributes modified.
+ *
+ * @module mutation
+ *
+ * @param {object} customCfg - Optional custom configuration for the mutation module.
+ *
+ * The init function initializes the mutation observer and sets up the mutation handler.
+ *
+ * The addHandler function adds a handler for nodes added, nodes removed, or attributes modified. The handler is called
+ * when the mutation observer detects the specified type of mutation on the specified selector.
+ */
 export const mutation = (() => {
 
 	const init = (customCfg?: object) => {

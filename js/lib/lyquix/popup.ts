@@ -26,6 +26,25 @@ import { analytics } from './analytics';
 
 declare const dayjs, jQuery;
 
+/**
+ * This module provides functionality for popups in a web page.
+ * It exports an object with methods to initialize, open, and close popups.
+ *
+ * @module popup
+ *
+ * @param {object} customCfg - Optional custom configuration for the popup module.
+ *
+ * The setup function sets up the popups by fetching the popups from the site options and adding them to the DOM.
+ * It also adds click listeners to the close button and sets up the popups to open and close automatically.
+ * When a popup is closed, a cookie is set to prevent it from showing again. It also sends analytics events if
+ * analytics are enabled.
+ *
+ * The open function opens a popup by removing the closed class from the section element. It also sends an analytics
+ * event if analytics are enabled and the onOpen option is set to true.
+ *
+ * The close function closes a popup by adding the closed class to the section element. It also sends an analytics
+ * event if analytics are enabled and the onClose option is set to true.
+ */
 export const popup = (() => {
 	const init = (customCfg?: object) => {
 		// Run only once

@@ -23,6 +23,14 @@
 import { vars, cfg, log } from './core';
 import { store } from './store';
 
+/**
+ * This module detects the system theme (dark/light) and handles user preferences.
+ * It exports an object with methods to initialize, get, set, and reset the theme.
+ *
+ * @module theme
+ *
+ * @param {object} customCfg - Optional custom configuration for the theme module.
+ */
 export const theme = (() => {
 
 	const init = (customCfg?: object) => {

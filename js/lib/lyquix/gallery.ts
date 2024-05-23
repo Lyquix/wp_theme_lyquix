@@ -24,8 +24,17 @@ import { vars, cfg, log, warn } from './core';
 import { mutation } from './mutation';
 import { analytics } from './analytics';
 
+// Declare external libraries
 declare const jQuery, Swiper;
 
+/**
+ * This module provides functionality for galleries in a web page.
+ * It exports an object with a method to initialize the gallery module.
+ *
+ * @module gallery
+ *
+ * @param {object} customCfg - Optional custom configuration for the gallery module.
+ */
 export const gallery = (() => {
 	const init = (customCfg?: object) => {
 		// Run only once

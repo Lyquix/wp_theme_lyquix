@@ -26,6 +26,20 @@ import { util } from './util';
 
 declare const gtag, YT, jQuery;
 
+/**
+ * This module provides analytics functionality
+ * It exports an object with methods to initialize, send pageviews and events, and track various user interactions.
+ *
+ * @module analytics
+ *
+ * @param {object} customCfg - Optional custom configuration for the analytics module.
+ *
+ * The module first checks if it has been initialized before. If not, it sets up the default configuration,
+ * which can be overridden by the customCfg parameter. It then initializes the analytics if they are enabled.
+ *
+ * The setup function sets up the analytics by tracking downloads, outbound links, errors, scroll depth, video, user active time,
+ * rage clicks, and page performance. It also sends pageviews and events to Google Analytics and Microsoft Clarity.
+ */
 export const analytics = (() => {
 
 	const init = (customCfg?: object) => {

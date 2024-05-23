@@ -22,6 +22,25 @@
 
 import { vars, cfg, log, warn } from './core';
 
+/**
+ * This module provides swipe functionality for touch devices.
+ * It exports an object with methods to initialize, add, update, and remove swipe detection.
+ *
+ * @module swipe
+ *
+ * @param {object} customCfg - Optional custom configuration for the swipe module.
+ *
+ * The init function initializes the swipe module by setting up the swipe detection and adding event listeners to detect swipes.
+ *
+ * The add function adds swipe detection to a selector by creating swipe objects for each element in the selector.
+ * It also adds event listeners to detect swipes on the elements.
+ *
+ * The update function updates swipe detection for a selector by removing the current swipe detection and adding new swipe detection.
+ *
+ * The remove function removes swipe detection for a selector by removing the event listeners and deleting the swipe objects.
+ *
+ * @returns {object} An object with methods to initialize, add, update, and remove swipe detection.
+ */
 export const swipe = (() => {
 
 	const init = (customCfg?: object) => {

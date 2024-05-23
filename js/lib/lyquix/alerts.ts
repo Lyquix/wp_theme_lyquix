@@ -26,6 +26,19 @@ import { analytics } from './analytics';
 
 declare const dayjs, Swiper, jQuery;
 
+/**
+ * This module provides functionality for alerts in a web page.
+ * It exports an object with a method to initialize the alerts module.
+ *
+ * @module alerts
+ *
+ * @param {object} customCfg - Optional custom configuration for the alerts module.
+ *
+ * The setup function sets up the alerts by fetching the alerts from the site options and adding them to the DOM.
+ * It also sets up the Swiper slider for the alerts and adds click listeners to the close and navigation buttons.
+ * When an alert is closed, a cookie is set to prevent it from showing again. It also sends analytics events if
+ * analytics are enabled.
+ */
 export const alerts = (() => {
 	const init = (customCfg?: object) => {
 		// Run only once

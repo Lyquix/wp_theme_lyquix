@@ -22,6 +22,18 @@
 
 import { vars, cfg, log } from './core';
 
+/**
+ * This module provides functionality for screen responsiveness in a web page.
+ * It exports an object with a method to initialize the screen responsiveness.
+ *
+ * @module responsive
+ *
+ * @param {object} customCfg - Optional custom configuration for the responsive module.
+ *
+ * The init function initializes the screen responsiveness by setting up media queries for different screen sizes,
+ * screen orientations, and aspect ratios. It also sets up event listeners for screen size changes, screen orientation
+ * changes, and aspect ratio changes.
+ */
 export const responsive = (() => {
 
 	const init = (customCfg?: object) => {
