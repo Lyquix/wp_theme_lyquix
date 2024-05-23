@@ -301,6 +301,7 @@ function validate_settings($settings) {
 				'default' => 'stacked',
 				'allowed' => ['stacked', 'tabbed']
 			],
+			'show_controls_on_no_results' => \lqx\util\schema_str_req_n,
 			'open_label' => \lqx\util\schema_str_req_emp,
 			'close_label' => \lqx\util\schema_str_req_emp,
 			'search_placeholder' => \lqx\util\schema_str_req_emp,
@@ -507,6 +508,8 @@ function validate_settings($settings) {
 					],
 				]
 			],
+			'show_no_results_message' => \lqx\util\schema_str_req_y,
+			'no_results_message' => \lqx\util\schema_str_req_emp
 		]
 	]);
 

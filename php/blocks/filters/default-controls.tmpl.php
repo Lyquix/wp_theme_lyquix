@@ -24,24 +24,31 @@
 //  Instead, copy it to /php/custom/blocks/filters/default-controls.tmpl.php to override it
 //  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/filters/{preset}-controls.tmpl.php
 
-if (count($s['controls'])) : ?>
+if (
+	($s['show_search'] == 'y' || count($s['controls']))
+	&&
+	(count($s['posts']) || (!count($s['posts']) && $s['show_controls_on_no_results'] == 'y'))
+) :
+?>
 
-	<div class="controls" id="<?= $s['hash'] ?>-controls">
+<div class="controls" id="<?= $s['hash'] ?>-controls">
 
-	<?php if ($s['show_open_close'] == 'y') : ?>
-		<div class="open-close-wrapper">
-			<button id="<?= $s['hash'] ?>-open" class="open"><?= $s['open_label'] ?></button>
-			<button id="<?= $s['hash'] ?>-close" class="close"><?= $s['close_label'] ?></button>
-		</div>
-	<?php endif; ?>
+<?php if ($s['show_open_close'] == 'y') : ?>
+	<div class="open-close-wrapper">
+		<button id="<?= $s['hash'] ?>-open" class="open"><?= $s['open_label'] ?></button>
+		<button id="<?= $s['hash'] ?>-close" class="close"><?= $s['close_label'] ?></button>
+	</div>
+<?php endif; ?>
 
-	<?php if ($s['show_search'] == 'y') : ?>
-		<div class="search-wrapper">
-			<label for="<?= $s['hash'] ?>-search"><?= $s['search_placeholder'] ?></label>
-			<input class="search" id="<?= $s['hash'] ?>-search" placeholder="<?= esc_attr($s['search_placeholder']) ?>" value="<?= esc_attr($s['search']) ?>">
-			<button class="search-button" id="<?= $s['hash'] ?>-search-button"></button>
-		</div>
-	<?php endif; ?>
+<?php if ($s['show_search'] == 'y') : ?>
+	<div class="search-wrapper">
+		<label for="<?= $s['hash'] ?>-search"><?= $s['search_placeholder'] ?></label>
+		<input class="search" id="<?= $s['hash'] ?>-search" placeholder="<?= esc_attr($s['search_placeholder']) ?>" value="<?= esc_attr($s['search']) ?>">
+		<button class="search-button" id="<?= $s['hash'] ?>-search-button"></button>
+	</div>
+<?php endif; ?>
+
+<?php if (count($s['controls'])) : ?>
 
 	<?php if ($s['layout'] == 'tabbed') :?>
 
@@ -178,12 +185,14 @@ if (count($s['controls'])) : ?>
 		</div>
 	<?php endif; ?>
 
-	<?php if ($s['show_clear'] == 'y') : ?>
-		<div class="clear-wrapper">
-			<button id="<?= $s['hash'] ?>-clear" class="clear"><?= $s['clear_label']?></button>
-		</div>
-	<?php endif; ?>
+<?php endif; ?>
 
+<?php if (($s['show_search'] || count($s['controls'])) && $s['show_clear'] == 'y') : ?>
+	<div class="clear-wrapper">
+		<button id="<?= $s['hash'] ?>-clear" class="clear"><?= $s['clear_label']?></button>
 	</div>
+<?php endif; ?>
+
+</div>
 
 <?php endif;

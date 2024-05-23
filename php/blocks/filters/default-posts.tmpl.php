@@ -24,14 +24,24 @@
 //  Instead, copy it to /php/custom/blocks/filters/default-posts.tmpl.php to override it
 //  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/filters/{preset}-posts.tmpl.php
 
-// For settings we need to get the preset settings from cards.
-$cards_settings = \lqx\blocks\get_settings('cards', null, $s['render_php']['preset'], $s['render_php']['style']);
+if (count($s['posts'])) {
+	// For settings we need to get the preset settings from cards.
+	$cards_settings = \lqx\blocks\get_settings('cards', null, $s['render_php']['preset'], $s['render_php']['style']);
 
-// Change the hash to use the same as the filters
-$cards_settings['processed']['hash'] = $s['hash'] . '-posts';
+	// Change the hash to use the same as the filters
+	$cards_settings['processed']['hash'] = $s['hash'] . '-posts';
 
-// Add class 'posts' to the classes array
-$cards_settings['processed']['class'] = 'posts';
+	// Add class 'posts' to the classes array
+	$cards_settings['processed']['class'] = 'posts';
 
-// Render the cards
-\lqx\blocks\render_block($cards_settings, $s['posts']);
+	// Render the cards
+	\lqx\blocks\render_block($cards_settings, $s['posts']);
+}
+else if($s['show_no_results_message'] == 'y') {
+	// No posts found
+	?>
+	<div class="no-results">
+		<?= $s['no_results_message'] ?>
+	</div>
+	<?php
+}
