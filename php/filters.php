@@ -758,6 +758,12 @@ function get_options($s) {
 
 	// Cycle through controls
 	foreach ($s['controls'] as $i => $control) {
+		// If there are no posts, then controls should have no options available
+		if (!count($posts)) {
+			$s['controls'][$i]['options'] = [];
+			continue;
+		}
+
 		// Get control options
 		$options = [];
 
