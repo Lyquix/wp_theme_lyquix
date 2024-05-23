@@ -278,11 +278,13 @@ function validate_settings($settings) {
 						],
 						'start' => [
 							'type' => 'integer',
+							'required' => true,
 							'range' => [-30, 30],
 							'default' => 0
 						],
 						'end' => [
 							'type' => 'integer',
+							'required' => true,
 							'range' => [-30, 30],
 							'default' => 1
 						]
