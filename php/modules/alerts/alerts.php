@@ -24,7 +24,11 @@
 
 namespace lqx\modules\alerts;
 
-// Get the alerts from site options
+/**
+ * Get alerts from site options
+ *
+ * @return array - Array of alerts
+*/
 function rest_route() {
 	$content = get_field('alerts_module_content', 'option');
 

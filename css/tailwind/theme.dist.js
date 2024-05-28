@@ -21,6 +21,7 @@
 //  DO NOT MODIFY THIS FILE!
 //  Instead copy this file to css/tailwind/theme.js and edit it there
 
+// Import the extend function
 const extend = {
 	extend: {
 		colors: {

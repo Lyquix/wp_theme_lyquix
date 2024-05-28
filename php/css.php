@@ -24,7 +24,14 @@
 
 namespace lqx\css;
 
-// Convert relative URLs to absolute URLs
+/**
+ * Convert relative URLs to absolute URLs
+ *
+ * @param string $rel - The relative URL
+ * @param string $base - The base URL
+ *
+ * @return string - The absolute URL
+ */
 function abs_url($rel, $base) {
 	if (empty($base)) throw new \InvalidArgumentException("Base URL cannot be empty.");
 

@@ -25,9 +25,11 @@
 namespace lqx\customizer;
 
 /**
- * Add custom fields to the theme customizer
+ * Add customizer fields
  *
- * @param WP_Customize_Manager $wp_customize
+ * @param WP_Customize_Manager $wp_customize - The customizer object
+ *
+ * @return void
  */
 function customizer_add($wp_customize) {
 	$add_settings = [

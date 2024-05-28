@@ -28,10 +28,35 @@ namespace lqx\blocks\gallery;
 
 /**
  * Render gallery
+ *
  * @param  array $settings - gallery settings
  * 	slider - boolean, whether to use a slider
  *  swiper_options_override - string, a JSON object to override Swiper options
  * 	browser_history - boolean, whether to use browser history
+ * 	anchor - string, anchor for the gallery
+ * 	class - string, additional classes for the gallery
+ * 	hash - string, hash for the gallery
+ * 	heading_style - string, heading style for the gallery
+ * @param  array $content - gallery content
+ * 	lightbox_slug - string, lightbox slug
+ * 	slides - array, gallery slides
+ * 		title - string, slide title
+ * 		slug - string, slide slug
+ * 		image - array, image data
+ * 			url - string, image URL
+ * 			alt - string, image alt text
+ * 			width - int, image width
+ * 			height - int, image height
+ * 		video - string, video URL
+ * 		caption - string, slide caption
+ * 		thumbnail - array, thumbnail data
+ * 			url - string, thumbnail URL
+ * 			alt - string, thumbnail alt text
+ * 			width - int, thumbnail width
+ * 			height - int, thumbnail height
+ * 		teaser - string, slide teaser
+ * @return void
+ * @throws Exception if settings are invalid
  */
 function render($settings, $content) {
 	// Get and validate processed settings

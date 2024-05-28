@@ -26,7 +26,16 @@
 
 namespace lqx\widgets;
 
-//Add widget positions to the theme
+/**
+ * Add widget positions to the theme
+ * 		- Add custom widget positions to $widgets array in /php/custom/widgets.php
+ * 		- Register widget positions
+ * 		- Add widget positions to the Customizer
+ * 		- Add widget positions to the Widgets page
+ *
+ * @return void
+ * 		Registers widget positions
+ */
 function add_widget_positions() {
 	$widget_positions = [];
 

@@ -24,7 +24,17 @@
 
 namespace lqx\modules\popup;
 
-// Get the popup from site options
+/**
+ * Get the popup from site options
+ * 		- Filter out popups that are not enabled or have expired
+ * 		- Convert expiration to UTC
+ * 		- Convert zero hide delay and dismiss duration to blank
+ * 		- Add settings to modal
+ * 		- Add a unique id to popup
+ * 		- Return array of popups
+ *
+ * @return array - Array of popups
+ */
 function rest_route() {
 	$content = get_field('popup_module_content', 'option');
 	$settings = get_field('popup_module_settings', 'option');

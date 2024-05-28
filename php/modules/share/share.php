@@ -27,8 +27,15 @@ namespace lqx\modules\share;
 /**
  * Get social share link from platform
  * @param  string $platform - Platform to get link for
+ * 		- facebook, linkedin, twitter, reddit, whatsapp, telegram, email, print
  * @param  string $url - URL to share
+ * 		- Default: current post URL
  * @param  string $title - Title to share
+ * 		- Default: current post title
+ *
+ * @return string - Share link
+ * 		- null if no platform is provided
+ * 		- Share link for platform
  */
 function get_share_link($platform, $url = null, $title = null) {
 	// Return if no platform is provided
@@ -75,7 +82,15 @@ function get_share_link($platform, $url = null, $title = null) {
 
 /**
  * Get inline style for social icons
+ *
  * @param  array $settings - social icons settings
+ * 		- style: icon style
+ * 		- icon_color: icon color
+ * 		- hover_icon_color: icon color on hover
+ * 		- background_color: background color
+ * 		- hover_background_color: background color on hover
+ *
+ * @return string - Inline style for social icons
  */
 function get_inline_style($settings) {
 	$inline_style = '';

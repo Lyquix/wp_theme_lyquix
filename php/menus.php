@@ -26,7 +26,11 @@
 
 namespace lqx\menus;
 
-//Add menu positions
+/**
+ * Add menu positions to the theme
+ *
+ * @return void
+ */
 function add_menu_positions() {
 	// Array of menu locations
 	$menus = [

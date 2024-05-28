@@ -25,7 +25,7 @@
 namespace lqx\body;
 
 /**
- * Prepare body classes
+ * Add body classes
  *
  * @param array $classes
  * @return array

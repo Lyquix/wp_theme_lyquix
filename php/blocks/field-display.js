@@ -32,7 +32,13 @@
 		}, 300);
 	});
 
-	// Initialize dependencies on loaded blocks
+	/**
+	 * Initialize dependencies on loaded blocks
+	 *
+	 * @param {array} blocks - Array of blocks
+	 *
+	 * @return {void}
+	*/
 	function initBlocks(blocks) {
 		blocks.forEach((block) => {
 			// eslint-disable-next-line no-undef

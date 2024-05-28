@@ -25,7 +25,17 @@
 
 namespace lqx\blocks;
 
-// Process overrides for settings presets
+/**
+ * Process overrides for a block
+ *
+ * @param array $settings The settings for the block
+ * 		- The settings array must have the following structure:
+ * 			- Each key is a setting name
+ * 			- Each value is an array with the following keys:
+ * 				- The setting value
+ * 				- The override value
+ * @return array The processed settings
+ */
 function process_overrides($settings) {
 	$processed = [];
 	foreach ($settings as $key => $value) {
@@ -55,8 +65,18 @@ function process_overrides($settings) {
 	return $processed;
 }
 
-// Recursively removes any keys from $settings that are null or ''
-// Only associative arrays (not list/sequential) are traversed
+/**
+ * Recursively removes any keys from $settings that are null or ''
+ * Only associative arrays (not list/sequential) are traversed
+ *
+ * @param array $settings The settings to process
+ * 		- The settings array must have the following structure:
+ * 			- Each key is a setting name
+ * 			- Each value is an array with the following keys:
+ * 				- The setting value
+ * 				- The override value
+ * @return array The processed settings
+*/
 function remove_empty_settings($settings) {
 	# Assumes settings are associative arrays
 	foreach ($settings as $key => $value) {
@@ -83,8 +103,24 @@ function remove_empty_settings($settings) {
 	return $settings;
 }
 
-// Recursively merge seetings and overrides
-// Only associative arrays (not list/sequential) are traversed
+/**
+ * Recursively merge seetings and overrides
+ * Only associative arrays (not list/sequential) are traversed
+ *
+ * @param array $settings The settings to merge
+ *  		- The settings array must have the following structure:
+ * 			- Each key is a setting name
+ * 			- Each value is an array with the following keys:
+ * 				- The setting value
+ * 				- The override value
+ * @param array $override The overrides to apply
+ * 		- The overrides array must have the following structure:
+ * 			- Each key is a setting name
+ * 			- Each value is an array with the following keys:
+ * 				- The setting value
+ * 				- The override value
+ * @return array The merged settings
+*/
 function merge_settings($settings, $override) {
 	$settings = is_array($settings) ? $settings : [];
 	$override = is_array($override) ? $override : [];
@@ -113,7 +149,27 @@ function merge_settings($settings, $override) {
 	return $settings;
 }
 
-// Get the settings for a block
+/**
+ * Get the settings for a block
+ *
+ * @param array|string $block The block to get settings for
+ * 		- If $block is a string, it will be converted to an array
+ * 		- The block array must have the following
+ * 			- name: The block name
+ * 			- anchor: The block anchor
+ * 			- className: The block class name
+ * @param int $post_id The post ID to get settings for
+ * 		- If the post ID is not provided, it will default to the current post
+ * 		- If the post ID is the same as the current post, it will default to null
+ * @param string $forced_preset The preset to force
+ * 		- If nothing then null
+ * 		- If a preset is forced, the user settings will be ignored
+ * @param string $forced_style The style to force, if nothing then null
+ * 		- If a style is forced, the user settings will be ignored
+ * 		- If a preset is forced, the style will be set to the preset style
+ *
+ * @return array The settings for the block
+ */
 function get_settings($block, $post_id = null, $forced_preset = null, $forced_style = null) {
 	// If $block is a string, convert it to an array
 	if (is_string($block)) {
@@ -191,7 +247,30 @@ function get_settings($block, $post_id = null, $forced_preset = null, $forced_st
 	return $settings;
 }
 
-// Get the content for a block
+/**
+ * Get the content for a block
+ * If the block is a string, it will be converted to an array
+ * If the post ID is not provided, it will default to the current post
+ * If the post ID is the same as the current post, it will default to null
+ * The block name will have the lqx/ prefix removed
+ * The content will be retrieved from the ACF field with the block name + '_block_content'
+ *
+ * @param array|string $block The block to get content for
+ * 		- If $block is a string, it will be converted to an array
+ *  		- The block array must have the following
+ * 			- name: The block name
+ * 			- anchor: The block anchor
+ * 			- className: The block class name
+ * 		- The block name must have the lqx/ prefix
+ * 		- The block name must match the ACF field name
+ * 		- The block name must match the block directory name
+ * 		- The block name must match the block template name
+ * @param int $post_id The post ID to get content for
+ * 		- If the post ID is not provided, it will default to the current post
+ * 		- If the post ID is the same as the current post, it will default to null
+ *
+ * @return string The content for the block
+*/
 function get_content($block, $post_id = null) {
 	// If $block is a string, convert it to an array
 	if (is_string($block)) $block = ['name' => $block];
@@ -205,6 +284,30 @@ function get_content($block, $post_id = null) {
 	return get_field($block_name . '_block_content', $post_id);
 }
 
+/**
+ * Get the block template
+ * If the block is a string, it will be converted to an array
+ * If the post ID is not provided, it will default to the current post
+ * If the post ID is the same as the current post, it will default to null
+ * The block name will have the lqx/ prefix removed
+ * The template will be retrieved from the ACF field with the block name + '_block_template'
+ *
+ * @param array|string $array The block to get the template for
+ * 		- If $block is a string, it will be converted to an array
+ * 		- The block array must have the following
+ * 			- name: The block name
+ * 			- anchor: The block anchor
+ * 			- className: The block class name
+ * 		- The block name must have the lqx/ prefix
+ * 		- The block name must match the ACF field name
+ * 		- The block name must match the block directory name
+ * 		- The block name must match the block template name
+ * @param int $keytoFind The post ID to get the template for
+ * 		- If the post ID is not provided, it will default to the current post
+ * 		- If the post ID is the same as the current post, it will default to null
+ *
+ * @return string The template for the block
+*/
 function find_value_by_key($array, $keyToFind) {
 	$result = null;
 	array_walk_recursive($array, function ($value, $key) use ($keyToFind, &$result) {
@@ -245,7 +348,16 @@ function get_global_field_groups() {
  * If the field is a group, it recursively resets all its sub-fields.
  *
  * @param array $field The field to reset. It's an associative array that includes the field's key, default value, type, and possibly sub-fields.
+ *         		- The field's key is used to update the field's value in the database.
+ * 			 		  - The default value is used to reset the field's value.
+ * 			 		  - The type is used to determine if the field is a group.
+ * 			 		  - The sub-fields are used to reset all the field's sub-fields in the case of a group.
  * @param array $ancestors An array of keys representing the field's ancestors in the case of nested groups.
+ * 			 		- The ancestors are used to update the field's value in the database.
+ * 			 		  - The ancestors are used to reset the field's value.
+ * 			 		  - The ancestors are used to reset all the field's sub-fields in the case of a group.
+ *
+ * @return void
  */
 function reset_field($field, $ancestors) {
 	$default_value = $field['default_value'] ?? '';
@@ -265,7 +377,13 @@ function reset_field($field, $ancestors) {
 	}
 }
 
-//Resets the global settings of all Lyquix blocks and modules to their default values.
+/**
+ * Resets the global settings of all Lyquix blocks and modules to their default values.
+ * The field groups to reset are provided in the $_POST['field_groups'] array.
+ * Each field group is reset by calling the reset_field function.
+ *
+ * @return void
+*/
 function reset_global_settings_ajax() {
 	// Check nonce for security
 	if (!check_ajax_referer('reset-global-settings')) wp_die('Nonce validation failed');
@@ -286,7 +404,15 @@ function reset_global_settings_ajax() {
 	wp_die();
 }
 
-//This function renders the Reset Global Settings page in the WordPress admin.
+/**
+ * Renders the Reset Global Settings page.
+ * The page displays a list of all Lyquix blocks and modules with checkboxes to select which ones to reset.
+ * The user can select all blocks and modules at once by checking the "Toggle All" checkbox.
+ * The user can reset the selected blocks and modules by clicking the "Reset Global Settings" button.
+ * The user is prompted to confirm the action before the settings are reset.
+ *
+ * @return void
+*/
 function reset_global_settings_page() {
 	?>
 <div class="wrap">
@@ -376,14 +502,41 @@ function reset_global_settings_page() {
  * Renders the block based on the selected preset and available overrides.
  *
  * @param array $settings The settings for the block.
+ * 		- The settings array must have the following structure:
+ * 			- global: The global settings for the block.
+ * 			- styles: The styles for the block.
+ * 			- presets: The presets for the block.
+ * 			- local: The local settings for the block.
+ * 			- processed: The processed settings for the block.
+ * 				- block: The block name.
+ * 				- anchor: The block anchor.
+ * 				- class: The block class name.
+ * 				- hash: A unique hash for the block.
+ * 				- post_id: The post ID.
+ * 				- preset: The selected preset.
+ * 				- style: The selected style.
  * @param string $content The content for the block.
+ * 		- The content must be a string.
+ * 		- The content must be sanitized.
+ *
+ * @return void
 */
 function render_block($settings, $content) {
 	// Get the renderer based on the selected preset and available overrides
 	require get_renderer($settings['processed']['block'], $settings['processed']['preset']);
 }
 
-// Load the block renderer based on the selected preset and available overrides
+/**
+ * Load the block renderer based on the selected preset and available overrides
+ * or use the default renderer if no preset is selected.
+ *
+ * @param string $block_name The name of the block.
+ * 		- The block name must have the lqx/ prefix.
+ * @param string $preset The selected preset.
+ * 		- If nothing then null.
+ *
+ * @return string The path to the renderer file.
+*/
 function get_renderer($block_name, $preset = null) {
 	$dir = get_stylesheet_directory() . '/php/custom/blocks/' . $block_name . '/';
 
@@ -396,7 +549,19 @@ function get_renderer($block_name, $preset = null) {
 	}
 }
 
-// Load a template or sub-template for a block based on the selected preset and available overrides
+/**
+ * Load the block template based on the selected preset and available overrides
+ * or use the default template if no preset is selected.
+ *
+ * @param string $block_name The name of the block.
+ * 		- The block name must have the lqx/ prefix.
+ * @param string $preset The selected preset.
+ * 		- If nothing then null.
+ * @param string $sub_template The selected sub-template.
+ * 		- If nothing then null.
+ *
+ * @return string The path to the template file.
+*/
 function get_template($block_name, $preset = null, $sub_template = null) {
 	$dir = get_stylesheet_directory() . '/php/custom/blocks/' . $block_name . '/';
 	$default_file = 'default';

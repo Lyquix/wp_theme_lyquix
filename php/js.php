@@ -26,9 +26,10 @@ namespace lqx\js;
 
 
 /**
- * Enqueue scripts
- * This function is used to enqueue JavaScript libraries and custom scripts.
- */
+ * Enqueue JavaScript libraries and render GTM code, and custom JS based on theme settings
+ *
+ * @return void
+*/
 function enqueue_scripts() {
 	// Prevent adding js libraries in wp_head()
 	global $wp_scripts;
@@ -155,8 +156,12 @@ add_action('wp_enqueue_scripts', '\lqx\js\enqueue_scripts', 100);
 
 
 /**
- * Render Lyquix options
- * Sets Lyquix options for the theme
+ * Renders the Lyquix options and scripts options
+ * 		- lqx options
+ * 		- scripts options
+ *
+ * @return void
+ * 		Outputs the script tag with the Lyquix options and scripts options
  */
 function render_lyquix_options() {
 	// Set lqx options
@@ -187,6 +192,9 @@ function render_lyquix_options() {
  * Renders the Google Tag Manager head code.
  * It first checks if the GTM account is set in the theme settings.
  * Then, it renders the GTM head code if the account is set.
+ *
+ * @return void
+ * 		Outputs the script tag with the GTM head code
  */
 function render_gtm_head_code() {
 	// Load GTM head code
@@ -216,6 +224,9 @@ function render_gtm_head_code() {
  * Renders the Google Tag Manager body code.
  * It first checks if the GTM account is set in the theme settings.
  * Then, it renders the GTM body code if the account is set.
+ *
+ * @return void
+ * 		Outputs the iframe tag with the GTM body code
  */
 function render_gtm_body_code() {
 	// Load GTM head code
@@ -230,6 +241,9 @@ function render_gtm_body_code() {
  * Renders the Microsoft Clarity code.
  * It first checks if the Clarity account is set in the theme settings.
  * Then, it renders the Clarity code if the account is set.
+ *
+ * @return void
+ * 		Outputs the script tag with the Clarity code
  */
 function render_page_custom_js() {
 	// Render page custom CSS and JS

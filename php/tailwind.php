@@ -23,7 +23,14 @@
 //  DO NOT MODIFY THIS FILE!
 
 /**
- * Collect Tailwind classes from Gutenberg blocks.
+ * Get Tailwind CSS classes from Gutenberg blocks
+ *
+ * @param array $block - The Gutenberg block
+ * 		- Example: ['blockName' => 'core/paragraph', 'attrs' => ['data' => ['tailwind_text-center' => '1']]]
+ * @param array $classes - The Tailwind CSS classes
+ * 		- Example: ['text-center', 'bg-blue-500']
+ *
+ * @return array - The Tailwind CSS classes
  */
 function collectClasses($block, $classes) {
 	if (count($block['innerBlocks'])) {

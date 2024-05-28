@@ -28,6 +28,8 @@ namespace lqx\router;
  * Check if a template file exists
  *
  * @param string $tmpl_name
+ * 		Name of the template file
+ *
  * @return bool
  */
 function tmpl_file_exists($tmpl_name) {

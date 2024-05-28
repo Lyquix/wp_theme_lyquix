@@ -24,7 +24,11 @@
 
 namespace lqx\livereload;
 
-// Render Livereload script
+/**
+ * Render the Livereload script
+ *
+ * @return void
+ */
 function render() {
 	if (get_theme_mod('feat_livereload', '1') === '1' && substr($_SERVER['HTTP_HOST'], -5) === '.test') : ?>
 		<script src="http://localhost:35729/livereload.js?snipver=1"></script>

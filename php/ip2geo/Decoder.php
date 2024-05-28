@@ -26,7 +26,21 @@ class Decoder
         15 => 'float',
     ];
 
-    // The file handle is passed in so that we can read from a file or a string
+    /**
+     * The file handle is passed in so that we can read from a file or a string
+     *
+     * @param resource $fileStream
+     *          The file handle
+     * @param int $pointerBase
+     *        The base offset for pointers
+     * @param bool $pointerTestHack
+     *      Whether to return the pointer value for testing
+     *
+     * @throws InvalidDatabaseException
+     *     If the platform is not little endian
+     *
+     * @return void
+    */
     public function __construct(
         $fileStream,
         $pointerBase = 0,
@@ -39,7 +53,16 @@ class Decoder
         $this->switchByteOrder = $this->isPlatformLittleEndian();
     }
 
-    // Decode the database
+    /**
+     * Decode the database
+     *
+     * @param int $offset
+     *     The offset to start decoding from
+     *
+     * @throws InvalidDatabaseException
+     *
+     * @return array
+    */
     public function decode($offset)
     {
         list(, $ctrlByte) = unpack(
@@ -92,7 +115,20 @@ class Decoder
         return $this->decodeByType($type, $offset, $size);
     }
 
-    // Decode the database by type
+    /**
+     * Decode the database by type
+     *
+     * @param string $type
+     *    The type of the data
+     * @param int $offset
+     *   The offset to start decoding from
+     * @param int $size
+     *  The size of the data
+     *
+     * @throws InvalidDatabaseException
+     *
+     * @return array
+     */
     private function decodeByType($type, $offset, $size)
     {
         switch ($type) {
@@ -134,7 +170,18 @@ class Decoder
         }
     }
 
-    // Verify the size of the data section
+    /**
+     * Verify the size of the data
+     *
+     * @param int $expected
+     *   The expected size
+     * @param int $actual
+     *  The actual size
+     *
+     * @throws InvalidDatabaseException
+     *
+     * @return void
+     */
     private function verifySize($expected, $actual)
     {
         if ($expected !== $actual) {

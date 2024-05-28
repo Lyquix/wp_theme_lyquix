@@ -25,6 +25,7 @@ import { tailwindLayouts, defaultOptions } from 'https://cdn.skypack.dev/tailwin
 import presets from './presets.js';
 import theme from './theme.js';
 
+// Export Tailwind CSS configuration
 tailwind.config = {
 	presets: [presets],
 	theme: theme,

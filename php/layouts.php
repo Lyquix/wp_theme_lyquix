@@ -24,7 +24,13 @@
 
 namespace lqx\layouts;
 
-// Get a list of used Tailwind classes
+/**
+ * Get Tailwind CSS classes from ACF fields
+ * 		- Fields must start with 'tailwind_'
+ *
+ * @return string - The Tailwind CSS classes
+ * 		- Example: 'text-center bg-blue-500'
+ */
 function get_tailwind_classes() {
 	// Initialize the results array
 	$classes = [];

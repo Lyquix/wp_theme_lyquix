@@ -20,6 +20,7 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
+// This script is used to add Tailwind CSS classes to ACF fields in the editor
 (function (wp, acf, $) {
 	const { subscribe, select } = wp.data;
 	var previousBlockId = null;
@@ -35,6 +36,7 @@
 		}, 300);
 	});
 
+	// Subscribe to block changes
 	subscribe(function () {
 		var selectedBlock = select('core/block-editor').getSelectedBlock();
 		var selectedBlockId = selectedBlock ? selectedBlock.clientId : null;
@@ -49,6 +51,7 @@
 		}
 	});
 
+	// Initialize Tailwind classes for existing blocks
 	function initBlocks(blocks) {
 		blocks.forEach((block) => {
 			if (block.name.includes('lqx')) {
@@ -64,6 +67,7 @@
 		});
 	}
 
+	// Handle block changes
 	function handleBlockChange(blockId) {
 		var tailwindClasses = getTailwindClasses();
 
@@ -92,6 +96,7 @@
 		}, 300);
 	}
 
+	// Handle field changes
 	function onChangeField(field, tailwindClasses) {
 		field.off('change');
 		field.on('change keyup', function () {
@@ -104,6 +109,7 @@
 				val = name + val;
 			}
 
+			// Initialize tailwindClasses for the selectedBlockId if it doesn't exist
 			if (val && val.includes(classPrefix)) {
 				val = val.replace(classPrefix, '');
 				if (tailwindClasses[blockId][key] && val !== tailwindClasses[blockId][key]) {
@@ -123,25 +129,30 @@
 		});
 	}
 
+	// Local storage functions
 	function getTailwindClasses() {
 		return JSON.parse(localStorage.getItem(localKey)) || {};
 	}
 
+	// Save Tailwind classes to local storage
 	function saveTailwindClasses(tailwindClasses) {
 		localStorage.setItem(localKey, JSON.stringify(tailwindClasses));
 	}
 
+	// Replace class name in block
 	function replaceClassName(blockId, oldValue, newValue) {
 		var regex = new RegExp('(\\b' + oldValue + '\\b)(?![\\w-])', 'g');
 		var block = $('[data-block=' + blockId + ']');
 		block.attr('class', block.attr('class').replace(regex, newValue).replace(/\s+/g, ' ').trim());
 	}
 
+	// Add class name to block element
 	function addClassName(blockId, newValue) {
 		var block = $('[data-block=' + blockId + ']');
 		block.attr('class', (block.attr('class') + ' ' + newValue).replace(/\s+/g, ' ').trim());
 	}
 
+	// Remove class name from block element
 	$(window).unload(function () {
 		localStorage.removeItem(localKey);
 	});

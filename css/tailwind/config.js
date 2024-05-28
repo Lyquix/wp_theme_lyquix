@@ -24,6 +24,7 @@
 
 const { tailwindLayouts, defaultOptions } = require('tailwind-layouts');
 
+// Export Tailwind CSS configuration
 module.exports = {
 	presets: [require('./presets.js')],
 	content: [

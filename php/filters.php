@@ -63,6 +63,8 @@ add_filter('acf/load_field', function ($field) {
  * @param  array $field_details - ACF field details
  * @param  array $choices - array to store the options
  * @param  int $depth - depth of the field
+ *
+ * @return void
  */
 function get_acf_fields_as_options($field_details, &$choices, $depth = 0) {
 	$key = $field_details['key'];
@@ -137,8 +139,11 @@ add_filter('acf/load_field', function ($field) {
 
 /**
  * Get the post author info
+ *
  * @param  int $author_id - author ID
  * @param  array $fields - fields to return
+ *
+ * @return array - author info
  */
 function get_author_info($author_id, $fields = ['name', 'avatar']) {
 	$author = get_user_by('id', $author_id);
@@ -167,8 +172,11 @@ function get_author_info($author_id, $fields = ['name', 'avatar']) {
 
 /**
  * Get the post thumbnails info
+ *
  * @param  int $post_id - post ID
  * @param  array $sizes - thumbnail sizes
+ *
+ * @return array - thumbnails info
  */
 function get_thumbnails_info($post_id, $sizes = ['Large']) {
 	$thumbnails = [];
@@ -182,7 +190,9 @@ function get_thumbnails_info($post_id, $sizes = ['Large']) {
 
 /**
  * Perform the complete settings processing and get the posts with data
+ *
  * @param  array $settings - settings data
+ *
  * @return array - processed settings data with posts and total pages
  */
 function get_settings_and_posts($settings) {
@@ -206,7 +216,9 @@ function get_settings_and_posts($settings) {
 
 /**
  * Validate the settings data and return the processed settings
+ *
  * @param  array $settings - settings data
+ *
  * @return array - processed settings data
  */
 function validate_settings($settings) {
@@ -520,8 +532,11 @@ function validate_settings($settings) {
 
 /**
  * Get settings for the filters block
+ *
  * @param  array $s - processed settings
  * @param  int $post_id - post ID
+ *
+ * @return array - settings for the filters block
  */
 function init_settings($s) {
 	// Clean pre-filters settings
@@ -750,8 +765,14 @@ function init_settings($s) {
 
 /**
  * Get the options for each control, from a given list of posts
+ * 		- Taxonomy controls will get the terms for the given taxonomy
+ * 		- Field controls will get the values for the given ACF field
+ *
  * @param  array $s - controls settings
- * @param  array $posts - list of posts
+ * 		- controls: array of control settings
+ * 		- posts: array of post IDs
+ *
+ * @return array - controls settings with options
  */
 function get_options($s) {
 	global $wpdb;
@@ -915,8 +936,21 @@ function get_options($s) {
 
 /**
  * Generate a WP Query object based on pre-filters, applied filters and passed arguments
+ * 		- Pre-filters are applied before the user interacts with the filters
+ * 		- Applied filters are applied after the user interacts with the filters
+ *
  * @param  array $s - processed settings
+ * 		- post_type: post type
+ * 		- pre_filters: array of pre-filter settings
+ * 		- controls: array of control settings
+ * 		- pagination: pagination settings
+ * 		- posts_order: array of post order settings
+ * 		- posts_per_page: number of posts per page
+ * 		- search: search string
+ * 		- controls: array of control settings
  * @param  array $query - query arguments
+ *
+ * @return WP_Query - WP Query object
  */
 function prepare_query($query, $s) {
 	// Pre-filters args
@@ -1092,7 +1126,12 @@ function prepare_query($query, $s) {
 
 /**
  * Get the list of post IDs
+ * 		- Used to get the list of posts to filter
+ *
  * @param  array $s - processed settings
+ * 		- post_type: post type
+ *
+ * @return array - list of post IDs
  */
 function get_post_ids($s) {
 	$query = [
@@ -1113,8 +1152,18 @@ function get_post_ids($s) {
 
 /**
  * Get a list of posts with the specified fields
+ *
  * @param  array $s - processed settings
+ * 		- post_type: post type
+ * 		- posts_order: array of post order settings
+ * 		- pagination: pagination settings
+ * 		- render_mode: render mode
+ * 		- render_js: JS render settings
+ * 		- render_php: PHP render settings
  * @param  int $page - page number
+ * 		- default: 1
+ *
+ * @return array - list of posts with the specified fields
  */
 function get_posts_with_data($s) {
 	$query = [
@@ -1329,7 +1378,15 @@ function get_posts_with_data($s) {
 
 /**
  * Default HTML render for controls and search bar
+ * 		- The search bar is only rendered if the setting is enabled
+ *
  * @param  array $s - processed settings
+ * 		- controls: array of control settings
+ * 		- search: search string
+ * 		- show_search: show search bar
+ * 		- search_placeholder: search placeholder
+ *
+ * @return string - HTML for controls and search bar
  */
 function render_controls($s) {
 	// Start output buffering
@@ -1344,7 +1401,15 @@ function render_controls($s) {
 
 /**
  * Default HTML render for posts using the Cards block
+ * 		- The Cards block is used to render the posts
+ *
  * @param  array $s - processed settings and posts data
+ * 		- posts: array of post data
+ * 		- render_mode: render mode
+ *
+ * @return string - HTML for posts
+ * 		- If the render mode is PHP, the output is returned as a string
+ * 		- If the render mode is JS, the output is echoed
  */
 function render_posts($s) {
 	// Start output buffering
@@ -1359,7 +1424,14 @@ function render_posts($s) {
 
 /**
  * Default HTML render for the pagination, pagination details and posts per page selector
+ * 		- The pagination details and posts per page selector are only rendered if the settings are enabled
+ *
  * @param  array $s - processed settings
+ * 		- pagination: pagination settings
+ * 		- show_posts_per_page: show posts per page selector
+ * 		- show_all: show all posts
+ *
+ * @return string - HTML for the pagination, pagination details and posts per page selector
  */
 function render_pagination($s) {
 	// Start output buffering
@@ -1374,7 +1446,13 @@ function render_pagination($s) {
 
 /**
  * Get the label of the selected option
+ * 		- Used to display the selected option in the control
+ *
  * @param  array $control - control settings
+ * 		- options: array of option settings
+ * 		- selected: selected option value
+ *
+ * @return string - label of the selected option
  */
 function get_selected_option_label($control) {
 	$index = array_search($control['selected'], array_column($control['options'], 'value'));
@@ -1384,7 +1462,11 @@ function get_selected_option_label($control) {
 
 /**
  * Prepare the data for JSON
+ * 		- Removes keys that are not needed or that should not be disclosed
  * @param  array $s - processed settings
+ * 		- render_mode: render mode
+ *
+ * @return array - processed settings with keys removed
  */
 function prepare_json_data($s) {
 	$res = $s;
@@ -1403,7 +1485,16 @@ function prepare_json_data($s) {
 
 /**
  * Validate the payload
+ *
  * @param  array $payload - received payload
+ * 		- preset: preset name
+ * 		- post_id: post ID
+ * 		- controls: array of control settings
+ * 		- search: search string
+ * 		- page: page number
+ * 		- pagination: pagination settings
+ *
+ * @return array - validation result
  */
 function validate_payload($payload) {
 	// TODO: validate received $payload - leave this comment until we're done with the ts file
@@ -1444,8 +1535,21 @@ function validate_payload($payload) {
 
 /**
  * Merge the payload with the settings
+ * 		- The payload will override the settings
+ *
  * @param  array $s - processed settings
+ * 		- controls: array of control settings
+ * 		- pagination: pagination settings
+ * 		- posts_per_page: number of posts per page
+ * 		- search: search string
  * @param  array $p - received payload
+ * 		- preset: preset name
+ * 		- post_id: post ID
+ * 		- controls: array of control settings
+ * 		- search: search string
+ * 		- pagination: pagination settings
+ *
+ * @return array - merged settings
  */
 function merge_settings($s, $p) {
 	foreach ($p as $key => $value) {
@@ -1479,9 +1583,13 @@ function merge_settings($s, $p) {
 }
 
 /**
- * Handle the API calls
- * @param  array $payload - received payload
- */
+ * Handle the API call
+ *
+ * @param  WP_REST_Request $request - REST API request
+ * 		- JSON payload
+ *
+ * @return array - JSON data
+*/
 function handle_api_call($request) {
 	// Get the payload
 	$payload = $request->get_json_params();

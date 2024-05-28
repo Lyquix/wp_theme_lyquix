@@ -26,7 +26,9 @@ namespace lqx\update;
 
 /**
  * Check if the theme has an update available and show a notice in the admin dashboard if it does
+ *
  * @return bool
+ * 		True if the theme has an update available, false otherwise
  */
 function theme_update_notice() {
 	// Get the current theme version

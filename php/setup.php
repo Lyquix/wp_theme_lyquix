@@ -24,7 +24,12 @@
 
 namespace lqx\setup;
 
-//Theme initial setup
+/**
+ * Theme setup
+ * 		- Add theme support
+ *
+ * @return void
+ */
 function theme_setup() {
 	// Theme Features Support
 	add_theme_support('automatic-feed-links');

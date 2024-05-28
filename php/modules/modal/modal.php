@@ -24,7 +24,12 @@
 
 namespace lqx\modules\modal;
 
-// Get the modal from site options
+/**
+ * Get the modal from site options
+ *
+ * @return array - Array of modals
+ *
+*/
 function rest_route() {
 	$content = get_field('modal_module_content', 'option');
 	$settings = get_field('modal_module_settings', 'option');
