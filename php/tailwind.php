@@ -78,6 +78,16 @@ if (get_theme_mod('feat_tailwind', '1') === '1') {
 	 * Save Tailwind classes from Gutenberg to whitelist.html.
 	 *
 	 * @param int $post_id The ID of the post being saved.
+	 * 		- The post ID is used to create a unique div ID in whitelist.html
+	 * 		- The post content is used to extract Tailwind classes
+	 * 		- The Tailwind classes are saved to whitelist.html
+	 * 		- The whitelist.html file is used to generate the Tailwind CSS file
+	 * 		- The Tailwind CSS file is loaded in the front-end
+	 * 		- The Tailwind CSS file is used to style the Gutenberg blocks
+	 * 		- The Tailwind CSS file is used to style the front-end
+	 *
+	 * @return void
+	 * 		Saves Tailwind classes to whitelist.html
 	 */
 	add_action('save_post', function ($post_ID) {
 		// Check if it's a revision, autosave, or if the save is an AJAX request (like Quick Edit)
@@ -161,6 +171,12 @@ if (get_theme_mod('feat_tailwind', '1') === '1') {
 	 * Delete Tailwind classes from whitelist.html when a post is deleted.
 	 *
 	 * @param int $post_id The ID of the post being deleted.
+	 * 		- The post ID is used to find the div in whitelist.html
+	 * 		- The div is removed from whitelist.html
+	 * 		- The Tailwind CSS file is regenerated
+	 *
+	 * @return void
+	 * 		Removes Tailwind classes from whitelist.html
 	 */
 	add_action('delete_post', function ($post_ID) {
 		// Load the existing whitelist.html content

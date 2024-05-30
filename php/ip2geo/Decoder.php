@@ -30,11 +30,11 @@ class Decoder
      * The file handle is passed in so that we can read from a file or a string
      *
      * @param resource $fileStream
-     *          The file handle
+     *        The file handle
      * @param int $pointerBase
      *        The base offset for pointers
      * @param bool $pointerTestHack
-     *      Whether to return the pointer value for testing
+     *        Whether to return the pointer value for testing
      *
      * @throws InvalidDatabaseException
      *     If the platform is not little endian
