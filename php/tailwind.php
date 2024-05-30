@@ -53,9 +53,7 @@ function collectClasses($block, $classes) {
 }
 
 if (get_theme_mod('feat_tailwind', '1') === '1') {
-	/**
-	 * Enqueue tailwind cdn assets in the Editor.
-	 */
+	//Enqueue tailwind cdn assets in the Editor.
 	add_action('enqueue_block_editor_assets', function () {
 		if (is_admin()) {
 			wp_enqueue_script(
@@ -193,9 +191,7 @@ if (get_theme_mod('feat_tailwind', '1') === '1') {
 		file_put_contents($whitelistPath, $updatedContent);
 	});
 
-	/**
-	 * Remove version from Tailwind script
-	 */
+	//Remove version from Tailwind script
 	add_filter('script_loader_tag', function ($tag, $handle, $src) {
 
 		if (in_array($handle, ['tailwind-cdn'])) {

@@ -45,6 +45,8 @@ import { responsive } from './responsive';
  * the onClose option is set to true.
  *
  * The module also listens for accordions added to the DOM and sets them up automatically.
+ *
+ * @returns {object} An object with methods to initialize, open, close, and setup accordions.
  */
 export const accordion = (() => { // Change the accordion name
 

@@ -10,14 +10,10 @@
  */
 
 import { vars, cfg } from '../../lib/scripts/core';
-/**
- * Import other modules as needed
- */
+//Import other modules as needed
 
 declare const lqx;
-/**
- * Declare other variables as needed
- */
+//Declare other variables as needed
 
 export const module = (() => { // Change the module name
 
@@ -27,17 +23,13 @@ export const module = (() => { // Change the module name
 
 		vars.module = { // Change the module name
 			init: false
-			/**
-			 * Add working variables as needed
-			 */
+			//Add working variables as needed
 		};
 
 		// Default module configuration
 		cfg.module = { // Change the module name
 			enabled: true
-			/**
-			 * Add default configuration as needed
-			 */
+			//Add default configuration as needed
 		};
 
 		if (customCfg) cfg.module = jQuery.extend(true, cfg.module, customCfg);
@@ -66,9 +58,7 @@ export const module = (() => { // Change the module name
 
 	return {
 		init
-		/**
-		 * Add other functions that need to be exposed
-		 */
+		//Add other functions that need to be exposed
 	};
 
 })();

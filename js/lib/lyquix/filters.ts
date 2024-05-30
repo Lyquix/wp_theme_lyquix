@@ -35,6 +35,8 @@ import { util } from './util';
  * @module filters
  *
  * @param {object} customCfg - Optional custom configuration for the filters module.
+ *
+ * returns {object} An object with methods to initialize filters, handle user interactions, update the UI, and make API calls.
  */
 export const filters = (() => {
 

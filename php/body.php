@@ -26,9 +26,13 @@ namespace lqx\body;
 
 /**
  * Add body classes
+ * 		- Add classes to body tag based on the current page type
  *
  * @param array $classes
+ * 		An array of body classes
+ *
  * @return array
+ * 		An array of body classes
  */
 function classes() {
 	global $wp_query;

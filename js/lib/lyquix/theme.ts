@@ -30,6 +30,8 @@ import { store } from './store';
  * @module theme
  *
  * @param {object} customCfg - Optional custom configuration for the theme module.
+ *
+ * @returns {object} An object with methods to initialize, get, set, and reset the theme.
  */
 export const theme = (() => {
 

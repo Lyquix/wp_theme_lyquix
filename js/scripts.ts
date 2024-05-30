@@ -11,16 +11,12 @@
 
 import { vars, cfg } from './lib/scripts/core';
 import { module } from './custom/scripts/module.dist'; // Remove the sample module
-/**
- * Import all the custom modules from js/custom/scripts
- */
+// Import all the custom modules from js/custom/scripts
 
 declare const $lqx;
 declare const lqx;
 
-/**
- * Declare other variables as needed
- */
+// Declare other variables as needed
 
 const init = (customCfg) => {
 	// Run only once
@@ -31,9 +27,7 @@ const init = (customCfg) => {
 
 	const mods = [
 		'module' // Remove the sample module
-		/**
-		 * Add all the custom modules in the appropriate order for initialization
-		 */
+		//Add all the custom modules in the appropriate order for initialization
 	];
 
 	console.log('Initializing scripts');
@@ -66,9 +60,7 @@ const expObj = Object.defineProperties({
 	ready,
 	/* Modules */
 	module // Remove the sample module
-	/**
-	 * Add all the custom modules
-	 */
+	// Add all the custom modules
 }, {
 	// Set the cfg and vars properties as read-only
 	cfg: {

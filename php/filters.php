@@ -24,9 +24,7 @@
 
 namespace lqx\filters;
 
-/**
- * Populate the Cards block styles and presets
- */
+// Populate the Cards block styles and presets
 add_filter('acf/load_field', function ($field) {
 	$field_keys = [
 		// Cards
@@ -60,6 +58,7 @@ add_filter('acf/load_field', function ($field) {
 /**
  * Get ACF fields as options
  * Recursive function to build field options, including sub-fields
+ *
  * @param  array $field_details - ACF field details
  * @param  array $choices - array to store the options
  * @param  int $depth - depth of the field
@@ -77,9 +76,7 @@ function get_acf_fields_as_options($field_details, &$choices, $depth = 0) {
 	}
 }
 
-/**
- * Populate the Field Name fields in the Filters settings
- */
+// Populate the Field Name fields in the Filters settings
 add_filter('acf/load_field', function ($field) {
 	$field_keys = [
 		'field_65f1ea274754b' => null, // pref_filters > acf_field

@@ -34,7 +34,10 @@ function array_is_list(array $arr) {
 
 /**
  * Utility function to get the data type of a variable as needed by validate_data
+ *
  * @param mixed $data The variable to check
+ * 		- boolean or integer or float etc.
+ *
  * @return string The data type of the variable
  */
 function get_data_type($data) {
@@ -475,7 +478,9 @@ define('lqx\util\schema_data_video', [
 
 /**
  * Get the video player and thumbnail URLs from a YouTube or Vimeo URL
+ *
  * @param string $url The YouTube or Vimeo URL
+ *
  * @return array An array containing the video URL and thumbnail URL
  */
 function get_video_urls($url) {
@@ -610,7 +615,9 @@ function get_breadcrumbs($post_id = null, $type = 'parent', $depth = 3, $show_cu
 
 /**
  * Get the thumbnail image object for a post
+ *
  * @param int $post_id The post ID for which to get the thumbnail image object
+ *
  * @return array The thumbnail image object
  */
 function get_thumbnail_image_object($post_id) {
@@ -663,8 +670,11 @@ function get_thumbnail_image_object($post_id) {
 
 /**
  * Create a slug from a string
+ *
  * @param string $string The string to convert to a slug
+ *
  * @param string $delimiter The delimiter to use between words
+ *
  * @return string The slug
  */
 function slugify($string, $delimiter = '-') {
@@ -689,7 +699,9 @@ function slugify($string, $delimiter = '-') {
 
 /**
  * Minify HTML code
+ *
  * @param string $html The HTML code to minify
+ *
  * @return string The minified HTML code
  */
 function minify_html($html) {

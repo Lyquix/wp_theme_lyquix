@@ -85,7 +85,15 @@ if (get_theme_mod('feat_modules', '1') === '1') {
 	});
 }
 
-// Load a rendered for a module based on available overrides
+/**
+ * Load a rendered for a module based on available overrides
+ *
+ * @param string $module_name
+ * 		The name of the module
+ *
+ * @return string
+ * 		The path to the renderer file
+ */
 function get_renderer($module_name) {
 	$dir = get_stylesheet_directory() . '/php/custom/modules/' . $module_name . '/';
 	$filename = 'default.php';
@@ -97,7 +105,17 @@ function get_renderer($module_name) {
 	}
 }
 
-// Load a template or sub-template for a module based on available overrides
+/**
+ * Get the template file for a module based on available overrides
+ *
+ * @param string $module_name
+ * 		The name of the module
+ * @param string $sub_template
+ * 		The name of the sub-template
+ * 		Default: null
+ *
+ * @return string
+ */
 function get_template($module_name, $sub_template = null) {
 	$dir = get_stylesheet_directory() . '/php/custom/modules/' . $module_name . '/';
 	$filename = 'default';

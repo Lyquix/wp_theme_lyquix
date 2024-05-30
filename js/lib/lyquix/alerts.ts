@@ -38,6 +38,8 @@ declare const dayjs, Swiper, jQuery;
  * It also sets up the Swiper slider for the alerts and adds click listeners to the close and navigation buttons.
  * When an alert is closed, a cookie is set to prevent it from showing again. It also sends analytics events if
  * analytics are enabled.
+ *
+ * @returns {object} An object with a method to initialize the alerts module.
  */
 export const alerts = (() => {
 	const init = (customCfg?: object) => {

@@ -37,6 +37,8 @@ declare const jQuery, Swiper;
  * The setup function sets up the sliders by fetching the sliders from the site options and adding them to the DOM.
  *
  * The init function initializes the slider module by setting up the sliders and adding a mutation handler for sliders added to the DOM.
+ *
+ * @returns {object} An object with a method to initialize the slider module.
  */
 export const slider = (() => {
 	const init = (customCfg?: object) => {

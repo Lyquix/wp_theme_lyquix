@@ -39,6 +39,8 @@ declare const gtag, YT, jQuery;
  *
  * The setup function sets up the analytics by tracking downloads, outbound links, errors, scroll depth, video, user active time,
  * rage clicks, and page performance. It also sends pageviews and events to Google Analytics and Microsoft Clarity.
+ *
+ * @returns {object} An object with methods to initialize, send pageviews and events, and track various user interactions.
  */
 export const analytics = (() => {
 

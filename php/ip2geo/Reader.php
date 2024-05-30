@@ -148,10 +148,13 @@ class Reader
         throw new InvalidDatabaseException('Something bad happened');
     }
 
-    /** Find the beginning node of the tree
+    /**
+     * Find the beginning node of the tree
      *
-     * @param int $length
+     * @param int $length length of the tree
+     *
      * @return int
+     *  The beginning node of the tree
      */
     private function startNode($length)
     {
@@ -187,10 +190,13 @@ class Reader
         return $node;
     }
 
-    /**Read a node from the tree
+    /**
+     * Read a node from the tree
      *
      * @param int $nodeNumber
      * @param int $index
+     *
+     * @return int the node
      */
     private function readNode($nodeNumber, $index)
     {
@@ -232,6 +238,8 @@ class Reader
      * Resolve the data pointer
      *
      * @param int $pointer
+     *  The pointer to the data
+     *
      * @return array
      */
     private function resolveDataPointer($pointer)

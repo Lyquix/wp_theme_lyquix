@@ -40,6 +40,8 @@ declare const jQuery, Swiper;
  * The setup function sets up the cards by adding a Swiper slider to each cards block.
  * It also adds click listeners to the navigation buttons. When a button is clicked, an analytics event is sent
  * if analytics are enabled.
+ *
+ * @returns {object} An object with a method to initialize the cards module.
  */
 export const cards = (() => {
 	const init = (customCfg?: object) => {

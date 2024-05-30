@@ -30,6 +30,8 @@ import { vars, cfg, log, error } from './core';
  * @module util
  *
  * @param {object} customCfg - Optional custom configuration for the util module.
+ *
+ * @returns {object} An object with methods for various utility functions.
  */
 export const util = (() => {
 

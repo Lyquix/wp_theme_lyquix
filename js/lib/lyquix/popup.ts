@@ -44,6 +44,8 @@ declare const dayjs, jQuery;
  *
  * The close function closes a popup by adding the closed class to the section element. It also sends an analytics
  * event if analytics are enabled and the onClose option is set to true.
+ *
+ * @returns {object} An object with methods to initialize, open, and close popups.
  */
 export const popup = (() => {
 	const init = (customCfg?: object) => {

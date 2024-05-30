@@ -34,6 +34,12 @@ declare const jQuery, Swiper;
  * @module gallery
  *
  * @param {object} customCfg - Optional custom configuration for the gallery module.
+ *
+ * The setup function sets up the galleries by fetching the galleries from the site options and adding them to the DOM.
+ *
+ * The init function initializes the gallery module by setting up the galleries and adding a mutation handler for galleries added to the DOM.
+ *
+ * @returns {object} An object with a method to initialize the gallery module.
  */
 export const gallery = (() => {
 	const init = (customCfg?: object) => {

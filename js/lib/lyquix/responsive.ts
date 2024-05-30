@@ -33,6 +33,8 @@ import { vars, cfg, log } from './core';
  * The init function initializes the screen responsiveness by setting up media queries for different screen sizes,
  * screen orientations, and aspect ratios. It also sets up event listeners for screen size changes, screen orientation
  * changes, and aspect ratio changes.
+ *
+ * @returns {object} An object with a method to initialize the screen responsiveness.
  */
 export const responsive = (() => {
 

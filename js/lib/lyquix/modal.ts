@@ -44,6 +44,8 @@ declare const dayjs, jQuery;
  *
  * The close function closes a modal by calling the close method on the dialog element. It also sends an analytics
  * event if analytics are enabled and the onClose option is set to true.
+ *
+ * @returns {object} An object with methods to initialize, open, and close modals.
  */
 export const modal = (() => {
 	const init = (customCfg?: object) => {

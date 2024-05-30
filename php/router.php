@@ -38,8 +38,12 @@ function tmpl_file_exists($tmpl_name) {
 
 /**
  * Render template based on the current request
+ * 		- This function is called from /php/router.php
+ * 		- It checks the current request and loads the appropriate template
+ * 		- If no suitable template is found, it throws a WordPress error
  *
  * @return void
+ * 		Loads the appropriate template
  */
 function render() {
 	global $wp_query;

@@ -62,6 +62,7 @@ class Decoder
      * @throws InvalidDatabaseException
      *
      * @return array
+     *   The decoded data
     */
     public function decode($offset)
     {

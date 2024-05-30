@@ -24,7 +24,12 @@
 
 namespace lqx\meta;
 
-// Render meta tags
+/**
+ * Render meta tags
+ *
+ * @return void
+ *		Echoes meta tags
+ */
 function render() {
 ?>
 	<meta charset="<?php bloginfo('charset'); ?>">

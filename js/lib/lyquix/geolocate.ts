@@ -41,6 +41,8 @@ declare const jQuery;
  * The regionDisplay function shows or hides elements based on the region of the current location.
  *
  * The geoJSONtoRegions function parses a geoJSON string and returns an object with regions definition.
+ *
+ * @returns {object} An object with methods to initialize, geolocate, and set regions.
  */
 export const geolocate = (() => {
 

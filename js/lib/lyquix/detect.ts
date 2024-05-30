@@ -31,6 +31,8 @@ declare let MobileDetect: (a: string) => void;
  * @module detect
  *
  * @param {object} customCfg - Optional custom configuration for the detect module.
+ *
+ * returns {object} An object with a method to initialize the detection module.
  */
 export const detect = (() => {
 

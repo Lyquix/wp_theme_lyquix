@@ -35,6 +35,8 @@ import { vars, cfg, log } from './core';
  *
  * The addHandler function adds a handler for nodes added, nodes removed, or attributes modified. The handler is called
  * when the mutation observer detects the specified type of mutation on the specified selector.
+ *
+ * @returns {object} An object with methods to initialize the mutation observer and add handlers for nodes added, nodes removed, and attributes modified.
  */
 export const mutation = (() => {
 

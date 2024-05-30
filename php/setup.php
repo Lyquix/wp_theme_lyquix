@@ -27,6 +27,19 @@ namespace lqx\setup;
 /**
  * Theme setup
  * 		- Add theme support
+ * 		- Load theme styles into editor
+ * 		- Remove unnecessary wptexturize filter
+ * 		- Disable srcset on images
+ * 		- Hide PHP upgrade alert from dashboard
+ * 		- Hide Yoast SEO meta box
+ * 		- Allow SVGs in WP Uploads
+ * 		- Load Global WordPress Styles
+ * 		- Remove WordPress generator meta tag
+ * 		- Remove weak password confirmation checkbox
+ * 		- Change the default image sizes
+ * 		- Add alerts for required plugins
+ * 		- Add user management capabilities to editor user role
+ * 		- Remove additional ACF extended menu items
  *
  * @return void
  */

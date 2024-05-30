@@ -39,6 +39,8 @@ import { vars, cfg, log, warn } from './core';
  * The unset function removes an object or property from localStorage.
  *
  * The update function updates the stored data in localStorage.
+ *
+ * @returns {object} An object with methods to initialize, get, set, unset, and update stored data.
  */
 export const store = (() => {
 
