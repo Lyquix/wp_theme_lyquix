@@ -170,8 +170,8 @@ function render_lyquix_options() {
 	if (!$theme_script_options) $theme_script_options = [];
 	$scripts_options = array_replace_recursive([], $theme_script_options);
 
-	echo "<script>lqx.init(JSON.parse('" . str_replace("'", "\'", json_encode($lqx_options)) . "'));\n";
-	echo "\$lqx.init(JSON.parse('" . str_replace("'", "\'", json_encode($scripts_options)) . "'));</script>\n";
+	echo "<script>lqx.init(JSON.parse(atob('" . base64_encode(json_encode($lqx_options)) . "')));\n";
+	echo "\$lqx.init(JSON.parse(atob('" . base64_encode(json_encode($scripts_options)) . "')));</script>\n";
 }
 
 function render_gtm_head_code() {
