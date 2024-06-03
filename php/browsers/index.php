@@ -77,104 +77,58 @@ $browser_data = [
 	],
 ];
 
-// Detect type of browser from user agent
-function browser_type() {
+function get_first_match($regex, $ua) {
+	preg_match($regex, $ua, $match);
+	return isset($match[1]) ? $match[1] : '';
+}
+
+function get_second_match($regex, $ua) {
+	preg_match($regex, $ua, $match);
+	return isset($match[2]) ? $match[2] : '';
+}
+
+function detect_browser() {
 	$ua = $_SERVER['HTTP_USER_AGENT'];
+	$browser = [];
 
-	$browser = null;
-
-	if (preg_match('/MSIE/i', $ua) && !preg_match('/Opera/i', $ua)) {
-		$browser = 'ie';
-	} elseif (preg_match('/Firefox/i', $ua)) {
-		$browser = 'firefox';
-	} elseif (preg_match('/Chrome/i', $ua)) {
-		$browser = 'chrome';
-	} elseif (preg_match('/Safari/i', $ua)) {
-		$browser = 'safari';
-	} elseif (preg_match('/Opera/i', $ua)) {
-		$browser = 'opera';
-	} elseif (preg_match('/Edge/i', $ua)) {
-		$browser = 'edge';
-	} elseif (preg_match('/Brave/i', $ua)) {
-		$browser = 'brave';
+	if (preg_match('/opera|opr/i', $ua)) {
+		$browser = [
+			'type' => 'opera',
+			'version' => get_first_match('/version\/(\d+(\.\d+)?)/i', $ua) ?: get_first_match('/(?:opera|opr)[\s/](\d+(\.\d+)?)/i', $ua)
+		];
+	} else if (preg_match('/msie|trident/i', $ua)) {
+		$browser = [
+			'type' => 'msie',
+			'version' => get_first_match('/(?:msie |rv:)(\d+(\.\d+)?)/i', $ua)
+		];
+	} else if (preg_match('/chrome.+? edge/i', $ua)) {
+		$browser = [
+			'type' => 'msedge',
+			'version' => get_first_match('/edge\/(\d+(\.\d+)?)/i', $ua)
+		];
+	} else if (preg_match('/chrome|crios|crmo/i', $ua)) {
+		$browser = [
+			'type' => 'chrome',
+			'version' => get_first_match('/(?:chrome|crios|crmo)\/(\d+(\.\d+)?)/i', $ua)
+		];
+	} else if (preg_match('/firefox/i', $ua)) {
+		$browser = [
+			'type' => 'firefox',
+			'version' => get_first_match('/(?:firefox)[ /](\d+(\.\d+)?)/i', $ua)
+		];
+	} else if (preg_match('/safari/i', $ua)) {
+		$browser = [
+			'type' => 'safari',
+			'version' => get_first_match('/safari\/(\d+(\.\d+)?)/i', $ua)
+		];
+	} else {
+		$browser = [
+			'version' => get_second_match('/^(.*)\/(.*) /', $ua)
+		];
+		$browser['type'] = strtolower(str_replace(' ', '', $browser['name']));
 	}
 
 	return $browser;
-}
-
-// Detect type of browser from user agent
-function browser_name() {
-	$ua = $_SERVER['HTTP_USER_AGENT'];
-
-	$browser = null;
-
-	if (preg_match('/MSIE/i', $ua) && !preg_match('/Opera/i', $ua)) {
-		$browser = 'Microsoft Internet Explorer';
-	} elseif (preg_match('/Firefox/i', $ua)) {
-		$browser = 'Mozilla Firefox';
-	} elseif (preg_match('/Chrome/i', $ua)) {
-		$browser = 'Google Chrome';
-	} elseif (preg_match('/Safari/i', $ua)) {
-		$browser = 'Apple Safari';
-	} elseif (preg_match('/Opera/i', $ua)) {
-		$browser = 'Opera';
-	} elseif (preg_match('/Edge/i', $ua)) {
-		$browser = 'Microsoft Edge';
-	} elseif (preg_match('/Brave/i', $ua)) {
-		$browser = 'Brave';
-	}
-	else $browser = 'Unknown';
-
-	return $browser;
-}
-
-
-// Detect the browser version from user agent
-function browser_version() {
-	$ua = $_SERVER['HTTP_USER_AGENT'];
-
-	$version = null;
-
-	$browser = browser_type();
-
-	if ($browser == 'ie') {
-		preg_match('/MSIE (.*?);/', $ua, $matches);
-		if (count($matches) > 1) {
-			$version = $matches[1];
-		}
-	} elseif ($browser == 'firefox') {
-		preg_match('/Firefox\/(.*?)[\s]/', $ua, $matches);
-		if (count($matches) > 1) {
-			$version = $matches[1];
-		}
-	} elseif ($browser == 'chrome') {
-		preg_match('/Chrome\/(.*?)[\s]/', $ua, $matches);
-		if (count($matches) > 1) {
-			$version = $matches[1];
-		}
-	} elseif ($browser == 'safari') {
-		preg_match('/Version\/(.*?)[\s]/', $ua, $matches);
-		if (count($matches) > 1) {
-			$version = $matches[1];
-		}
-	} elseif ($browser == 'opera') {
-		preg_match('/Opera\/(.*?)[\s]/', $ua, $matches);
-		if (count($matches) > 1) {
-			$version = $matches[1];
-		}
-	} elseif ($browser == 'edge') {
-		preg_match('/Edge\/(.*?)[\s]/', $ua, $matches);
-		if (count($matches) > 1) {
-			$version = $matches[1];
-		}
-	} elseif ($browser == 'brave') {
-		preg_match('/Brave\/(.*?)[\s]/', $ua, $matches);
-		if (count($matches) > 1) {
-			$version = $matches[1];
-		}
-	}
-
-	return $version;
 }
 
 // Get browser name from user agent
@@ -241,8 +195,8 @@ function get_browser_version($browser) {
 	}
 
 	// Sort the versions array using the version_compare function
-	usort($versions, function($a,$b) {
-		return -1 * version_compare ( $a , $b );
+	usort($versions, function ($a, $b) {
+		return -1 * version_compare($a, $b);
 	});
 
 	// Remove duplicates
@@ -271,31 +225,27 @@ function get_all_browsers_versions() {
 function browser_outdated() {
 	global $browser_data;
 
-	$res = [
-		'browser' => browser_type(),
-		'browser_name' => browser_name(),
-		'user_version' => browser_version(),
-	];
+	$res = detect_browser();
 
-	if (array_key_exists($res['browser'], $browser_data)) {
+	if (array_key_exists($res['type'], $browser_data)) {
 		// A browser will be considered outdated if it is older than the last 3 versions
 		if (array_key_exists('accepted', $_GET)) $accepted_versions = intval($_GET['accepted']);
 		if (!$accepted_versions) $accepted_versions = 3;
-		$res['accepted_version'] = $browser_data[$res['browser']]['version'][$accepted_versions - 1];
+		$res['accepted_version'] = $browser_data[$res['type']]['version'][$accepted_versions - 1];
 
 		// Known browser with outdated version
-		if (version_compare($res['user_version'], $res['accepted_version']) == -1) $res['outdated'] = true;
+		if (version_compare($res['version'], $res['accepted_version']) == -1) $res['outdated'] = true;
 
 		// Known browser up to date
 		else $res['outdated'] =  false;
 	}
 	// IE is always outdated
-	elseif ($res['browser'] == 'ie') $res['outdated'] =  true;
+	elseif ($res['type'] == 'msie') $res['outdated'] =  true;
 	// Unknown browser
 	else $res['outdated'] =  null;
 
 	if ($res['outdated']) {
-		$res['info'] = array_map(function($item) {
+		$res['info'] = array_map(function ($item) {
 			return [
 				'name' => $item['name'],
 				'long_name' => $item['long_name'],
@@ -325,16 +275,16 @@ if (file_exists('browsers.json')) {
 // Check if browser is outdated
 $browser_outdated = browser_outdated();
 
-// Get the request URI and remove: index.php, any query string, trailing slash, and hash
-$browsers_uri = preg_replace('/index\.php|(\?.*)|\/$|#.*/', '', $_SERVER['REQUEST_URI']);
+if ($browser_outdated['outdated'] === true) {
+	// Get the request URI and remove: index.php, any query string, trailing slash, and hash
+	$browsers_uri = preg_replace('/index\.php|(\?.*)|\/$|#.*/', '', $_SERVER['REQUEST_URI']);
 
-// Get the contents of browsers.js and minify it
-$browsers_js = file_get_contents('browsers.min.js');
-$browsers_js = str_replace('BROWSERS_URI', $browsers_uri, $browsers_js);
-$browsers_js = str_replace('BROWSERS_DATA', json_encode($browser_outdated), $browsers_js);
-
-if ($browser_outdated['outdated'] === true) echo $browsers_js;
-else echo ';';
+	// Get the contents of browsers.js and minify it
+	$browsers_js = file_get_contents('browsers.min.js');
+	$browsers_js = str_replace('BROWSERS_URI', $browsers_uri, $browsers_js);
+	$browsers_js = str_replace('BROWSERS_DATA', base64_encode(json_encode($browser_outdated)), $browsers_js);
+	echo $browsers_js;
+}
+else echo sprintf('/* %s */;',json_encode($browser_outdated));
 
 exit;
-

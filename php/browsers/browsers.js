@@ -32,7 +32,7 @@
 		const elem = jQuery(
 			`<section id="browser-alert">
 				<h1>Please Update Your Browser</h1>
-				<p><strong>You are using an outdated browser, ${browsersData.browser_name} version ${browsersData.user_version}.</strong></p>
+				<p><strong>You are using an outdated browser, ${browsersData.name} version ${browsersData.version}.</strong></p>
 				<p>Outdated browsers can make your computer unsafe and may not properly work with this website.&nbsp;
 				To ensure security, performance, and full functionality, please upgrade to an up-to-date browser.</p>
 				<ul></ul>
@@ -59,4 +59,4 @@
 		// Append alert to body
 		jQuery('body').append(elem);
 	}
-})(BROWSERS_DATA);
+})(atob('BROWSERS_DATA'));

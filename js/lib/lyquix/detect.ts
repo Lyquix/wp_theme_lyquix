@@ -23,7 +23,6 @@
 import { vars, cfg, log } from './core';
 import { util } from './util';
 declare let MobileDetect: (a: string) => void;
-const ua: string = window.navigator.userAgent;
 
 export const detect = (() => {
 
@@ -106,6 +105,7 @@ export const detect = (() => {
 	// based on: https://github.com/ded/bowser
 	// list of user agen strings: http://www.webapps-online.com/online-tools/user-agent-strings/dv
 	const detectBrowser = () => {
+		const ua: string = window.navigator.userAgent;
 		let browser;
 
 		if (/opera|opr/i.test(ua)) {
