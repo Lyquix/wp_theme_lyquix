@@ -150,7 +150,7 @@ $c = array_filter(array_map(function($item) use($s) {
 }, $content));
 
 // The active CTA
-if (count($c) > 0) $cta = $c[0];
+if (count($c) > 0) $cta = reset($c);
 else return;
 
 \lqx\modules\get_template('cta');
