@@ -153,4 +153,4 @@ $c = array_filter(array_map(function($item) use($s) {
 if (count($c) > 0) $cta = reset($c);
 else return;
 
-\lqx\modules\get_template('cta');
+require \lqx\modules\get_template('cta');

@@ -23,4 +23,4 @@
 //  DO NOT MODIFY THIS FILE!
 //  If you need a custom renderer, copy this file to php/custom/modules/popup/default.php and modify it there
 
-\lqx\modules\get_template('popup');
+require \lqx\modules\get_template('popup');
