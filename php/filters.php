@@ -1043,18 +1043,42 @@ function prepare_query($query, $s) {
 
 					case 'y':
 						$before = date('Y-m-d', strtotime($anchor . ' +' . $pre_filter['end'] . ' years'));
-						$after = date('Y-m-d', strtotime($anchor . ' -' . $pre_filter['start'] . ' years'));
+						$after = date('Y-m-d', strtotime($anchor . ' -' . $pre_filter['start'] ?? '0' . ' years'));
 						break;
 				}
+				if ($pre_filter['date_source'] === 'field') {
+					$acf_meta_query =array(
+						'relation' => 'AND',
+						array(
+								'key'     => get_field_object($pre_filter['acf_field'])['name'],
+								'value'   => $after,
+								'compare' => '>=',
+								'type'    => 'DATE'
+						),
+						array(
+								'key'     => get_field_object($pre_filter['acf_field'])['name'],
+								'value'   => $before,
+								'compare' => '<=',
+								'type'    => 'DATE'
+						)
+					);
 
-				$date_query = [
-					'before' => $before,
-					'after' => $after,
-					// Inclusive scopes in the current date when dealing with the before/after system
-					'inclusive' => true,
-				];
-
-				$query['date_query'] = $date_query;
+					if (isset($query['meta_query'])) {
+						$query['meta_query']['relation'] = 'AND';
+						$query['meta_query'][] = $acf_meta_query;
+					} else {
+						$query['meta_query'] = array();
+						$query['meta_query'][] = $acf_meta_query;
+					}
+				} else {
+					$date_query = [[
+						'before' => $before,
+						'after' => $after,
+						// Inclusive scopes in the current date when dealing with the before/after system
+						'inclusive' => true,
+					]];
+					$query['date_query'] = $date_query;
+				}
 				break;
 
 			case 'author':
