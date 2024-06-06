@@ -60,7 +60,7 @@ function theme_setup() {
 
 	// Disable srcset on images
 	if (get_theme_mod('feat_disable_srcset', '1') === '1') {
-		add_filter( 'wp_calculate_image_srcset', function ($sources) {
+		add_filter('wp_calculate_image_srcset', function ($sources) {
 			return false;
 		});
 	}
@@ -132,6 +132,10 @@ function theme_setup() {
 			];
 		}, 10, 1);
 	}
+
+	// Disable automatic updates of plugins and themes
+	add_filter('auto_update_plugin', '__return_false');
+	add_filter('auto_update_theme', '__return_false');
 
 	// Add alerts for required plugins
 	if (get_theme_mod('feat_required_plugins_alert', '1') === '1') {
