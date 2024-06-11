@@ -141,6 +141,64 @@
                     "acfe_wysiwyg_min_height": 300,
                     "acfe_wysiwyg_toolbar_buttons": [],
                     "parent_repeater": "field_65301b9bb6ce8"
+                },
+                {
+                    "key": "field_66634fc721f10",
+                    "label": "Additional Classes",
+                    "name": "additional_classes",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "35",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "default_value": "",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "maxlength": "",
+                    "instruction_placement": "",
+                    "acfe_permissions": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "parent_repeater": "field_65301b9bb6ce8"
+                },
+                {
+                    "key": "field_6663501521f12",
+                    "label": "Item ID",
+                    "name": "item_id",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "35",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "default_value": "",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "maxlength": "",
+                    "instruction_placement": "",
+                    "acfe_permissions": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "parent_repeater": "field_65301b9bb6ce8"
                 }
             ]
         }
@@ -171,5 +229,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1710388116
+    "modified": 1717787068
 }

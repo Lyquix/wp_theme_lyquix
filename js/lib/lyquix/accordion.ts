@@ -86,6 +86,10 @@ export const accordion = (() => { // Change the accordion name
 				// Setup accordions loaded initially on the page
 				setup(jQuery(cfg.accordion.accordionSelector));
 
+				// Listen for hash change events
+				hashChangeHandler();
+				window.addEventListener('hashchange', hashChangeHandler);
+
 				// Add a mutation handler for accordions added to the DOM
 				mutation.addHandler('addNode', cfg.accordion.accordionSelector, setup);
 			});
@@ -111,9 +115,10 @@ export const accordion = (() => { // Change the accordion name
 					headerElem = jQuery(headerElem);
 
 					// The panel element
-					const panelElem = jQuery('#' + headerElem.attr('id').replace('-header-', '-panel-'));
+					const hashValue = headerElem.attr('data-hash').replace('-header-', '-panel-');
+					const panelElem = jQuery(`[data-hash="${hashValue}"]`);
 					// TODO Handle missing panel
-					const panelId = panelElem.attr('id');
+					const panelId = panelElem.attr('data-hash');
 
 					// Add click listener
 					headerElem.on('click', () => {
@@ -204,6 +209,20 @@ export const accordion = (() => { // Change the accordion name
 			});
 		}
 	};
+
+	const hashChangeHandler = () => {
+		const hash = window.location.hash;
+		if (hash) {
+			// Select the accordion header with the matching id
+			const target =  jQuery(`.accordion-header${hash}`);
+			if (target) {
+				// Trigger a click event on the accordion header
+				const panelId = target.attr('data-hash').replace('-header-', '-panel-');
+				open(panelId);
+			}
+		}
+	};
+
 
 	return {
 		init,

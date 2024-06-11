@@ -31,18 +31,18 @@
 
 	<div
 		class="accordion"
-		id="<?= esc_attr($s['hash']) ?>"
+		data-hash="<?= esc_attr($s['hash']) ?>"
 		data-open-on-load="<?= $s['open_on_load'] ?>"
 		data-open-multiple="<?= $s['open_multiple'] ?>"
 		data-browser-history="<?= $s['browser_history'] ?>"
 		data-auto-scroll="<?= implode(',', $s['auto_scroll']) ?>">
 
 		<?php foreach ($c as $idx => $item) : ?>
-
+			<div class="accordion-item <?= ($item['additional_classes'] !== '') ? $item['additional_classes'] : '' ?>" >
 			<?php require \lqx\blocks\get_template('accordion', $s['preset'], 'header'); ?>
 
 			<?php require \lqx\blocks\get_template('accordion', $s['preset'], 'panel'); ?>
-
+			</div>
 		<?php endforeach; ?>
 	</div>
 
