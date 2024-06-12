@@ -147,11 +147,12 @@ export const tabs = (() => {
 
 						// The panel element
 						const panelId = headerElem.attr('id').replace('-header-', '-panel-');
-
+						const panelElem = jQuery('#' + headerElem.attr('id').replace('-header-', '-content-'));
 						// Add click listener
 						jQuery(headerElem).on('click', () => {
-							// Open tabs
-							open(panelId);
+							// Open accordion, close if clicked on again
+							if (panelElem.attr('aria-hidden') === 'true') open(panelId);
+							else close(panelId);
 						});
 					});
 				}
