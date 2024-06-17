@@ -219,15 +219,7 @@
                     "type": "acfe_code_editor",
                     "instructions": "Enter a JSON object to extend the default Swiper options",
                     "required": 0,
-                    "conditional_logic": [
-                        [
-                            {
-                                "field": "field_65b8497580497",
-                                "operator": "==",
-                                "value": "y"
-                            }
-                        ]
-                    ],
+                    "conditional_logic": 0,
                     "wrapper": {
                         "width": "",
                         "class": "",
@@ -373,5 +365,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1706594609
+    "modified": 1706594610
 }
