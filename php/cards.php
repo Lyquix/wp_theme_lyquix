@@ -82,7 +82,9 @@ define('lqx\cards\schema', [
 					'value' => \lqx\util\schema_str_req_emp
 				]
 			]
-		]
+		],
+		'additional_classes' => \lqx\util\schema_str_req_emp,
+		'item_id' => \lqx\util\schema_str_req_emp
 	]
 ]);
 

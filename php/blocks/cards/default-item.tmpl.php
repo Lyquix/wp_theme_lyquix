@@ -26,8 +26,8 @@
 
 ?>
 <li
-	class="<?= $s['slider'] == 'y' ? 'swiper-slide' : 'card' ?>"
-	id="<?= $s['hash'] . '-' . $idx ?>">
+	class="<?= $s['slider'] == 'y' ? 'swiper-slide' : 'card' ?> <?= esc_attr($item['additional_classes']) ?>"
+	id="<?= ($item['item_id'] !== '' ? esc_attr($item['item_id']) : $s['hash'] . '-' . $idx) ?>">
 
 	<?php if (!empty($item['labels'])) require \lqx\blocks\get_template('cards', $s['preset'], 'labels'); ?>
 
