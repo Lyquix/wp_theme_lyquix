@@ -28,8 +28,7 @@
 <<?= $s['heading_style'] ?>>
 	<button
 		class="accordion-header"
-		id="<?= ($item['item_id'] !== '') ? $item['item_id'] : $s['hash'] . '-header-' . $idx ?>"
-		data-hash="<?= $s['hash'] . '-header-' . $idx ?>"
+		id="<?= $s['hash'] . '-header-' . $idx ?>"
 		aria-expanded="<?= $idx == 0 && $s['open_on_load'] == 'y' ? 'true' : 'false' ?>"
 		aria-controls="<?= $s['hash'] . '-panel-' . $idx ?>">
 		<?= $item['heading'] ?>

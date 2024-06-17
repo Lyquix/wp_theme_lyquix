@@ -28,7 +28,6 @@
 <section
 	class="accordion-panel <?= $idx == 0 && $s['open_on_load'] == 'y' ? '' : 'closed' ?>"
 	id="<?= $s['hash'] . '-panel-' . $idx ?>"
-	data-hash="<?= $s['hash'] . '-panel-' . $idx ?>"
 	role="region"
 	aria-labelledby="<?= ($item['item_id'] !== '') ? $item['item_id'] : $s['hash'] . '-header-' . $idx ?>"
 	aria-hidden="<?= $idx == 0 && $s['open_on_load'] == 'y' ? 'false' : 'true' ?>">

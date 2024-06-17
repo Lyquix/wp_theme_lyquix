@@ -109,16 +109,15 @@ export const accordion = (() => { // Change the accordion name
 				// The accordion element
 				accElem = jQuery(accElem);
 
-				// Cycle through each panel
+				// Cycle through each header element
 				accElem.find(cfg.accordion.headerSelector).each((idx, headerElem) => {
 					// The header element
 					headerElem = jQuery(headerElem);
 
 					// The panel element
-					const hashValue = headerElem.attr('data-hash').replace('-header-', '-panel-');
-					const panelElem = jQuery(`[data-hash="${hashValue}"]`);
+					const panelElem = jQuery('#' + headerElem.attr('id').replace('-header-', '-panel-'));
 					// TODO Handle missing panel
-					const panelId = panelElem.attr('data-hash');
+					const panelId = panelElem.attr('id');
 
 					// Add click listener
 					headerElem.on('click', () => {
@@ -214,10 +213,10 @@ export const accordion = (() => { // Change the accordion name
 		const hash = window.location.hash;
 		if (hash) {
 			// Select the accordion header with the matching id
-			const target =  jQuery(`.accordion-header${hash}`);
-			if (target) {
+			const target =  jQuery(`.accordion-item${hash}`);
+			if (target.length) {
 				// Trigger a click event on the accordion header
-				const panelId = target.attr('data-hash').replace('-header-', '-panel-');
+				const panelId = target.find(cfg.accordion.panelSelector).attr('id');
 				open(panelId);
 			}
 		}
