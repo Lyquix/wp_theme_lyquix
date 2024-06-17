@@ -371,7 +371,15 @@ export const filters = (() => {
 						});
 						// Open and close list
 						controlWrapper.find('label').on('click', () => {
+							let controlsSelector = filterObj.elem.find(cfg.filters.controlsSelector);
+							controlsSelector = jQuery(controlsSelector);
+							controlWrapper.siblings().removeClass('open');
 							controlWrapper.toggleClass('open');
+							if (controlWrapper.hasClass('open')) {
+								controlsSelector.addClass('open-list');
+							} else {
+								controlsSelector.removeClass('open-list');
+							}
 						});
 						break;
 				}
