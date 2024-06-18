@@ -25,7 +25,9 @@
 //  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/logos/{preset}-item.tmpl.php
 
 ?>
-<li>
+<li
+	class="<?= $item['additional_classes'] ? esc_attr($item['additional_classes']) : '' ?>"
+	id="<?= $item['item_id'] ? esc_attr($item['item_id']) : '' ?>">
 	<?php if (array_key_exists('url', $item['link'])) : ?>
 		<a
 			href="<?= esc_url($item['link']['url']) ?>"

@@ -63,7 +63,9 @@ $c = \lqx\util\validate_data($content, [
 				'keys' => \lqx\util\schema_data_link
 			],
 			'tailwind_p-' => \lqx\util\schema_str_req_emp,
-			'title' => \lqx\util\schema_str_req_emp
+			'title' => \lqx\util\schema_str_req_emp,
+			'additional_classes' => \lqx\util\schema_str_req_emp,
+			'item_id' => \lqx\util\schema_str_req_emp
 		]
 	]
 ]);

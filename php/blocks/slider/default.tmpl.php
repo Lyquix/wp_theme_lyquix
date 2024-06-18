@@ -45,7 +45,11 @@
 
 				<?php foreach ($c as $idx => $item) : ?>
 
-					<li class="swiper-slide" data-slide-teaser="<?= esc_attr($item['teaser_text'] ?? '') ?>" data-slide-thumbnail="<?= esc_attr($item['thumbnail']['sizes']['large'] ?? '') ?>">
+					<li
+						class="swiper-slide <?= $item['additional_classes'] ? esc_attr($item['additional_classes']) : '' ?>"
+						id="<?= $item['item_id'] ? esc_attr($item['item_id']) : '' ?>"
+						data-slide-teaser="<?= esc_attr($item['teaser_text'] ?? '') ?>"
+						data-slide-thumbnail="<?= esc_attr($item['thumbnail']['sizes']['large'] ?? '') ?>">
 						<div class="swiper-slide-inner">
 
 						<?php require \lqx\blocks\get_template('slider', $s['preset'], 'image'); ?>

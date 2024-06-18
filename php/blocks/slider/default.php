@@ -123,7 +123,9 @@ $c = array_filter(array_map(function($item) {
 				'default' => [],
 				'keys' => \lqx\util\schema_data_image
 			],
-			'teaser_text' => \lqx\util\schema_str_req_emp
+			'teaser_text' => \lqx\util\schema_str_req_emp,
+			'additional_classes' => \lqx\util\schema_str_req_emp,
+			'item_id' => \lqx\util\schema_str_req_emp
 		]
 	]);
 	return $v['isValid'] ? $v['data'] : null;
