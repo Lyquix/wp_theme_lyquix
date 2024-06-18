@@ -18,7 +18,8 @@
             },
             "placement": "top",
             "endpoint": 0,
-            "no_preference": 0
+            "no_preference": 0,
+            "selected": 0
         },
         {
             "key": "field_65526244e9ff0",
@@ -230,7 +231,8 @@
             },
             "placement": "top",
             "endpoint": 0,
-            "no_preference": 0
+            "no_preference": 0,
+            "selected": 0
         },
         {
             "key": "field_6578bfba29b52",
@@ -433,5 +435,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1709827591
+    "modified": 1718724378
 }

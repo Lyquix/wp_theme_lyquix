@@ -36,7 +36,8 @@
             },
             "placement": "top",
             "endpoint": 0,
-            "no_preference": 0
+            "no_preference": 0,
+            "selected": 0
         },
         {
             "key": "field_659d0ea6112e6",
@@ -158,6 +159,11 @@
                     "acfe_settings": "",
                     "instruction_placement": "tooltip",
                     "acfe_permissions": "",
+                    "acfe_group_modal": 0,
+                    "acfe_group_modal_close": 0,
+                    "acfe_group_modal_button": "",
+                    "acfe_group_modal_size": "large",
+                    "parent_repeater": "field_659d0ea6112e6",
                     "sub_fields": [
                         {
                             "key": "field_659d1560bc099",
@@ -245,12 +251,7 @@
                             "file_count": 0,
                             "min": ""
                         }
-                    ],
-                    "acfe_group_modal": 0,
-                    "acfe_group_modal_close": 0,
-                    "acfe_group_modal_button": "",
-                    "acfe_group_modal_size": "large",
-                    "parent_repeater": "field_659d0ea6112e6"
+                    ]
                 },
                 {
                     "key": "field_659d0fb98cedf",
@@ -305,6 +306,7 @@
                     "collapsed": "",
                     "button_label": "Add",
                     "rows_per_page": 20,
+                    "parent_repeater": "field_659d0ea6112e6",
                     "sub_fields": [
                         {
                             "key": "field_659d107594369",
@@ -347,8 +349,7 @@
                             "return_format": "array",
                             "parent_repeater": "field_659d104494367"
                         }
-                    ],
-                    "parent_repeater": "field_659d0ea6112e6"
+                    ]
                 },
                 {
                     "key": "field_659d0fa58cede",

@@ -31,7 +31,8 @@
             "endpoint": 0,
             "no_preference": 0,
             "instruction_placement": "",
-            "acfe_permissions": ""
+            "acfe_permissions": "",
+            "selected": 0
         },
         {
             "key": "field_65a05775994f1",
@@ -131,5 +132,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1709775478
+    "modified": 1718724370
 }

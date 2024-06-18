@@ -51,7 +51,8 @@
             "placement": "top",
             "endpoint": 0,
             "acfe_permissions": "",
-            "no_preference": 0
+            "no_preference": 0,
+            "selected": 0
         },
         {
             "key": "field_658db3b2c1203",
@@ -539,14 +540,15 @@
                             "append": "",
                             "parent_repeater": "field_658db8320c9b2"
                         }
-                    ]
+                    ],
+                    "parent_repeater": "field_658db3b2c1203"
                 },
                 {
                     "key": "field_665f1731a1b2a",
                     "label": "Additional Classes",
                     "name": "additional_classes",
                     "aria-label": "",
-                    "type": "acfe_slug",
+                    "type": "text",
                     "instructions": "",
                     "required": 0,
                     "conditional_logic": 0,
@@ -560,14 +562,14 @@
                     "hide_instructions": "",
                     "hide_required": "",
                     "default_value": "",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "maxlength": "",
+                    "instruction_placement": "",
+                    "acfe_permissions": "",
                     "placeholder": "",
                     "prepend": "",
                     "append": "",
-                    "maxlength": "",
-                    "acfe_settings": "",
-                    "acfe_validate": "",
-                    "instruction_placement": "",
-                    "acfe_permissions": "",
                     "parent_repeater": "field_658db3b2c1203"
                 },
                 {
@@ -628,5 +630,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1715090199
+    "modified": 1718724702
 }

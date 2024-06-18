@@ -37,7 +37,8 @@
             "placement": "top",
             "endpoint": 0,
             "acfe_permissions": "",
-            "no_preference": 0
+            "no_preference": 0,
+            "selected": 0
         },
         {
             "key": "field_65301b9bb6ce8",
@@ -152,7 +153,7 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "35",
+                        "width": "50",
                         "class": "",
                         "id": ""
                     },
@@ -176,12 +177,12 @@
                     "label": "Item ID",
                     "name": "item_id",
                     "aria-label": "",
-                    "type": "text",
+                    "type": "acfe_slug",
                     "instructions": "",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "35",
+                        "width": "50",
                         "class": "",
                         "id": ""
                     },
@@ -190,14 +191,14 @@
                     "hide_instructions": "",
                     "hide_required": "",
                     "default_value": "",
-                    "acfe_settings": "",
-                    "acfe_validate": "",
-                    "maxlength": "",
-                    "instruction_placement": "",
-                    "acfe_permissions": "",
                     "placeholder": "",
                     "prepend": "",
                     "append": "",
+                    "maxlength": "",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "instruction_placement": "",
+                    "acfe_permissions": "",
                     "parent_repeater": "field_65301b9bb6ce8"
                 }
             ]
@@ -229,5 +230,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1717787068
+    "modified": 1718725113
 }

@@ -42,7 +42,8 @@
                     "placement": "top",
                     "endpoint": 0,
                     "no_preference": 0,
-                    "parent_repeater": "field_65566181bf16d"
+                    "parent_repeater": "field_65566181bf16d",
+                    "selected": 0
                 },
                 {
                     "key": "field_655662f3bf174",
@@ -145,6 +146,7 @@
                     "collapsed": "",
                     "button_label": "Add Row",
                     "rows_per_page": 20,
+                    "parent_repeater": "field_65566181bf16d",
                     "sub_fields": [
                         {
                             "key": "field_658be65dda581",
@@ -187,8 +189,7 @@
                             "return_format": "array",
                             "parent_repeater": "field_658be645da580"
                         }
-                    ],
-                    "parent_repeater": "field_65566181bf16d"
+                    ]
                 },
                 {
                     "key": "field_65777c821be1f",
@@ -207,7 +208,8 @@
                     "placement": "top",
                     "endpoint": 0,
                     "no_preference": 0,
-                    "parent_repeater": "field_65566181bf16d"
+                    "parent_repeater": "field_65566181bf16d",
+                    "selected": 0
                 },
                 {
                     "key": "field_65566324bf177",
@@ -340,6 +342,7 @@
                     "collapsed": "",
                     "button_label": "Add Row",
                     "rows_per_page": 20,
+                    "parent_repeater": "field_65566181bf16d",
                     "sub_fields": [
                         {
                             "key": "field_655663e7bf17e",
@@ -366,8 +369,7 @@
                             "allow_backendsearch": 0,
                             "parent_repeater": "field_655663dabf17d"
                         }
-                    ],
-                    "parent_repeater": "field_65566181bf16d"
+                    ]
                 },
                 {
                     "key": "field_658be6ec381ef",
@@ -478,7 +480,6 @@
                     "hide_instructions": "",
                     "hide_required": "",
                     "choices": {
-                        ": Select": ": Select",
                         "": "Select"
                     },
                     "default_value": false,
@@ -529,5 +530,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1707157661
+    "modified": 1718724380
 }

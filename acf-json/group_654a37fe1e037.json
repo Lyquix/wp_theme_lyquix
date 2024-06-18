@@ -97,7 +97,13 @@
                     "allow_null": 1,
                     "ui": 0,
                     "ajax": 0,
-                    "placeholder": ""
+                    "placeholder": "",
+                    "allow_custom": 0,
+                    "search_placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "min": "",
+                    "max": ""
                 },
                 {
                     "key": "field_654a39276b16c",
@@ -124,7 +130,13 @@
                     "allow_null": 1,
                     "ui": 0,
                     "ajax": 0,
-                    "placeholder": ""
+                    "placeholder": "",
+                    "allow_custom": 0,
+                    "search_placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "min": "",
+                    "max": ""
                 },
                 {
                     "key": "field_654a3a6f6b16d",
@@ -156,7 +168,13 @@
                     "allow_null": 1,
                     "ui": 0,
                     "ajax": 0,
-                    "placeholder": ""
+                    "placeholder": "",
+                    "allow_custom": 0,
+                    "search_placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "min": "",
+                    "max": ""
                 },
                 {
                     "key": "field_654a3b4c6b16e",
@@ -184,7 +202,13 @@
                     "allow_null": 1,
                     "ui": 0,
                     "ajax": 0,
-                    "placeholder": ""
+                    "placeholder": "",
+                    "allow_custom": 0,
+                    "search_placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "min": "",
+                    "max": ""
                 },
                 {
                     "key": "field_654a3bbd6b16f",
@@ -217,7 +241,13 @@
                     "allow_null": 1,
                     "ui": 0,
                     "ajax": 0,
-                    "placeholder": ""
+                    "placeholder": "",
+                    "allow_custom": 0,
+                    "search_placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "min": "",
+                    "max": ""
                 },
                 {
                     "key": "field_654a3c756b170",
@@ -246,9 +276,20 @@
                     "allow_null": 1,
                     "ui": 0,
                     "ajax": 0,
-                    "placeholder": ""
+                    "placeholder": "",
+                    "allow_custom": 0,
+                    "search_placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "min": "",
+                    "max": ""
                 }
-            ]
+            ],
+            "acfe_seamless_style": 0,
+            "acfe_group_modal": 0,
+            "acfe_group_modal_close": 0,
+            "acfe_group_modal_button": "",
+            "acfe_group_modal_size": "large"
         }
     ],
     "location": [
@@ -269,5 +310,12 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1702084781
+    "acfe_autosync": [
+        "json"
+    ],
+    "acfe_form": 0,
+    "acfe_display_title": "",
+    "acfe_meta": "",
+    "acfe_note": "",
+    "modified": 1718726349
 }

@@ -3,13 +3,6 @@
     "title": "Custom CSS & JS",
     "fields": [
         {
-            "allow_backendsearch": false,
-            "show_column_filter": false,
-            "allow_bulkedit": false,
-            "allow_quickedit": false,
-            "show_column": false,
-            "show_column_weight": 1000,
-            "show_column_sortable": false,
             "key": "field_651d974e0a687",
             "label": "CSS",
             "name": "",
@@ -23,12 +16,6 @@
                 "class": "",
                 "id": ""
             },
-            "placement": "top",
-            "endpoint": 1,
-            "acfe_permissions": "",
-            "no_preference": 0
-        },
-        {
             "allow_backendsearch": false,
             "show_column_filter": false,
             "allow_bulkedit": false,
@@ -36,6 +23,13 @@
             "show_column": false,
             "show_column_weight": 1000,
             "show_column_sortable": false,
+            "placement": "top",
+            "endpoint": 1,
+            "acfe_permissions": "",
+            "no_preference": 0,
+            "selected": 0
+        },
+        {
             "key": "field_651d94db713ae",
             "label": "CSS",
             "name": "custom_css",
@@ -49,6 +43,13 @@
                 "class": "",
                 "id": ""
             },
+            "allow_backendsearch": false,
+            "show_column_filter": false,
+            "allow_bulkedit": false,
+            "allow_quickedit": false,
+            "show_column": false,
+            "show_column_weight": 1000,
+            "show_column_sortable": false,
             "default_value": "",
             "placeholder": "\/* Add your CSS code directly here *\/",
             "mode": "css",
@@ -63,13 +64,6 @@
             "acfe_permissions": ""
         },
         {
-            "allow_backendsearch": false,
-            "show_column_filter": false,
-            "allow_bulkedit": false,
-            "allow_quickedit": false,
-            "show_column": false,
-            "show_column_weight": 1000,
-            "show_column_sortable": false,
             "key": "field_651d97a666df5",
             "label": "JS",
             "name": "",
@@ -83,12 +77,6 @@
                 "class": "",
                 "id": ""
             },
-            "placement": "top",
-            "endpoint": 0,
-            "acfe_permissions": "",
-            "no_preference": 0
-        },
-        {
             "allow_backendsearch": false,
             "show_column_filter": false,
             "allow_bulkedit": false,
@@ -96,6 +84,13 @@
             "show_column": false,
             "show_column_weight": 1000,
             "show_column_sortable": false,
+            "placement": "top",
+            "endpoint": 0,
+            "acfe_permissions": "",
+            "no_preference": 0,
+            "selected": 0
+        },
+        {
             "key": "field_651d977c0a688",
             "label": "JS",
             "name": "custom_js",
@@ -109,6 +104,13 @@
                 "class": "",
                 "id": ""
             },
+            "allow_backendsearch": false,
+            "show_column_filter": false,
+            "allow_bulkedit": false,
+            "allow_quickedit": false,
+            "show_column": false,
+            "show_column_weight": 1000,
+            "show_column_sortable": false,
             "default_value": "",
             "placeholder": "\/\/ Add you JavaScript code directly here",
             "mode": "javascript",
@@ -150,5 +152,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1703000150
+    "modified": 1718724374
 }
