@@ -150,35 +150,6 @@
                             "parent_repeater": "field_655b8006311d0"
                         },
                         {
-                            "key": "field_655b82e5311d3",
-                            "label": "Slug",
-                            "name": "slug",
-                            "aria-label": "",
-                            "type": "acfe_slug",
-                            "instructions": "String to be used in the URL to link directly to this item",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "50",
-                                "class": "",
-                                "id": ""
-                            },
-                            "hide_field": "",
-                            "hide_label": "",
-                            "hide_instructions": "",
-                            "hide_required": "",
-                            "default_value": "",
-                            "placeholder": "",
-                            "prepend": "",
-                            "append": "",
-                            "maxlength": "",
-                            "acfe_settings": "",
-                            "acfe_validate": "",
-                            "instruction_placement": "tooltip",
-                            "acfe_permissions": "",
-                            "parent_repeater": "field_655b8006311d0"
-                        },
-                        {
                             "key": "field_655b82c9311d1",
                             "label": "Image",
                             "name": "image",
@@ -351,6 +322,64 @@
                             "prepend": "",
                             "append": "",
                             "parent_repeater": "field_655b8006311d0"
+                        },
+                        {
+                            "key": "field_6671aa1225698",
+                            "label": "Additional Classes",
+                            "name": "additional_classes",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "acfe_permissions": "",
+                            "instruction_placement": "",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
+                            "default_value": "",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
+                            "maxlength": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "parent_repeater": "field_655b8006311d0"
+                        },
+                        {
+                            "key": "field_655b82e5311d3",
+                            "label": "Item ID",
+                            "name": "item_id",
+                            "aria-label": "",
+                            "type": "acfe_slug",
+                            "instructions": "String to be used in the URL to link directly to this item",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "",
+                                "id": ""
+                            },
+                            "acfe_permissions": "",
+                            "instruction_placement": "tooltip",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": "",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
+                            "parent_repeater": "field_655b8006311d0"
                         }
                     ]
                 }
@@ -387,5 +416,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1707258208
+    "modified": 1718734769
 }

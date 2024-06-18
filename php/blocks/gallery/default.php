@@ -107,7 +107,6 @@ function render($settings, $content) {
 			'type' => 'object',
 			'keys' => [
 				'title' => \lqx\util\schema_str_req_emp,
-				'slug' => \lqx\util\schema_str_req_emp,
 				'image' => [
 					'type' => 'object',
 					'default' => [],
@@ -120,7 +119,9 @@ function render($settings, $content) {
 					'default' => [],
 					'keys' => \lqx\util\schema_data_image
 				],
-				'teaser' => \lqx\util\schema_str_req_emp
+				'teaser' => \lqx\util\schema_str_req_emp,
+				'additional_classes' => \lqx\util\schema_str_req_emp,
+				'item_id' => \lqx\util\schema_str_req_emp
 			]
 		]);
 

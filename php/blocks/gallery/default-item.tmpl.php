@@ -26,11 +26,11 @@
 
 ?>
 <li
-	class="<?= $s['slider'] == 'y' ? 'swiper-slide' : 'gallery-slide' ?><?= is_array($video) ? ' video' : '' ?>"
-	id="<?= $item['slug'] ? $item['slug'] : $s['hash'] . '-' . $idx ?>"
+	class="<?= $s['slider'] == 'y' ? 'swiper-slide' : 'gallery-slide' ?><?= is_array($video) ? ' video' : '' ?> <?= $item['additional_classes'] ? esc_attr($item['additional_classes']) : '' ?>"
+	id="<?= $item['item_id'] ? $item['item_id'] : $s['hash'] . '-' . $idx ?>"
 	data-lyqbox="<?= htmlentities(json_encode([
 		'name' => $c['lightbox_slug'],
-		'slug' => $item['slug'],
+		'slug' => $item['item_id'],
 		'type' => isset($video) ? 'video' : 'image',
 		'url' => isset($video['url']) ? $video['url'] : $item['image']['sizes']['large'],
 		'title' => $item['title'],
