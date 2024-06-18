@@ -60,6 +60,9 @@ function enqueue_scripts() {
 	// Use non minified version?
 	$non_min_js = get_theme_mod('non_min_js', '0');
 
+	// Force non-minified version on local environments
+	if (getenv('WPCONFIG_ENVNAME') == 'local' || substr($_SERVER['HTTP_HOST'], -5) == '.test') $non_min_js = '1';
+
 	// MobileDetect
 	$scripts[] = [
 		'handle' => 'mobile-detect',

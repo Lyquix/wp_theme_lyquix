@@ -98,6 +98,9 @@ function enqueue_styles() {
 	// Use non minified version?
 	$non_min_css = get_theme_mod('non_min_css', '0');
 
+	// Force non-minified version on local environments
+	if (getenv('WPCONFIG_ENVNAME') == 'local' || substr($_SERVER['HTTP_HOST'], -5) == '.test') $non_min_css = '1';
+
 	// Swiper
 	if (get_theme_mod('swiperjs', 1)) {
 		$stylesheets[] = [
