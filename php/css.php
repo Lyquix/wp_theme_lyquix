@@ -1,8 +1,9 @@
 <?php
+
 /**
- * css.php - Includes CSS files
+ * css.php - Enqueues CSS files and render custom CSS
  *
- * @version     2.3.3
+ * @version     3.0.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix
@@ -10,195 +11,154 @@
  * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
 
+//    .d8888b. 88888888888 .d88888b.  8888888b.   888
+//   d88P  Y88b    888    d88P" "Y88b 888   Y88b  888
+//   Y88b.         888    888     888 888    888  888
+//    "Y888b.      888    888     888 888   d88P  888
+//       "Y88b.    888    888     888 8888888P"   888
+//         "888    888    888     888 888         Y8P
+//   Y88b  d88P    888    Y88b. .d88P 888          "
+//    "Y8888P"     888     "Y88888P"  888         888
+//
+//  DO NOT MODIFY THIS FILE!
 
-if(!function_exists('absUrl')) {
-	// Convert relative URLs to absolute URLs
-	function absUrl($rel, $base) {
-		if (parse_url($rel, PHP_URL_SCHEME) != '') return $rel;
-		if ($rel[0] == '#' || $rel[0] == '?') return $base . $rel;
-		extract(parse_url($base));
-		$path = preg_replace('#/[^/]*$#', '', $path);
-		if ($rel[0] == '/') $path = '';
-		$abs = $host . $path . '/' .$rel;
-		$re = ['#(/\.?/)#', '#/(?!\.\.)[^/]+/\.\./#'];
-		for($n = 1; $n > 0; $abs = preg_replace($re, '/', $abs, -1, $n)) {}
-		return $scheme . '://' . $abs;
+namespace lqx\css;
+
+/**
+ * Convert relative URLs to absolute URLs
+ *
+ * @param string $rel - The relative URL
+ * @param string $base - The base URL
+ *
+ * @return string - The absolute URL
+ */
+function abs_url($rel, $base) {
+	if (empty($base)) throw new \InvalidArgumentException("Base URL cannot be empty.");
+
+	// Parse base URL and ensure it has a valid scheme and host
+	$parts = parse_url($base);
+	if (!$parts || !isset($parts['scheme']) || !isset($parts['host'])) {
+		throw new \InvalidArgumentException("Invalid base URL.");
 	}
+
+	// Return the base URL if the relative URL is empty
+	if (!$rel || !is_string($rel)) return $base;
+
+	// Check if the relative URL is already an absolute URL
+	if (filter_var($rel, FILTER_VALIDATE_URL)) return $rel;
+
+	// Relative is a hash
+	if ($rel[0] == '#') return explode('#', $base)[0] . $rel;
+
+	// Relative is a query string
+	if ($rel[0] == '?') return explode('?', $base)[0] . $rel;
+
+	// Relative is a path relative to the root
+	if ($rel[0] == '/') return (array_key_exists('path', $parts) ? explode($parts['path'], $base)[0] : $base ) . $rel;
+
+	// Relative is a path relative to the current directory
+	// Base has no path
+	if (!array_key_exists('path', $parts)) return $base . '/' . $rel;
+
+	// Base has a path
+	$path = preg_replace('#/[^/]*$#', '', $parts['path']);
+	return explode($parts['path'], $base)[0] . $path . '/' . $rel;
 }
 
-// Prevent adding css libraries in wp_head()
-function remove_css_libraries() {
+
+/**
+ * Enqueues or dequeues CSS libraries for the WordPress theme.
+ *
+ * @param array $wp_styles - Global variable containing all registered styles.
+ * @param string $remove_css_libraries - The CSS libraries to remove, specified in the theme settings.
+ *
+ * The function first retrieves the CSS libraries to remove from the theme settings.
+ * Then, it dequeues any matching styles from the registered styles.
+ *
+ * @return void
+ */
+function enqueue_styles() {
 	global $wp_styles;
 
 	// Get styles to remove
 	$remove_css_libraries = explode("\n", trim(get_theme_mod('remove_css_libraries', '')));
-	foreach($remove_css_libraries as $i => $url) $remove_css_libraries[$i] = absUrl($url, get_site_url());
+	foreach ($remove_css_libraries as $i => $url) $remove_css_libraries[$i] = abs_url(trim($url), get_site_url());
 
 	// Dequeue matching styles
-	if(count($remove_css_libraries)) {
-		foreach($wp_styles -> registered as $css_code => $x) {
-			$css_url = absUrl($wp_styles -> registered[$css_code] -> src, get_site_url());
-			if(in_array($css_url, $remove_css_libraries)) wp_dequeue_style($css_code);
+	if (count($remove_css_libraries)) {
+		foreach ($wp_styles->registered as $css_code => $x) {
+			$css_url = abs_url($wp_styles->registered[$css_code]->src, get_site_url());
+			if (in_array($css_url, $remove_css_libraries)) wp_dequeue_style($css_code);
 		}
 	}
-}
-add_action('wp_enqueue_scripts', 'remove_css_libraries', 100);
 
-// Array to store all stylesheets to be loaded
-$stylesheets = [];
+	// Array to store all stylesheets to be loaded
+	$stylesheets = [];
 
-// Use non minified version?
-$non_min_css = get_theme_mod('non_min_css', '0');
+	// Use non minified version?
+	$non_min_css = get_theme_mod('non_min_css', '0');
 
-// Animte.css
-if(get_theme_mod('animatecss', '0')) {
-	$stylesheets[] = ['url' => $cdnjs_url . 'animate.css/3.7.0/animate' . ($non_min_css ? '' : '.min') . '.css'];
-}
+	// Force non-minified version on local environments
+	if (getenv('WPCONFIG_ENVNAME') == 'local' || substr($_SERVER['HTTP_HOST'], -5) == '.test') $non_min_css = '1';
 
-// Additional CSS Libraries
-$add_css_libraries = explode("\n", trim(get_theme_mod('add_css_libraries', '')));
-foreach($add_css_libraries as $cssurl) {
-	$cssurl = trim($cssurl);
-	if($cssurl) {
-		// Check if stylesheet is local or remote
-		if(parse_url($cssurl, PHP_URL_SCHEME)) {
-			// Absolute URL
-			$stylesheets[] = ['url' => $cssurl];
-		}
-		elseif (parse_url($cssurl, PHP_URL_PATH)) {
-			// Relative URL
-			// Add leading / if missing
-			if(substr($cssurl,0,1) != '/') $cssurl = '/' . $cssurl;
-			// Check if file exist
-			if(file_exists(ABSPATH . $cssurl)) {
-				$stylesheets[] = ['url' => $cssurl, 'version' => date("YmdHis", filemtime(get_home_path() . $cssurl))];
+	// Swiper
+	if (get_theme_mod('swiperjs', 1)) {
+		$stylesheets[] = [
+			'handle' => 'swiper',
+			'url' => 'https://cdn.jsdelivr.net/npm/swiper@11.0.5/swiper-bundle.min.css',
+			'version' => '11.0.5'
+		];
+	}
+
+	// Additional CSS Libraries
+	$add_css_libraries = explode("\n", trim(get_theme_mod('add_css_libraries', '')));
+	foreach ($add_css_libraries as $css_url) {
+		$css_url = trim($css_url);
+		if ($css_url) {
+			// Check if stylesheet is local or remote
+			if (parse_url($css_url, PHP_URL_SCHEME)) {
+				// Absolute URL
+				$stylesheets[] = [
+					'handle' => base_convert(crc32($css_url), 10, 36),
+					'url' => $css_url
+				];
+			} elseif (parse_url($css_url, PHP_URL_PATH)) {
+				// Relative URL
+				// Add leading / if missing
+				if (substr($css_url, 0, 1) != '/') $css_url = '/' . $css_url;
+				// Check if file exist
+				if (file_exists(ABSPATH . $css_url)) {
+					$stylesheets[] = [
+						'handle' => base_convert(crc32($css_url), 10, 36),
+						'url' => abs_url($css_url, get_site_url()),
+						'version' => date("YmdHis", filemtime(get_home_path() . $css_url))
+					];
+				}
 			}
 		}
 	}
-}
 
-// Custom Project Styles
-if(file_exists($tmpl_path . '/css/styles' . ($non_min_css ? '' : '.min') . '.css')) {
-	$stylesheets[] = [
-		'url' => $tmpl_url . '/css/styles' . ($non_min_css ? '' : '.min') . '.css',
-		'version' => date("YmdHis", filemtime($tmpl_path . '/css/styles' . ($non_min_css ? '' : '.min') . '.css'))
-	];
-}
-
-// Unique filename based on stylesheets, last update, and order
-$stylesheet_filename = base_convert(md5(json_encode($stylesheets)), 16, 36) . '.css';
-
-// Function to convert relative URLs into absolute provided a base URL
-function lqx_rel_to_abs_url($rel, $base) {
-	// Parse base URL  and convert to local variables: $scheme, $host,  $path
-	$base_parts = parse_url($base);
-
-	// Return protocol-neutral URLs
-	if(strpos($rel, "//") === 0) {
-		return ($base_parts['scheme'] ? $base_parts['scheme'] . ':' . $rel : $rel);
+	// Custom Project Styles
+	if (file_exists(get_template_directory() . '/css/styles' . ($non_min_css ? '' : '.min') . '.css')) {
+		$stylesheets[] = [
+			'handle' => 'styles',
+			'url' => get_template_directory_uri() . '/css/styles' . ($non_min_css ? '' : '.min') . '.css',
+			'version' => date("YmdHis", filemtime(get_template_directory() . '/css/styles' . ($non_min_css ? '' : '.min') . '.css'))
+		];
 	}
 
-	// Return if already absolute URL
-	if(parse_url($rel, PHP_URL_SCHEME) != '') {
-		return $rel;
+	// Queue styles
+	foreach ($stylesheets as $css_url) {
+		wp_enqueue_style($css_url['handle'], $css_url['url'], [], $css_url['version'] ?? null);
 	}
-
-	// queries and anchors
-	if($rel[0] == '#' || $rel[0] == '?') {
-		return $base . $rel;
-	}
-
-	// remove non-directory element from path
-	$base_parts['path'] = preg_replace( '#/[^/]*$#', '', $base_parts['path'] );
-
-	// destroy path if relative url points to root
-	if($rel[0] ==  '/') {
-		$base_parts['path'] = '';
-	}
-
-	// dirty absolute URL
-	$abs = $base_parts['host'] . $base_parts['path'] . "/" . $rel;
-
-	// replace '//' or  '/./' or '/foo/../' with '/'
-	$count = true;
-	while($count) $abs = preg_replace("/(\/\.?\/)/", "/", $abs, $limit = -1, $count);
-	$count = true;
-	while($count) $abs = preg_replace("/\/(?!\.\.)[^\/]+\/\.\.\//", "/", $abs, $limit = -1, $count);
-
-	// absolute URL is ready!
-	return ($base_parts['scheme'] ? $base_parts['scheme'] . '://' : '') . $abs;
-}
-// Check if dist directory exists
-if (!is_dir($tmpl_path . '/dist/')) {
-	mkdir($tmpl_path . '/dist/');
 }
 
-// Check if file has already been created
-if(!file_exists($tmpl_path . '/dist/' . $stylesheet_filename)) {
-	// Regular expression to find url in files
-	$urlRegex = '/url\(\s*[\"\\\']?([^\"\\\'\)]+)[\"\\\']?\s*\)/';
-	// Regular expression to find @import rules in files
-	$importRegex = '/(@import.*?["\'][^"\']+["\'].*?;)/';
-	// Prepare file
-	$stylesheet_data = "/* " . $stylesheet_filename . " */\n";
-	$stylesheet_imports = "/* @import rules moved to the top of the document */\n";
-	foreach($stylesheets as $idx => $stylesheet) {
-		if(array_key_exists('data', $stylesheet)) {
-			$stylesheet_data .= "/* Custom stylesheet declaration */\n";
-			$tmp = $stylesheet['data'];
-			// Move @import rules
-			preg_match_all($importRegex, $tmp, $matches);
-			foreach($matches[1] as $imp) {
-				$stylesheet_imports .= $imp . "\n";
-				$tmp = str_replace($imp, "\n/*@import rule moved to the top of the file*/\n", $tmp);
-			}
-			$stylesheet_data .= $tmp . "\n";
-		}
-		elseif (array_key_exists('version', $stylesheet)) {
-			$stylesheet_data .= "/* Local stylesheet: " . $stylesheet['url'] . ", Version: " . $stylesheet['version'] . " */\n";
-			$tmp = file_get_contents(ABSPATH . $stylesheet['url']) . "\n";
-			// Update URLs
-			preg_match_all($urlRegex, $tmp, $matches);
-			foreach($matches[1] as $rel) {
-				$abs = lqx_rel_to_abs_url($rel, $stylesheet['url']);
-				$tmp = str_replace($rel, $abs, $tmp);
-			}
-			// Move @import rules
-			preg_match_all($importRegex, $tmp, $matches);
-			foreach($matches[1] as $imp) {
-				$stylesheet_imports .= $imp . "\n";
-				$tmp = str_replace($imp, "\n/*@import rule moved to the top of the file*/\n", $tmp);
-			}
-			$stylesheet_data .= $tmp . "\n";
-		}
-		else {
-			$stylesheet_data .= "/* Remote stylesheet: " . $stylesheet['url'] . " */\n";
-			$curl = curl_init();
-			curl_setopt($curl, CURLOPT_URL, $stylesheet['url']);
-			curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-			$tmp .= curl_exec($curl) . "\n";
-			curl_close($curl);
-			// Update URLs
-			preg_match_all($urlRegex, $tmp, $matches);
-			foreach($matches[1] as $rel) {
-				$abs = lqx_rel_to_abs_url($rel, $stylesheet['url']);
-				$tmp = str_replace($rel, $abs, $tmp);
-			}
-			// Move @import rules
-			preg_match_all($importRegex, $tmp, $matches);
-			foreach($matches[1] as $imp) {
-				$stylesheet_imports .= $imp . "\n";
-				$tmp = str_replace($imp, "\n/*@import rule moved to the top of the file*/\n", $tmp);
-			}
-			$stylesheet_data .= $tmp . "\n";
-		}
-	}
-	// Save file
-	file_put_contents($tmpl_path . '/dist/' . $stylesheet_filename, $stylesheet_imports . "\n" . $stylesheet_data);
-	unset($stylesheet_imports, $stylesheet_data);
-}
+add_action('wp_enqueue_scripts', '\lqx\css\enqueue_styles', 100);
 
-function lqx_render_css() {
-	global $tmpl_url, $stylesheet_filename;
-	echo '<link href="' . $tmpl_url . '/dist/' . $stylesheet_filename . '" rel="stylesheet" />' . "\n";
+// Renders custom CSS for the page
+function render_page_custom_css() {
+	if (function_exists('get_field')) {
+		$custom_css = get_field('custom_css');
+		if ($custom_css) echo "<style>\n" . $custom_css . "\n</style>";
+	}
 }

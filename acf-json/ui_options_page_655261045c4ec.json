@@ -1,0 +1,23 @@
+{
+    "key": "ui_options_page_655261045c4ec",
+    "title": "Alerts",
+    "active": true,
+    "menu_order": 0,
+    "page_title": "Alerts",
+    "menu_slug": "alerts-content",
+    "parent_slug": "modules",
+    "advanced_configuration": 1,
+    "icon_url": "",
+    "menu_title": "",
+    "position": "",
+    "redirect": false,
+    "description": "",
+    "update_button": "Update",
+    "updated_message": "Options Updated",
+    "capability": "publish_pages",
+    "data_storage": "options",
+    "post_id": "",
+    "autoload": 0,
+    "_parent": 643,
+    "modified": 1709836925
+}

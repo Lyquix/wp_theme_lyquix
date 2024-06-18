@@ -1,0 +1,112 @@
+{
+    "key": "group_65588aaab6198",
+    "title": "Layout: Box",
+    "fields": [
+        {
+            "key": "field_65588aabf7d75",
+            "label": "p",
+            "name": "tailwind_box-l_p-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Control the box's padding.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "box-l_p-",
+            "append": ""
+        },
+        {
+            "key": "field_655899b5f7d76",
+            "label": "text",
+            "name": "tailwind_box-l_text-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Control the box's text color.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "box-l_text-",
+            "append": ""
+        },
+        {
+            "key": "field_655899fcf7d77",
+            "label": "bg",
+            "name": "tailwind_box-l_bg-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Control the box's background color.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "box-l_bg-",
+            "append": ""
+        },
+        {
+            "key": "field_65589a28f7d78",
+            "label": "border",
+            "name": "tailwind_border-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Control the box's border color.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "border-",
+            "append": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "block",
+                "operator": "==",
+                "value": "lqx\/box"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "acfe_autosync": [
+        "json"
+    ],
+    "acfe_form": 0,
+    "acfe_display_title": "",
+    "acfe_meta": "",
+    "acfe_note": "",
+    "modified": 1718726304
+}

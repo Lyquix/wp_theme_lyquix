@@ -1,0 +1,114 @@
+{
+    "key": "group_655d0d68866c9",
+    "title": "Layout: Sidebar",
+    "fields": [
+        {
+            "key": "field_655d0d6829742",
+            "label": "space",
+            "name": "tailwind_sidebar-l_space-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Control the width of the space between the side element and main element.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "sidebar-l_space-",
+            "append": ""
+        },
+        {
+            "key": "field_655d0d9c29743",
+            "label": "main-min-w",
+            "name": "tailwind_sidebar-l_main-min-w-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Minimum width of the main element. Any lower and wrapping will occur.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "sidebar-l_main-min-w-",
+            "append": ""
+        },
+        {
+            "key": "field_655d0dc029744",
+            "label": "side-w",
+            "name": "tailwind_sidebar-l_side-w-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Control the width of the side element.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "sidebar-l_side-w-",
+            "append": ""
+        },
+        {
+            "key": "field_655d0dde29745",
+            "label": "no-stretch",
+            "name": "no-stretch",
+            "aria-label": "",
+            "type": "button_group",
+            "instructions": "Let the side element keep its intrinsic height instead of stretching to be the height of the main element.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "tailwind_sidebar-l_no-stretch": "sidebar-l_no-stretch"
+            },
+            "default_value": "",
+            "return_format": "value",
+            "allow_null": 1,
+            "layout": "horizontal"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "block",
+                "operator": "==",
+                "value": "lqx\/sidebar"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "acfe_autosync": [
+        "json"
+    ],
+    "acfe_form": 0,
+    "acfe_display_title": "",
+    "acfe_meta": "",
+    "acfe_note": "",
+    "modified": 1718726370
+}

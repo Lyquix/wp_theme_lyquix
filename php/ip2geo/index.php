@@ -2,7 +2,7 @@
 /**
  * index.php - Uses client IP address to obtain client location, responds with a JSON object
  *
- * @version     2.3.3
+ * @version     3.0.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix
@@ -12,7 +12,8 @@
 
 header('Content-Type: application/json');
 
-if(!file_exists('config.php')) {
+// Catch if database file does not exist
+if (!file_exists('config.php')) {
 	echo json_encode(['error' => 'Config file not found']);
 	exit;
 }
@@ -20,7 +21,7 @@ if(!file_exists('config.php')) {
 $db = 'GeoLite2-City.mmdb'; // download updated database from http://dev.maxmind.com/geoip/geoip2/geolite2/
 $db_file_exists = file_exists($db);
 // If database doesn't exist, attempt to download and extract it
-if(!$db_file_exists || ($db_file_exists && (time() - filemtime($db) > $config['max_db_age'] * 86400))) {
+if (!$db_file_exists || ($db_file_exists && (time() - filemtime($db) > $config['max_db_age'] * 86400))) {
 	file_put_contents('GeoLite2-City.tar.gz', fopen('https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=' . $config['maxmind_license_key'] . '&suffix=tar.gz', 'r'));
 	// Decompress gz
 	$p = new PharData('GeoLite2-City.tar.gz');
@@ -41,29 +42,33 @@ if(!$db_file_exists || ($db_file_exists && (time() - filemtime($db) > $config['m
 	rmdir($dir);
 }
 
-if(!file_exists($db)) {
+// Catch if database file does not exist
+if (!file_exists($db)) {
 	echo json_encode(['error' => 'Database file not found']);
 	exit;
 }
 
 // Get IP address from HTTP request
 $ip = $_SERVER['REMOTE_ADDR'];
-if(array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-if(array_key_exists('HTTP_CLIENT_IP', $_SERVER)) $ip = $_SERVER['HTTP_CLIENT_IP'];
+if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+if (array_key_exists('HTTP_CLIENT_IP', $_SERVER)) $ip = $_SERVER['HTTP_CLIENT_IP'];
 // Sanitize IP address
 $ip = filter_var($ip, FILTER_VALIDATE_IP);
 
-if(!$ip) {
+// Catch if IP address is invalid
+if (!$ip) {
 	echo json_encode(['error' => 'Invalid IP address']);
 	exit;
 }
 
+// Include required classes
 require_once 'Reader.php';
 require_once 'Decoder.php';
 require_once 'InvalidDatabaseException.php';
 require_once 'Metadata.php';
 require_once 'Util.php';
 
+// Get location data
 $reader = new Reader($db);
 $geo = $reader -> get($ip);
 $reader -> close();

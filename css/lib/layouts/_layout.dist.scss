@@ -1,0 +1,95 @@
+/**
+ * _layout.dist.scss - Sample container and box widths and margins
+ *
+ * @version     3.0.0
+ * @package     wp_theme_lyquix
+ * @author      Lyquix
+ * @copyright   Copyright (C) 2015 - 2018 Lyquix
+ * @license     GNU General Public License version 2 or later
+ * @link        https://github.com/Lyquix/wp_theme_lyquix
+ */
+
+/*
+    .d8888b. 88888888888 .d88888b.  8888888b.   888
+   d88P  Y88b    888    d88P" "Y88b 888   Y88b  888
+   Y88b.         888    888     888 888    888  888
+    "Y888b.      888    888     888 888   d88P  888
+       "Y88b.    888    888     888 8888888P"   888
+         "888    888    888     888 888         Y8P
+   Y88b  d88P    888    Y88b. .d88P 888          "
+    "Y8888P"     888     "Y88888P"  888         888
+
+  DO NOT MODIFY THIS FILE!
+	Instead copy it to css/custom/layouts/_layout.scss and make your changes there.
+*/
+
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+@use "sass:math";
+
+@each $s in $screen-sizes {
+	@screen #{$s} {
+		// $grdCls = total number of grid columns
+		$grdCls: nth($grid-columns, index($screen-sizes, $s));
+		// $grdGap = grid gap in pixels
+		$grdGap: nth($grid-gaps, index($screen-sizes, $s));
+		// $cntMrg = container margin
+		$pct: math.percentage(math.div(1, $grdCls));
+		$px: math.div($grdGap, $grdCls);
+		$cntMrg: calc(#{$pct} + #{$px});
+		// $cntWth = container width
+		$pct: math.percentage(1 - math.div(2, $grdCls));
+		$px: math.div(2 * $grdGap, $grdCls);
+		$cntWth: calc(#{$pct} + #{$px});
+
+		@if $s == xl {
+			.container {
+				margin: 0 auto;
+				width: 100%;
+				max-width: $cntWth;
+			}
+
+			.grid-container {
+				grid-template-columns:
+					[full-width-start]
+					minmax($cntMrg, 1fr)
+					[container-start]
+					minmax(0, $cntWth)
+					[container-end]
+					minmax($cntMrg, 1fr)
+					[full-width-end];
+			}
+		} @else {
+			.container {
+				margin: 0 $cntMrg;
+				width: 100%;
+				max-width: none;
+			}
+			.grid-container {
+				grid-template-columns:
+					[full-width-start]
+					$cntWth
+					[container-start]
+					auto
+					[container-end]
+					$cntWth
+					[full-width-end];
+			}
+		}
+	}
+}
+
+.grid-container {
+	display: grid;
+}
+
+.grid-container > :not(.full-width),
+.full-width > :not(.full-width) {
+	grid-column: container;
+}
+
+.grid-container > .full-width {
+	grid-column: full-width;
+	display: grid;
+	grid-template-columns: inherit;
+}

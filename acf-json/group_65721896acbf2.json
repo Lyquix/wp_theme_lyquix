@@ -1,0 +1,300 @@
+{
+    "key": "group_65721896acbf2",
+    "title": "Block: Hero (Admin Settings)",
+    "fields": [
+        {
+            "key": "field_657218976ffd1",
+            "label": "Admin Settings",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "no_preference": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_657218d86ffd3",
+            "label": "",
+            "name": "hero_block_admin",
+            "aria-label": "",
+            "type": "group",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "hide_field": "",
+            "hide_label": "",
+            "hide_instructions": "",
+            "hide_required": "",
+            "layout": "block",
+            "acfe_seamless_style": 1,
+            "acfe_settings": "",
+            "instruction_placement": "",
+            "acfe_permissions": "",
+            "acfe_group_modal": 0,
+            "acfe_group_modal_close": 0,
+            "acfe_group_modal_button": "",
+            "acfe_group_modal_size": "large",
+            "sub_fields": [
+                {
+                    "key": "field_6577667d6e7e3",
+                    "label": "Show Image",
+                    "name": "show_image",
+                    "aria-label": "",
+                    "type": "button_group",
+                    "instructions": "Set to No to hide the image",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "choices": {
+                        "y": "Yes",
+                        "n": "No"
+                    },
+                    "default_value": "",
+                    "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "allow_null": 1,
+                    "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
+                    "layout": "horizontal"
+                },
+                {
+                    "key": "field_657766916e7e6",
+                    "label": "",
+                    "name": "breadcrumbs",
+                    "aria-label": "",
+                    "type": "group",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "layout": "block",
+                    "acfe_seamless_style": 1,
+                    "acfe_settings": "",
+                    "instruction_placement": "",
+                    "acfe_permissions": "",
+                    "acfe_group_modal": 0,
+                    "acfe_group_modal_close": 0,
+                    "acfe_group_modal_button": "",
+                    "acfe_group_modal_size": "large",
+                    "sub_fields": [
+                        {
+                            "key": "field_657766926e7e7",
+                            "label": "Show Breadcrumbs",
+                            "name": "show_breadcrumbs",
+                            "aria-label": "",
+                            "type": "button_group",
+                            "instructions": "Set to Yes to show the breadcrumbs",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "acfe_permissions": "",
+                            "instruction_placement": "tooltip",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
+                            "choices": {
+                                "y": "Yes",
+                                "n": "No"
+                            },
+                            "default_value": "",
+                            "return_format": "value",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
+                            "allow_null": 1,
+                            "layout": "horizontal"
+                        },
+                        {
+                            "key": "field_657766926e7e8",
+                            "label": "Breadcrumbs Type",
+                            "name": "type",
+                            "aria-label": "",
+                            "type": "radio",
+                            "instructions": "Select the way breadcrumbs will be generated",
+                            "required": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_657766926e7e7",
+                                        "operator": "==",
+                                        "value": "y"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "40",
+                                "class": "",
+                                "id": ""
+                            },
+                            "acfe_permissions": "",
+                            "instruction_placement": "tooltip",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
+                            "choices": {
+                                "parent": "Parent Pages",
+                                "category": "Categories",
+                                "post-type": "Post Type Archive",
+                                "post-type-category": "Post Type Archive with Categories"
+                            },
+                            "default_value": "",
+                            "return_format": "value",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
+                            "allow_null": 1,
+                            "other_choice": 0,
+                            "layout": "vertical",
+                            "save_other_choice": 0
+                        },
+                        {
+                            "key": "field_657766926e7e9",
+                            "label": "Breadcrumbs Maximum Depth",
+                            "name": "depth",
+                            "aria-label": "",
+                            "type": "range",
+                            "instructions": "Set the maximum number of breadcrumb segments (excluding current item) that will be displayed",
+                            "required": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_657766926e7e7",
+                                        "operator": "==",
+                                        "value": "y"
+                                    },
+                                    {
+                                        "field": "field_657766926e7e8",
+                                        "operator": "!=",
+                                        "value": "post-type"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "35",
+                                "class": "",
+                                "id": ""
+                            },
+                            "acfe_permissions": "",
+                            "instruction_placement": "tooltip",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
+                            "default_value": "",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
+                            "min": 1,
+                            "max": 5,
+                            "step": 1,
+                            "prepend": "",
+                            "append": ""
+                        },
+                        {
+                            "key": "field_657766926e7ea",
+                            "label": "Show Current Page",
+                            "name": "show_current",
+                            "aria-label": "",
+                            "type": "button_group",
+                            "instructions": "Set to Yes to include the current item in the breadcrumbs",
+                            "required": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_657766926e7e7",
+                                        "operator": "==",
+                                        "value": "y"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "25",
+                                "class": "",
+                                "id": ""
+                            },
+                            "acfe_permissions": "",
+                            "instruction_placement": "tooltip",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
+                            "choices": {
+                                "y": "Yes",
+                                "n": "No"
+                            },
+                            "default_value": "",
+                            "return_format": "value",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
+                            "allow_null": 1,
+                            "layout": "horizontal"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "block",
+                "operator": "==",
+                "value": "lqx\/hero"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "left",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "acfe_autosync": [
+        "json"
+    ],
+    "acfe_form": 1,
+    "acfe_display_title": "",
+    "acfe_permissions": [
+        "administrator"
+    ],
+    "acfe_meta": "",
+    "acfe_note": "",
+    "modified": 1718724368
+}

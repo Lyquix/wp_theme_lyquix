@@ -1,8 +1,9 @@
 <?php
+
 /**
  * customizer.php - Set fields for theme customizer
  *
- * @version     2.3.3
+ * @version     3.0.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix
@@ -10,32 +11,32 @@
  * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
 
-function lqx_customizer_add($wp_customize) {
+//    .d8888b. 88888888888 .d88888b.  8888888b.   888
+//   d88P  Y88b    888    d88P" "Y88b 888   Y88b  888
+//   Y88b.         888    888     888 888    888  888
+//    "Y888b.      888    888     888 888   d88P  888
+//       "Y88b.    888    888     888 8888888P"   888
+//         "888    888    888     888 888         Y8P
+//   Y88b  d88P    888    Y88b. .d88P 888          "
+//    "Y8888P"     888     "Y88888P"  888         888
+//
+//  DO NOT MODIFY THIS FILE!
+
+namespace lqx\customizer;
+
+/**
+ * Add customizer fields
+ *
+ * @param WP_Customize_Manager $wp_customize - The customizer object
+ *
+ * @return void
+ */
+function customizer_add($wp_customize) {
 	$add_settings = [
-		'Responsiveness' => [
-			'min_screen' => [
-				'type' => 'select',
-				'label' => 'Minimum Screen Size',
-				'choices' => ['0' => 'XS', '1' => 'SM', '2' => 'MD', '3' => 'LG', '4' => 'XL'],
-				'default' => '0'
-			],
-			'max_screen' => [
-				'type' => 'select',
-				'label' => 'Maximum Screen Size',
-				'choices' => ['0' => 'XS', '1' => 'SM', '2' => 'MD', '3' => 'LG', '4' => 'XL'],
-				'default' => '4'
-			]
-		],
 		'CSS' => [
 			'non_min_css' => [
 				'type' => 'radio',
-				'label' => 'Use Original CSS',
-				'choices' => ['0' => 'No', '1' => 'Yes'],
-				'default' => '0'
-			],
-			'animatecss' => [
-				'type' => 'radio',
-				'label' => 'Load Animate.css',
+				'label' => 'Use Original CSS (non-minified)',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '0'
 			],
@@ -64,12 +65,12 @@ function lqx_customizer_add($wp_customize) {
 			'lqx_debug' => [
 				'type' => 'radio',
 				'label' => 'Enable lqx debug',
-				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'choices' => ['0' => 'None', '1' => 'Errors', '2' => 'Errors, Warnings', '3' => 'Errors, Warnings, Info'],
 				'default' => '0'
 			],
 			'non_min_js' => [
 				'type' => 'radio',
-				'label' => 'Use Original JS',
+				'label' => 'Use Original JS (non-minified)',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '0'
 			],
@@ -81,35 +82,17 @@ function lqx_customizer_add($wp_customize) {
 				'type' => 'textarea',
 				'label' => 'Scripts Options',
 			],
-			'polyfill' => [
+			'dayjs' => [
 				'type' => 'radio',
-				'label' => 'Use polyfill.io',
+				'label' => 'Day.js library',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
 			],
-			'lodash' => [
+			'swiperjs' => [
 				'type' => 'radio',
-				'label' => 'LoDash library',
+				'label' => 'Swiper library',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
-				'default' => '0'
-			],
-			'smoothscroll' => [
-				'type' => 'radio',
-				'label' => 'SmoothScroll library',
-				'choices' => ['0' => 'No', '1' => 'Yes'],
-				'default' => '0'
-			],
-			'momentjs' => [
-				'type' => 'radio',
-				'label' => 'Moment.js library',
-				'choices' => ['0' => 'No', '1' => 'Yes'],
-				'default' => '0'
-			],
-			'dotdotdot' => [
-				'type' => 'radio',
-				'label' => 'dotdotdot library',
-				'choices' => ['0' => 'No', '1' => 'Yes'],
-				'default' => '0'
+				'default' => '1'
 			],
 			'add_js_libraries' => [
 				'type' => 'textarea',
@@ -120,12 +103,9 @@ function lqx_customizer_add($wp_customize) {
 				'label' => 'Remove JS Libraries'
 			]
 		],
-		'Accounts' => [
-			'ga_account' => [
-				'label' => 'Google Analytics Account',
-			],
+		'Analytics' => [
 			'ga4_account' => [
-				'label' => 'Google Analytics 4 Account',
+				'label' => 'Google Analytics 4 Account (Measurement ID)',
 			],
 			'ga_pageview' => [
 				'type' => 'radio',
@@ -135,13 +115,18 @@ function lqx_customizer_add($wp_customize) {
 			],
 			'ga_via_gtm' => [
 				'type' => 'radio',
-				'label' => 'Google Analytics via GTM',
+				'label' => 'Google Analytics loaded via GTM',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '0'
 			],
 			'gtm_account' => [
 				'label' => 'Google Tag Manager Account',
 			],
+			'clarity_account' => [
+				'label' => 'Microsoft Clarity Project ID',
+			],
+		],
+		'Meta Tags' => [
 			'google_site_verification' => [
 				'label' => 'google-site-verification',
 			],
@@ -150,50 +135,169 @@ function lqx_customizer_add($wp_customize) {
 			],
 			'p_domain_verify' => [
 				'label' => 'p:domain_verify',
+			],
+			'add_meta_tags' => [
+				'type' => 'textarea',
+				'label' => 'Additional Meta Tags'
 			]
 		],
-		'IE' => [
-			'ie9_alert' => [
+		'Browser Alert' => [
+			'browser_alert' => [
 				'type' => 'radio',
-				'label' => 'IE9 alert',
+				'label' => 'Enable Browser Alert',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
 			],
-			'ie10_alert' => [
+			'accepted_browser_versions' => [
 				'type' => 'radio',
-				'label' => 'IE10 alert',
+				'label' => 'Acceptable Browser Versions',
+				'choices' => ['1' => 'Only Lastest', '2' => 'Last 2', '3' => 'Last 3', '4' => 'Last 4', '5' => 'Last 5'],
+				'default' => '3'
+			]
+		],
+		'Feature Flags' => [],
+		'Theme Features' => [
+			'feat_disable_comments' => [
+				'type' => 'radio',
+				'label' => 'Disable Comments',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
 			],
-			'ie11_alert' => [
+			'feat_content_blocks' => [
 				'type' => 'radio',
-				'label' => 'IE11 alert',
+				'label' => 'Enable Content Blocks',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_layout_blocks' => [
+				'type' => 'radio',
+				'label' => 'Enable Layout Blocks',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_modules' => [
+				'type' => 'radio',
+				'label' => 'Enable Modules',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_tailwind' => [
+				'type' => 'radio',
+				'label' => 'Enable Tailwind',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_theme_update' => [
+				'type' => 'radio',
+				'label' => 'Enable Theme Update',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_livereload' => [
+				'type' => 'radio',
+				'label' => 'Enable LiveReload',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_disable_srcset' => [
+				'type' => 'radio',
+				'label' => 'Disable Image srcset',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_hide_php_version_alert' => [
+				'type' => 'radio',
+				'label' => 'Hide PHP Version Alert',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_hide_yoast_metabox' => [
+				'type' => 'radio',
+				'label' => 'Hide Yoast Metabox',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_allow_svg_upload' => [
+				'type' => 'radio',
+				'label' => 'Allow SVG Upload',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_hide_wp_generator_tag' => [
+				'type' => 'radio',
+				'label' => 'Hide WP Generator Tag',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_hide_weak_password_confirmation' => [
+				'type' => 'radio',
+				'label' => 'Hide Weak Password Confirmation',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_image_sizes' => [
+				'type' => 'radio',
+				'label' => 'Enable Image Sizes',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_required_plugins_alert' => [
+				'type' => 'radio',
+				'label' => 'Enable Required Plugins Alert',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_user_management_editors' => [
+				'type' => 'radio',
+				'label' => 'Enable User Management for Editor Role',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_hide_acf_ext_menu_items' => [
+				'type' => 'radio',
+				'label' => 'Hide ACF Extension Menu Items',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
 			]
 		]
 	];
 
-	foreach($add_settings as $section => $setting) {
-		$wp_customize -> add_section('lqx_' . strtolower($section), [
+	// Add custom menu positions to $menus array
+	if (file_exists(get_template_directory() . '/php/custom/features.php')) {
+		require get_template_directory() . '/php/custom/features.php';
+
+		if (count($feature_flags)) {
+			foreach ($feature_flags as $code => $title) {
+				$add_settings['Feature Flags']['feature-' . $code] = [
+					'type' => 'radio',
+					'label' => $title,
+					'choices' => ['0' => 'No', '1' => 'Yes'],
+					'default' => '0'
+				];
+			}
+		} else unset($add_settings['Feature Flags']);
+	}
+
+	foreach ($add_settings as $section => $setting) {
+		$wp_customize->add_section('lqx_' . strtolower($section), [
 			'title' => __($section, 'lyquix'),
 			'priority' => 30,
 		]);
-		foreach($setting as $name => $options) {
-			$wp_customize -> add_setting($name , [
+		foreach ($setting as $name => $options) {
+			$wp_customize->add_setting($name, [
 				'type' => 'theme_mod',
 				'transport' => 'refresh',
-				'default' => array_key_exists('default', $options) ? $options['default'] : null
+				'default' => $options['default'] ?? null
 			]);
-			$wp_customize -> add_control($name, [
-				'type' => array_key_exists('type', $options) ? $options['type'] : null,
+			$wp_customize->add_control($name, [
+				'type' => $options['type'] ?? null,
 				'label' => __($options['label'], 'lyquix'),
 				'section' => 'lqx_' . strtolower($section),
 				'settings' => $name,
-				'choices' => array_key_exists('choices', $options) ? $options['choices'] : null
+				'choices' => $options['choices'] ?? null
 			]);
 		}
 	}
 }
 
-/* DO NOT MODIFY THIS FILE! If you need custom functions, add them to /php/custom/functions.php */
+add_action('customize_register', '\lqx\customizer\customizer_add');

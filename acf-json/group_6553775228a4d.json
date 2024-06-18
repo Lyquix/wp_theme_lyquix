@@ -1,0 +1,96 @@
+{
+    "key": "group_6553775228a4d",
+    "title": "Layout: Stack",
+    "fields": [
+        {
+            "key": "field_655377525148a",
+            "label": "space",
+            "name": "tailwind_stack-l_space-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Control the space between elements.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "stack-l_space-",
+            "append": ""
+        },
+        {
+            "key": "field_6553798290202",
+            "label": "split-after",
+            "name": "tailwind_stack-l_split-after-",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Split the stack after an element.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "min": 1,
+            "max": "",
+            "placeholder": "",
+            "step": "",
+            "prepend": "stack-l_split-after-",
+            "append": ""
+        },
+        {
+            "key": "field_65537a4eb37c6",
+            "label": "no-flex",
+            "name": "no-flex",
+            "aria-label": "",
+            "type": "button_group",
+            "instructions": "Do not give the stack a flexbox context.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "tailwind_stack-l_no-flex": "stack-l_no-flex"
+            },
+            "default_value": "",
+            "return_format": "value",
+            "allow_null": 1,
+            "layout": "horizontal"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "block",
+                "operator": "==",
+                "value": "lqx\/stack"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "acfe_autosync": [
+        "json"
+    ],
+    "acfe_form": 0,
+    "acfe_display_title": "",
+    "acfe_meta": "",
+    "acfe_note": "",
+    "modified": 1718726372
+}

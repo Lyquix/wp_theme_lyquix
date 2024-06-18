@@ -1,0 +1,22 @@
+{
+	"recommendations": [
+		"aaron-bond.better-comments",
+		"bmewburn.vscode-intelephense-client",
+		"dbaeumer.vscode-eslint",
+		"donjayamanne.githistory",
+		"DotJoshJohnson.xml",
+		"EditorConfig.EditorConfig",
+		"eamodio.gitlens",
+		"formulahendry.auto-close-tag",
+		"formulahendry.auto-rename-tag",
+		"foxundermoon.shell-format",
+		"ms-azuretools.vscode-docker",
+		"ms-vscode.vscode-typescript-next",
+		"ms-vsliveshare.vsliveshare",
+		"nhoizey.gremlins",
+		"ritwickdey.LiveServer",
+		"stylelint.vscode-stylelint",
+		"Vue.volar"
+	],
+	"unwantedRecommendations": []
+}

@@ -1,0 +1,92 @@
+{
+    "key": "group_655d0e5b38ec3",
+    "title": "Layout: Switcher",
+    "fields": [
+        {
+            "key": "field_655d0e5b5856b",
+            "label": "space",
+            "name": "tailwind_switcher-l_space-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Control the space between elements.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "switcher-l_space-",
+            "append": ""
+        },
+        {
+            "key": "field_655d0e895856c",
+            "label": "threshold",
+            "name": "tailwind_switcher-l_threshold-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Control the width of the container at which the layout switches.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "switcher-l_threshold-",
+            "append": ""
+        },
+        {
+            "key": "field_655d0ea75856d",
+            "label": "limit",
+            "name": "tailwind_switcher-l_limit-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Control the maximum number of elements that can be shown side-by-side.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "switcher-l_limit-",
+            "append": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "block",
+                "operator": "==",
+                "value": "lqx\/switcher"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "acfe_autosync": [
+        "json"
+    ],
+    "acfe_form": 0,
+    "acfe_display_title": "",
+    "acfe_meta": "",
+    "acfe_note": "",
+    "modified": 1718726375
+}

@@ -1,0 +1,94 @@
+{
+    "key": "group_655d0c63d49a4",
+    "title": "Layout: Cluster",
+    "fields": [
+        {
+            "key": "field_655d0c640ca6f",
+            "label": "space",
+            "name": "tailwind_cluster-l_space-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Control the space between elements.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "cluster-l_space-",
+            "append": ""
+        },
+        {
+            "key": "field_655d0c9b0ca70",
+            "label": "item-min-w",
+            "name": "tailwind_cluster-l_item-min-w-",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Control the minimum width of each element (override the intrinsic width of elements).",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "cluster-l_item-min-w-",
+            "append": ""
+        },
+        {
+            "key": "field_655d0cc80ca71",
+            "label": "center",
+            "name": "center",
+            "aria-label": "",
+            "type": "button_group",
+            "instructions": "Center the elements horizontally.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "tailwind_cluster-l_center": "cluster-l_center"
+            },
+            "default_value": "",
+            "return_format": "value",
+            "allow_null": 1,
+            "layout": "horizontal"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "block",
+                "operator": "==",
+                "value": "lqx\/luster"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "acfe_autosync": [
+        "json"
+    ],
+    "acfe_form": 0,
+    "acfe_display_title": "",
+    "acfe_meta": "",
+    "acfe_note": "",
+    "modified": 1718726346
+}
