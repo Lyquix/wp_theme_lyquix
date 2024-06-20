@@ -1473,9 +1473,7 @@
                             "hide_label": "",
                             "hide_instructions": "",
                             "hide_required": "",
-                            "choices": {
-                                "": "Select",
-                            },
+                            "choices": {},
                             "default_value": false,
                             "return_format": "value",
                             "multiple": 0,

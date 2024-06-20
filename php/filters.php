@@ -1190,8 +1190,8 @@ function get_posts_with_data($s) {
 	$query = [
 		'post_type' => $s['post_type'],
 		'post_status' => 'publish',
-		'posts_per_page' => $s['pagination']['posts_per_page'],
-		'paged' => $s['pagination']['page'],
+		'posts_per_page' => $s['pagination']['show_all']  == 'n' ? $s['pagination']['posts_per_page'] : '-1',
+		'paged' => $s['pagination']['show_all']  == 'n' ? $s['pagination']['page'] : false,
 		'orderby' => []
 	];
 
