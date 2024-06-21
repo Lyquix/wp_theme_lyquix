@@ -76,11 +76,9 @@
 		"postinstall": "chmod +x ./postinstall.sh && ./postinstall.sh",
 		"watch": "run-p watch:**",
 		"watch:scss": "sass css/custom/custom.scss:css/custom.css --update --watch",
+		"watch:prettier": "onchange \"css/**/*.scss\" -- prettier --write --ignore-unknown {{changed}}",
 		"watch:lyquix": "rollup -c rollup.lyquix.js -w",
 		"watch:scripts": "rollup -c rollup.scripts.js -w",
-		"watch:prettier": "onchange \"css/**/*.scss\" -- prettier --write --ignore-unknown {{changed}}",
-		"watch:tailwind-frontend": "tailwindcss -i css/custom.css -c css/tailwind/config.js -o css/styles.css --watch",
-		"watch:tailwind-editor": "tailwindcss -i css/tailwind/editor.css -c css/tailwind/editor.config.js -o css/editor.css --watch",
 		"watch:gulp": "gulp"
 	}
 }
