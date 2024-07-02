@@ -1262,7 +1262,7 @@
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
-                                "width": "40",
+                                "width": "33",
                                 "class": "",
                                 "id": ""
                             },
@@ -1303,7 +1303,7 @@
                                 ]
                             ],
                             "wrapper": {
-                                "width": "60",
+                                "width": "33",
                                 "class": "",
                                 "id": ""
                             },
@@ -1343,7 +1343,7 @@
                                 ]
                             ],
                             "wrapper": {
-                                "width": "60",
+                                "width": "33",
                                 "class": "",
                                 "id": ""
                             },
@@ -1386,6 +1386,38 @@
                                     "parent_repeater": "field_65f1ec51ef06d"
                                 }
                             ],
+                            "parent_repeater": "field_65f1eb2847552"
+                        },
+                        {
+                            "key": "field_667c19e452892",
+                            "label": "Narrow Options",
+                            "name": "narrow_options",
+                            "aria-label": "",
+                            "type": "button_group",
+                            "instructions": "Select whether or not this filter's options will be narrowed to only show options that will return valid items with the current filter selection.",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "33",
+                                "class": "",
+                                "id": ""
+                            },
+                            "acfe_permissions": "",
+                            "instruction_placement": "tooltip",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
+                            "choices": {
+                                "y": "Yes",
+                                "n": "No"
+                            },
+                            "default_value": "",
+                            "return_format": "value",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
+                            "allow_null": 0,
+                            "layout": "horizontal",
                             "parent_repeater": "field_65f1eb2847552"
                         }
                     ]
@@ -3144,5 +3176,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1716478028
+    "modified": 1719514854
 }

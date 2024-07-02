@@ -790,10 +790,17 @@ function get_options($s) {
 
 		switch ($control['type']) {
 			case 'taxonomy':
-				$terms = get_terms([
-					'taxonomy' => $control['taxonomy'],
-					'object_ids' => $posts
-				]);
+				if ($control['narrow_options'] == 'y') {
+					$terms = get_terms([
+						'taxonomy' => $control['taxonomy'],
+						'object_ids' => $posts
+					]);
+				} else {
+					$terms = get_terms([
+						'taxonomy' => $control['taxonomy'],
+					]);
+				}
+
 
 				foreach ($terms as $term) {
 					$options[$term->name] = [
@@ -810,11 +817,13 @@ function get_options($s) {
 
 			case 'field':
 				// Prepare the SQL query to get field values and post counts
+				//we need to get the name of the field for the query
+				$field = get_field_object($control['acf_field'], null, true, false, false);
 				$sql = $wpdb->prepare(
 					"SELECT `meta_value`, COUNT(`post_id`) as `count` " .
 						"FROM $wpdb->postmeta " .
-						"WHERE `meta_key` = '%s' " . // TODO: are we handling sub-fields within groups and repeaters correctly? We may need a LIKE operator here
-						"AND `post_id` IN (" . implode(',', array_map('intval', $posts)) . ") " .
+						"WHERE `meta_key` = '".$field['name']."' " . // TODO: are we handling sub-fields within groups and repeaters correctly? We may need a LIKE operator here
+						($control['narrow_options'] == 'y' ? "AND `post_id` IN (" . implode(',', array_map('intval', $posts)) . ") " : "") .
 						"GROUP BY `meta_value`",
 					$control['acf_field']
 				);
