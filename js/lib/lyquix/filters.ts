@@ -465,6 +465,16 @@ export const filters = (() => {
 				postsPerPageChange(id, postsPerPage.val());
 			});
 		});
+
+		// Close controls when clicking outside
+		jQuery('body').on('click', (e) => {
+			if (!jQuery(e.target.closest(cfg.filters.controlWrapperSelector)).length) {
+				filterObj.elem.find(cfg.filters.controlWrapperSelector).each((idx, controlWrapper) => {
+					jQuery(controlWrapper).removeClass('open').removeClass('active');
+					jQuery(cfg.filters.controlsSelector).removeClass('open-list');
+				});
+			}
+		});
 	};
 
 	// TODO do we need a way to change multiple controls, search, page at once?
