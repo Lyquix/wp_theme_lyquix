@@ -1262,7 +1262,7 @@
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
-                                "width": "33",
+                                "width": "30",
                                 "class": "",
                                 "id": ""
                             },
@@ -1303,7 +1303,7 @@
                                 ]
                             ],
                             "wrapper": {
-                                "width": "33",
+                                "width": "24",
                                 "class": "",
                                 "id": ""
                             },
@@ -1343,7 +1343,7 @@
                                 ]
                             ],
                             "wrapper": {
-                                "width": "33",
+                                "width": "25",
                                 "class": "",
                                 "id": ""
                             },
@@ -1394,11 +1394,11 @@
                             "name": "narrow_options",
                             "aria-label": "",
                             "type": "button_group",
-                            "instructions": "Select whether or not this filter's options will be narrowed to only show options that will return valid items with the current filter selection.",
+                            "instructions": "Select whether or not this controller's options will be narrowed to only show options that will return valid items with the current filter selection. (Default: Yes)",
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
-                                "width": "33",
+                                "width": "15",
                                 "class": "",
                                 "id": ""
                             },
@@ -1412,12 +1412,81 @@
                                 "y": "Yes",
                                 "n": "No"
                             },
-                            "default_value": "",
+                            "default_value": "y",
                             "return_format": "value",
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "allow_null": 0,
                             "layout": "horizontal",
+                            "parent_repeater": "field_65f1eb2847552"
+                        },
+                        {
+                            "key": "field_66842ceb0d9e5",
+                            "label": "Show View All",
+                            "name": "show_view_all",
+                            "aria-label": "",
+                            "type": "button_group",
+                            "instructions": "Select whether or not this filter's options will include a View All option that clears this control selection. (Default: Yes)",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "15",
+                                "class": "",
+                                "id": ""
+                            },
+                            "acfe_permissions": "",
+                            "instruction_placement": "tooltip",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
+                            "choices": {
+                                "y": "Yes",
+                                "n": "No"
+                            },
+                            "default_value": "y",
+                            "return_format": "value",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
+                            "allow_null": 0,
+                            "layout": "horizontal",
+                            "parent_repeater": "field_65f1eb2847552"
+                        },
+                        {
+                            "key": "field_668c01b154117",
+                            "label": "View All Label",
+                            "name": "view_all_label",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "Enter the label to be displayed for the View All option. (Default: View All)",
+                            "required": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_66842ceb0d9e5",
+                                        "operator": "==",
+                                        "value": "y"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "15",
+                                "class": "",
+                                "id": ""
+                            },
+                            "acfe_permissions": "",
+                            "instruction_placement": "tooltip",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
+                            "default_value": "View All",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
+                            "maxlength": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
                             "parent_repeater": "field_65f1eb2847552"
                         }
                     ]
@@ -3176,5 +3245,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1719514854
+    "modified": 1720451740
 }

@@ -105,10 +105,16 @@ if (
 						<span class="label"><?= $control['label'] ?></span>
 						<span class="selected"><?= \lqx\filters\get_selected_option_label($control) ?></span>
 						<select name="<?= $control['slug'] ?>" id="<?= $s['hash'] ?>-control-<?= $j ?>">
-							<option value=""></option>
+							<?php if ($control['show_view_all'] == 'y') : ?>
+							<option
+								value=""
+								<?= $control['selected'] == '' ? ' selected' : '' ?>><?= $control['view_all_label'] ?></option>
+							<?php endif; ?>
 
 							<?php foreach ($options as $option) : ?>
-							<option value="<?= esc_attr($option['value']) ?>"<?= $control['selected'] == $option['value'] ? ' selected' : '' ?>><?= $option['text'] ?></option>
+							<option
+								value="<?= esc_attr($option['value']) ?>"
+								<?= $control['selected'] == $option['value'] ? ' selected' : '' ?>><?= $option['text'] ?></option>
 							<?php endforeach; ?>
 
 						</select>
@@ -125,9 +131,26 @@ if (
 							<span class="selected"><?= \lqx\filters\get_selected_option_label($control) ?></span>
 						</legend>
 
+						<?php if ($control['show_view_all'] == 'y') : ?>
+							<label for="<?= $s['hash'] ?>-control-<?= $j ?>-all">
+								<input
+									type="checkbox"
+									id="<?= $s['hash'] ?>-control-<?= $j ?>-all"
+									name="<?= $control['slug'] ?>"
+									value=""
+									<?= $control['selected'] == '' ? ' checked' : '' ?> />
+								<span><?= $control['view_all_label'] ?></span>
+							</label>
+						<?php endif; ?>
+
 						<?php foreach ($options as $i => $option) : ?>
 							<label for="<?= $s['hash'] ?>-control-<?= $j ?>-<?= $i ?>">
-								<input type="checkbox" id="<?= $s['hash'] ?>-control-<?= $j ?>-<?= $i ?>" name="<?= $control['slug'] ?>" value="<?= esc_attr($option['value']) ?>"<?= $control['selected'] == $option['value'] ? ' checked' : '' ?> />
+								<input
+									type="checkbox"
+									id="<?= $s['hash'] ?>-control-<?= $j ?>-<?= $i ?>"
+									name="<?= $control['slug'] ?>"
+									value="<?= esc_attr($option['value']) ?>"
+									<?= $control['selected'] == $option['value'] ? ' checked' : '' ?> />
 								<span><?= $option['text'] ?></span>
 							</label>
 						<?php endforeach; ?>
@@ -145,9 +168,26 @@ if (
 							<span class="selected"><?= \lqx\filters\get_selected_option_label($control) ?></span>
 						</legend>
 
+						<?php if ($control['show_view_all'] == 'y') : ?>
+							<label for="<?= $s['hash'] ?>-control-<?= $j ?>-all">
+								<input
+									type="radio"
+									id="<?= $s['hash'] ?>-control-<?= $j ?>-all"
+									name="<?= $control['slug'] ?>"
+									value=""
+									<?= $control['selected'] == '' ? ' checked' : '' ?> />
+								<span><?= $control['view_all_label'] ?></span>
+							</label>
+						<?php endif; ?>
+
 						<?php foreach ($options as $i => $option) : ?>
 							<label for="<?= $s['hash'] ?>-control-<?= $j ?>-<?= $i ?>">
-								<input type="radio" id="<?= $s['hash'] ?>-control-<?= $j ?>-<?= $i ?>" name="<?= $control['slug'] ?>" value="<?= esc_attr($option['value']) ?>"<?= $control['selected'] == $option['value'] ? ' checked' : '' ?> />
+								<input
+									type="radio"
+									id="<?= $s['hash'] ?>-control-<?= $j ?>-<?= $i ?>"
+									name="<?= $control['slug'] ?>"
+									value="<?= esc_attr($option['value']) ?>"
+									<?= $control['selected'] == $option['value'] ? ' checked' : '' ?> />
 								<span><?= $option['text'] ?></span>
 							</label>
 						<?php endforeach; ?>
@@ -165,8 +205,18 @@ if (
 
 					<ul class="control-list" id="<?= $s['hash'] ?>-control-<?= $j ?>" role="combobox" aria-labelledby="<?= $s['hash'] ?>-control-<?= $j ?>-label">
 
+						<?php if ($control['show_view_all'] == 'y') : ?>
+						<li
+							id="<?= $s['hash'] ?>-control-<?= $j ?>-all"
+							class="option<?= $control['selected'] == '' ? ' selected' : '' ?>"
+							data-value=""><?= $control['view_all_label'] ?></li>
+						<?php endif; ?>
+
 						<?php foreach ($options as $i => $option) : ?>
-						<li id="<?= $s['hash'] ?>-control-<?= $j ?>-<?= $i ?>" class="option<?= $control['selected'] == $option['value'] ? ' selected' : '' ?>" data-value="<?= esc_attr($option['value']) ?>"><?= $option['text'] ?></li>
+						<li
+							id="<?= $s['hash'] ?>-control-<?= $j ?>-<?= $i ?>"
+							class="option<?= $control['selected'] == $option['value'] ? ' selected' : '' ?>"
+							data-value="<?= esc_attr($option['value']) ?>"><?= $option['text'] ?></li>
 						<?php endforeach; ?>
 
 					</ul>

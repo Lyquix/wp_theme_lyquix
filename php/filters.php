@@ -360,7 +360,13 @@ function validate_settings($settings) {
 								],
 								'default' => ['value' => '']
 							]
-						]
+							],
+							'narrow_options' => \lqx\util\schema_str_req_y,
+							'show_view_all' => \lqx\util\schema_str_req_y,
+							'view_all_label' => [
+								'type' => 'string',
+								'default' => 'View All'
+							]
 					]
 				]
 			],
