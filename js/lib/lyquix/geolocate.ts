@@ -149,7 +149,7 @@ export const geolocate = (() => {
 			async: true,
 			cache: false,
 			dataType: 'json',
-			url: vars.tmplURL + '/php/ip2geo/',
+			url: cfg.tmplURL + '/php/ip2geo/',
 			success: (data) => {
 				// Do not overwrite existing GPS location
 				if (vars.geolocate.location.source !== 'gps' && vars.geolocate.location.source !== 'gps-cookie') {

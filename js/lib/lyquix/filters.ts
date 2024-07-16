@@ -938,7 +938,7 @@ export const filters = (() => {
 					setCache(payloadHash, data);
 					processAPIResponse(data);
 				},
-				url: vars.siteURL + '/wp-json/lyquix/v3/filters'
+				url: cfg.siteURL + '/wp-json/lyquix/v3/filters'
 			});
 		}
 	};

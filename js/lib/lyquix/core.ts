@@ -29,23 +29,30 @@ export const vars: DynamicObject = {
 	window: jQuery(window),
 	document: jQuery(document),
 	html: jQuery('html'),
-	body: jQuery('body'),
-	siteURL: (() => {
-		let url = jQuery('script[src*="js/lyquix.js"], script[src*="js/lyquix.min.js"]').attr('src') as string;
-		url = (new URL(url, window.location.href)).href;
-		return url.slice(0, url.indexOf('wp-content/themes/'));
-	})(),
-	tmplURL: (() => {
-		let url = jQuery('script[src*="js/lyquix.js"], script[src*="js/lyquix.min.js"]').attr('src') as string;
-		url = (new URL(url, window.location.href)).href;
-		return url.slice(0, url.indexOf('js/lyquix.'));
-	})()
+	body: jQuery('body')
 };
 
 // Configuration
 export const cfg: DynamicObject = {
-	debug: 0
+	debug: 0,
+	siteURL: (() => {
+		let url = jQuery('script[src*="wp-content/themes/lyquix"], script[src*="wp-content/themes/wp_theme_lyquix"]').first().attr('src') ||
+			jQuery('link[href*="wp-content/themes/lyquix"], link[href*="wp-content/themes/wp_theme_lyquix"]').first().attr('href') || '';
+		if (!url) return null;
+		url = (new URL(url, window.location.href)).href;
+		return url.slice(0, url.indexOf('wp-content/themes/'));
+	})(),
+	tmplURL: (() => {
+		let url = jQuery('script[src*="wp-content/themes/lyquix"], script[src*="wp-content/themes/wp_theme_lyquix"]').attr('src') ||
+			jQuery('link[href*="wp-content/themes/lyquix"], link[href*="wp-content/themes/wp_theme_lyquix"]').attr('href') || '';
+		if (!url) return null;
+		url = (new URL(url, window.location.href)).href;
+		const themeNameStart = url.indexOf('wp-content/themes/') + 'wp-content/themes/'.length;
+		const themeNameEnd = url.indexOf('/', themeNameStart);
+		return url.slice(0, themeNameEnd + 1);
+	})()
 };
+
 
 // Internal console log/warn/error functions
 // Use instead of console.log(), console.warn() and console.error(), use lqx.opts.debug to enable/disable

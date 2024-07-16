@@ -260,7 +260,7 @@ export const alerts = (() => {
 
 			},
 
-			url: vars.siteURL + '/wp-json/lyquix/v3/alerts'
+			url: cfg.siteURL + '/wp-json/lyquix/v3/alerts'
 		});
 	};
 	return {

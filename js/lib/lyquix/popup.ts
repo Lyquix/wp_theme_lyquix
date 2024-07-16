@@ -198,7 +198,7 @@ export const popup = (() => {
 
 			},
 
-			url: vars.siteURL + '/wp-json/lyquix/v3/popup'
+			url: cfg.siteURL + '/wp-json/lyquix/v3/popup'
 		});
 	};
 
