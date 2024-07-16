@@ -104,3 +104,6 @@ if (file_exists(get_template_directory() . '/php/custom/shortcodes.php')) {
 
 // Updates checker
 require_once get_template_directory() . '/php/update.php';
+
+// Critical path CSS configuration endpoint
+require_once get_template_directory() . '/php/critical.php';

@@ -54,7 +54,7 @@ function abs_url($rel, $base) {
 	if ($rel[0] == '?') return explode('?', $base)[0] . $rel;
 
 	// Relative is a path relative to the root
-	if ($rel[0] == '/') return (array_key_exists('path', $parts) ? explode($parts['path'], $base)[0] : $base ) . $rel;
+	if ($rel[0] == '/') return (array_key_exists('path', $parts) ? explode($parts['path'], $base)[0] : $base) . $rel;
 
 	// Relative is a path relative to the current directory
 	// Base has no path
@@ -77,7 +77,8 @@ function abs_url($rel, $base) {
  *
  * @return void
  */
-function enqueue_styles() {
+
+function get_stylesheets() {
 	global $wp_styles;
 
 	// Get styles to remove
@@ -147,13 +148,51 @@ function enqueue_styles() {
 		];
 	}
 
-	// Queue styles
-	foreach ($stylesheets as $css_url) {
-		wp_enqueue_style($css_url['handle'], $css_url['url'], [], $css_url['version'] ?? null);
-	}
+	return $stylesheets;
 }
 
-add_action('wp_enqueue_scripts', '\lqx\css\enqueue_styles', 100);
+function get_critical_css() {
+	$critical_css = null;
+
+	if (is_singular()) {
+		$post_type = get_post_type();
+		$slug = get_post_field('post_name');
+		$critical_css = get_template_directory() . "/css/critical/{$post_type}" . ($post_type === 'page' ? "-{$slug}" : '') . '.css';
+
+		if ($critical_css && file_exists($critical_css)) {
+			$critical_css = file_get_contents($critical_css);
+		}
+	}
+
+	return $critical_css;
+}
+
+add_action('wp_enqueue_scripts', function () use ($critical_css) {
+	$critical_css = get_critical_css();
+	$stylesheets = get_stylesheets();
+
+	if ($critical_css && !isset($_GET['no-critical-path-css'])) {
+		wp_register_style('critical-path-css', false);
+		wp_enqueue_style('critical-path-css');
+		wp_add_inline_style('critical-path-css', $critical_css);
+
+		foreach ($stylesheets as $css_url) {
+			wp_enqueue_style($css_url['handle'], $css_url['url'], [], $css_url['version'] ?? null, 'print');
+		}
+
+		add_action('wp_footer', function () use ($stylesheets) {
+			echo '<script>document.querySelectorAll(\'';
+			echo implode(', ', array_map(function ($s) use ($stylesheets) {
+				return '#' . $s['handle'] . '-css';
+			}, $stylesheets));
+			echo '\').forEach(s => { if (s.sheet) s.media = \'all\'; else s.onload = () => s.media = \'all\'; });</script>';
+		});
+	} else {
+		foreach ($stylesheets as $css_url) {
+			wp_enqueue_style($css_url['handle'], $css_url['url'], [], $css_url['version'] ?? null);
+		}
+	}
+}, 0);
 
 // Renders custom CSS for the page
 function render_page_custom_css() {
