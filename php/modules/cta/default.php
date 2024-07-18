@@ -143,9 +143,6 @@ $c = array_filter(array_map(function($item) use($s) {
 
 	if (!$display) return null;
 
-	// Check style value
-	if (!in_array($v['data']['style'], $s['cta_block_styles'])) $v['data']['style'] = '';
-
 	return $v['data'];
 }, $content));
 
