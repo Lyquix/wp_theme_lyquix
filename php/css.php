@@ -171,7 +171,7 @@ add_action('wp_enqueue_scripts', function () use ($critical_css) {
 	$critical_css = get_critical_css();
 	$stylesheets = get_stylesheets();
 
-	if ($critical_css && !isset($_GET['no-critical-path-css'])) {
+	if (get_theme_mod('feat_load_critical_path_css', 1) && $critical_css && !isset($_GET['no-critical-path-css'])) {
 		wp_register_style('critical-path-css', false);
 		wp_enqueue_style('critical-path-css');
 		wp_add_inline_style('critical-path-css', $critical_css);

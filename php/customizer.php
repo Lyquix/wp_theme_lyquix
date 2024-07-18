@@ -258,6 +258,12 @@ function customizer_add($wp_customize) {
 				'label' => 'Hide ACF Extension Menu Items',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
+			],
+			'feat_load_critical_path_css' => [
+				'type' => 'radio',
+				'label' => 'Load Critical Path CSS when available',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
 			]
 		]
 	];
