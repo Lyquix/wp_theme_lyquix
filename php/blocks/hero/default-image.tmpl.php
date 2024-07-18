@@ -29,25 +29,37 @@
 	<?php if ($c['video']['type'] == 'upload' && $c['video']['upload']) : ?>
 		<video
 			autoplay loop muted playsinline
-			poster="<?= array_key_exists('url', $c['image_override']) ? $c['image_override']['url'] : get_the_post_thumbnail_url() ?>">
+			poster="<?= array_key_exists('url', $c['image_override']) ?
+				($s['image_size'] == 'full' ? $c['image_override']['url'] : $c['image_override']['sizes'][$s['image_size']]) :
+				get_the_post_thumbnail_url(null, $s['image_size']) ?>">
 			<source
-				src="<?= esc_attr($c['video']['upload']['url']) ?>"
+				src="<?= esc_attr($c['video']['upload']['sizes']['small']) ?>"
 				type="<?= $c['video']['upload']['mime_type'] ?>">
 		</video>
 	<?php else: ?>
 		<?php if (array_key_exists('url', $c['image_override'])) : ?>
 			<img
-				src="<?= esc_attr($c['image_override']['url']) ?>"
+				src="<?= esc_attr($s['image_size'] == 'full' ? $c['image_override']['url'] : $c['image_override']['sizes'][$s['image_size']]) ?>"
 				alt="<?= esc_attr($c['image_override']['alt']) ?>"
-				class="<?= array_key_exists('url', $c['image_mobile']) ? 'xs:hidden md:block' : '' ?>" />
+				class="<?= array_key_exists('url', $c['image_mobile']) ? 'xs:hidden md:block' : '' ?>"
+				<?= $s['disable_lazy_loading'] == 'y' ? 'loading="eager" data-skip-lazy' : '' ?> />
 		<?php else :
-			the_post_thumbnail('post-thumbnail', ['class' => $c['image_mobile'] !== false ? 'xs:hidden md:block' : '']);
+			$the_post_thumbnail_opts = [];
+			if (array_key_exists('url', $c['image_mobile'])) {
+				$the_post_thumbnail_opts['class'] =  'xs:hidden md:block';
+			}
+			if ($s['disable_lazy_loading'] == 'y' ) {
+				$the_post_thumbnail_opts['loading'] = 'eager';
+				$the_post_thumbnail_opts['data-skip-lazy'] = '';
+			}
+			the_post_thumbnail($s['image_size'], $the_post_thumbnail_opts);
 		endif; ?>
 		<?php if (array_key_exists('url', $c['image_mobile'])) : ?>
 			<img
-				src="<?= esc_attr($c['image_mobile']['url']) ?>"
+				src="<?= esc_attr($s['image_mobile_size'] == 'full' ? $c['image_mobile']['url'] : $c['image_mobile']['sizes'][$s['image_mobile_size']]) ?>"
 				alt="<?= esc_attr($c['image_mobile']['alt']) ?>"
-				class="xs:block md:hidden" />
+				class="xs:block md:hidden"
+				<?= $s['disable_lazy_loading'] == 'y' ? 'loading="eager" data-skip-lazy' : '' ?> />
 		<?php endif; ?>
 	<?php endif; ?>
 </div>

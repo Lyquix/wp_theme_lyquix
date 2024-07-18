@@ -37,6 +37,19 @@ $s = \lqx\util\validate_data($settings['processed'], [
 			'default' => 'id-' . substr(md5(json_encode([$settings, $content, random_int(1000, 9999)])), 24)
 		],
 		'show_image' => \lqx\util\schema_str_req_y,
+		'image_size' => [
+			'type' => 'string',
+			'required' => true,
+			'default' => 'large',
+			'allowed' => ['thumbnail', 'small', 'medium', 'large', 'full']
+		],
+		'image_mobile_size' => [
+			'type' => 'string',
+			'required' => true,
+			'default' => 'medium',
+			'allowed' => ['thumbnail', 'small', 'medium', 'large', 'full']
+		],
+		'disable_lazy_loading' => \lqx\util\schema_str_req_y,
 		'breadcrumbs' => [
 			'type' => 'object',
 			'required' => true,
