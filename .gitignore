@@ -15,6 +15,7 @@
 .DS_Store
 Thumbs.db
 Desktop.ini
+*Zone.Identifier
 
 # gitignore for wp_theme_lyquix
 .sass-cache
