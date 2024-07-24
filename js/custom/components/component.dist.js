@@ -1,7 +1,7 @@
 /**
  * component.dist.js - Sample Vue component
  *
- * @version     2.4.1
+ * @version     2.5.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix

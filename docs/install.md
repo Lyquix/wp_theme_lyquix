@@ -1,6 +1,6 @@
 # Installation and Setup
 
-`@version     2.4.1`
+`@version     2.5.0`
 
 ### Pre-Requisites
 
