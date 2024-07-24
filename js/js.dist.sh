@@ -3,7 +3,7 @@
 #
 # js.dist.sh - Shell script to concatenate and minify lyquix Javascript library, and vue components/controllers
 #
-# @version     2.5.0
+# @version     2.5.1
 # @package     wp_theme_lyquix
 # @author      lyquix
 # @copyright   Copyright (C) 2015 - 2018 Lyquix

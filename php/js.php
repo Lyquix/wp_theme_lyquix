@@ -2,7 +2,7 @@
 /**
  * js.php - Includes JavaScript libraries
  *
- * @version     2.5.0
+ * @version     2.5.1
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2017 Lyquix

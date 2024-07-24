@@ -1,6 +1,6 @@
 # Favicons
 
-`@version     2.5.0`
+`@version     2.5.1`
 
 The theme automatically adds favicons to the `<head>` when files are present in the `images/favicon/` directory.
 

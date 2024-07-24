@@ -1,7 +1,7 @@
 /**
  * mutation.js - Mutation observer and handler
  *
- * @version     2.5.0
+ * @version     2.5.1
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix
