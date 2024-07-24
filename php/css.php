@@ -188,5 +188,20 @@ if(!file_exists($tmpl_path . '/dist/' . $stylesheet_filename)) {
 
 function lqx_render_css() {
 	global $tmpl_url, $stylesheet_filename;
-	echo '<link href="' . $tmpl_url . '/dist/' . $stylesheet_filename . '" rel="stylesheet" />' . "\n";
+
+    $critical_css = null;
+
+    if (is_singular()) {
+        $post_type = get_post_type();
+        $slug = get_post_field('post_name');
+        $critical_css = get_template_directory() . "/css/critical/{$post_type}" . ($post_type === 'page' ? "-{$slug}" : '') . '.css';
+    }
+
+    if (get_theme_mod('critical_path_css', '1') && $critical_css && file_exists($critical_css) && !isset($_GET['no-critical-path-css'])) {
+        echo '<style type="text/css" id="critical-path-css">' . file_get_contents($critical_css) . '</style>';
+        echo '<link href="' . $tmpl_url . '/dist/' . $stylesheet_filename . '" rel="stylesheet" media="print"';
+        if (!isset($_GET['only-critical-path-css'])) echo ' onload="this.media=\'all\'"';
+        echo ' />';
+    }
+    else echo '<link href="' . $tmpl_url . '/dist/' . $stylesheet_filename . '" rel="stylesheet" />' . "\n";
 }

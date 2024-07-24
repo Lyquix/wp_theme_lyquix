@@ -30,3 +30,5 @@ add_action('customize_register', 'lqx_customizer_add');
 if(file_exists(get_template_directory() . '/php/custom/functions.php')) {
 	require get_template_directory() . '/php/custom/functions.php';
 }
+
+require get_template_directory() . '/php/critical.php';

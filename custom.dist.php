@@ -45,6 +45,22 @@ dynamic_sidebar('head-scripts');
 require get_template_directory() . '/php/body.php';
 ?>
 <body class="<?php echo implode(' ', $body_classes); ?>">
+<script>
+(() => {
+	let sizes = ['xs', 'sm', 'md', 'lg', 'xl'], breakPoints = [320, 640, 960, 1280, 1600];
+
+	// get the viewport width
+	let width = window.innerWidth;
+
+	// get the screen size
+	let screen = sizes.filter((size, index) => {
+		return width >= breakPoints[index];
+	}).pop();
+
+	// Set the body screen attribute
+	document.body.setAttribute('screen', screen);
+})();
+</script>
 <?php
 // Skip header area for blank page template
 $lqx_page_template = basename(get_page_template());

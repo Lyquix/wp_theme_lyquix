@@ -24,6 +24,12 @@ function lqx_customizer_add($wp_customize) {
 				'label' => 'Maximum Screen Size',
 				'choices' => ['0' => 'XS', '1' => 'SM', '2' => 'MD', '3' => 'LG', '4' => 'XL'],
 				'default' => '4'
+			],
+			'critical_path_css' => [
+				'type' => 'radio',
+				'label' => 'Use Critical Path CSS',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
 			]
 		],
 		'CSS' => [

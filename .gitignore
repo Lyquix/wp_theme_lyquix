@@ -18,6 +18,7 @@ Desktop.ini
 
 # gitignore for wp_theme_lyquix
 .sass-cache
+/critical.json
 /dist/*.css
 /dist/*.js
 node_modules
