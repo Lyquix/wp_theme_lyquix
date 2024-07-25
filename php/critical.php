@@ -64,7 +64,7 @@ function lqx_critical_rest_route() {
 			],
 			[
 				'width' => 1280,
-				'height' => 720
+				'height' => 1080
 			],
 			[
 				'width' => 960,
@@ -72,11 +72,11 @@ function lqx_critical_rest_route() {
 			],
 			[
 				'width' => 640,
-				'height' => 720
+				'height' => 960
 			],
 			[
 				'width' => 320,
-				'height' => 480
+				'height' => 720
 			]
 		],
 		'templates' => $templates
