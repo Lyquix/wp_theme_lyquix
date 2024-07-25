@@ -74,11 +74,11 @@ function rest_route() {
 		'viewports' => [
 			[
 				'width' => 320,
-				'height' => 480
+				'height' => 720
 			],
 			[
 				'width' => 480,
-				'height' => 720
+				'height' => 1080
 			],
 			[
 				'width' => 720,
@@ -86,7 +86,7 @@ function rest_route() {
 			],
 			[
 				'width' => 1080,
-				'height' => 720
+				'height' => 1080
 			],
 			[
 				'width' => 1620,
