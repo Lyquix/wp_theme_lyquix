@@ -33,7 +33,7 @@ function lqx_setup() {
 	// Hide PHP upgrade alert from dashboard
 	add_action('admin_head', function(){echo '<style>#dashboard_php_nag {display:none;}</style>';});
 		// Remove weak password confirmation checkbox
-	add_action('login_init', 'lqx_no_weak_password');
+	add_action('login_head', 'lqx_no_weak_password');
 	add_action('admin_head', 'lqx_no_weak_password');
 	
 	function lqx_no_weak_password() {
