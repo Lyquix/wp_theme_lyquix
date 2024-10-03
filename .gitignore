@@ -16,6 +16,7 @@
 Thumbs.db
 Desktop.ini
 *Zone.Identifier
+.idea
 
 # gitignore for wp_theme_lyquix
 /.sass-cache
