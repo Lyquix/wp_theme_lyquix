@@ -31,7 +31,11 @@ module.exports = {
 		'./js/*.js',
 		'./page-templates/*.php',
 		'./php/**/*.php',
-		'./css/tailwind/whitelist.html'
+		'./php/**/*.tmpl.php',
+		'./tribe/**/*.php',
+		'./tribe-events/**/*.php',
+		'./custom.php',
+		'./css/tailwind/whitelist.html',
 	],
 	theme: require('./theme.js'),
 	plugins: [
