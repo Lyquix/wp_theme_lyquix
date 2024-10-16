@@ -26,9 +26,10 @@
 ?>
 <section class="search-content">
 	<h1>Search Results</h1>
-	<div class="search-form-wrapper">
-		<?php get_search_form(); ?>
-	</div>
+	<form role="search" method="get" class="search-form" action="<?php echo esc_url(home_url('/')); ?>">
+		<input id="s" type="search" class="search-field" placeholder="Search" value="<?php echo get_search_query(); ?>" name="s" aria-label="Search" />
+		<button type="submit" class="submit-button">Search</button>
+	</form>
 
 	<div class="search-results">
 		<?php
@@ -46,12 +47,23 @@
 		$end_result = min(($offset + $posts_per_page), $total_results);
 
 		if ($search_query->have_posts()) : ?>
-			<h2>Showing <?= $start_result; ?>-<?= $end_result; ?> of <?= $total_results; ?> results for &lsquo;<?= get_search_query(); ?>&rsquo;</h2>
 			<?php while ($search_query->have_posts()) : $search_query->the_post();
 			?>
 				<div class="search-result">
-					<h3"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-					<?php the_excerpt(); ?>
+					<h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
+					<?php
+					// If there is an excerpt, render it, otherwise render the first paragraph of the content
+					if (has_excerpt()) {
+						the_excerpt();
+					} else {
+						$content = get_the_content();
+						$content = apply_filters('the_content', $content);
+						$content = strip_shortcodes($content);
+						$content = strip_tags($content);
+						$content = mb_substr($content, 0, 300, 'UTF-8');
+						if ($content) echo $content . '&hellip;';
+					}
+					?>
 				</div>
 			<?php
 			endwhile;
@@ -61,13 +73,16 @@
 			if ($total_pages > 1) {
 
 				the_posts_pagination(array(
-					'prev_text' => __(''),
-					'next_text' => __(''),
+					'format' => '?paged=%#%',
+					'prev_text' => '&laquo;',
+					'next_text' => '&raquo;'
 				));
 			} ?>
 
 		<?php else : ?>
-			<h2 class="h3">No results found for "<?= get_search_query(); ?>"</h2>
+			<h2>Nothing Found</h2>
+			<p>Sorry, but nothing matched your search terms. Please try again with some different keywords.</p>
+			<p>Or visit our <a href="<?= get_bloginfo('url'); ?>">homepage</a>.</p>
 		<?php
 		endif;
 
