@@ -56,11 +56,16 @@
 					if (has_excerpt()) {
 						the_excerpt();
 					} else {
-						$content = get_the_content();
-						$content = apply_filters('the_content', $content);
-						$content = strip_shortcodes($content);
-						$content = strip_tags($content);
-						$content = mb_substr($content, 0, 300, 'UTF-8');
+						// Get the content
+						$content = apply_filters('the_content', get_the_content());
+						// Remove shortcodes and strip tags
+						$content = strip_tags(strip_shortcodes($content));
+						// Limit the content to 300 characters and trim
+						$content = trim(mb_substr($content, 0, 300, 'UTF-8'));
+						// Check if the title is repeated at the beginning of the content and remove it
+						if (mb_strpos($content, get_the_title()) === 0) {
+							$content = mb_substr($content, mb_strlen(get_the_title()), null, 'UTF-8');
+						}
 						if ($content) echo $content . '&hellip;';
 					}
 					?>
