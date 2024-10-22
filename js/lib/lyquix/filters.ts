@@ -150,7 +150,7 @@ export const filters = (() => {
 				}
 
 				// Check if the filter uses hash and there is no other filter using hash
-				if (settings.use_hash && !vars.filters.useHashFilterId) vars.filters.useHashFilterId = id;
+				if (settings.use_hash == 'y' && !vars.filters.useHashFilterId) vars.filters.useHashFilterId = id;
 
 				// Create the filter object
 				const filterObj = {
