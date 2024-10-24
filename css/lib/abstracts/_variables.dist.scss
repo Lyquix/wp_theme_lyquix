@@ -25,11 +25,14 @@
 // List of screen sizes
 $screen-sizes: xs sm md lg xl;
 
+// List of breakpoints (minimum width)
+$breakpoints: 0px, 480px, 720px, 1080px, 1620px;
+
 // List of heading levels
 $headings: h1 h2 h3 h4 h5 h6;
 
 // List of number of grid columns per screen size
 $grid-columns: 14 14 14 14 14;
 
-// List of grid gaps per screen size
+// List of grid gaps (in pixels) per screen size
 $grid-gaps: 8px 8px 8px 8px 8px;

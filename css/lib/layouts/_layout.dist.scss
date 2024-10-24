@@ -33,20 +33,23 @@
 		$grdCls: nth($grid-columns, index($screen-sizes, $s));
 		// $grdGap = grid gap in pixels
 		$grdGap: nth($grid-gaps, index($screen-sizes, $s));
-		// $cntMrg = container margin
-		$pct: math.percentage(math.div(1, $grdCls));
-		$px: math.div($grdGap, $grdCls);
-		$cntMrg: calc(#{$pct} + #{$px});
+		// $cntMrg = container margins
+		$cntMrgPct: math.percentage(math.div(1, $grdCls));
+		$cntMrgPx: math.div($grdGap, $grdCls);
+		$cntMrg: calc(#{$cntMrgPct} + #{$cntMrgPx});
 		// $cntWth = container width
-		$pct: math.percentage(1 - math.div(2, $grdCls));
-		$px: math.div(2 * $grdGap, $grdCls);
-		$cntWth: calc(#{$pct} + #{$px});
+		$cntWthPct: math.percentage(1 - math.div(2, $grdCls));
+		$cntWthPx: math.div(2 * $grdGap, $grdCls);
+		$cntWth: calc(#{$cntWthPct} + #{$cntWthPx});
+		// $xlCntWth = max-width for XL screen
+		$xlCntWth: (math.div(nth($breakpoints, 5), 1px) * 1 - math.div(2, $grdCls)) + math.div(2 * $grdGap, $grdCls);
+
 
 		@if $s == xl {
 			.container {
 				margin: 0 auto;
 				width: 100%;
-				max-width: $cntWth;
+				max-width: $xlCntWth;
 			}
 
 			.grid-container {
@@ -54,7 +57,7 @@
 					[full-width-start]
 					minmax($cntMrg, 1fr)
 					[container-start]
-					minmax(0, $cntWth)
+					minmax(0, $xlCntWth)
 					[container-end]
 					minmax($cntMrg, 1fr)
 					[full-width-end];
