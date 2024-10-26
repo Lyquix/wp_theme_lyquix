@@ -43,7 +43,7 @@ $s = \lqx\util\validate_data($settings, [
 			'type' => 'string',
 			'required' => true,
 			'default' => 'h3',
-			'allowed' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+			'allowed' => ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
 		]
 	]
 ]);
