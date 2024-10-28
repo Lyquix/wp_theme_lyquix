@@ -1,6 +1,6 @@
-# Lyquix WordPress Theme 3.0.0
+# Lyquix WordPress Theme 3
 
-`@version     3.0.0`
+`@version     3.1.0`
 
 Full documentation coming soon...
 
@@ -11,7 +11,7 @@ Lyquix started releasing its own starter theme in 2016 with the goals of:
 - Allowing for custom designs and functionality without interference from the theme (unopinionated approach).
 - Enabling easy updates without affecting customizations.
 
-This new 3.0.0 release continues to uphold these same goals.
+This new 3 release continues to uphold these same goals.
 
 ## Highlights of Changes and New Features
 
