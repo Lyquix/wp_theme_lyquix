@@ -109,20 +109,40 @@ function theme_setup() {
 
 	// Change the default image sizes
 	if (get_theme_mod('feat_image_sizes', '1') === '1') {
-		add_image_size('small', 640, 640);
-		add_action('init', 	function () {
+		add_action('admin_init', function () {
+			// Update WordPress default image sizes
+			update_option('thumbnail_size_w', 150);
+			update_option('thumbnail_size_h', 150);
+			update_option('thumbnail_crop', 1);
+
+			update_option('medium_size_w', 1280);
+			update_option('medium_size_h', 1280);
+
+			update_option('large_size_w', 3840);
+			update_option('large_size_h', 3840);
+		});
+
+		add_action('after_setup_theme', function () {
+			// Add custom image size
+			add_image_size('small', 640, 640);
+
+			// Remove unwanted image sizes
 			remove_image_size('medium_large');
 			remove_image_size('1536x1536');
 			remove_image_size('2048x2048');
 		});
+
+		// Filter intermediate image sizes
 		add_filter('intermediate_image_sizes_advanced', function ($sizes) {
 			return [
-				'thumbnail' => ['width' => 150, 'height' => 150, 'crop' => true],
+				'thumbnail' => $sizes['thumbnail'],
 				'small' => ['width' => 640, 'height' => 640, 'crop' => false],
-				'medium' => ['width' => 1280, 'height' => 1280, 'crop' => false],
-				'large' => ['width' => 3840, 'height' => 3840, 'crop' => false]
+				'medium' => $sizes['medium'],
+				'large' => $sizes['large']
 			];
 		}, 10, 1);
+
+		// Filter available image sizes
 		add_filter('intermediate_image_sizes', function ($sizes) {
 			return [
 				'thumbnail',
@@ -144,27 +164,31 @@ function theme_setup() {
 			add_action('admin_init', function () {
 				$required_plugins = [
 					'aryo-activity-log/aryo-activity-log.php' => 'Activity Log',
+					'admin-menu-editor-pro/menu-editor.php' => 'Admin Menu Editor Pro',
 					'advanced-custom-fields-pro/acf.php' => 'Advanced Custom Fields PRO',
 					'acf-extended-pro/acf-extended.php' => 'Advanced Custom Fields: Extended PRO',
-					'admin-menu-editor-pro/menu-editor.php' => 'Admin Menu Editor Pro',
+					'tinymce-advanced/tinymce-advanced.php' => 'Advanced Editor Tools',
+					'better-search-replace/better-search-replace.php' => 'Better Search Replace',
+					'ewww-image-optimizer/ewww-image-optimizer.php' => 'EWWW Image Optimizer',
 					'gravityforms/gravityforms.php' => 'Gravity Forms',
+					'html-editor-syntax-highlighter/html-editor-syntax-highlighter.php' => 'HTML Editor Syntax Highlighter',
 					'post-smtp/postman-smtp.php' => 'Post SMTP',
 					'redirection/redirection.php' => 'Redirection',
+					'simple-custom-post-order/simple-custom-post-order.php' => 'Simple Custom Post Order',
 					'wordpress-seo/wp-seo.php' => 'Yoast SEO',
 					'duplicate-post/duplicate-post.php' => 'Yoast Duplicate Post',
-					'simple-custom-post-order/simple-custom-post-order.php' => 'Simple Custom Post Order',
-					'tinymce-advanced/tinymce-advanced.php' => 'Advanced Editor Tools',
-					'html-editor-syntax-highlighter/html-editor-syntax-highlighter.php' => 'HTML Editor Syntax Highlighter',
-					'ewww-image-optimizer/ewww-image-optimizer.php' => 'EWWW Image Optimizer',
-					'w3-total-cache/w3-total-cache.php' => 'W3 Total Cache',
 					'wordfence/wordfence.php' => 'Wordfence',
+					'w3-total-cache/w3-total-cache.php' => 'W3 Total Cache',
+					'zero-spam/wordpress-zero-spam.php' => 'Zero Spam',
 				];
 
 				$premium_plugins = [
 					'advanced-custom-fields-pro/acf.php' => 'https://www.advancedcustomfields.com/pro/',
 					'acf-extended-pro/acf-extended.php' => 'https://www.acf-extended.com/',
+					'acf-extended-pro-libphonenumber/acf-extended-libphonenumber.php' => 'https://www.acf-extended.com/features/fields/phone-number#phone-number-addon',
 					'admin-menu-editor-pro/menu-editor.php' => 'https://adminmenueditor.com/',
-					'gravityforms/gravityforms.php' => 'https://www.gravityforms.com/'
+					'gravityforms/gravityforms.php' => 'https://www.gravityforms.com/',
+					'gravityformsrecaptcha/recaptcha.php' => 'https://www.gravityforms.com/add-ons/recaptcha/',
 				];
 
 				// Retrieve all installed plugins' data
