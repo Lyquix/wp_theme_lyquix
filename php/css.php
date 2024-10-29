@@ -167,7 +167,7 @@ function get_critical_css() {
 	return $critical_css;
 }
 
-add_action('wp_enqueue_scripts', function () use ($critical_css) {
+add_action('wp_enqueue_scripts', function () {
 	$critical_css = get_critical_css();
 	$stylesheets = get_stylesheets();
 
