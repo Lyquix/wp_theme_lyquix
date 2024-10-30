@@ -596,7 +596,7 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 	// Register ACF blocks
 	add_action('init', function () {
 		// Use glob to find 'block.json' files in the 'blocks' directory
-		$matches = array_merge(glob(__DIR__ . '/blocks/*/block.json'), glob(__DIR__ . 'custom/blocks/*/block.json'));
+		$matches = array_merge(glob(__DIR__ . '/blocks/*/block.json'), glob(__DIR__ . '/custom/blocks/*/block.json'));
 
 		// Check if any matches were found
 		if (!empty($matches)) {

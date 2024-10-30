@@ -18,6 +18,10 @@
             },
             "layout": "block",
             "acfe_seamless_style": 1,
+            "acfe_group_modal": 0,
+            "acfe_group_modal_close": 0,
+            "acfe_group_modal_button": "",
+            "acfe_group_modal_size": "large",
             "sub_fields": [
                 {
                     "key": "field_65f1e9ad47546",
@@ -94,7 +98,7 @@
                             "label": "Type",
                             "name": "type",
                             "aria-label": "",
-                            "type": "button_group",
+                            "type": "select",
                             "instructions": "",
                             "required": 0,
                             "conditional_logic": 0,
@@ -111,16 +115,82 @@
                             "hide_required": "",
                             "choices": {
                                 "taxonomy": "Taxonomy",
+                                "parentless": "No Parent",
+                                "post_parent": "Parent",
                                 "field": "Field",
                                 "date": "Date",
-                                "author": "Author ID"
+                                "author": "Author ID",
+                                "venue": "Venue",
+                                "dynamic": "Dynamic",
+                                "meta_key": "Meta Key"
                             },
                             "default_value": "taxonomy",
                             "return_format": "value",
+                            "multiple": 0,
+                            "prepend": "",
+                            "append": "",
+                            "max": "",
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "allow_null": 0,
-                            "layout": "horizontal",
+                            "allow_in_bindings": 1,
+                            "ui": 0,
+                            "ajax": 0,
+                            "placeholder": "",
+                            "allow_custom": 0,
+                            "search_placeholder": "",
+                            "min": "",
+                            "parent_repeater": "field_65f1e9c947548"
+                        },
+                        {
+                            "key": "field_66d7593cee35f",
+                            "label": "Post Parent",
+                            "name": "post_parent",
+                            "aria-label": "",
+                            "type": "relationship",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_65f1e9f847549",
+                                        "operator": "==",
+                                        "value": "post_parent"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "acfe_permissions": "",
+                            "instruction_placement": "",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
+                            "post_type": "",
+                            "post_status": "",
+                            "taxonomy": "",
+                            "filters": [
+                                "search",
+                                "post_type",
+                                "taxonomy"
+                            ],
+                            "return_format": "id",
+                            "acfe_add_post": 0,
+                            "acfe_edit_post": 0,
+                            "acfe_bidirectional": {
+                                "acfe_bidirectional_enabled": "0"
+                            },
+                            "acfe_settings": "",
+                            "acfe_validate": "",
+                            "min": "",
+                            "max": "",
+                            "elements": "",
+                            "bidirectional": 0,
+                            "bidirectional_target": [],
                             "parent_repeater": "field_65f1e9c947548"
                         },
                         {
@@ -183,6 +253,26 @@
                                         "field": "field_65f1e9f847549",
                                         "operator": "!=",
                                         "value": "date"
+                                    },
+                                    {
+                                        "field": "field_65f1e9f847549",
+                                        "operator": "!=",
+                                        "value": "parentless"
+                                    },
+                                    {
+                                        "field": "field_65f1e9f847549",
+                                        "operator": "!=",
+                                        "value": "venue"
+                                    },
+                                    {
+                                        "field": "field_65f1e9f847549",
+                                        "operator": "!=",
+                                        "value": "dynamic"
+                                    },
+                                    {
+                                        "field": "field_65f1e9f847549",
+                                        "operator": "!=",
+                                        "value": "meta_key"
                                     }
                                 ]
                             ],
@@ -206,6 +296,7 @@
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "allow_null": 0,
+                            "allow_in_bindings": 1,
                             "layout": "horizontal",
                             "parent_repeater": "field_65f1e9c947548"
                         },
@@ -289,6 +380,13 @@
                                         "operator": "==",
                                         "value": "field"
                                     }
+                                ],
+                                [
+                                    {
+                                        "field": "field_65f1e9f847549",
+                                        "operator": "==",
+                                        "value": "dynamic"
+                                    }
                                 ]
                             ],
                             "wrapper": {
@@ -302,7 +400,33 @@
                             "hide_label": "",
                             "hide_instructions": "",
                             "hide_required": "",
-                            "choices": {},
+                            "choices": {
+                                "Custom Post Type: Board & Staff": {
+                                    "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
+                                    "field_67066128004b8": "Description [field_67066128004b8]",
+                                    "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
+                                    "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
+                                    "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
+                                    "field_6710dedfd2170": "Related Page [field_6710dedfd2170]",
+                                    "field_66d8ae296374b": "Related Location [field_66d8ae296374b]",
+                                    "field_66d8ae3b6374c": "Related Programs & Services [field_66d8ae3b6374c]",
+                                    "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
+                                },
+                                "Custom Post Type: Events": {
+                                    "field_66cdfa70fd280": "Related Events [field_66cdfa70fd280]",
+                                    "field_66cdfac0fd281": "Contact [field_66cdfac0fd281]",
+                                    "field_66cdfad5fd282": "Related Programs & Services [field_66cdfad5fd282]"
+                                },
+                                "Custom Post Type: Programs & Services": {
+                                    "field_66d1d53822ff0": "Related Programs & Services [field_66d1d53822ff0]",
+                                    "field_66db073eba733": "Featured Location [field_66db073eba733]"
+                                },
+                                "Custom Post Type: Posts": {
+                                    "field_66ec38fb71925": "Gallery [field_66ec38fb71925]",
+                                    "field_66ec393771926": "-  [field_66ec393771926]"
+                                },
+                                "current": "Current Post"
+                            },
                             "default_value": false,
                             "return_format": "value",
                             "multiple": 0,
@@ -313,11 +437,50 @@
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "allow_null": 1,
+                            "allow_in_bindings": 1,
                             "ui": 0,
                             "ajax": 0,
                             "allow_custom": 0,
                             "search_placeholder": "",
                             "min": "",
+                            "parent_repeater": "field_65f1e9c947548"
+                        },
+                        {
+                            "key": "field_67094de23c704",
+                            "label": "Meta Key",
+                            "name": "meta_key",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_65f1e9f847549",
+                                        "operator": "==",
+                                        "value": "meta_key"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "30",
+                                "class": "",
+                                "id": ""
+                            },
+                            "acfe_permissions": "",
+                            "instruction_placement": "",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
+                            "default_value": "",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
+                            "maxlength": "",
+                            "allow_in_bindings": 1,
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
                             "parent_repeater": "field_65f1e9c947548"
                         },
                         {
@@ -334,6 +497,27 @@
                                         "field": "field_65f1e9f847549",
                                         "operator": "==",
                                         "value": "field"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "field": "field_65f1e9f847549",
+                                        "operator": "==",
+                                        "value": "venue"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "field": "field_65f1e9f847549",
+                                        "operator": "==",
+                                        "value": "dynamic"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "field": "field_65f1e9f847549",
+                                        "operator": "==",
+                                        "value": "meta_key"
                                     }
                                 ]
                             ],
@@ -375,6 +559,7 @@
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "allow_null": 0,
+                            "allow_in_bindings": 1,
                             "ui": 0,
                             "ajax": 0,
                             "placeholder": "",
@@ -402,6 +587,21 @@
                                         "field": "field_65f1e9f847549",
                                         "operator": "!=",
                                         "value": "taxonomy"
+                                    },
+                                    {
+                                        "field": "field_65f1e9f847549",
+                                        "operator": "!=",
+                                        "value": "post_parent"
+                                    },
+                                    {
+                                        "field": "field_65f1e9f847549",
+                                        "operator": "!=",
+                                        "value": "parentless"
+                                    },
+                                    {
+                                        "field": "field_65f1e9f847549",
+                                        "operator": "!=",
+                                        "value": "dynamic"
                                     }
                                 ]
                             ],
@@ -420,9 +620,83 @@
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "maxlength": "",
+                            "allow_in_bindings": 1,
                             "placeholder": "",
                             "prepend": "",
                             "append": "",
+                            "parent_repeater": "field_65f1e9c947548"
+                        },
+                        {
+                            "key": "field_6707cced1dfc9",
+                            "label": "Value Field",
+                            "name": "value_field",
+                            "aria-label": "",
+                            "type": "select",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_65f1e9f847549",
+                                        "operator": "==",
+                                        "value": "dynamic"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "30",
+                                "class": "",
+                                "id": ""
+                            },
+                            "acfe_permissions": "",
+                            "instruction_placement": "",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
+                            "choices": {
+                                "current": "Current Post",
+                                "Custom Post Type: Board & Staff": {
+                                    "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
+                                    "field_67066128004b8": "Description [field_67066128004b8]",
+                                    "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
+                                    "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
+                                    "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
+                                    "field_6710dedfd2170": "Related Page [field_6710dedfd2170]",
+                                    "field_66d8ae296374b": "Related Location [field_66d8ae296374b]",
+                                    "field_66d8ae3b6374c": "Related Programs & Services [field_66d8ae3b6374c]",
+                                    "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
+                                },
+                                "Custom Post Type: Events": {
+                                    "field_66cdfa70fd280": "Related Events [field_66cdfa70fd280]",
+                                    "field_66cdfac0fd281": "Contact [field_66cdfac0fd281]",
+                                    "field_66cdfad5fd282": "Related Programs & Services [field_66cdfad5fd282]"
+                                },
+                                "Custom Post Type: Posts": {
+                                    "field_66ec38fb71925": "Gallery [field_66ec38fb71925]",
+                                    "field_66ec393771926": "-  [field_66ec393771926]"
+                                },
+                                "Custom Post Type: Programs & Services": {
+                                    "field_66d1d53822ff0": "Related Programs & Services [field_66d1d53822ff0]",
+                                    "field_66db073eba733": "Featured Location [field_66db073eba733]"
+                                }
+                            },
+                            "default_value": false,
+                            "return_format": "value",
+                            "multiple": 0,
+                            "prepend": "",
+                            "append": "",
+                            "max": "",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
+                            "allow_null": 0,
+                            "allow_in_bindings": 1,
+                            "ui": 0,
+                            "ajax": 0,
+                            "placeholder": "",
+                            "allow_custom": 0,
+                            "search_placeholder": "",
+                            "min": "",
                             "parent_repeater": "field_65f1e9c947548"
                         },
                         {
@@ -1055,6 +1329,7 @@
                             "hide_required": "",
                             "choices": {
                                 "taxonomy": "Taxonomy",
+                                "post_parent": "Parent",
                                 "field": "Field"
                             },
                             "default_value": "taxonomy",
@@ -1142,7 +1417,33 @@
                             "hide_label": "",
                             "hide_instructions": "",
                             "hide_required": "",
-                            "choices": {},
+                            "choices": {
+                                "Custom Post Type: Board & Staff": {
+                                    "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
+                                    "field_67066128004b8": "Description [field_67066128004b8]",
+                                    "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
+                                    "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
+                                    "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
+                                    "field_6710dedfd2170": "Related Page [field_6710dedfd2170]",
+                                    "field_66d8ae296374b": "Related Location [field_66d8ae296374b]",
+                                    "field_66d8ae3b6374c": "Related Programs & Services [field_66d8ae3b6374c]",
+                                    "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
+                                },
+                                "Custom Post Type: Events": {
+                                    "field_66cdfa70fd280": "Related Events [field_66cdfa70fd280]",
+                                    "field_66cdfac0fd281": "Contact [field_66cdfac0fd281]",
+                                    "field_66cdfad5fd282": "Related Programs & Services [field_66cdfad5fd282]"
+                                },
+                                "Custom Post Type: Programs & Services": {
+                                    "field_66d1d53822ff0": "Related Programs & Services [field_66d1d53822ff0]",
+                                    "field_66db073eba733": "Featured Location [field_66db073eba733]"
+                                },
+                                "current": "Current Post",
+                                "Custom Post Type: Posts": {
+                                    "field_66ec38fb71925": "Gallery [field_66ec38fb71925]",
+                                    "field_66ec393771926": "-  [field_66ec393771926]"
+                                }
+                            },
                             "default_value": false,
                             "return_format": "value",
                             "multiple": 0,
@@ -1262,7 +1563,7 @@
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
-                                "width": "30",
+                                "width": "40",
                                 "class": "",
                                 "id": ""
                             },
@@ -1303,7 +1604,7 @@
                                 ]
                             ],
                             "wrapper": {
-                                "width": "24",
+                                "width": "60",
                                 "class": "",
                                 "id": ""
                             },
@@ -1343,7 +1644,7 @@
                                 ]
                             ],
                             "wrapper": {
-                                "width": "25",
+                                "width": "60",
                                 "class": "",
                                 "id": ""
                             },
@@ -1361,6 +1662,7 @@
                             "collapsed": "",
                             "button_label": "Add Row",
                             "rows_per_page": 20,
+                            "parent_repeater": "field_65f1eb2847552",
                             "sub_fields": [
                                 {
                                     "key": "field_65f1ec5bef06e",
@@ -1385,25 +1687,24 @@
                                     "append": "",
                                     "parent_repeater": "field_65f1ec51ef06d"
                                 }
-                            ],
-                            "parent_repeater": "field_65f1eb2847552"
+                            ]
                         },
                         {
-                            "key": "field_667c19e452892",
+                            "key": "field_671fe2453e931",
                             "label": "Narrow Options",
                             "name": "narrow_options",
                             "aria-label": "",
                             "type": "button_group",
-                            "instructions": "Select whether or not this controller's options will be narrowed to only show options that will return valid items with the current filter selection. (Default: Yes)",
+                            "instructions": "",
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
-                                "width": "15",
+                                "width": "33",
                                 "class": "",
                                 "id": ""
                             },
                             "acfe_permissions": "",
-                            "instruction_placement": "tooltip",
+                            "instruction_placement": "",
                             "hide_field": "",
                             "hide_label": "",
                             "hide_instructions": "",
@@ -1417,25 +1718,26 @@
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "allow_null": 0,
+                            "allow_in_bindings": 0,
                             "layout": "horizontal",
                             "parent_repeater": "field_65f1eb2847552"
                         },
                         {
-                            "key": "field_66842ceb0d9e5",
+                            "key": "field_671fe2693e932",
                             "label": "Show View All",
                             "name": "show_view_all",
                             "aria-label": "",
                             "type": "button_group",
-                            "instructions": "Select whether or not this filter's options will include a View All option that clears this control selection. (Default: Yes)",
+                            "instructions": "",
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
-                                "width": "15",
+                                "width": "33",
                                 "class": "",
                                 "id": ""
                             },
                             "acfe_permissions": "",
-                            "instruction_placement": "tooltip",
+                            "instruction_placement": "",
                             "hide_field": "",
                             "hide_label": "",
                             "hide_instructions": "",
@@ -1449,33 +1751,26 @@
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "allow_null": 0,
+                            "allow_in_bindings": 0,
                             "layout": "horizontal",
                             "parent_repeater": "field_65f1eb2847552"
                         },
                         {
-                            "key": "field_668c01b154117",
+                            "key": "field_671fe28e3e933",
                             "label": "View All Label",
                             "name": "view_all_label",
                             "aria-label": "",
                             "type": "text",
-                            "instructions": "Enter the label to be displayed for the View All option. (Default: View All)",
+                            "instructions": "",
                             "required": 0,
-                            "conditional_logic": [
-                                [
-                                    {
-                                        "field": "field_66842ceb0d9e5",
-                                        "operator": "==",
-                                        "value": "y"
-                                    }
-                                ]
-                            ],
+                            "conditional_logic": 0,
                             "wrapper": {
-                                "width": "15",
+                                "width": "33",
                                 "class": "",
                                 "id": ""
                             },
                             "acfe_permissions": "",
-                            "instruction_placement": "tooltip",
+                            "instruction_placement": "",
                             "hide_field": "",
                             "hide_label": "",
                             "hide_instructions": "",
@@ -1484,6 +1779,7 @@
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "maxlength": "",
+                            "allow_in_bindings": 0,
                             "placeholder": "",
                             "prepend": "",
                             "append": "",
@@ -1553,6 +1849,10 @@
                     "acfe_settings": "",
                     "instruction_placement": "",
                     "acfe_permissions": "",
+                    "acfe_group_modal": 0,
+                    "acfe_group_modal_close": 0,
+                    "acfe_group_modal_button": "",
+                    "acfe_group_modal_size": "large",
                     "sub_fields": [
                         {
                             "key": "field_65fc7acd8549c",
@@ -1574,7 +1874,29 @@
                             "hide_label": "",
                             "hide_instructions": "",
                             "hide_required": "",
-                            "choices": {},
+                            "choices": {
+                                "": "Select",
+                                "homepage-sliding-cards": "homepage-sliding-cards",
+                                "sliding-cards": "sliding-cards",
+                                "related-events": "related-events",
+                                "related-news": "related-news",
+                                "stats": "stats",
+                                "wide-cards": "wide-cards",
+                                "sliding-cards-service-item": "sliding-cards-service-item",
+                                "contact-cards": "contact-cards",
+                                "resource-cards": "resource-cards",
+                                "leadership-cards": "leadership-cards",
+                                "people-cards": "people-cards",
+                                "staff-cards": "staff-cards",
+                                "partner-cards": "partner-cards",
+                                "locations-hours": "locations-hours",
+                                "kleinlife-updates-news": "kleinlife-updates-news",
+                                "news-category": "news-category",
+                                "posts-related-news": "posts-related-news",
+                                "support-sliding-cards": "support-sliding-cards",
+                                "staff-search-cards": "staff-search-cards",
+                                "impact-cards": "impact-cards"
+                            },
                             "default_value": false,
                             "return_format": "value",
                             "multiple": 0,
@@ -1654,7 +1976,19 @@
                                 "post_title": "Title",
                                 "post_name": "Slug",
                                 "post_excerpt": "Excerpt",
-                                "post_content": "Content"
+                                "post_content": "Content",
+                                "Custom Post Type: Board & Staff": {
+                                    "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
+                                    "field_67066128004b8": "Description [field_67066128004b8]",
+                                    "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
+                                    "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
+                                    "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
+                                    "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
+                                },
+                                "Custom Post Type: Events": [],
+                                "Custom Post Type: Programs & Services": [],
+                                "current": "Current Post",
+                                "Custom Post Type: Posts": []
                             },
                             "default_value": "title",
                             "return_format": "value",
@@ -1696,7 +2030,19 @@
                                 "post_title": "Title",
                                 "post_name": "Slug",
                                 "post_excerpt": "Excerpt",
-                                "post_content": "Content"
+                                "post_content": "Content",
+                                "Custom Post Type: Board & Staff": {
+                                    "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
+                                    "field_67066128004b8": "Description [field_67066128004b8]",
+                                    "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
+                                    "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
+                                    "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
+                                    "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
+                                },
+                                "Custom Post Type: Events": [],
+                                "Custom Post Type: Programs & Services": [],
+                                "current": "Current Post",
+                                "Custom Post Type: Posts": []
                             },
                             "default_value": false,
                             "return_format": "value",
@@ -1735,7 +2081,12 @@
                             "hide_instructions": "",
                             "hide_required": "",
                             "choices": {
-                                "thumbnail": "Thumbnail"
+                                "thumbnail": "Thumbnail",
+                                "Custom Post Type: Board & Staff": [],
+                                "Custom Post Type: Events": [],
+                                "Custom Post Type: Programs & Services": [],
+                                "current": "Current Post",
+                                "Custom Post Type: Posts": []
                             },
                             "default_value": "thumbnail",
                             "return_format": "value",
@@ -1774,7 +2125,12 @@
                             "hide_instructions": "",
                             "hide_required": "",
                             "choices": {
-                                "thumbnail": "Thumbnail"
+                                "thumbnail": "Thumbnail",
+                                "Custom Post Type: Board & Staff": [],
+                                "Custom Post Type: Events": [],
+                                "Custom Post Type: Programs & Services": [],
+                                "current": "Current Post",
+                                "Custom Post Type: Posts": []
                             },
                             "default_value": false,
                             "return_format": "value",
@@ -1851,7 +2207,13 @@
                             "hide_label": "",
                             "hide_instructions": "",
                             "hide_required": "",
-                            "choices": {},
+                            "choices": {
+                                "Custom Post Type: Board & Staff": [],
+                                "Custom Post Type: Events": [],
+                                "Custom Post Type: Programs & Services": [],
+                                "current": "Current Post",
+                                "Custom Post Type: Posts": []
+                            },
                             "default_value": false,
                             "return_format": "value",
                             "multiple": 0,
@@ -1896,7 +2258,13 @@
                             "hide_label": "",
                             "hide_instructions": "",
                             "hide_required": "",
-                            "choices": {},
+                            "choices": {
+                                "Custom Post Type: Board & Staff": [],
+                                "Custom Post Type: Events": [],
+                                "Custom Post Type: Programs & Services": [],
+                                "current": "Current Post",
+                                "Custom Post Type: Posts": []
+                            },
                             "default_value": false,
                             "return_format": "value",
                             "multiple": 0,
@@ -1937,7 +2305,19 @@
                                 "post_title": "Title",
                                 "post_name": "Slug",
                                 "post_excerpt": "Excerpt",
-                                "post_content": "Content"
+                                "post_content": "Content",
+                                "Custom Post Type: Board & Staff": {
+                                    "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
+                                    "field_67066128004b8": "Description [field_67066128004b8]",
+                                    "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
+                                    "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
+                                    "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
+                                    "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
+                                },
+                                "Custom Post Type: Events": [],
+                                "Custom Post Type: Programs & Services": [],
+                                "current": "Current Post",
+                                "Custom Post Type: Posts": []
                             },
                             "default_value": "excerpt",
                             "return_format": "value",
@@ -2045,7 +2425,13 @@
                             "hide_label": "",
                             "hide_instructions": "",
                             "hide_required": "",
-                            "choices": {},
+                            "choices": {
+                                "Custom Post Type: Board & Staff": [],
+                                "Custom Post Type: Events": [],
+                                "Custom Post Type: Programs & Services": [],
+                                "current": "Current Post",
+                                "Custom Post Type: Posts": []
+                            },
                             "default_value": false,
                             "return_format": "value",
                             "multiple": 0,
@@ -2219,24 +2605,16 @@
                             "other_choice": 0
                         },
                         {
-                            "key": "field_65f4754e7fcdb",
-                            "label": "Label Field",
-                            "name": "label_field",
+                            "key": "field_66db6295d1d84",
+                            "label": "Label Fields",
+                            "name": "label_fields",
                             "aria-label": "",
-                            "type": "select",
+                            "type": "repeater",
                             "instructions": "",
                             "required": 0,
-                            "conditional_logic": [
-                                [
-                                    {
-                                        "field": "field_663a4960f8c67",
-                                        "operator": "==",
-                                        "value": "field"
-                                    }
-                                ]
-                            ],
+                            "conditional_logic": 0,
                             "wrapper": {
-                                "width": "20",
+                                "width": "",
                                 "class": "",
                                 "id": ""
                             },
@@ -2246,28 +2624,78 @@
                             "hide_label": "",
                             "hide_instructions": "",
                             "hide_required": "",
-                            "choices": {},
-                            "default_value": false,
-                            "return_format": "value",
-                            "multiple": 0,
-                            "placeholder": "",
-                            "prepend": "",
-                            "append": "",
-                            "max": "",
+                            "acfe_repeater_stylised_button": 0,
+                            "layout": "table",
+                            "pagination": 0,
                             "acfe_settings": "",
-                            "acfe_validate": "",
-                            "allow_null": 1,
-                            "ui": 0,
-                            "ajax": 0,
-                            "allow_custom": 0,
-                            "search_placeholder": "",
-                            "min": ""
+                            "min": 0,
+                            "max": 0,
+                            "collapsed": "",
+                            "button_label": "Add Row",
+                            "rows_per_page": 20,
+                            "sub_fields": [
+                                {
+                                    "key": "field_65f4754e7fcdb",
+                                    "label": "Label Field",
+                                    "name": "label_field",
+                                    "aria-label": "",
+                                    "type": "select",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": [
+                                        [
+                                            {
+                                                "field": "field_663a4960f8c67",
+                                                "operator": "==",
+                                                "value": "field"
+                                            }
+                                        ]
+                                    ],
+                                    "wrapper": {
+                                        "width": "20",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "acfe_permissions": "",
+                                    "instruction_placement": "",
+                                    "hide_field": "",
+                                    "hide_label": "",
+                                    "hide_instructions": "",
+                                    "hide_required": "",
+                                    "choices": {
+                                        "Custom Post Type: Board & Staff": {
+                                            "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
+                                            "field_67066128004b8": "Description [field_67066128004b8]",
+                                            "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
+                                            "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
+                                            "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
+                                            "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
+                                        },
+                                        "Custom Post Type: Events": [],
+                                        "Custom Post Type: Programs & Services": [],
+                                        "current": "Current Post",
+                                        "Custom Post Type: Posts": []
+                                    },
+                                    "default_value": false,
+                                    "return_format": "value",
+                                    "multiple": 0,
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": "",
+                                    "max": "",
+                                    "acfe_settings": "",
+                                    "acfe_validate": "",
+                                    "allow_null": 1,
+                                    "ui": 0,
+                                    "ajax": 0,
+                                    "allow_custom": 0,
+                                    "search_placeholder": "",
+                                    "min": "",
+                                    "parent_repeater": "field_66db6295d1d84"
+                                }
+                            ]
                         }
-                    ],
-                    "acfe_group_modal": 0,
-                    "acfe_group_modal_close": 0,
-                    "acfe_group_modal_button": "",
-                    "acfe_group_modal_size": "large"
+                    ]
                 },
                 {
                     "key": "field_65f47103a2dd5",
@@ -2300,6 +2728,10 @@
                     "acfe_settings": "",
                     "instruction_placement": "",
                     "acfe_permissions": "",
+                    "acfe_group_modal": 0,
+                    "acfe_group_modal_close": 0,
+                    "acfe_group_modal_button": "",
+                    "acfe_group_modal_size": "large",
                     "sub_fields": [
                         {
                             "key": "field_65f2fe4921d7e",
@@ -2453,7 +2885,33 @@
                                     "hide_label": "",
                                     "hide_instructions": "",
                                     "hide_required": "",
-                                    "choices": {},
+                                    "choices": {
+                                        "Custom Post Type: Board & Staff": {
+                                            "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
+                                            "field_67066128004b8": "Description [field_67066128004b8]",
+                                            "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
+                                            "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
+                                            "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
+                                            "field_6710dedfd2170": "Related Page [field_6710dedfd2170]",
+                                            "field_66d8ae296374b": "Related Location [field_66d8ae296374b]",
+                                            "field_66d8ae3b6374c": "Related Programs & Services [field_66d8ae3b6374c]",
+                                            "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
+                                        },
+                                        "Custom Post Type: Events": {
+                                            "field_66cdfa70fd280": "Related Events [field_66cdfa70fd280]",
+                                            "field_66cdfac0fd281": "Contact [field_66cdfac0fd281]",
+                                            "field_66cdfad5fd282": "Related Programs & Services [field_66cdfad5fd282]"
+                                        },
+                                        "Custom Post Type: Programs & Services": {
+                                            "field_66d1d53822ff0": "Related Programs & Services [field_66d1d53822ff0]",
+                                            "field_66db073eba733": "Featured Location [field_66db073eba733]"
+                                        },
+                                        "current": "Current Post",
+                                        "Custom Post Type: Posts": {
+                                            "field_66ec38fb71925": "Gallery [field_66ec38fb71925]",
+                                            "field_66ec393771926": "-  [field_66ec393771926]"
+                                        }
+                                    },
                                     "default_value": false,
                                     "return_format": "value",
                                     "multiple": 0,
@@ -2631,11 +3089,7 @@
                             "allow_null": 0,
                             "layout": "horizontal"
                         }
-                    ],
-                    "acfe_group_modal": 0,
-                    "acfe_group_modal_close": 0,
-                    "acfe_group_modal_button": "",
-                    "acfe_group_modal_size": "large"
+                    ]
                 },
                 {
                     "key": "field_65f1eae34754e",
@@ -3055,7 +3509,33 @@
                             "hide_label": "",
                             "hide_instructions": "",
                             "hide_required": "",
-                            "choices": {},
+                            "choices": {
+                                "Custom Post Type: Board & Staff": {
+                                    "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
+                                    "field_67066128004b8": "Description [field_67066128004b8]",
+                                    "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
+                                    "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
+                                    "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
+                                    "field_6710dedfd2170": "Related Page [field_6710dedfd2170]",
+                                    "field_66d8ae296374b": "Related Location [field_66d8ae296374b]",
+                                    "field_66d8ae3b6374c": "Related Programs & Services [field_66d8ae3b6374c]",
+                                    "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
+                                },
+                                "Custom Post Type: Events": {
+                                    "field_66cdfa70fd280": "Related Events [field_66cdfa70fd280]",
+                                    "field_66cdfac0fd281": "Contact [field_66cdfac0fd281]",
+                                    "field_66cdfad5fd282": "Related Programs & Services [field_66cdfad5fd282]"
+                                },
+                                "Custom Post Type: Programs & Services": {
+                                    "field_66d1d53822ff0": "Related Programs & Services [field_66d1d53822ff0]",
+                                    "field_66db073eba733": "Featured Location [field_66db073eba733]"
+                                },
+                                "current": "Current Post",
+                                "Custom Post Type: Posts": {
+                                    "field_66ec38fb71925": "Gallery [field_66ec38fb71925]",
+                                    "field_66ec393771926": "-  [field_66ec393771926]"
+                                }
+                            },
                             "default_value": false,
                             "return_format": "value",
                             "multiple": 0,
@@ -3212,11 +3692,7 @@
                     "acfe_wysiwyg_min_height": 300,
                     "acfe_wysiwyg_toolbar_buttons": []
                 }
-            ],
-            "acfe_group_modal": 0,
-            "acfe_group_modal_close": 0,
-            "acfe_group_modal_button": "",
-            "acfe_group_modal_size": "large"
+            ]
         }
     ],
     "location": [
@@ -3245,5 +3721,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1720451740
+    "modified": 1730145395
 }
