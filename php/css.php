@@ -3,7 +3,7 @@
 /**
  * css.php - Enqueues CSS files and render custom CSS
  *
- * @version     3.0.0
+ * @version     3.1.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2024 Lyquix
@@ -167,7 +167,7 @@ function get_critical_css() {
 	return $critical_css;
 }
 
-add_action('wp_enqueue_scripts', function () use ($critical_css) {
+add_action('wp_enqueue_scripts', function () {
 	$critical_css = get_critical_css();
 	$stylesheets = get_stylesheets();
 

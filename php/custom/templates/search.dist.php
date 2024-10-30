@@ -3,7 +3,7 @@
 /**
  * search.dist.php - Default template for the search page
  *
- * @version     3.0.0
+ * @version     3.1.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2024 Lyquix
@@ -26,9 +26,10 @@
 ?>
 <section class="search-content">
 	<h1>Search Results</h1>
-	<div class="search-form-wrapper">
-		<?php get_search_form(); ?>
-	</div>
+	<form role="search" method="get" class="search-form" action="<?php echo esc_url(home_url('/')); ?>">
+		<input id="s" type="search" class="search-field" placeholder="Search" value="<?php echo get_search_query(); ?>" name="s" aria-label="Search" />
+		<button type="submit" class="submit-button">Search</button>
+	</form>
 
 	<div class="search-results">
 		<?php
@@ -46,12 +47,28 @@
 		$end_result = min(($offset + $posts_per_page), $total_results);
 
 		if ($search_query->have_posts()) : ?>
-			<h2>Showing <?= $start_result; ?>-<?= $end_result; ?> of <?= $total_results; ?> results for &lsquo;<?= get_search_query(); ?>&rsquo;</h2>
 			<?php while ($search_query->have_posts()) : $search_query->the_post();
 			?>
 				<div class="search-result">
-					<h3"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-					<?php the_excerpt(); ?>
+					<h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
+					<?php
+					// If there is an excerpt, render it, otherwise render the first paragraph of the content
+					if (has_excerpt()) {
+						the_excerpt();
+					} else {
+						// Get the content
+						$content = apply_filters('the_content', get_the_content());
+						// Remove shortcodes and strip tags
+						$content = strip_tags(strip_shortcodes($content));
+						// Limit the content to 300 characters and trim
+						$content = trim(mb_substr($content, 0, 300, 'UTF-8'));
+						// Check if the title is repeated at the beginning of the content and remove it
+						if (mb_strpos($content, get_the_title()) === 0) {
+							$content = mb_substr($content, mb_strlen(get_the_title()), null, 'UTF-8');
+						}
+						if ($content) echo $content . '&hellip;';
+					}
+					?>
 				</div>
 			<?php
 			endwhile;
@@ -61,13 +78,16 @@
 			if ($total_pages > 1) {
 
 				the_posts_pagination(array(
-					'prev_text' => __(''),
-					'next_text' => __(''),
+					'format' => '?paged=%#%',
+					'prev_text' => '&laquo;',
+					'next_text' => '&raquo;'
 				));
 			} ?>
 
 		<?php else : ?>
-			<h2 class="h3">No results found for "<?= get_search_query(); ?>"</h2>
+			<h2>Nothing Found</h2>
+			<p>Sorry, but nothing matched your search terms. Please try again with some different keywords.</p>
+			<p>Or visit our <a href="<?= get_bloginfo('url'); ?>">homepage</a>.</p>
 		<?php
 		endif;
 

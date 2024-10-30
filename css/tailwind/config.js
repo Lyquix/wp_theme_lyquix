@@ -3,7 +3,7 @@
 /**
  * config.js - Tailwind CSS configuration for compiler
  *
- * @version     3.0.0
+ * @version     3.1.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2024 Lyquix

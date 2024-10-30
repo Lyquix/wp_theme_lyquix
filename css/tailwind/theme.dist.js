@@ -1,7 +1,7 @@
 /**
  * theme.js - Sample Tailwind CSS theme configuration
  *
- * @version     3.0.0
+ * @version     3.1.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2024 Lyquix
@@ -203,14 +203,6 @@ const extend = {
 			'button-x': '0.5em',
 			'button-y': '0.25em',
 			'td': '0.5em'
-		},
-		maxWidth: {
-			/* Container widths */
-			'container-xs': 'none',
-			'container-sm': 'none',
-			'container-md': 'none',
-			'container-lg': 'none',
-			'container-xl': '1620px'
 		}
 	},
 };

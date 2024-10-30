@@ -3,7 +3,7 @@
 /**
  * default.php - Lyquix alerts module render function
  *
- * @version     3.0.0
+ * @version     3.1.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2024 Lyquix
@@ -43,7 +43,7 @@ $s = \lqx\util\validate_data($settings, [
 			'type' => 'string',
 			'required' => true,
 			'default' => 'h3',
-			'allowed' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+			'allowed' => ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
 		]
 	]
 ]);
