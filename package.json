@@ -76,8 +76,6 @@
 	"scripts": {
 		"postinstall": "chmod +x ./postinstall.sh && ./postinstall.sh",
 		"watch": "run-p watch:**",
-		"watch:scss": "sass css/custom/custom.scss:css/custom.css --update --watch",
-		"watch:prettier": "onchange \"css/**/*.scss\" -- prettier --write --ignore-unknown {{changed}}",
 		"watch:lyquix": "rollup -c rollup.lyquix.js -w",
 		"watch:scripts": "rollup -c rollup.scripts.js -w",
 		"watch:gulp": "gulp"
