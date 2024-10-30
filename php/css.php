@@ -106,8 +106,8 @@ function get_stylesheets() {
 	if (get_theme_mod('swiperjs', 1)) {
 		$stylesheets[] = [
 			'handle' => 'swiper',
-			'url' => 'https://cdn.jsdelivr.net/npm/swiper@11.0.5/swiper-bundle.min.css',
-			'version' => '11.0.5'
+			'url' => 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css',
+			'version' => '11'
 		];
 	}
 

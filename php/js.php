@@ -66,21 +66,21 @@ function enqueue_scripts() {
 	// MobileDetect
 	$scripts[] = [
 		'handle' => 'mobile-detect',
-		'url' => 'https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.5/mobile-detect.min.js',
-		'version' => '1.4.5'
+		'url' => 'https://cdn.jsdelivr.net/npm/mobile-detect@1/mobile-detect.min.js',
+		'version' => '1'
 	];
 
 	// Day.js
 	if (get_theme_mod('dayjs', 1)) {
 		$scripts[] = [
 			'handle' => 'dayjs',
-			'url' => 'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.10/dayjs.min.js',
-			'version' => '1.11.9'
+			'url' => 'https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js',
+			'version' => '1'
 		];
 		$scripts[] = [
 			'handle' => 'dayjs-locale-en',
-			'url' => 'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.10/locale/en.min.js',
-			'version' => '1.11.9'
+			'url' => 'https://cdn.jsdelivr.net/npm/dayjs@1/locale/en.js',
+			'version' => '1'
 		];
 	}
 
@@ -88,8 +88,8 @@ function enqueue_scripts() {
 	if (get_theme_mod('swiperjs', 1)) {
 		$scripts[] = [
 			'handle' => 'swiper',
-			'url' => 'https://cdn.jsdelivr.net/npm/swiper@11.0.5/swiper-bundle.min.js',
-			'version' => '11.0.5'
+			'url' => 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js',
+			'version' => '11'
 		];
 	}
 
