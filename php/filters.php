@@ -399,7 +399,7 @@ function validate_settings($settings) {
                         'order_by' => [
                             'type' => 'string',
                             'required' => true,
-                            'allowed' => ['date', 'title', 'name', 'author', 'rand', 'field', 'modified']
+                            'allowed' => ['date', 'title', 'name', 'author', 'rand', 'field', 'modified', 'meta_key']
                         ],
                         'order' => [
                             'type' => 'string',
@@ -665,7 +665,8 @@ function init_settings($s) {
             'modified',
             'title',
             'name',
-            'rand'
+            'rand',
+            'meta_key'
         ])) {
             unset($post_order['acf_field']);
             unset($post_order['data_type']);
@@ -1108,38 +1109,67 @@ function prepare_query($query, $s) {
                         $after = date('Y-m-d', strtotime($anchor . ' -' . $pre_filter['start'] ?? '0' . ' years'));
                         break;
                 }
-                if ($pre_filter['date_source'] === 'field') {
-                    $acf_meta_query =array(
-                        'relation' => 'AND',
-                        array(
-                            'key'     => get_field_object($pre_filter['acf_field'])['name'],
-                            'value'   => $after,
-                            'compare' => '>=',
-                            'type'    => 'DATE'
-                        ),
-                        array(
-                            'key'     => get_field_object($pre_filter['acf_field'])['name'],
-                            'value'   => $before,
-                            'compare' => '<=',
-                            'type'    => 'DATE'
-                        )
-                    );
 
-                    if (isset($query['meta_query'])) {
-                        $query['meta_query']['relation'] = 'AND';
-                        $query['meta_query'][] = $acf_meta_query;
-                    } else {
-                        $query['meta_query'] = array();
-                        $query['meta_query'][] = $acf_meta_query;
-                    }
-                } else {
-                    $date_query = [[
-                        'before' => $before,
-                        'after' => $after,
-                        // Inclusive scopes in the current date when dealing with the before/after system
-                        'inclusive' => true,
-                    ]];
-                    $query['date_query'] = $date_query;
+                switch ($pre_filter['date_source']) {
+                    case 'field':
+                        $acf_meta_query =array(
+                            'relation' => 'AND',
+                            array(
+                                'key'     => get_field_object($pre_filter['acf_field'])['name'],
+                                'value'   => $after,
+                                'compare' => '>=',
+                                'type'    => 'DATE'
+                            ),
+                            array(
+                                'key'     => get_field_object($pre_filter['acf_field'])['name'],
+                                'value'   => $before,
+                                'compare' => '<=',
+                                'type'    => 'DATE'
+                            )
+                        );
+
+                        if (isset($query['meta_query'])) {
+                            $query['meta_query']['relation'] = 'AND';
+                            $query['meta_query'][] = $acf_meta_query;
+                        } else {
+                            $query['meta_query'] = array();
+                            $query['meta_query'][] = $acf_meta_query;
+                        }
+                        break;
+                    case 'meta_key':
+                        $acf_meta_query =array(
+                            'relation' => 'AND',
+                            array(
+                                'key'     => $pre_filter['meta_key'],
+                                'value'   => $after,
+                                'compare' => '>=',
+                                'type'    => 'DATE'
+                            ),
+                            array(
+                                'key'     => $pre_filter['meta_key'],
+                                'value'   => $before,
+                                'compare' => '<=',
+                                'type'    => 'DATE'
+                            )
+                        );
+
+                        if (isset($query['meta_query'])) {
+                            $query['meta_query']['relation'] = 'AND';
+                            $query['meta_query'][] = $acf_meta_query;
+                        } else {
+                            $query['meta_query'] = array();
+                            $query['meta_query'][] = $acf_meta_query;
+                        }
+                        break;
+                    default:
+                        $date_query = [[
+                            'before' => $before,
+                            'after' => $after,
+                            // Inclusive scopes in the current date when dealing with the before/after system
+                            'inclusive' => true,
+                        ]];
+                        $query['date_query'] = $date_query;
+                        break;
                 }
                 break;
 
@@ -1325,6 +1355,9 @@ function get_posts_with_data($s) {
                 // We need to get the name of the field, not its key!
                 $field_name = get_field_object($order['acf_field'])['name'];
                 $query['meta_key'] = $field_name;
+            } else if ($order['order_by'] === 'meta_key'){
+                $query['meta_key'] = $order['value'];
+                $query['orderby']['meta_value'] = $order['order'];
             } else if ($order['order_by'] === 'rand') {
                 $query['orderby'] = 'rand';
                 break;

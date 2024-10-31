@@ -224,13 +224,15 @@
                             "choices": {
                                 "date": "Created Date",
                                 "modified": "Modified Date",
-                                "field": "Field"
+                                "field": "Field",
+                                "meta_key": "Meta Key"
                             },
                             "default_value": "date",
                             "return_format": "value",
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "allow_null": 0,
+                            "allow_in_bindings": 1,
                             "layout": "horizontal",
                             "parent_repeater": "field_65f1e9c947548"
                         },
@@ -457,6 +459,18 @@
                                 [
                                     {
                                         "field": "field_65f1e9f847549",
+                                        "operator": "==",
+                                        "value": "meta_key"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "field": "field_65f1e9f847549",
+                                        "operator": "==",
+                                        "value": "date"
+                                    },
+                                    {
+                                        "field": "field_65f2510c7aeba",
                                         "operator": "==",
                                         "value": "meta_key"
                                     }
@@ -3422,7 +3436,8 @@
                                 "field": "Field",
                                 "rand": "Random",
                                 "name": "Slug",
-                                "title": "Title"
+                                "title": "Title",
+                                "meta_key": "Meta Key"
                             },
                             "default_value": "date",
                             "return_format": "value",
@@ -3433,6 +3448,7 @@
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "allow_null": 0,
+                            "allow_in_bindings": 1,
                             "ui": 0,
                             "ajax": 0,
                             "placeholder": "",
@@ -3554,6 +3570,44 @@
                             "parent_repeater": "field_65f24798d55a2"
                         },
                         {
+                            "key": "field_672368d9441c3",
+                            "label": "Value",
+                            "name": "value",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_65f245f6d55a0",
+                                        "operator": "==",
+                                        "value": "meta_key"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "30",
+                                "class": "",
+                                "id": ""
+                            },
+                            "acfe_permissions": "",
+                            "instruction_placement": "",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
+                            "default_value": "",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
+                            "maxlength": "",
+                            "allow_in_bindings": 1,
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "parent_repeater": "field_65f24798d55a2"
+                        },
+                        {
                             "key": "field_65f248b173570",
                             "label": "Data Type",
                             "name": "data_type",
@@ -3567,6 +3621,13 @@
                                         "field": "field_65f245f6d55a0",
                                         "operator": "==",
                                         "value": "field"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "field": "field_65f245f6d55a0",
+                                        "operator": "==",
+                                        "value": "meta_key"
                                     }
                                 ]
                             ],
@@ -3601,6 +3662,7 @@
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "allow_null": 1,
+                            "allow_in_bindings": 1,
                             "ui": 0,
                             "ajax": 0,
                             "allow_custom": 0,
@@ -3721,5 +3783,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1730145395
+    "modified": 1730374249
 }
