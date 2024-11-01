@@ -157,10 +157,10 @@ function get_critical_css() {
 	if (is_singular()) {
 		$post_type = get_post_type();
 		$slug = get_post_field('post_name');
-		$critical_css = get_template_directory() . "/css/critical/{$post_type}" . ($post_type === 'page' ? "-{$slug}" : '') . '.css';
+		$filename = get_template_directory() . "/css/critical/{$post_type}" . ($post_type === 'page' ? "-{$slug}" : '') . '.css';
 
-		if ($critical_css && file_exists($critical_css)) {
-			$critical_css = file_get_contents($critical_css);
+		if ($critical_css && file_exists($filename)) {
+			$critical_css = file_get_contents($filename);
 		}
 	}
 
