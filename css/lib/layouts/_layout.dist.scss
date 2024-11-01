@@ -71,11 +71,11 @@
 			.grid-container {
 				grid-template-columns:
 					[full-width-start]
-					$cntWth
+					$cntMrg
 					[container-start]
 					auto
 					[container-end]
-					$cntWth
+					$cntMrg
 					[full-width-end];
 			}
 		}
