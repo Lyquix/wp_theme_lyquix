@@ -319,6 +319,18 @@ function theme_setup() {
 			}
 		});
 	}
+	if (get_theme_mod('feat_move_excerpt', '1') === '1') {
+		add_action('add_meta_boxes', function() {
+			$post_types = get_post_types(['public' => true], 'names'); // Get all public post types
+
+			foreach ($post_types as $post_type) {
+				if (post_type_supports($post_type, 'excerpt')) {
+					remove_meta_box('postexcerpt', $post_type, 'normal'); // Remove the default excerpt box position
+					add_meta_box('postexcerpt', __('Excerpt'), 'post_excerpt_meta_box', $post_type, 'normal', 'high'); // Re-add with higher priority
+				}
+			}
+		});
+	}
 }
 
 add_action('after_setup_theme', '\lqx\setup\theme_setup');

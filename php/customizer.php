@@ -264,6 +264,12 @@ function customizer_add($wp_customize) {
 				'label' => 'Load Critical Path CSS when available',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
+			],
+			'feat_move_excerpt' => [
+				'type' => 'radio',
+				'label' => 'Move Excerpt to after Content form',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
 			]
 		]
 	];
