@@ -140,7 +140,7 @@ function detect_browser() {
 	} else if (preg_match('/safari/i', $ua)) {
 		$browser = [
 			'type' => 'safari',
-			'version' => get_first_match('/safari\/(\d+(\.\d+)?)/i', $ua)
+			'version' => get_first_match('/version\/(\d+(\.\d+)?)/i', $ua) ?: get_first_match('/safari\/(\d+(\.\d+)?)/i', $ua)
 		];
 	} else {
 		$browser = [
