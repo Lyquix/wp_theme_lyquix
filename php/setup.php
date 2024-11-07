@@ -165,14 +165,12 @@ function theme_setup() {
 			add_action('admin_init', function () {
 				$required_plugins = [
 					'aryo-activity-log/aryo-activity-log.php' => 'Activity Log',
-					'admin-menu-editor-pro/menu-editor.php' => 'Admin Menu Editor Pro',
 					'advanced-custom-fields-pro/acf.php' => 'Advanced Custom Fields PRO',
 					'acf-extended-pro/acf-extended.php' => 'Advanced Custom Fields: Extended PRO',
 					'tinymce-advanced/tinymce-advanced.php' => 'Advanced Editor Tools',
 					'better-search-replace/better-search-replace.php' => 'Better Search Replace',
 					'ewww-image-optimizer/ewww-image-optimizer.php' => 'EWWW Image Optimizer',
 					'gravityforms/gravityforms.php' => 'Gravity Forms',
-					'html-editor-syntax-highlighter/html-editor-syntax-highlighter.php' => 'HTML Editor Syntax Highlighter',
 					'post-smtp/postman-smtp.php' => 'Post SMTP',
 					'redirection/redirection.php' => 'Redirection',
 					'simple-custom-post-order/simple-custom-post-order.php' => 'Simple Custom Post Order',
