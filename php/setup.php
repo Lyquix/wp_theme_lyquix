@@ -40,6 +40,7 @@ namespace lqx\setup;
  * 		- Add alerts for required plugins
  * 		- Add user management capabilities to editor user role
  * 		- Remove additional ACF extended menu items
+ * 		- Hide Activity Log menu item for non administrator users
  *
  * @return void
  */
@@ -158,7 +159,7 @@ function theme_setup() {
 	add_filter('auto_update_theme', '__return_false');
 
 	// Add alerts for required plugins
-	if (get_theme_mod('feat_required_plugins_alert', '1') === '1') {
+	if (get_theme_mod('feat_required_plugins_alert', '1') === '1' && current_user_can('administrator')) {
 		// Check plugins and display alert
 		if (get_transient('dismissed_required_plugins_alert') === false) {
 			add_action('admin_init', function () {
@@ -273,52 +274,57 @@ function theme_setup() {
 
 	// Remove additional ACF extended menu items
 	if (get_theme_mod('feat_hide_acf_ext_menu_items', '1') === '1') {
-		add_action('admin_menu', function () {
-			global $submenu, $admin_submenu_backup;
-			$remove_menus = [
-				'edit.php?post_type=acf-field-group' => [
-					'edit.php?post_type=acf-post-type',
-					'edit.php?post_type=acfe-dop',
-					'edit-tags.php?taxonomy=acf-field-group-category',
-					'edit.php?post_type=acfe-dbt',
-					'edit.php?post_type=acfe-form',
-					'acfe-settings',
-					'edit.php?post_type=acfe-template'
-				],
-				'options-general.php' => ['acfe-options'],
-				'tools.php' => [
-					'edit.php?post_type=acfe-dpt',
-					'edit.php?post_type=acfe-dt',
-					'acfe-rewrite-rules',
-					'acfe-scripts'
-				]
-			];
-			foreach ($remove_menus as $parent_slug => $submenus) {
-				foreach ($submenus as $submenu_slug) {
-					if (isset($submenu[$parent_slug])) {
-						foreach ($submenu[$parent_slug] as $k => $sub) {
-							if (in_array($submenu_slug, $submenu[$parent_slug][$k])) {
-								$admin_submenu_backup[$parent_slug][$k] = $submenu[$parent_slug][$k];
-								unset($submenu[$parent_slug][$k]);
-							}
-						}
-					}
-				}
-			}
+		add_action('admin_head', function () {
+			echo '<style>#adminmenu .wp-submenu a[href*="';
+			echo implode('"], #adminmenu .wp-submenu a[href*="', [
+				'edit.php?post_type=acfe-dop',
+				'edit-tags.php?taxonomy=acf-field-group-category',
+				'edit.php?post_type=acfe-dbt',
+				'edit.php?post_type=acfe-form',
+				'edit.php?post_type=acfe-template'
+			]);
+			echo '"] { display: none; }</style>';
 		}, 999);
-
-		// Add ACF extended pages for ACF screens
-		add_action('current_screen', function ($screen) {
-			global $submenu, $admin_submenu_backup;
-			if (str_contains($screen->id, 'acf') && count($admin_submenu_backup)) {
-				foreach ($admin_submenu_backup as $parent_slug => $submenus_array) {
-					foreach ($submenus_array as $submenu_array) {
-						$submenu[$parent_slug][] = $submenu_array;
-					}
-				}
-			}
-		});
 	}
+
+	// Hide Activity Log menu from non administrator users
+	if (get_theme_mod('feat_hide_activity_log', '1') === '1' && !current_user_can('administrator')) {
+		add_action('admin_menu', function () {
+			remove_menu_page('activity-log-page');
+		}, 999);
+	}
+
+	// Hide Alerts module from non administrator users
+	if (get_theme_mod('feat_hide_module_alerts', '0') === '1' && !current_user_can('administrator')) {
+		add_action('admin_head', function () {
+			echo '<style>#adminmenu .wp-submenu a[href*="admin.php?page=alerts-content"] { display: none; }</style>';
+		}, 999);
+	}
+
+	// Hide CTAs module from non administrator users
+	if (get_theme_mod('feat_hide_module_ctas', '0') === '1' && !current_user_can('administrator')) {
+		add_action('admin_head', function () {
+			echo '<style>#adminmenu .wp-submenu a[href*="admin.php?page=cta-content"] { display: none; }</style>';
+		}, 999);
+	}
+
+	// Hide Modals module from non administrator users
+	if (get_theme_mod('feat_hide_module_modals', '0') === '1' && !current_user_can('administrator')) {
+		add_action('admin_head', function () {
+			echo '<style>#adminmenu .wp-submenu a[href*="admin.php?page=modals-content"] { display: none; }</style>';
+		}, 999);
+	}
+
+	// Hide Popups module from non administrator users
+	if (get_theme_mod('feat_hide_module_popups', '0') === '1' && !current_user_can('administrator')) {
+		add_action('admin_head', function () {
+			echo '<style>#adminmenu .wp-submenu a[href*="admin.php?page=popups-content"] { display: none; }</style>';
+		}, 999);
+	}
+
+
+
+	// Move Excerpt field
 	if (get_theme_mod('feat_move_excerpt', '1') === '1') {
 		add_action('add_meta_boxes', function() {
 			$post_types = get_post_types(['public' => true], 'names'); // Get all public post types

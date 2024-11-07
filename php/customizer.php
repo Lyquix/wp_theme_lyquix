@@ -181,6 +181,30 @@ function customizer_add($wp_customize) {
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
 			],
+			'feat_hide_module_alerts' => [
+				'type' => 'radio',
+				'label' => 'Hide Alerts Module for Non Administrators',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '0'
+			],
+			'feat_hide_module_ctas' => [
+				'type' => 'radio',
+				'label' => 'Hide CTAs Module for Non Administrators',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '0'
+			],
+			'feat_hide_module_modals' => [
+				'type' => 'radio',
+				'label' => 'Hide Modals Module for Non Administrators',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '0'
+			],
+			'feat_hide_module_popups' => [
+				'type' => 'radio',
+				'label' => 'Hide Popups Module for Non Administrators',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '0'
+			],
 			'feat_tailwind' => [
 				'type' => 'radio',
 				'label' => 'Enable Tailwind',
@@ -256,6 +280,12 @@ function customizer_add($wp_customize) {
 			'feat_hide_acf_ext_menu_items' => [
 				'type' => 'radio',
 				'label' => 'Hide ACF Extension Menu Items',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
+			'feat_hide_activity_log' => [
+				'type' => 'radio',
+				'label' => 'Hide Activity Log for Non Administrator Users',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
 			],
