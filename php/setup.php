@@ -35,13 +35,18 @@ function lqx_setup() {
 		// Remove weak password confirmation checkbox
 	add_action('login_head', 'lqx_no_weak_password');
 	add_action('admin_head', 'lqx_no_weak_password');
-	
+
 	function lqx_no_weak_password() {
 		echo '<style>.pw-weak { display: none !important; }</style>';
 		echo '<script>document.getElementById(\'pw-checkbox\').disabled = true;</script>';
 	}
-	
+
 	//Remove WordPress Meta Generator Tag
 	remove_action('wp_head', 'wp_generator');
+
+	// Load Global WordPress Styles
+	add_action('wp_head', function () {
+		wp_enqueue_style('global-styles');
+	});
 }
 
