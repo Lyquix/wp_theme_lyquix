@@ -322,8 +322,6 @@ function theme_setup() {
 		}, 999);
 	}
 
-
-
 	// Move Excerpt field
 	if (get_theme_mod('feat_move_excerpt', '1') === '1') {
 		add_action('add_meta_boxes', function() {
@@ -336,6 +334,14 @@ function theme_setup() {
 				}
 			}
 		});
+	}
+
+	// Suppress warnings and notices from PHP
+	if (get_theme_mod('suppress_php_warnings', '0') === '1') {
+		add_action('wp', function() {
+			error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE & ~E_CORE_WARNING & ~E_COMPILE_WARNING & ~E_USER_WARNING & ~E_USER_NOTICE & ~E_STRICT & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+		});
+
 	}
 }
 

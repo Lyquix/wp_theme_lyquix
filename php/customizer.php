@@ -103,6 +103,14 @@ function customizer_add($wp_customize) {
 				'label' => 'Remove JS Libraries'
 			]
 		],
+		'PHP' => [
+			'suppress_php_warnings' => [
+				'type' => 'radio',
+				'label' => 'Suppress PHP Warnings and Notices',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '0'
+			],
+		],
 		'Analytics' => [
 			'ga4_account' => [
 				'label' => 'Google Analytics 4 Account (Measurement ID)',
