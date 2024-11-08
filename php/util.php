@@ -717,3 +717,15 @@ function minify_html($html) {
 
     return $html;
 }
+
+function check_file($path)
+{
+    if (is_child_theme()) {
+        if (file_exists(get_stylesheet_directory() . $path)) {
+            $path = get_stylesheet_directory() . $path;
+        } else {
+            $path = get_template_directory() . $path;
+        }
+    }
+    return $path;
+}

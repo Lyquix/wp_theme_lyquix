@@ -328,7 +328,7 @@ function find_value_by_key($array, $keyToFind) {
 function get_global_field_groups() {
 	$field_groups = [];
 
-	$json_files = glob(get_stylesheet_directory() . '/acf-json/*.json');
+	$json_files = glob(\lqx\util\check_file('/acf-json/*.json'));
 	foreach ($json_files as $json_file) {
 		$field_group = json_decode(file_get_contents($json_file), true);
 		if (!empty($field_group['fields'])) {
@@ -538,14 +538,14 @@ function render_block($settings, $content) {
  * @return string The path to the renderer file.
 */
 function get_renderer($block_name, $preset = null) {
-	$dir = get_stylesheet_directory() . '/php/custom/blocks/' . $block_name . '/';
+	$dir = \lqx\util\check_file('/php/custom/blocks/' . $block_name . '/');
 
 	if ($preset && file_exists($dir . $preset . '.php')) {
 		return $dir . $preset . '.php';
 	} elseif (file_exists($dir . 'default.php')) {
 		return $dir . 'default.php';
 	} else {
-		return get_stylesheet_directory() . '/php/blocks/' . $block_name . '/default.php';
+		return \lqx\util\check_file('/php/blocks/' . $block_name . '/default.php');
 	}
 }
 
@@ -563,7 +563,7 @@ function get_renderer($block_name, $preset = null) {
  * @return string The path to the template file.
 */
 function get_template($block_name, $preset = null, $sub_template = null) {
-	$dir = get_stylesheet_directory() . '/php/custom/blocks/' . $block_name . '/';
+	$dir = \lqx\util\check_file('/php/custom/blocks/' . $block_name . '/');
 	$default_file = 'default';
 	$preset_file = $preset;
 	if ($sub_template) {
@@ -578,7 +578,7 @@ function get_template($block_name, $preset = null, $sub_template = null) {
 	} elseif (file_exists($dir . $default_file)) {
 		return $dir . $default_file;
 	} else {
-		return get_stylesheet_directory() . '/php/blocks/' . $block_name . '/' . $default_file;
+		return \lqx\util\check_file('/php/blocks/' . $block_name . '/' . $default_file);
 	}
 }
 
