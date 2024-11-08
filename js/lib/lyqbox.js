@@ -631,7 +631,7 @@ if(lqx && !('lyqbox' in lqx)) {
 			vars.overlay.removeClass('open');
 
 			// Remove hash
-			window.history.replaceState(null, null, '');
+			window.history.replaceState(null, null, '#');
 
 			lqx.log('Close LyqBox');
 
