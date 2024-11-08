@@ -58,6 +58,8 @@
 					} else {
 						// Get the content
 						$content = apply_filters('the_content', get_the_content());
+						// Remove styles
+						$content = preg_replace('/<style>.*?<\/style>/s', '', $content);
 						// Remove shortcodes and strip tags
 						$content = strip_tags(strip_shortcodes($content));
 						// Limit the content to 300 characters and trim
