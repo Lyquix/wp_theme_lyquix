@@ -31,7 +31,8 @@ namespace lqx\customizer;
  *
  * @return void
  */
-function customizer_add($wp_customize) {
+function customizer_add($wp_customize)
+{
 	$add_settings = [
 		'CSS' => [
 			'non_min_css' => [
@@ -53,6 +54,62 @@ function customizer_add($wp_customize) {
 				'label' => 'Load Critical Path CSS when available',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
+			],
+			'viewports_critical_path_css' => [
+				'type' => 'viewports',
+				'label' => 'Viewports for Critical Path CSS',
+				'default' => json_encode([
+					'xs' => [
+						'width' => 320,
+						'height' => 720
+					],
+					'sm' => [
+						'width' => 480,
+						'height' => 1080
+					],
+					'md' => [
+						'width' => 720,
+						'height' => 1080
+					],
+					'lg' => [
+						'width' => 1080,
+						'height' => 1080
+					],
+					'xl' =>[
+						'width' => 1620,
+						'height' => 1080
+					]
+				])
+			],
+			'exclude_types_critical_path_css' => [
+				'type' => 'checkbox-group',
+				'label' => 'Exclude Post Types from Critical Path CSS',
+				'choices' => (function () {
+					$post_types = [
+						'page' => 'Page',
+						'post' => 'Post'
+					];
+					foreach (get_post_types(['_builtin' => false, 'public' => true], 'objects') as $post_type) {
+						$post_types[$post_type->name] = $post_type->label;
+					}
+					ksort($post_types);
+					return $post_types;
+				})(),
+				'default' => '[]'
+			],
+			'exclude_pages_critical_path_css' => [
+				'type' => 'checkbox-group',
+				'label' => 'Exclude Pages from Critical Path CSS',
+				'choices' => (function () {
+					$pages = [];
+					foreach (get_pages(['post_status' => 'publish']) as $page) {
+						$slug_path = \lqx\critical\slug_path($page);
+						$pages[$slug_path] = $slug_path;
+					}
+					ksort($pages);
+					return $pages;
+				})(),
+				'default' => '[]'
 			]
 		],
 		'JS' => [
@@ -119,6 +176,7 @@ function customizer_add($wp_customize) {
 		],
 		'Analytics' => [
 			'ga4_account' => [
+				'type' => 'text',
 				'label' => 'Google Analytics 4 Account (Measurement ID)',
 			],
 			'ga_pageview' => [
@@ -134,20 +192,25 @@ function customizer_add($wp_customize) {
 				'default' => '0'
 			],
 			'gtm_account' => [
+				'type' => 'text',
 				'label' => 'Google Tag Manager Account',
 			],
 			'clarity_account' => [
+				'type' => 'text',
 				'label' => 'Microsoft Clarity Project ID',
 			],
 		],
 		'Meta Tags' => [
 			'google_site_verification' => [
+				'type' => 'text',
 				'label' => 'google-site-verification',
 			],
 			'msvalidate' => [
+				'type' => 'text',
 				'label' => 'msvalidate.01',
 			],
 			'p_domain_verify' => [
+				'type' => 'text',
 				'label' => 'p:domain_verify',
 			],
 			'add_meta_tags' => [
@@ -337,17 +400,174 @@ function customizer_add($wp_customize) {
 			$wp_customize->add_setting($name, [
 				'type' => 'theme_mod',
 				'transport' => 'refresh',
-				'default' => $options['default'] ?? null
+				'default' => $options['default'] ?? null,
+				'sanitize_callback' => 'sanitize_text_field'
 			]);
-			$wp_customize->add_control($name, [
-				'type' => $options['type'] ?? null,
-				'label' => __($options['label'], 'lyquix'),
-				'section' => 'lqx_' . strtolower($section),
-				'settings' => $name,
-				'choices' => $options['choices'] ?? null
-			]);
+
+			switch ($options['type']) {
+				case 'checkbox-group':
+					$wp_customize->add_control(new checkbox_group_custom_control($wp_customize, $name, [
+						'label' => __($options['label'], 'lyquix'),
+						'section' => 'lqx_' . strtolower($section),
+						'settings' => $name,
+						'choices' => $options['choices']
+					]));
+					break;
+
+				case 'viewports':
+					$wp_customize->add_control(new viewports_custom_control($wp_customize, $name, [
+						'label' => __($options['label'], 'lyquix'),
+						'section' => 'lqx_' . strtolower($section),
+						'settings' => $name
+					]));
+					break;
+
+				default:
+					$wp_customize->add_control($name, [
+						'type' => $options['type'] ?? null,
+						'label' => __($options['label'], 'lyquix'),
+						'section' => 'lqx_' . strtolower($section),
+						'settings' => $name,
+						'choices' => $options['choices'] ?? null
+					]);
+					break;
+			}
 		}
 	}
 }
 
 add_action('customize_register', '\lqx\customizer\customizer_add');
+
+if (class_exists('\WP_Customize_Control')) {
+	class checkbox_group_custom_control extends \WP_Customize_Control
+	{
+		public $type = 'checkbox-group';
+
+		public function enqueue()
+		{
+			// Check if already enqueued
+			if (wp_script_is('lqx-customizer-checkbox-group-custom-control', 'enqueued')) return;
+
+			wp_register_script('lqx-customizer-checkbox-group-custom-control', false);
+			wp_enqueue_script('lqx-customizer-checkbox-group-custom-control');
+			wp_add_inline_script('lqx-customizer-checkbox-group-custom-control', '
+				jQuery(document).ready(function() {
+					jQuery(\'#customize-theme-controls\').on(\'change\', \'.customize-control-checkbox-group input[type="checkbox"]\', function() {
+						let values = jQuery(this).parents(\'.customize-control-checkbox-group\').find(\'input[type="checkbox"]:checked\').map(
+							function() {
+								return this.value;
+							}
+						).get();
+						jQuery(this).parents(\'.customize-control-checkbox-group\').find(\'input[type="hidden"]\').val(JSON.stringify(values)).trigger(\'change\');
+					});
+				});'
+			);
+		}
+
+		public function render_content()
+		{
+			if (empty($this->choices)) return;
+			if (!empty($this->label)) echo '<span class="customize-control-title">' . esc_html($this->label) . '</span>';
+			if (!empty($this->description)) echo '<span class="customize-control-description description">' . esc_html($this->description) . '</span>';
+
+			$values = $this->value();
+			if (is_string($values)) $values = json_decode($this->value(), true);
+			if (!is_array($values)) $values = [];
+?>
+			<div class="customize-control-checkbox-group">
+				<?php foreach ($this->choices as $value => $label) : ?>
+					<label>
+						<input type="checkbox" value="<?= esc_attr($value); ?>" <?php checked(in_array($value, $values)); ?> />
+						<?= esc_html($label); ?>
+					</label>
+					<br>
+				<?php endforeach; ?>
+			</div>
+			<input type="hidden" <?php $this->link(); ?> value="<?= esc_attr(json_encode($values)); ?>" />
+<?php
+		}
+	}
+
+	class viewports_custom_control extends \WP_Customize_Control
+	{
+		public $type = 'viewports';
+
+		public function enqueue()
+		{
+			// Check if already enqueued
+			if (wp_script_is('lqx-customizer-viewports-custom-control', 'enqueued')) return;
+
+			wp_register_script('lqx-customizer-viewports-custom-control', false);
+			wp_enqueue_script('lqx-customizer-viewports-custom-control');
+			wp_add_inline_script('lqx-customizer-viewports-custom-control', '
+				jQuery(document).ready(function() {
+					jQuery(\'#customize-theme-controls\').on(\'input change\', \'.customize-control-viewports input[type="number"]\', function() {
+							var values = {};
+							jQuery(this).parents(\'.customize-control-viewports\').find(\'input[type="number"]\').each(function() {
+									var parts = jQuery(this).data(\'viewport\').split(\'-\');
+									var screen = parts[0]; // xs, sm, etc.
+									var dimension = parts[1]; // width or height
+
+									if (!(screen in values)) values[screen] = {};
+									values[screen][dimension] = parseInt(jQuery(this).val());
+							});
+							jQuery(this).parents(\'.customize-control-viewports\').find(\'input[type="hidden"]\').val(JSON.stringify(values)).trigger(\'change\');
+					});
+				});'
+			);
+			wp_register_style('lqx-customizer-viewports-custom-control', false);
+			wp_enqueue_style('lqx-customizer-viewports-custom-control');
+			wp_add_inline_style('lqx-customizer-viewports-custom-control', '
+				.customize-control-viewports label {
+					display: flex;
+					gap: 0.5em;
+					align-items: baseline;
+				}
+			');
+		}
+
+		public function render_content()
+		{
+			if (!empty($this->label)) echo '<span class="customize-control-title">' . esc_html($this->label) . '</span>';
+			if (!empty($this->description)) echo '<span class="customize-control-description description">' . esc_html($this->description) . '</span>';
+
+			$values = $this->value();
+			if (is_string($values)) $values = json_decode($this->value(), true);
+			if (!is_array($values)) $values = [
+				'xs' => [
+					'width' => 320,
+					'height' => 720
+				],
+				'sm' => [
+					'width' => 480,
+					'height' => 1080
+				],
+				'md' => [
+					'width' => 720,
+					'height' => 1080
+				],
+				'lg' => [
+					'width' => 1080,
+					'height' => 1080
+				],
+				'xl' =>[
+					'width' => 1620,
+					'height' => 1080
+				]
+			];
+?>
+			<div class="customize-control-viewports">
+				<?php foreach ($values as $label => $viewport) : ?>
+					<label>
+						<?= esc_html($label); ?>
+						<input type="number" value="<?= esc_attr($viewport['width']); ?>" data-viewport="<?= $label; ?>-width" />
+						<input type="number" value="<?= esc_attr($viewport['height']); ?>" data-viewport="<?= $label; ?>-height" />
+					</label>
+					<br>
+				<?php endforeach; ?>
+			</div>
+			<input type="hidden" <?php $this->link(); ?> value="<?= esc_attr(json_encode($values)); ?>" />
+<?php
+		}
+	}
+}
