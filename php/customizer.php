@@ -47,6 +47,12 @@ function customizer_add($wp_customize) {
 			'remove_css_libraries' => [
 				'type' => 'textarea',
 				'label' => 'Remove CSS Libraries'
+			],
+			'load_critical_path_css' => [
+				'type' => 'radio',
+				'label' => 'Load Critical Path CSS when available',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
 			]
 		],
 		'JS' => [
@@ -294,12 +300,6 @@ function customizer_add($wp_customize) {
 			'feat_hide_activity_log' => [
 				'type' => 'radio',
 				'label' => 'Hide Activity Log for Non Administrator Users',
-				'choices' => ['0' => 'No', '1' => 'Yes'],
-				'default' => '1'
-			],
-			'feat_load_critical_path_css' => [
-				'type' => 'radio',
-				'label' => 'Load Critical Path CSS when available',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
 			],
