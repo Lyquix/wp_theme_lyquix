@@ -328,7 +328,7 @@ function find_value_by_key($array, $keyToFind) {
 function get_global_field_groups() {
 	$field_groups = [];
 
-	$json_files = glob(\lqx\util\get_theme_path('/acf-json/*.json'));
+	$json_files = glob(get_template_directory() . '/acf-json/*.json'); // Always use the parent theme directory
 	foreach ($json_files as $json_file) {
 		$field_group = json_decode(file_get_contents($json_file), true);
 		if (!empty($field_group['fields'])) {
