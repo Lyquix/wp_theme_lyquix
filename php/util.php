@@ -718,14 +718,15 @@ function minify_html($html) {
     return $html;
 }
 
-function check_file($path)
-{
-    if (is_child_theme()) {
-        if (file_exists(get_stylesheet_directory() . $path)) {
-            $path = get_stylesheet_directory() . $path;
-        } else {
-            $path = get_template_directory() . $path;
-        }
-    }
-    return $path;
+/**
+ * Get the path to a theme file
+ *
+ * @param string $path The path to the file
+ *
+ * @return string The path
+ */
+function get_theme_path($path) {
+	if (!is_child_theme()) return $path;
+	if (file_exists(get_stylesheet_directory() . $path)) return get_stylesheet_directory() . $path;
+	return get_template_directory() . $path;
 }
