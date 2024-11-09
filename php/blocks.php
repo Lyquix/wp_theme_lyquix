@@ -816,10 +816,10 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 					'value' => get_field($rule['settings']['presets_field'], 'options')
 				];
 			}
-			wp_localize_script('custom-acf-js', 'acfObj', array(
+			wp_localize_script('custom-acf-js', 'acfObj', [
 				'json' => $rules,
 				'globalSettings' => $globalSettings
-			));
+			]);
 		}
 	});
 

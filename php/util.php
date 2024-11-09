@@ -705,15 +705,15 @@ function slugify($string, $delimiter = '-') {
  * @return string The minified HTML code
  */
 function minify_html($html) {
-    // Remove tabs, new lines, and extra white-spaces
-    $html = preg_replace('/\s+/', ' ', $html);
+	// Remove tabs, new lines, and extra white-spaces
+	$html = preg_replace('/\s+/', ' ', $html);
 
-    // Remove HTML comments
-    $html = preg_replace('/<!--(.|\s)*?-->/', '', $html);
+	// Remove HTML comments
+	$html = preg_replace('/<!--(.|\s)*?-->/', '', $html);
 
-    // Remove spaces before and after tags
-    $html = preg_replace('/\s+</', '<', $html);
-    $html = preg_replace('/>\s+/', '>', $html);
+	// Remove spaces before and after tags
+	$html = preg_replace('/\s+</', '<', $html);
+	$html = preg_replace('/>\s+/', '>', $html);
 
-    return $html;
+	return $html;
 }
