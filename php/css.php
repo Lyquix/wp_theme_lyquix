@@ -120,7 +120,7 @@ function get_stylesheets() {
 			if (parse_url($css_url, PHP_URL_SCHEME)) {
 				// Absolute URL
 				$stylesheets[] = [
-					'handle' => base_convert(crc32($css_url), 10, 36),
+					'handle' => base_convert(crc32($css_url), 16, 36),
 					'url' => $css_url
 				];
 			} elseif (parse_url($css_url, PHP_URL_PATH)) {
@@ -130,7 +130,7 @@ function get_stylesheets() {
 				// Check if file exist
 				if (file_exists(ABSPATH . $css_url)) {
 					$stylesheets[] = [
-						'handle' => base_convert(crc32($css_url), 10, 36),
+						'handle' => base_convert(crc32($css_url), 16, 36),
 						'url' => abs_url($css_url, get_site_url()),
 						'version' => date("YmdHis", filemtime(get_home_path() . $css_url))
 					];

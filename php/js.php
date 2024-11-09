@@ -102,7 +102,8 @@ function enqueue_scripts() {
 			if (parse_url($jsurl, PHP_URL_SCHEME)) {
 				// Absolute URL
 				$scripts[] = [
-					'url' => $jsurl
+					'url' => $jsurl,
+					'handle' => base_convert(crc32($jsurl), 16, 36)
 				];
 			} elseif (parse_url($jsurl, PHP_URL_PATH)) {
 				// Relative URL
@@ -112,7 +113,8 @@ function enqueue_scripts() {
 				if (file_exists(ABSPATH . $jsurl)) {
 					$scripts[] = [
 						'url' => $jsurl,
-						'version' => date("YmdHis", filemtime(get_home_path() . $jsurl))
+						'version' => date("YmdHis", filemtime(get_home_path() . $jsurl)),
+						'handle' => base_convert(crc32($jsurl), 16, 36)
 					];
 				}
 			}
