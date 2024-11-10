@@ -164,6 +164,64 @@
                     "acfe_wysiwyg_min_height": 300,
                     "acfe_wysiwyg_toolbar_buttons": [],
                     "parent_repeater": "field_654a45cad8716"
+                },
+                {
+                    "key": "field_6730399cd7de1",
+                    "label": "Additional Classes",
+                    "name": "additional_classes",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "Optional CSS classes added to the tab and panel elements",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "50",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "default_value": "",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "maxlength": "",
+                    "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "parent_repeater": "field_654a45cad8716"
+                },
+                {
+                    "key": "field_673039a7d7de2",
+                    "label": "Item ID",
+                    "name": "item_id",
+                    "aria-label": "",
+                    "type": "acfe_slug",
+                    "instructions": "Optional ID added to tabs and panel elements. For tabs, the suffix `-tab` is added. For panels, the suffix `-panel` is added.",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "50",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "default_value": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": "",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
+                    "parent_repeater": "field_654a45cad8716"
                 }
             ]
         }
@@ -194,5 +252,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1718735103
+    "modified": 1731214693
 }

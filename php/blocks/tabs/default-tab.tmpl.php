@@ -27,8 +27,8 @@
 ?>
 <li>
 	<button
-		class="tab"
-		id="<?= $s['hash'] . '-tab-' . $idx ?>"
+		class="tab <?= $item['additional_classes'] ? esc_attr($item['additional_classes']) : '' ?>"
+		id="<?= $item['item_id'] ? esc_attr($item['item_id']) . '-tab' : $s['hash'] . '-tab-' . $idx ?>"
 		aria-controls="<?= $s['hash'] . '-panel-' . $idx ?>"
 		aria-selected="<?= $idx == 0 ? 'true' : 'false' ?>"
 		role="tab"

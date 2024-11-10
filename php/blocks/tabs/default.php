@@ -77,6 +77,8 @@ $c = array_filter(array_map(function($item) {
 			'label' => \lqx\util\schema_str_req_notemp,
 			'heading' => \lqx\util\schema_str_req_emp,
 			'content' => \lqx\util\schema_str_req_notemp,
+			'additional_classes' => \lqx\util\schema_str_req_emp,
+			'item_id' => \lqx\util\schema_str_req_emp
 		]
 	]);
 	return $v['isValid'] ? $v['data'] : null;
