@@ -228,13 +228,17 @@ function get_settings($block, $post_id = null, $forced_preset = null, $forced_st
 
 		// Check for settings presets
 		if (isset($settings['local']['user']['preset']) && $settings['local']['user']['preset'] !== '') {
+			$preset_exists = false;
 			foreach ($settings['presets'] as $preset) {
 				if ($preset['preset_name'] == $settings['local']['user']['preset']) {
 					// Process the overrides
 					$settings['processed'] = merge_settings($settings['processed'], remove_empty_settings(process_overrides($preset[$block_name . '_block_admin'])));
+					$preset_exists = true;
 					break;
 				}
 			}
+			// If the preset doesn't exists, clear it from processed
+			if (!$preset_exists) $settings['processed']['preset'] = ''; // TODO: maybe we should raise a warning here
 		}
 	}
 
