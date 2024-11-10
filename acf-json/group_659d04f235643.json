@@ -496,7 +496,7 @@
                     "name": "additional_classes",
                     "aria-label": "",
                     "type": "text",
-                    "instructions": "",
+                    "instructions": "Optional CSS classes added to the Slide element",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -512,7 +512,7 @@
                     "acfe_settings": "",
                     "acfe_validate": "",
                     "maxlength": "",
-                    "instruction_placement": "",
+                    "instruction_placement": "tooltip",
                     "acfe_permissions": "",
                     "placeholder": "",
                     "prepend": "",
@@ -525,7 +525,7 @@
                     "name": "item_id",
                     "aria-label": "",
                     "type": "acfe_slug",
-                    "instructions": "",
+                    "instructions": "Optional ID added to the Slide element",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -544,7 +544,7 @@
                     "maxlength": "",
                     "acfe_settings": "",
                     "acfe_validate": "",
-                    "instruction_placement": "",
+                    "instruction_placement": "tooltip",
                     "acfe_permissions": "",
                     "parent_repeater": "field_659d0ea6112e6"
                 }
@@ -577,5 +577,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1718725335
+    "modified": 1731214550
 }
