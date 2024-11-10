@@ -241,7 +241,7 @@
                     "name": "heading_clickable",
                     "aria-label": "",
                     "type": "button_group",
-                    "instructions": "Add a link to the heading text, using the first link URL",
+                    "instructions": "Add a link to the heading text",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -272,7 +272,7 @@
                     "name": "show_image",
                     "aria-label": "",
                     "type": "button_group",
-                    "instructions": "Except for when there's a video, add a link to the image, using the first link URL.",
+                    "instructions": "",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -303,7 +303,7 @@
                     "name": "image_clickable",
                     "aria-label": "",
                     "type": "button_group",
-                    "instructions": "Except for when there's a video, add a link to the image, using the first link URL.",
+                    "instructions": "Except for when there's a video, add a link to the image",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -334,7 +334,7 @@
                     "name": "show_icon_image",
                     "aria-label": "",
                     "type": "button_group",
-                    "instructions": "Except for when there's a video, add a link to the image, using the first link URL.",
+                    "instructions": "",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -355,8 +355,8 @@
                     "acfe_settings": "",
                     "acfe_validate": "",
                     "allow_null": 1,
-                    "acfe_permissions": "",
                     "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
                     "layout": "horizontal"
                 },
                 {
@@ -365,7 +365,7 @@
                     "name": "show_video",
                     "aria-label": "",
                     "type": "button_group",
-                    "instructions": "Except for when there's a video, add a link to the image, using the first link URL.",
+                    "instructions": "",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -396,7 +396,7 @@
                     "name": "show_labels",
                     "aria-label": "",
                     "type": "button_group",
-                    "instructions": "Except for when there's a video, add a link to the image, using the first link URL.",
+                    "instructions": "",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -417,8 +417,8 @@
                     "acfe_settings": "",
                     "acfe_validate": "",
                     "allow_null": 1,
-                    "acfe_permissions": "",
                     "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
                     "layout": "horizontal"
                 },
                 {
@@ -620,5 +620,5 @@
     ],
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1718724361
+    "modified": 1731249791
 }

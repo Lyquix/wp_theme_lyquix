@@ -721,7 +721,7 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 	// Load field display logic
 	add_action('acf/init', function () {
 		if (is_admin()) {
-			wp_enqueue_script('custom-acf-js', get_template_directory_uri() . '/php/blocks/field-display.js', ['wp-data', 'acf-input', 'jquery']);
+			wp_enqueue_script('custom-acf-js', get_template_directory_uri() . '/php/blocks/field-display.js', ['wp-data', 'acf-input', 'jquery'], date("YmdHis", filemtime(get_template_directory() . '/php/blocks/field-display.js')));
 			// Passing to js the url+nonce required for ajax call and the json containing the fields dependencies
 			$globalSettings = [];
 			$rules = [
