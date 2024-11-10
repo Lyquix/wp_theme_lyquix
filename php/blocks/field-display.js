@@ -146,10 +146,12 @@
 			shouldShowFourthField = compareValues(dependency.operator, adminSetting, dependency.value);/* condition based on adminSetting */
 		}
 
-		if (shouldShowFourthField) {
-			if(blockEl) blockEl.find('[data-key=' + fieldKey + ']').removeClass('acf-hidden');
-		} else {
-			if(blockEl) blockEl.find('[data-key=' + fieldKey + ']').addClass('acf-hidden');
+		if(blockEl) {
+			if (shouldShowFourthField) {
+				blockEl.find('[data-key=' + fieldKey + ']').removeClass('acf-hidden');
+			} else {
+				blockEl.find('[data-key=' + fieldKey + ']').addClass('acf-hidden');
+			}
 		}
 	};
 
