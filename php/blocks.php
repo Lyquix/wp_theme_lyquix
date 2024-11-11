@@ -228,13 +228,17 @@ function get_settings($block, $post_id = null, $forced_preset = null, $forced_st
 
 		// Check for settings presets
 		if (isset($settings['local']['user']['preset']) && $settings['local']['user']['preset'] !== '') {
+			$preset_exists = false;
 			foreach ($settings['presets'] as $preset) {
 				if ($preset['preset_name'] == $settings['local']['user']['preset']) {
 					// Process the overrides
 					$settings['processed'] = merge_settings($settings['processed'], remove_empty_settings(process_overrides($preset[$block_name . '_block_admin'])));
+					$preset_exists = true;
 					break;
 				}
 			}
+			// If the preset doesn't exists, clear it from processed
+			if (!$preset_exists) $settings['processed']['preset'] = ''; // TODO: maybe we should raise a warning here
 		}
 	}
 
@@ -717,7 +721,7 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 	// Load field display logic
 	add_action('acf/init', function () {
 		if (is_admin()) {
-			wp_enqueue_script('custom-acf-js', get_template_directory_uri() . '/php/blocks/field-display.js', ['wp-data', 'acf-input', 'jquery']);
+			wp_enqueue_script('custom-acf-js', get_template_directory_uri() . '/php/blocks/field-display.js', ['wp-data', 'acf-input', 'jquery'], date("YmdHis", filemtime(get_template_directory() . '/php/blocks/field-display.js')));
 			// Passing to js the url+nonce required for ajax call and the json containing the fields dependencies
 			$globalSettings = [];
 			$rules = [
@@ -816,10 +820,10 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 					'value' => get_field($rule['settings']['presets_field'], 'options')
 				];
 			}
-			wp_localize_script('custom-acf-js', 'acfObj', array(
+			wp_localize_script('custom-acf-js', 'acfObj', [
 				'json' => $rules,
 				'globalSettings' => $globalSettings
-			));
+			]);
 		}
 	});
 

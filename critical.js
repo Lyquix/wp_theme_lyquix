@@ -90,9 +90,11 @@ async function fetchCriticalCssCfg(baseUrl, credentials) {
 }
 
 const criticalCSS = async (criticalCssCfg, baseUrl, credentials) => {
-	for (const template of criticalCssCfg.templates) {
-		const basePath = `./css/critical/${template.type}${template.type === 'page' ? `-${template.slug}` : ''}`;
+	for (let i = 0; i < criticalCssCfg.templates.length; i++) {
+		const template = criticalCssCfg.templates[i];
+		const basePath = `./css/critical/${template.type}${template.type === 'page' ? `-${template.slug.replace('/', '---')}` : ''}`;
 		const criticalCssPath = `${basePath}.css`;
+		const urlStartTime = Date.now();
 
 		if (fs.existsSync(criticalCssPath)) fs.unlinkSync(criticalCssPath);
 
@@ -118,7 +120,7 @@ const criticalCSS = async (criticalCssCfg, baseUrl, credentials) => {
 					reject(err);
 				} else {
 					fs.appendFileSync(criticalCssPath, output.css);
-					console.log(`Critical CSS generated for ${template.url}`);
+					console.log(`${i + 1}/${criticalCssCfg.templates.length} (${(Date.now() - urlStartTime) / 1000}s): ${template.url}`);
 					resolve(output);
 				}
 			});
@@ -153,9 +155,11 @@ async function getConfig() {
 
 async function main() {
 	try {
+		const startTime = Date.now();
 		const config = await getConfig();
 		const criticalCssCfg = await fetchCriticalCssCfg(config.baseUrl, config.credentials);
 		await criticalCSS(criticalCssCfg, config.baseUrl, config.credentials);
+		console.log(`Finished in ${(Date.now() - startTime) / 1000}s`);
 	} catch (error) {
 		console.error('An error occurred:', error);
 	} finally {

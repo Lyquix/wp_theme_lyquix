@@ -24,44 +24,66 @@
 
 namespace lqx\critical;
 
-function rest_route() {
+function slug_path($page)
+{
+	$slug_path = $page->post_name;
+	$parent_id = $page->post_parent;
+
+	// Traverse up the hierarchy to include all parent slugs
+	while ($parent_id) {
+		$parent = get_post($parent_id);
+		$slug_path = $parent->post_name . '/' . $slug_path;
+		$parent_id = $parent->post_parent;
+	}
+
+	return $slug_path;
+}
+
+function rest_route()
+{
 	$templates = [];
+	$exclude_types = get_theme_mod('exclude_types_critical_path_css', '[]');
+	if (is_string($exclude_types)) $exclude_types = json_decode($exclude_types, true);
+	if (!is_array($exclude_types)) $exclude_types = [];
 
 	// Add pages
-	$pages = get_pages(['post_status' => 'publish']);
-	foreach ($pages as $page) {
-		$templates[] = [
-			'type' => 'page',
-			'slug' => $page->post_name,
-			'url' => get_permalink($page)
-		];
+	if (!in_array('page', $exclude_types)) {
+		$pages = get_pages(['post_status' => 'publish']);
+		$exclude_pages = get_theme_mod('exclude_pages_critical_path_css', '[]');
+		if (is_string($exclude_pages)) $exclude_pages = json_decode($exclude_pages, true);
+		if (!is_array($exclude_pages)) $exclude_pages = [];
+		foreach ($pages as $page) {
+			$slug_path = slug_path($page);
+			if (in_array($slug_path, $exclude_pages)) continue;
+			$templates[] = [
+				'type' => 'page',
+				'slug' => $slug_path,
+				'url' => get_permalink($page)
+			];
+		}
 	}
 
 	// Sample blog post
-	$posts = get_posts(['numberposts' => 1, 'post_status' => 'publish']);
-	if (!empty($posts)) {
-		$templates[] = [
-			'type' => 'post',
-			'url' => get_permalink($posts[0])
-		];
+	if (!in_array('post', $exclude_types)) {
+		$posts = get_posts(['numberposts' => 1, 'post_status' => 'publish']);
+		if (!empty($posts)) {
+			$templates[] = [
+				'type' => 'post',
+				'url' => get_permalink($posts[0])
+			];
+		}
 	}
 
 	// Custom post types created with ACF
-	$post_types = get_post_types(['_builtin' => false], 'objects');
+	$post_types = get_post_types(['_builtin' => false, 'public' => true], 'objects');
 	foreach ($post_types as $post_type) {
-		if (in_array($post_type->name, [
-			'acf-field-group',
-			'acf-field',
-			'acf-taxonomy',
-			'acf-post-type',
-			'acf-ui-options-page'
-		])) continue;
-
+		if (in_array($post_type->name, $exclude_types)) continue;
 		$custom_posts = get_posts([
 			'post_type' => $post_type->name,
 			'numberposts' => 1,
 			'post_status' => 'publish'
 		]);
+
 		if (!empty($custom_posts)) {
 			$templates[] = [
 				'type' => $post_type->name,
@@ -70,29 +92,26 @@ function rest_route() {
 		}
 	}
 
+	$viewports = [];
+	foreach (
+		json_decode(
+			get_theme_mod(
+				'viewports_critical_path_css',
+				'{"xs":{"width":320,"height":720},
+				"sm":{"width":480,"height":1080},
+				"md":{"width":720,"height":1080},
+				"lg":{"width":1080,"height":1080},
+				"xl":{"width":1620,"height":1080}}'
+			),
+			true
+		) as $viewport
+	) {
+		$viewports[] = $viewport;
+	}
+
+
 	return [
-		'viewports' => [
-			[
-				'width' => 320,
-				'height' => 720
-			],
-			[
-				'width' => 480,
-				'height' => 1080
-			],
-			[
-				'width' => 720,
-				'height' => 1080
-			],
-			[
-				'width' => 1080,
-				'height' => 1080
-			],
-			[
-				'width' => 1620,
-				'height' => 1080
-			]
-		],
+		'viewports' => $viewports,
 		'templates' => $templates
 	];
 }

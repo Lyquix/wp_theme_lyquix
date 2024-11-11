@@ -36,11 +36,11 @@
 		$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
 		$posts_per_page = 10;
 		$offset = ($paged - 1) * $posts_per_page;
-		$args = array(
+		$args = [
 			's' => get_search_query(),
 			'posts_per_page' => $posts_per_page,
 			'paged' => $paged
-		);
+		];
 		$search_query = new WP_Query($args);
 		$total_results = $search_query->found_posts;
 		$start_result = $offset + 1;
@@ -58,6 +58,8 @@
 					} else {
 						// Get the content
 						$content = apply_filters('the_content', get_the_content());
+						// Remove styles
+						$content = preg_replace('/<(style|script).*?>.*?<\/(style|script)>/is', '', $content);
 						// Remove shortcodes and strip tags
 						$content = strip_tags(strip_shortcodes($content));
 						// Limit the content to 300 characters and trim
@@ -77,11 +79,11 @@
 			$total_pages = $search_query->max_num_pages;
 			if ($total_pages > 1) {
 
-				the_posts_pagination(array(
+				the_posts_pagination([
 					'format' => '?paged=%#%',
 					'prev_text' => '&laquo;',
 					'next_text' => '&raquo;'
-				));
+				]);
 			} ?>
 
 		<?php else : ?>

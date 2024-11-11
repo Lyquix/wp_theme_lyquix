@@ -101,21 +101,21 @@ function enqueue_scripts() {
 			// Check if script is local or remote
 			if (parse_url($jsurl, PHP_URL_SCHEME)) {
 				// Absolute URL
-                $scripts[] = [
-                    'handle' => \lqx\util\slugify($jsurl),
-                    'url' => $jsurl
-                ];
+				$scripts[] = [
+					'url' => $jsurl,
+					'handle' => base_convert(crc32($jsurl), 16, 36)
+				];
 			} elseif (parse_url($jsurl, PHP_URL_PATH)) {
 				// Relative URL
 				// Add leading / if missing
 				if (substr($jsurl, 0, 1) != '/') $jsurl = '/' . $jsurl;
 				// Check if file exist
 				if (file_exists(ABSPATH . $jsurl)) {
-                    $scripts[] = [
-                        'handle' => \lqx\util\slugify($jsurl),
-                        'url' => $jsurl,
-                        'version' => date("YmdHis", filemtime(get_home_path() . $jsurl))
-                    ];
+					$scripts[] = [
+						'url' => $jsurl,
+						'version' => date("YmdHis", filemtime(get_home_path() . $jsurl)),
+						'handle' => base_convert(crc32($jsurl), 16, 36)
+					];
 				}
 			}
 		}

@@ -26,8 +26,8 @@
 
 ?>
 <section
-	class="tab-panel"
-	id="<?= $s['hash'] . '-panel-' . $idx ?>"
+	class="tab-panel  <?= $item['additional_classes'] ? esc_attr($item['additional_classes']) : '' ?>"
+	id="<?= $item['item_id'] ? esc_attr($item['item_id']) . '-panel' : $s['hash'] . '-panel-' . $idx ?>"
 	aria-labelledby="<?= $s['hash'] . '-tab-' . $idx ?>"
 	aria-hidden="<?= $idx == 0 ? 'false' : 'true' ?>"
 	role="tabpanel"
@@ -47,7 +47,6 @@
 	<div
 		class="tab-content"
 		id="<?= $s['hash'] . '-content-' . $idx ?>"
-		<?= $s['convert_to_tabs'] == 'y' ? 'aria-hidden="' . ($idx == 0 ? 'false' : 'true') . '"' : '' ?>>
 		<?= $item['heading'] ? sprintf('<%s>%s</%s>', $s['heading_style'], $item['heading'], $s['heading_style']) : '' ?>
 		<?= $item['content'] ?>
 	</div>

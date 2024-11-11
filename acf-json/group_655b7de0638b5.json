@@ -334,7 +334,7 @@
                             "name": "additional_classes",
                             "aria-label": "",
                             "type": "text",
-                            "instructions": "",
+                            "instructions": "Optional CSS classes added to the slide element",
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
@@ -343,7 +343,7 @@
                                 "id": ""
                             },
                             "acfe_permissions": "",
-                            "instruction_placement": "",
+                            "instruction_placement": "tooltip",
                             "hide_field": "",
                             "hide_label": "",
                             "hide_instructions": "",
@@ -363,7 +363,7 @@
                             "name": "item_id",
                             "aria-label": "",
                             "type": "acfe_slug",
-                            "instructions": "String to be used in the URL to link directly to this item",
+                            "instructions": "Optional ID added to the slide element",
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
@@ -417,5 +417,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1718734769
+    "modified": 1731214466
 }

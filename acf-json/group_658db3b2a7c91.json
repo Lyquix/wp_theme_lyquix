@@ -549,11 +549,11 @@
                     "name": "additional_classes",
                     "aria-label": "",
                     "type": "text",
-                    "instructions": "",
+                    "instructions": "Optional CSS classes added to the Card element",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "35",
+                        "width": "50",
                         "class": "",
                         "id": ""
                     },
@@ -565,7 +565,7 @@
                     "acfe_settings": "",
                     "acfe_validate": "",
                     "maxlength": "",
-                    "instruction_placement": "",
+                    "instruction_placement": "tooltip",
                     "acfe_permissions": "",
                     "placeholder": "",
                     "prepend": "",
@@ -578,11 +578,11 @@
                     "name": "item_id",
                     "aria-label": "",
                     "type": "acfe_slug",
-                    "instructions": "",
+                    "instructions": "Optional ID added to the Card element",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "35",
+                        "width": "50",
                         "class": "",
                         "id": ""
                     },
@@ -597,7 +597,7 @@
                     "maxlength": "",
                     "acfe_settings": "",
                     "acfe_validate": "",
-                    "instruction_placement": "",
+                    "instruction_placement": "tooltip",
                     "acfe_permissions": "",
                     "parent_repeater": "field_658db3b2c1203"
                 }
@@ -630,5 +630,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1718724702
+    "modified": 1731215597
 }

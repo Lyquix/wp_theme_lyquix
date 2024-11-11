@@ -44,19 +44,19 @@ $s = \lqx\util\validate_data($settings['processed'], [
 			'default' => 'h3',
 			'allowed' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
 		],
+		'show_subheading' => \lqx\util\schema_str_req_y,
 		'subheading_style' => [
 			'type' => 'string',
 			'required' => true,
 			'default' => 'p',
 			'allowed' => ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
 		],
-		'heading_clickable' => [
-			'type' => 'string',
-			'required' => true,
-			'default' => 'y',
-			'allowed' => ['y', 'n']
-		],
+		'heading_clickable' => \lqx\util\schema_str_req_y,
+		'show_image' => \lqx\util\schema_str_req_y,
 		'image_clickable' => \lqx\util\schema_str_req_y,
+		'show_icon_image' => \lqx\util\schema_str_req_y,
+		'show_video' => \lqx\util\schema_str_req_y,
+		'show_labels' => \lqx\util\schema_str_req_y,
 		'responsive_rules' => [
 			'type' => 'array',
 			'required' => true,
