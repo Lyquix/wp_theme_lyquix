@@ -15,7 +15,7 @@
     "menu_icon": [],
     "update_button": "Update",
     "updated_message": "Options Updated",
-    "capability": "read_private_posts",
+    "capability": "activate_plugins",
     "data_storage": "options",
     "post_id": "",
     "autoload": 0,
