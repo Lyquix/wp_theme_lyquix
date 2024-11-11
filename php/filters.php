@@ -1513,22 +1513,24 @@ function get_posts_with_data($s) {
                             break;
 
                         case 'field':
-                            foreach($s['render_php']['label_fields'] as $field) {
-                                $label_field_object = get_field_object($field['label_field'], $post->ID);
-                                if ($label_field_object != false) {
-                                    if (is_array($label_field_object['value'])) {
-                                        foreach ($label_field_object['value'] as $value) {
+                            if(isset($s['render_php']['label_fields']) && is_array($s['render_php']['label_fields'])) {
+                                foreach($s['render_php']['label_fields'] as $field) {
+                                    $label_field_object = get_field_object($field['label_field'], $post->ID);
+                                    if ($label_field_object != false) {
+                                        if (is_array($label_field_object['value'])) {
+                                            foreach ($label_field_object['value'] as $value) {
+                                                $p['labels'][] = [
+                                                    'label' => $value,
+                                                    'value' => \lqx\util\slugify($value)
+                                                ];
+                                            }
+                                        }
+                                        else {
                                             $p['labels'][] = [
-                                                'label' => $value,
-                                                'value' => \lqx\util\slugify($value)
+                                                'label' => $label_field_object['value'],
+                                                'value' => \lqx\util\slugify($label_field_object['value'])
                                             ];
                                         }
-                                    }
-                                    else {
-                                        $p['labels'][] = [
-                                            'label' => $label_field_object['value'],
-                                            'value' => \lqx\util\slugify($label_field_object['value'])
-                                        ];
                                     }
                                 }
                             }

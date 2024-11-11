@@ -224,7 +224,7 @@ function get_settings($block, $post_id = null, $forced_preset = null, $forced_st
 			$settings['processed']['style'] = $settings['local']['user']['style'];
 			$settings['processed']['class'] .= ' ' . $settings['local']['user']['style'];
 		}
-		if ($settings['local']['user']['preset']) $settings['processed']['preset'] = $settings['local']['user']['preset'];
+        if (isset($settings['local']['user']['preset'])) $settings['processed']['preset'] = $settings['local']['user']['preset'];
 
 		// Check for settings presets
 		if (isset($settings['local']['user']['preset']) && $settings['local']['user']['preset'] !== '') {

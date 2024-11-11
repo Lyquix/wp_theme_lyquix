@@ -57,7 +57,7 @@ function rest_route() {
 		if ($popup['dismiss_duration'] == 0) $popup['dismiss_duration'] = '';
 
 		// Add settings to modal
-		$popup['heading_style'] = $settings['heading_style'];
+        $popup['heading_style'] = $settings['heading_style'] ?? '';
 
 		return $popup;
 	}, $content);

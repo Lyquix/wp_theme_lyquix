@@ -134,10 +134,12 @@ function render($posts, $preset = null, $style = null, $fields_map = [], $fields
 function process_wp_posts($posts, $fields_map, $fields_values) {
 	$processed_posts = [];
 
-	foreach ($posts as $i => $post) {
-		$processed_post = process_wp_post($post, $fields_map, $fields_values[$i]);
-		if ($processed_post) $processed_posts[] = $processed_post;
-	}
+    if(is_array($posts)) {
+        foreach ($posts as $i => $post) {
+            $processed_post = isset($fields_values[$i]) ? process_wp_post($post, $fields_map, $fields_values[$i]) : null;
+            if ($processed_post) $processed_posts[] = $processed_post;
+        }
+    }
 
 	return $processed_posts;
 }
@@ -226,9 +228,11 @@ function process_wp_post($post, $fields_map, $fields_values) {
 	}
 
 	// Handle values passed directly
-	foreach ($fields_values as $card_field => $field_value) {
-		if (array_key_exists($card_field, $card)) $card[$card_field] = $field_value;
-	}
+    if(isset($fields_values) && is_array($fields_values)) {
+        foreach ($fields_values as $card_field => $field_value) {
+            if (array_key_exists($card_field, $card)) $card[$card_field] = $field_value;
+        }
+    }
 
 	return $card;
 }
