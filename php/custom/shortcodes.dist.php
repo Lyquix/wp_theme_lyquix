@@ -1,7 +1,7 @@
 <?php
 
 /**
- * features.dist.php - Sets a list of features flags
+ * shortcodes.dist.php - Add custom shortcodes
  *
  * @version     3.1.0
  * @package     wp_theme_lyquix
@@ -21,11 +21,18 @@
 //    "Y8888P"     888     "Y88888P"  888         888
 //
 //  DO NOT MODIFY THIS FILE!
-//  Instead copy this file to /php/custom/features.php
-//  and add the list of feature flags there in the $feature_flags array
-//  The array keys are the feature flag slugs, and the values are the features names
+//  Instead copy this file to /php/custom/shortcodes.php
+//  and add the shortcodes in there
 
-$feature_flags = [
-	// Add feature flags here as an associative array
-	// 'feature-slug' => 'Feature Name'
-];
+add_shortcode('lqx-shortcode-tag', function ($atts, $content = null) {
+	// $defaults is an associative array that specifies the recognized attribute names and their default values.
+	$defaults = [];
+	$atts = shortcode_atts($defaults, $atts);
+
+	// $content is the text between the opening and closing shortcode tags.
+	$html = do_shortcode($content); // Processed any shortcodes in $content
+
+	// Add your shortcode markup and logic here
+
+	return $html;
+});
