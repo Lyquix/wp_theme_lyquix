@@ -1,4 +1,7 @@
 <?php
+
+namespace lqx\ip2geo;
+
 /**
  * Instances of this class provide a reader for the MaxMind DB format. IP
  * addresses can be looked up using the <code>get</code> method.
