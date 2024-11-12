@@ -95,8 +95,8 @@ function classes() {
 	}
 
 	// Set feature flags
-	if (file_exists(get_template_directory() . '/php/custom/features.php')) {
-		require get_template_directory() . '/php/custom/features.php';
+	if (file_exists(\lqx\util\get_theme_path('/php/custom/features.php'))) {
+		require \lqx\util\get_theme_path('/php/custom/features.php');
 
 		if (count($feature_flags)) {
 			foreach ($feature_flags as $code => $title) {
@@ -114,8 +114,8 @@ function features () {
 	$features = [];
 
 	// Set feature flags
-	if (file_exists(get_template_directory() . '/php/custom/features.php')) {
-		require get_template_directory() . '/php/custom/features.php';
+	if (file_exists(\lqx\util\get_theme_path('/php/custom/features.php'))) {
+		require \lqx\util\get_theme_path('/php/custom/features.php');
 
 		if (count($feature_flags)) {
 			foreach ($feature_flags as $code => $title) {

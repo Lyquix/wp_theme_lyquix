@@ -730,3 +730,16 @@ function get_theme_path($path) {
 	if (file_exists(get_stylesheet_directory() . $path)) return get_stylesheet_directory() . $path;
 	return get_template_directory() . $path;
 }
+
+/**
+ * Get the uri to a theme file
+ *
+ * @param string $path The path to the file
+ *
+ * @return string The path
+ */
+function get_theme_uri($path) {
+    if (!is_child_theme()) return $path;
+    if (file_exists(get_stylesheet_directory() . $path)) return get_stylesheet_directory_uri() . $path;
+    return get_template_directory_uri() . $path;
+}

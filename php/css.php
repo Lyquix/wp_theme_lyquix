@@ -140,11 +140,11 @@ function get_stylesheets() {
 	}
 
 	// Custom Project Styles
-	if (file_exists(get_template_directory() . '/css/styles' . ($non_min_css ? '' : '.min') . '.css')) {
+	if (file_exists(\lqx\util\get_theme_path('/css/styles' . ($non_min_css ? '' : '.min') . '.css'))) {
 		$stylesheets[] = [
 			'handle' => 'styles',
-			'url' => get_template_directory_uri() . '/css/styles' . ($non_min_css ? '' : '.min') . '.css',
-			'version' => date("YmdHis", filemtime(get_template_directory() . '/css/styles' . ($non_min_css ? '' : '.min') . '.css'))
+			'url' => \lqx\util\get_theme_uri('/css/styles' . ($non_min_css ? '' : '.min') . '.css'),
+			'version' => date("YmdHis", filemtime(\lqx\util\get_theme_path('/css/styles' . ($non_min_css ? '' : '.min') . '.css')))
 		];
 	}
 

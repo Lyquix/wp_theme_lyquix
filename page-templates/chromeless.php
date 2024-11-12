@@ -25,4 +25,4 @@
 
 $lqx_page_template = 'chromeless';
 
-require get_template_directory() . '/custom.php';
+require \lqx\util\get_theme_path('/custom.php');

@@ -33,7 +33,7 @@ namespace lqx\router;
  * @return bool
  */
 function tmpl_file_exists($tmpl_name) {
-	return file_exists(get_template_directory() . '/php/custom/templates/' . $tmpl_name . '.php');
+	return file_exists(\lqx\util\get_theme_path('/php/custom/templates/' . $tmpl_name . '.php'));
 }
 
 /**
@@ -110,8 +110,8 @@ function render() {
 		}
 
 		// Custom router logic
-		elseif (file_exists(get_template_directory() . '/php/custom/router.php')) {
-			require get_template_directory() . '/php/custom/router.php';
+		elseif (file_exists(\lqx\util\get_theme_path('/php/custom/router.php'))) {
+			require \lqx\util\get_theme_path('/php/custom/router.php');
 		}
 	}
 
@@ -140,23 +140,23 @@ function render() {
 		}
 
 		// Custom router logic
-		elseif (file_exists(get_template_directory() . '/php/custom/router.php')) {
-			require get_template_directory() . '/php/custom/router.php';
+		elseif (file_exists(\lqx\util\get_theme_path('/php/custom/router.php'))) {
+			require \lqx\util\get_theme_path('/php/custom/router.php');
 		}
 	}
 
 	// Load template file if found
 	if ($tmpl_name) {
-		require get_template_directory() . '/php/custom/templates/' . $tmpl_name . '.php';
+		require \lqx\util\get_theme_path('/php/custom/templates/' . $tmpl_name . '.php');
 	}
 
 	// Fallback to default templates
 	else {
 		if (is_home() || is_archive()) {
-			if (tmpl_file_exists('archive')) require get_template_directory() . '/php/custom/templates/archive.php';
+			if (tmpl_file_exists('archive')) require \lqx\util\get_theme_path('/php/custom/templates/archive.php');
 			else require get_template_directory() . '/php/archive.php';
 		} elseif (is_singular()) {
-			if (tmpl_file_exists('singular')) require get_template_directory() . '/php/custom/templates/singular.php';
+			if (tmpl_file_exists('singular')) require \lqx\util\get_theme_path('/php/custom/templates/singular.php');
 			else require get_template_directory() . '/php/singular.php';
 		}
 

@@ -50,8 +50,8 @@ function add_menu_positions() {
 	];
 
 	// Add custom menu positions to $menus array
-	if (file_exists(get_template_directory() . '/php/custom/menus.php')) {
-		require get_template_directory() . '/php/custom/menus.php';
+	if (file_exists(\lqx\util\get_theme_path('/php/custom/menus.php'))) {
+		require \lqx\util\get_theme_path('/php/custom/menus.php');
 	}
 
 	// Register menu locations

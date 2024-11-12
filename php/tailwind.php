@@ -143,7 +143,7 @@ if (get_theme_mod('feat_tailwind', '1') === '1') {
 			$class_string = implode(' ', $classes);
 
 			// Load the existing whitelist.html content
-			$whitelistPath = get_template_directory() . '/css/tailwind/whitelist.html';
+			$whitelistPath = \lqx\util\get_theme_path('/css/tailwind/whitelist.html');
 			$whitelistContent = file_exists($whitelistPath) ? file_get_contents($whitelistPath) : '';
 
 			// Create the new div string
@@ -178,7 +178,7 @@ if (get_theme_mod('feat_tailwind', '1') === '1') {
 	 */
 	add_action('delete_post', function ($post_ID) {
 		// Load the existing whitelist.html content
-		$whitelistPath = get_template_directory() . '/css/tailwind/whitelist.html';
+		$whitelistPath = \lqx\util\get_theme_path('/css/tailwind/whitelist.html');
 		$whitelistContent = file_exists($whitelistPath) ? file_get_contents($whitelistPath) : '';
 
 		// Regex to find the div for this post

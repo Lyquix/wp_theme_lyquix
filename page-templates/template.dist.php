@@ -27,4 +27,4 @@
 //  Remember to change the Template Name in the comment block at the top of the file
 //  Do not modify the rest of this file, instead, create a new file with the exact same filesame name in the /php/custom/templates/ directory
 
-require get_template_directory() . '/custom.php';
+require \lqx\util\get_theme_path('/custom.php');
