@@ -26,10 +26,13 @@
 	// Waiting for blocks to be loaded
 	$(() => {
 		// eslint-disable-next-line no-undef
-		setTimeout(() => {
-			const blocks = select('core/block-editor').getBlocks();
-			if (blocks.length) initBlocks(blocks);
-		}, 300);
+		let editor = select('core/block-editor');
+		if(editor) {
+			setTimeout(() => {
+				const blocks = editor.getBlocks();
+				if (blocks.length) initBlocks(blocks);
+			}, 300);
+		}
 	});
 
 	/**
@@ -143,10 +146,12 @@
 			shouldShowFourthField = compareValues(dependency.operator, adminSetting, dependency.value);/* condition based on adminSetting */
 		}
 
-		if (shouldShowFourthField) {
-			blockEl.find('[data-key=' + fieldKey + ']').removeClass('acf-hidden');
-		} else {
-			blockEl.find('[data-key=' + fieldKey + ']').addClass('acf-hidden');
+		if(blockEl) {
+			if (shouldShowFourthField) {
+				blockEl.find('[data-key=' + fieldKey + ']').removeClass('acf-hidden');
+			} else {
+				blockEl.find('[data-key=' + fieldKey + ']').addClass('acf-hidden');
+			}
 		}
 	};
 
