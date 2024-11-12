@@ -26,7 +26,7 @@
 
 ?>
 <div class="image" <?= $video_attrs ?>>
-	<?php if ($item['video']['type'] == 'upload' && isset($item['video']['upload'])) : ?>
+	<?php if ($item['video']['type'] == 'upload' && isset($item['video']['upload'])  && $s['show_video'] == 'y') : ?>
 		<video
 			autoplay loop muted playsinline
 			poster="<?= $item['image']['sizes']['large'] ?>">

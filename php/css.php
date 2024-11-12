@@ -120,7 +120,7 @@ function get_stylesheets() {
 			if (parse_url($css_url, PHP_URL_SCHEME)) {
 				// Absolute URL
 				$stylesheets[] = [
-					'handle' => base_convert(crc32($css_url), 10, 36),
+					'handle' => base_convert(crc32($css_url), 16, 36),
 					'url' => $css_url
 				];
 			} elseif (parse_url($css_url, PHP_URL_PATH)) {
@@ -130,7 +130,7 @@ function get_stylesheets() {
 				// Check if file exist
 				if (file_exists(ABSPATH . $css_url)) {
 					$stylesheets[] = [
-						'handle' => base_convert(crc32($css_url), 10, 36),
+						'handle' => base_convert(crc32($css_url), 16, 36),
 						'url' => abs_url($css_url, get_site_url()),
 						'version' => date("YmdHis", filemtime(get_home_path() . $css_url))
 					];
@@ -152,19 +152,32 @@ function get_stylesheets() {
 }
 
 function get_critical_css() {
-	$critical_css = null;
+	// Skip if not a single page
+	if (!is_singular()) return null;
 
-	if (is_singular()) {
-		$post_type = get_post_type();
-		$slug = get_post_field('post_name');
-		$filename = get_template_directory() . "/css/critical/{$post_type}" . ($post_type === 'page' ? "-{$slug}" : '') . '.css';
+	$slug = \lqx\critical\slug_path(get_post());
 
-		if ($critical_css && file_exists($filename)) {
-			$critical_css = file_get_contents($filename);
-		}
-	}
+	// Skip pages in exclude_pages_critical_path_css
+	$exclude_pages = get_theme_mod('exclude_pages_critical_path_css', '[]');
+	if (is_string($exclude_pages)) $exclude_pages = json_decode($exclude_pages, true);
+	if (!is_array($exclude_pages)) $exclude_pages = [];
+	if (in_array($slug, $exclude_pages)) return null;
 
-	return $critical_css;
+	$post_type = get_post_type();
+
+	// Skip post types in exclude_types_critical_path_css
+	$exclude_types = get_theme_mod('exclude_types_critical_path_css', '[]');
+	if (is_string($exclude_types)) $exclude_types = json_decode($exclude_types, true);
+	if (!is_array($exclude_types)) $exclude_types = [];
+	if (in_array($post_type, $exclude_types)) return null;
+
+	$slug = str_replace('/', '---', $slug);
+	$filename = get_template_directory() . "/css/critical/{$post_type}" . ($post_type === 'page' ? "-{$slug}" : '') . '.css';
+
+	// Skip if file doesn't exist
+	if (!file_exists($filename)) return null;
+
+	return file_get_contents($filename);
 }
 
 add_action('wp_enqueue_scripts', function () {

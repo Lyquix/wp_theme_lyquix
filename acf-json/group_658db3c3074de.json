@@ -263,7 +263,7 @@
                     "name": "heading_clickable",
                     "aria-label": "",
                     "type": "button_group",
-                    "instructions": "Add a link to the heading text, using the first link URL (Default: Yes)",
+                    "instructions": "Add a link to the heading text (Default: Yes)",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -294,7 +294,7 @@
                     "name": "show_image",
                     "aria-label": "",
                     "type": "button_group",
-                    "instructions": "Except for when there's a video, add a link to the image, using the first link URL (Default: Yes)",
+                    "instructions": "",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -325,7 +325,7 @@
                     "name": "image_clickable",
                     "aria-label": "",
                     "type": "button_group",
-                    "instructions": "Except for when there's a video, add a link to the image, using the first link URL (Default: Yes)",
+                    "instructions": "Except for when there's a video, add a link to the image (Default: Yes)",
                     "required": 0,
                     "conditional_logic": [
                         [
@@ -364,7 +364,7 @@
                     "name": "show_icon_image",
                     "aria-label": "",
                     "type": "button_group",
-                    "instructions": "Except for when there's a video, add a link to the image, using the first link URL (Default: Yes)",
+                    "instructions": "",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -385,8 +385,8 @@
                     "acfe_settings": "",
                     "acfe_validate": "",
                     "allow_null": 0,
-                    "acfe_permissions": "",
                     "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
                     "layout": "horizontal"
                 },
                 {
@@ -395,7 +395,7 @@
                     "name": "show_video",
                     "aria-label": "",
                     "type": "button_group",
-                    "instructions": "Except for when there's a video, add a link to the image, using the first link URL (Default: Yes)",
+                    "instructions": "",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -426,38 +426,7 @@
                     "name": "show_labels",
                     "aria-label": "",
                     "type": "button_group",
-                    "instructions": "Except for when there's a video, add a link to the image, using the first link URL (Default: Yes)",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "hide_field": "",
-                    "hide_label": "",
-                    "hide_instructions": "",
-                    "hide_required": "",
-                    "choices": {
-                        "y": "Yes",
-                        "n": "No"
-                    },
-                    "default_value": "y",
-                    "return_format": "value",
-                    "acfe_settings": "",
-                    "acfe_validate": "",
-                    "allow_null": 0,
-                    "acfe_permissions": "",
-                    "instruction_placement": "tooltip",
-                    "layout": "horizontal"
-                },
-                {
-                    "key": "field_65e7cdf539f23",
-                    "label": "Show Links",
-                    "name": "show_links",
-                    "aria-label": "",
-                    "type": "button_group",
-                    "instructions": "Except for when there's a video, add a link to the image, using the first link URL (Default: Yes)",
+                    "instructions": "",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -760,5 +729,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1718724363
+    "modified": 1731249787
 }

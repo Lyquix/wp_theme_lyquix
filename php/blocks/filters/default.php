@@ -24,7 +24,11 @@
 //  If you need a custom renderer, copy this file to php/custom/blocks/filters/default.php and modify it there
 //  You may also create custom renderer for specific presets, by copying this file to /php/custom/blocks/filters/{preset}.php
 
-// Get the processed settings and posts with data
-$s = \lqx\filters\get_settings_and_posts($settings);
+if ($settings['processed']['preset']) { // only proceed if a preset has been selected
+	// Get the processed settings and posts with data
+	$s = \lqx\filters\get_settings_and_posts($settings);
 
-require \lqx\blocks\get_template('filters', $s['preset']);
+	require \lqx\blocks\get_template('filters', $s['preset']);
+}
+
+// TODO: maybe we should raise a warning here

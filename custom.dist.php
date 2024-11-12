@@ -41,7 +41,7 @@
 	\lqx\favicon\render();
 	?>
 </head>
-<body class="<?= \lqx\body\classes() ?>">
+<body class="<?= \lqx\body\classes() ?>" data-features="<?= esc_attr(\lqx\body\features()) ?>">
 	<a href="#content" class="skip-to-content-link">Skip to Content</a>
 	<?php
 	// Render GTM body code

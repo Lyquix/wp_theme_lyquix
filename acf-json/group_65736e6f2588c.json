@@ -129,7 +129,7 @@
                     "label": "Padding",
                     "name": "tailwind_p-",
                     "aria-label": "",
-                    "type": "button_group",
+                    "type": "select",
                     "instructions": "XS: 4px, SM: 8px, MD: 12px, LG: 16px , XL: 20px",
                     "required": 0,
                     "conditional_logic": 0,
@@ -152,12 +152,21 @@
                     ],
                     "default_value": 0,
                     "return_format": "value",
+                    "multiple": 0,
+                    "max": "",
+                    "allow_custom": 0,
+                    "placeholder": "",
+                    "search_placeholder": "",
+                    "prepend": "",
+                    "append": "",
                     "acfe_settings": "",
                     "acfe_validate": "",
                     "allow_null": 0,
                     "instruction_placement": "tooltip",
                     "acfe_permissions": "",
-                    "layout": "horizontal",
+                    "ui": 0,
+                    "ajax": 0,
+                    "min": "",
                     "parent_repeater": "field_65a053720a10e"
                 },
                 {
@@ -187,7 +196,7 @@
                     "name": "additional_classes",
                     "aria-label": "",
                     "type": "text",
-                    "instructions": "",
+                    "instructions": "Optional CSS classes added to the Logo element",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -203,7 +212,7 @@
                     "acfe_settings": "",
                     "acfe_validate": "",
                     "maxlength": "",
-                    "instruction_placement": "",
+                    "instruction_placement": "tooltip",
                     "acfe_permissions": "",
                     "placeholder": "",
                     "prepend": "",
@@ -216,7 +225,7 @@
                     "name": "item_id",
                     "aria-label": "",
                     "type": "acfe_slug",
-                    "instructions": "",
+                    "instructions": "Optional ID added to the Logo element",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -235,7 +244,7 @@
                     "maxlength": "",
                     "acfe_settings": "",
                     "acfe_validate": "",
-                    "instruction_placement": "",
+                    "instruction_placement": "tooltip",
                     "acfe_permissions": "",
                     "parent_repeater": "field_65a053720a10e"
                 }
@@ -268,5 +277,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1718725272
+    "modified": 1731218957
 }

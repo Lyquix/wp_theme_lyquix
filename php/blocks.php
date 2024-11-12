@@ -224,17 +224,21 @@ function get_settings($block, $post_id = null, $forced_preset = null, $forced_st
 			$settings['processed']['style'] = $settings['local']['user']['style'];
 			$settings['processed']['class'] .= ' ' . $settings['local']['user']['style'];
 		}
-		if ($settings['local']['user']['preset']) $settings['processed']['preset'] = $settings['local']['user']['preset'];
+        if (isset($settings['local']['user']['preset'])) $settings['processed']['preset'] = $settings['local']['user']['preset'];
 
 		// Check for settings presets
 		if (isset($settings['local']['user']['preset']) && $settings['local']['user']['preset'] !== '') {
+			$preset_exists = false;
 			foreach ($settings['presets'] as $preset) {
 				if ($preset['preset_name'] == $settings['local']['user']['preset']) {
 					// Process the overrides
 					$settings['processed'] = merge_settings($settings['processed'], remove_empty_settings(process_overrides($preset[$block_name . '_block_admin'])));
+					$preset_exists = true;
 					break;
 				}
 			}
+			// If the preset doesn't exists, clear it from processed
+			if (!$preset_exists) $settings['processed']['preset'] = ''; // TODO: maybe we should raise a warning here
 		}
 	}
 
@@ -717,7 +721,7 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 	// Load field display logic
 	add_action('acf/init', function () {
 		if (is_admin()) {
-			wp_enqueue_script('custom-acf-js', get_template_directory_uri() . '/php/blocks/field-display.js', ['wp-data', 'acf-input', 'jquery']);
+			wp_enqueue_script('custom-acf-js', get_template_directory_uri() . '/php/blocks/field-display.js', ['wp-data', 'acf-input', 'jquery'], date("YmdHis", filemtime(get_template_directory() . '/php/blocks/field-display.js')));
 			// Passing to js the url+nonce required for ajax call and the json containing the fields dependencies
 			$globalSettings = [];
 			$rules = [
@@ -816,10 +820,10 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 					'value' => get_field($rule['settings']['presets_field'], 'options')
 				];
 			}
-			wp_localize_script('custom-acf-js', 'acfObj', array(
+			wp_localize_script('custom-acf-js', 'acfObj', [
 				'json' => $rules,
 				'globalSettings' => $globalSettings
-			));
+			]);
 		}
 	});
 
@@ -859,3 +863,80 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 	// Endpoint for resetting global settings AJAX
 	add_action('wp_ajax_reset_global_settings', '\lqx\blocks\reset_global_settings_ajax');
 }
+
+add_action('admin_enqueue_scripts', function ($hook) {
+    if ($hook != 'site-settings_page_block-report') {
+        return;
+    }
+
+    wp_enqueue_script(
+        'block-report-js',
+        get_template_directory_uri() . '/php/blocks/block-report.js',
+        ['jquery'],
+        null,
+        true
+    );
+});
+
+function get_presets_styles_options($request)
+{
+    $block_type = str_replace('lqx/', '', sanitize_text_field($request->get_param('block_type')));
+    $setting = sanitize_text_field($request->get_param('setting'));
+    $options = [];
+
+    if ($block_type && $setting) {
+        $options = get_field($block_type.'_block_'.$setting.'s', 'option') ?? [];
+    }
+
+    return rest_ensure_response($options);
+}
+
+function search_posts_by_block_and_setting($request) {
+    global $wpdb;
+
+    $block_type = $request->get_param('block_type');
+    $setting = $request->get_param('select');
+    $value = $request->get_param('option');
+
+    $block_search = '<!-- wp:'.$block_type;
+    $setting_search = '"' . str_replace('lqx/', '', $block_type) . '_block_user_' . $setting . '":"' . $value . '"';
+
+    $query = $wpdb->prepare(
+        "SELECT ID, post_title, post_content
+     FROM {$wpdb->posts}
+     WHERE post_status = 'publish'
+     AND post_content LIKE %s
+     AND post_content LIKE %s",
+        '%' . $wpdb->esc_like($block_search) . '%',
+        '%' . $wpdb->esc_like($setting_search) . '%'
+    );
+
+    $posts = $wpdb->get_results($query);
+
+    $result = [];
+    foreach ($posts as $post) {
+        $result[] = [
+            'ID' => $post->ID,
+            'title' => $post->post_title,
+            'link' => '/wp-admin/post.php?post='.$post->ID.'&action=edit',
+        ];
+    }
+
+    return rest_ensure_response($result);
+}
+
+
+
+add_action('rest_api_init', function () {
+    register_rest_route('lyquix/v3', '/get-options', array(
+        'methods' => 'GET',
+        'callback' => '\lqx\blocks\get_presets_styles_options',
+        'permission_callback' => '__return_true',
+    ));
+
+    register_rest_route('lyquix/v3', '/search-posts', array(
+        'methods' => 'GET',
+        'callback' => '\lqx\blocks\search_posts_by_block_and_setting',
+        'permission_callback' => '__return_true',
+    ));
+});

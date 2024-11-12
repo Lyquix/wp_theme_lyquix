@@ -29,11 +29,11 @@
 	class="<?= $s['slider'] == 'y' ? 'swiper-slide' : 'card' ?> <?= esc_attr($item['additional_classes']) ?>"
 	id="<?= ($item['item_id'] !== '' ? esc_attr($item['item_id']) : $s['hash'] . '-' . $idx) ?>">
 
-	<?php if (!empty($item['labels'])) require \lqx\blocks\get_template('cards', $s['preset'], 'labels'); ?>
+	<?php if (!empty($item['labels'])  && $s['show_labels'] == 'y') require \lqx\blocks\get_template('cards', $s['preset'], 'labels'); ?>
 
-	<?php if ($item['image']) require \lqx\blocks\get_template('cards', $s['preset'], 'image'); ?>
+	<?php if ($item['image'] && $s['show_image'] == 'y') require \lqx\blocks\get_template('cards', $s['preset'], 'image'); ?>
 
-	<?php if ($item['icon_image']) require \lqx\blocks\get_template('cards', $s['preset'], 'icon-image'); ?>
+	<?php if ($item['icon_image'] && $s['show_icon_image'] == 'y') require \lqx\blocks\get_template('cards', $s['preset'], 'icon-image'); ?>
 
 	<?php require \lqx\blocks\get_template('cards', $s['preset'], 'text'); ?>
 
