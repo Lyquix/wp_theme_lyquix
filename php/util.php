@@ -726,9 +726,7 @@ function minify_html($html) {
  * @return string The path
  */
 function get_theme_path($path) {
-	if (!is_child_theme()) return $path;
-	if (file_exists(get_stylesheet_directory() . $path)) return get_stylesheet_directory() . $path;
-	return get_template_directory() . $path;
+	return get_theme_file_path($path);
 }
 
 /**
@@ -739,7 +737,5 @@ function get_theme_path($path) {
  * @return string The path
  */
 function get_theme_uri($path) {
-    if (!is_child_theme()) return $path;
-    if (file_exists(get_stylesheet_directory() . $path)) return get_stylesheet_directory_uri() . $path;
-    return get_template_directory_uri() . $path;
+    return get_theme_file_uri($path);
 }
