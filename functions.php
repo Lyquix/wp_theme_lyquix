@@ -83,6 +83,9 @@ require_once get_template_directory() . '/php/body.php';
 // Template router
 require_once get_template_directory() . '/php/router.php';
 
+// IP geolocation
+require_once get_template_directory() . '/php/ip2geo.php';
+
 // Outdated browser alert
 require_once get_template_directory() . '/php/browsers.php';
 

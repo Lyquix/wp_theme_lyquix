@@ -75,7 +75,7 @@ function customizer_add($wp_customize)
 						'width' => 1080,
 						'height' => 1080
 					],
-					'xl' =>[
+					'xl' => [
 						'width' => 1620,
 						'height' => 1080
 					]
@@ -172,6 +172,42 @@ function customizer_add($wp_customize)
 				'label' => 'Suppress PHP Warnings and Notices',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '0'
+			],
+		],
+		'IP Geolocation' => [
+			'ip2geo_maxmind_license_key' => [
+				'type' => 'text',
+				'label' => 'MaxMind GeoLite2 License Key',
+				'default' => ''
+			],
+			'ip2geo_max_db_age' => [
+				'type' => 'text',
+				'label' => 'Maximum Database Age (days)',
+				'default' => '90'
+			],
+			'ip2geo_ip_address_header' => [
+				'type' => 'radio',
+				'label' => 'IP Address HTTP Header',
+				'choices' => [
+					'REMOTE_ADDR' => 'REMOTE_ADDR',
+					'HTTP_CF_CONNECTING_IP' => 'HTTP_CF_CONNECTING_IP',
+					'HTTP_CLIENT_IP' => 'HTTP_CLIENT_IP',
+					'HTTP_FASTLY_CLIENT_IP' => 'HTTP_FASTLY_CLIENT_IP',
+					'HTTP_FORWARDED' => 'HTTP_FORWARDED',
+					'HTTP_FORWARDED_FOR' => 'HTTP_FORWARDED_FOR',
+					'HTTP_TRUE_CLIENT_IP' => 'HTTP_TRUE_CLIENT_IP',
+					'HTTP_VIA' => 'HTTP_VIA',
+					'HTTP_X_CLUSTER_CLIENT_IP' => 'HTTP_X_CLUSTER_CLIENT_IP',
+					'HTTP_X_FORWARDED' => 'HTTP_X_FORWARDED',
+					'HTTP_X_FORWARDED_FOR' => 'HTTP_X_FORWARDED_FOR',
+					'HTTP_X_REAL_IP' => 'HTTP_X_REAL_IP'
+				],
+				'default' => 'REMOTE_ADDR'
+			],
+			'ip2geo_test_ip_address' => [
+				'type' => 'text',
+				'label' => 'Test IP Address',
+				'default' => ''
 			],
 		],
 		'Analytics' => [
@@ -450,7 +486,9 @@ if (class_exists('\WP_Customize_Control')) {
 
 			wp_register_script('lqx-customizer-checkbox-group-custom-control', false);
 			wp_enqueue_script('lqx-customizer-checkbox-group-custom-control');
-			wp_add_inline_script('lqx-customizer-checkbox-group-custom-control', '
+			wp_add_inline_script(
+				'lqx-customizer-checkbox-group-custom-control',
+				'
 				jQuery(document).ready(function() {
 					jQuery(\'#customize-theme-controls\').on(\'change\', \'.customize-control-checkbox-group input[type="checkbox"]\', function() {
 						let values = jQuery(this).parents(\'.customize-control-checkbox-group\').find(\'input[type="checkbox"]:checked\').map(
@@ -484,7 +522,7 @@ if (class_exists('\WP_Customize_Control')) {
 				<?php endforeach; ?>
 			</div>
 			<input type="hidden" <?php $this->link(); ?> value="<?= esc_attr(json_encode($values)); ?>" />
-<?php
+		<?php
 		}
 	}
 
@@ -499,7 +537,9 @@ if (class_exists('\WP_Customize_Control')) {
 
 			wp_register_script('lqx-customizer-viewports-custom-control', false);
 			wp_enqueue_script('lqx-customizer-viewports-custom-control');
-			wp_add_inline_script('lqx-customizer-viewports-custom-control', '
+			wp_add_inline_script(
+				'lqx-customizer-viewports-custom-control',
+				'
 				jQuery(document).ready(function() {
 					jQuery(\'#customize-theme-controls\').on(\'input change\', \'.customize-control-viewports input[type="number"]\', function() {
 							var values = {};
@@ -550,12 +590,12 @@ if (class_exists('\WP_Customize_Control')) {
 					'width' => 1080,
 					'height' => 1080
 				],
-				'xl' =>[
+				'xl' => [
 					'width' => 1620,
 					'height' => 1080
 				]
 			];
-?>
+		?>
 			<div class="customize-control-viewports">
 				<?php foreach ($values as $label => $viewport) : ?>
 					<label>

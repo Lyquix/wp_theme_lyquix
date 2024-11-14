@@ -1,4 +1,6 @@
 <?php
+
+namespace lqx\ip2geo;
 /**
  * This class provides the metadata for the MaxMind DB file.
  *

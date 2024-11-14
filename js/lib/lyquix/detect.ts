@@ -157,7 +157,7 @@ export const detect = (() => {
 			browser = {
 				name: 'Safari',
 				type: 'safari',
-				version: getFirstMatch(/safari\/(\d+(\.\d+)?)/i)
+				version: getFirstMatch(/version\/(\d+(\.\d+)?)/i) || getFirstMatch(/safari\/(\d+(\.\d+)?)/i)
 			};
 		}
 		else {

@@ -1,4 +1,7 @@
 <?php
+
+namespace lqx\ip2geo;
+
 class Decoder
 {
     private $fileStream;

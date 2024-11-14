@@ -1,4 +1,7 @@
 <?php
+
+namespace lqx\ip2geo;
+
 class Util
 {
     // Read a given number of bytes from a stream
