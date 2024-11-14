@@ -96,13 +96,13 @@ require_once get_template_directory() . '/php/filters.php';
 require_once get_template_directory() . '/php/livereload.php';
 
 // Custom functions.php
-if (file_exists(\lqx\util\get_theme_path('/php/custom/functions.php'))) {
-	require_once \lqx\util\get_theme_path('/php/custom/functions.php');
+if (file_exists(get_stylesheet_directory() . '/php/custom/functions.php')) {
+	require_once get_stylesheet_directory() . '/php/custom/functions.php';
 }
 
 // Shortcodes
-if (file_exists(\lqx\util\get_theme_path('/php/custom/shortcodes.php'))) {
-	require_once \lqx\util\get_theme_path('/php/custom/shortcodes.php');
+if (file_exists(get_stylesheet_directory() . '/php/custom/shortcodes.php')) {
+	require_once get_stylesheet_directory() . '/php/custom/shortcodes.php';
 }
 
 // Updates checker

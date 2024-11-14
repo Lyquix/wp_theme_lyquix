@@ -30,7 +30,7 @@ if (get_theme_mod('feat_modules', '1') === '1') {
 	// Get directories under php/modules
 	$modules = array_merge(
 		glob(get_template_directory() . '/php/modules/*'),
-		glob(\lqx\util\get_theme_path('/php/custom/modules/*'))
+		glob(get_stylesheet_directory() . '/php/custom/modules/*')
 	);
 	$modules = array_filter($modules, 'is_dir');
 	$modules = array_map('basename', $modules);
@@ -95,13 +95,13 @@ if (get_theme_mod('feat_modules', '1') === '1') {
  * 		The path to the renderer file
  */
 function get_renderer($module_name) {
-	$dir = \lqx\util\get_theme_path('/php/custom/modules/' . $module_name . '/');
+	$dir = get_stylesheet_directory() . '/php/custom/modules/' . $module_name . '/';
 	$filename = 'default.php';
 
 	if (file_exists($dir . $filename)) {
 		return $dir . $filename;
 	} else {
-        return \lqx\util\get_theme_path('/php/modules/' . $module_name . '/' . $filename);
+        return get_template_directory() . '/php/modules/' . $module_name . '/' . $filename;
 	}
 }
 
@@ -117,7 +117,7 @@ function get_renderer($module_name) {
  * @return string
  */
 function get_template($module_name, $sub_template = null) {
-	$dir = \lqx\util\get_theme_path('/php/custom/modules/' . $module_name . '/');
+	$dir = get_stylesheet_directory() . '/php/custom/modules/' . $module_name . '/';
 	$filename = 'default';
 	if ($sub_template) {
 		$filename = $sub_template;
@@ -127,6 +127,6 @@ function get_template($module_name, $sub_template = null) {
 	if (file_exists($dir . $filename)) {
 		return $dir . $filename;
 	} else {
-		return \lqx\util\get_theme_path('/php/modules/' . $module_name . '/' . $filename);
+		return get_template_directory() . '/php/modules/' . $module_name . '/' . $filename;
 	}
 }

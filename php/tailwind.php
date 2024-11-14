@@ -62,11 +62,11 @@ if (get_theme_mod('feat_tailwind', '1') === '1') {
 			);
 			wp_enqueue_script(
 				'tailwind-config',
-				\lqx\util\get_theme_uri('/css/tailwind/editor.cdn.js')
+                get_stylesheet_directory_uri() . '/css/tailwind/editor.cdn.js'
 			);
 			wp_enqueue_script(
 				'tailwind-editor',
-                \lqx\util\get_theme_uri('/css/tailwind/editor.js'),
+                get_stylesheet_directory_uri() . '/css/tailwind/editor.js',
 				['wp-blocks', 'wp-data', 'wp-edit-post', 'acf-input', 'jquery']
 			);
 		}
@@ -143,7 +143,7 @@ if (get_theme_mod('feat_tailwind', '1') === '1') {
 			$class_string = implode(' ', $classes);
 
 			// Load the existing whitelist.html content
-			$whitelistPath = \lqx\util\get_theme_path('/css/tailwind/whitelist.html');
+			$whitelistPath = get_stylesheet_directory() . '/css/tailwind/whitelist.html';
 			$whitelistContent = file_exists($whitelistPath) ? file_get_contents($whitelistPath) : '';
 
 			// Create the new div string
@@ -178,7 +178,7 @@ if (get_theme_mod('feat_tailwind', '1') === '1') {
 	 */
 	add_action('delete_post', function ($post_ID) {
 		// Load the existing whitelist.html content
-		$whitelistPath = \lqx\util\get_theme_path('/css/tailwind/whitelist.html');
+		$whitelistPath = get_stylesheet_directory() . '/css/tailwind/whitelist.html';
 		$whitelistContent = file_exists($whitelistPath) ? file_get_contents($whitelistPath) : '';
 
 		// Regex to find the div for this post

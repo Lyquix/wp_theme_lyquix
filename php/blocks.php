@@ -542,14 +542,14 @@ function render_block($settings, $content) {
  * @return string The path to the renderer file.
 */
 function get_renderer($block_name, $preset = null) {
-	$dir = \lqx\util\get_theme_path('/php/custom/blocks/' . $block_name . '/');
+	$dir = get_stylesheet_directory() . '/php/custom/blocks/' . $block_name . '/';
 
 	if ($preset && file_exists($dir . $preset . '.php')) {
 		return $dir . $preset . '.php';
 	} elseif (file_exists($dir . 'default.php')) {
 		return $dir . 'default.php';
 	} else {
-		return \lqx\util\get_theme_path('/php/blocks/' . $block_name . '/default.php');
+		return get_template_directory() . '/php/blocks/' . $block_name . '/default.php';
 	}
 }
 
@@ -567,7 +567,7 @@ function get_renderer($block_name, $preset = null) {
  * @return string The path to the template file.
 */
 function get_template($block_name, $preset = null, $sub_template = null) {
-	$dir = \lqx\util\get_theme_path('/php/custom/blocks/' . $block_name . '/');
+	$dir = get_stylesheet_directory() . '/php/custom/blocks/' . $block_name . '/';
 	$default_file = 'default';
 	$preset_file = $preset;
 	if ($sub_template) {
@@ -582,7 +582,7 @@ function get_template($block_name, $preset = null, $sub_template = null) {
 	} elseif (file_exists($dir . $default_file)) {
 		return $dir . $default_file;
 	} else {
-		return \lqx\util\get_theme_path('/php/blocks/' . $block_name . '/' . $default_file);
+		return get_template_directory() . '/php/blocks/' . $block_name . '/' . $default_file;
 	}
 }
 
@@ -600,7 +600,7 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 	// Register ACF blocks
 	add_action('init', function () {
 		// Use glob to find 'block.json' files in the 'blocks' directory
-		$matches = array_merge(glob(__DIR__ . '/blocks/*/block.json'), glob(__DIR__ . '/custom/blocks/*/block.json'));
+		$matches = array_merge(glob(__DIR__ . '/blocks/*/block.json'), glob(get_stylesheet_directory() . '/php/custom/blocks/*/block.json'));
 
 		// Check if any matches were found
 		if (!empty($matches)) {

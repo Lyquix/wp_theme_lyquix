@@ -717,25 +717,3 @@ function minify_html($html) {
 
 	return $html;
 }
-
-/**
- * Get the path to a theme file
- *
- * @param string $path The path to the file
- *
- * @return string The path
- */
-function get_theme_path($path) {
-	return get_theme_file_path($path);
-}
-
-/**
- * Get the uri to a theme file
- *
- * @param string $path The path to the file
- *
- * @return string The path
- */
-function get_theme_uri($path) {
-    return get_theme_file_uri($path);
-}

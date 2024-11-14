@@ -82,3 +82,8 @@ const expObj = Object.defineProperties({
 });
 
 export default expObj;
+
+// Manually assign the exported object to the global variable '$lqx'
+if (typeof window !== 'undefined') {
+	(window as any).$lqx = expObj;
+}

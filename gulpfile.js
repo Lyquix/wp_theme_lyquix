@@ -67,7 +67,7 @@ gulp.task('compile-css', (done) => {
 		done();
 	} catch (err) {
 		console.error('Error during CSS compilation:');
-		console.log(err)
+		console.log(err);
 
 		// Convert the error output into a string
 		const errorOutput = err.stderr ? err.stderr.toString() : err.stdout.toString();
@@ -147,12 +147,18 @@ gulp.task('livereload', () => {
 	], gulp.series('compile-css'));
 
 	//Watch for changes in JS files for livereload
-	gulp.watch(['js/lyquix.js', 'js/scripts.js']).on('change', (path) => {
-		gulp.parallel('lyquixjs', 'scriptsjs', 'vuejs')(); // Minify JS
+	gulp.watch(['js/lyquix.js']).on('change', () => {
+		gulp.parallel('lyquixjs')(); // Minify lyquixjs
 	});
+	gulp.watch(['js/scripts.js']).on('change', () => {
+		gulp.parallel('scriptsjs')(); // Minify scriptsjs
+	});
+	// gulp.watch(['js/vue.js']).on('change', (path) => {
+	// 	gulp.parallel('vuejs')(); // Minify vuejs
+	// });
 });
 
 // Default task
-gulp.task('default', gulp.parallel('compile-css', 'livereload'));
+gulp.task('default', gulp.parallel('lyquixjs', 'scriptsjs', 'compile-css', 'livereload')); // Add 'vuejs' when needed
 
 

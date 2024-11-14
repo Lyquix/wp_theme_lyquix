@@ -40,8 +40,8 @@ function add_widget_positions() {
 	$widget_positions = [];
 
 	// Add custom widget positions to $widgets array
-	if (file_exists(\lqx\util\get_theme_path('/php/custom/widgets.php'))) {
-		require \lqx\util\get_theme_path('/php/custom/widgets.php');
+	if (file_exists(get_stylesheet_directory() . '/php/custom/widgets.php')) {
+		require get_stylesheet_directory() . '/php/custom/widgets.php';
 
 		if (count($custom_widget_positions)) {
 			$widget_positions = array_merge($widget_positions, $custom_widget_positions);
