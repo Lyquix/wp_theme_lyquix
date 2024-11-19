@@ -27,7 +27,8 @@
 ?>
 <section
 	id="<?= esc_attr($s['anchor']) ?>"
-	class="lqx-block-banner <?= esc_attr($s['class']) ?>">
+	class="lqx-block-banner <?= esc_attr($s['class']) ?>"
+	data-preset="<?= esc_attr($s['preset']) ?>">
 
 	<div
 		class="banner"
