@@ -27,7 +27,9 @@
 ?>
 <section
 	id="<?= $s['anchor']; ?>"
-	class="lqx-block-logos <?= $s['class']; ?>">
+	class="lqx-block-logos <?= $s['class']; ?>"
+	data-preset="<?= esc_attr($s['preset']) ?>">
+
 	<ul
 		class="logos">
 		<?php
@@ -37,4 +39,5 @@
 		}
 		?>
 	</ul>
+	
 </section>
