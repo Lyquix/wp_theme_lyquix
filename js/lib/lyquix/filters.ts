@@ -475,6 +475,17 @@ export const filters = (() => {
 				});
 			}
 		});
+
+		//pills
+
+		jQuery('.pills .pill').each((idx, pill) => {
+			pill = jQuery(pill);
+			pill.on('click', (e) => {
+				const controlName = jQuery(e.target).attr('data-control');
+				controlChange(id, controlName, '');
+				jQuery('.control-wrapper[data-control="'+controlName+'"]').find('li').removeClass('selected');
+			});
+		});
 	};
 
 	// TODO do we need a way to change multiple controls, search, page at once?

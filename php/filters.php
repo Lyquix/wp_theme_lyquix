@@ -885,7 +885,7 @@ function get_options($s) {
 				$field_values = $wpdb->get_results($sql);
 
 				if (is_array($field_values)) {
-					if ($control['field_type'] == 'relation') {
+					if ($control['field_type'] == 'relationship') {
 						foreach ($field_values as $field_value) {
 							// Relation fields returns ids and so we need to get the slug and name for the posts
 							$relation_values = unserialize($field_value->meta_value);
