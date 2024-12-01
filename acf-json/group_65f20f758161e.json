@@ -1379,33 +1379,7 @@
                             "hide_label": "",
                             "hide_instructions": "",
                             "hide_required": "",
-                            "choices": {
-                                "Custom Post Type: Board & Staff": {
-                                    "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
-                                    "field_67066128004b8": "Description [field_67066128004b8]",
-                                    "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
-                                    "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
-                                    "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
-                                    "field_6710dedfd2170": "Related Page [field_6710dedfd2170]",
-                                    "field_66d8ae296374b": "Related Location [field_66d8ae296374b]",
-                                    "field_66d8ae3b6374c": "Related Programs & Services [field_66d8ae3b6374c]",
-                                    "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
-                                },
-                                "Custom Post Type: Events": {
-                                    "field_66cdfa70fd280": "Related Events [field_66cdfa70fd280]",
-                                    "field_66cdfac0fd281": "Contact [field_66cdfac0fd281]",
-                                    "field_66cdfad5fd282": "Related Programs & Services [field_66cdfad5fd282]"
-                                },
-                                "Custom Post Type: Programs & Services": {
-                                    "field_66d1d53822ff0": "Related Programs & Services [field_66d1d53822ff0]",
-                                    "field_66db073eba733": "Featured Location [field_66db073eba733]"
-                                },
-                                "current": "Current Post",
-                                "Custom Post Type: Posts": {
-                                    "field_66ec38fb71925": "Gallery [field_66ec38fb71925]",
-                                    "field_66ec393771926": "-  [field_66ec393771926]"
-                                }
-                            },
+                            "choices": {},
                             "default_value": false,
                             "return_format": "value",
                             "multiple": 0,
@@ -1525,7 +1499,7 @@
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
-                                "width": "40",
+                                "width": "30",
                                 "class": "",
                                 "id": ""
                             },
@@ -1566,7 +1540,7 @@
                                 ]
                             ],
                             "wrapper": {
-                                "width": "60",
+                                "width": "24",
                                 "class": "",
                                 "id": ""
                             },
@@ -1606,7 +1580,7 @@
                                 ]
                             ],
                             "wrapper": {
-                                "width": "60",
+                                "width": "25",
                                 "class": "",
                                 "id": ""
                             },
@@ -1652,21 +1626,21 @@
                             ]
                         },
                         {
-                            "key": "field_671fe2453e931",
+                            "key": "field_667c19e452892",
                             "label": "Narrow Options",
                             "name": "narrow_options",
                             "aria-label": "",
                             "type": "button_group",
-                            "instructions": "",
+                            "instructions": "Select whether or not this controller's options will be narrowed to only show options that will return valid items with the current filter selection. (Default: Yes)",
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
-                                "width": "33",
+                                "width": "15",
                                 "class": "",
                                 "id": ""
                             },
                             "acfe_permissions": "",
-                            "instruction_placement": "",
+                            "instruction_placement": "tooltip",
                             "hide_field": "",
                             "hide_label": "",
                             "hide_instructions": "",
@@ -1680,26 +1654,25 @@
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "allow_null": 0,
-                            "allow_in_bindings": 0,
                             "layout": "horizontal",
                             "parent_repeater": "field_65f1eb2847552"
                         },
                         {
-                            "key": "field_671fe2693e932",
+                            "key": "field_66842ceb0d9e5",
                             "label": "Show View All",
                             "name": "show_view_all",
                             "aria-label": "",
                             "type": "button_group",
-                            "instructions": "",
+                            "instructions": "Select whether or not this filter's options will include a View All option that clears this control selection. (Default: Yes)",
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
-                                "width": "33",
+                                "width": "15",
                                 "class": "",
                                 "id": ""
                             },
                             "acfe_permissions": "",
-                            "instruction_placement": "",
+                            "instruction_placement": "tooltip",
                             "hide_field": "",
                             "hide_label": "",
                             "hide_instructions": "",
@@ -1718,21 +1691,29 @@
                             "parent_repeater": "field_65f1eb2847552"
                         },
                         {
-                            "key": "field_671fe28e3e933",
+                            "key": "field_668c01b154117",
                             "label": "View All Label",
                             "name": "view_all_label",
                             "aria-label": "",
                             "type": "text",
-                            "instructions": "",
+                            "instructions": "Enter the label to be displayed for the View All option. (Default: View All)",
                             "required": 0,
-                            "conditional_logic": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_66842ceb0d9e5",
+                                        "operator": "==",
+                                        "value": "y"
+                                    }
+                                ]
+                            ],
                             "wrapper": {
-                                "width": "33",
+                                "width": "15",
                                 "class": "",
                                 "id": ""
                             },
                             "acfe_permissions": "",
-                            "instruction_placement": "",
+                            "instruction_placement": "tooltip",
                             "hide_field": "",
                             "hide_label": "",
                             "hide_instructions": "",
@@ -1741,13 +1722,44 @@
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "maxlength": "",
-                            "allow_in_bindings": 0,
                             "placeholder": "",
                             "prepend": "",
                             "append": "",
                             "parent_repeater": "field_65f1eb2847552"
                         }
                     ]
+                },
+                {
+                    "key": "field_674632c8642ab",
+                    "label": "Use Pills for Clearing",
+                    "name": "use_pills",
+                    "aria-label": "",
+                    "type": "button_group",
+                    "instructions": "Select whether or not to use horizontal pills as the clear elements for active filters instead of \"view all\" links. Disables view all links even if enabled in Controls (Default: No)",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "choices": {
+                        "y": "Yes",
+                        "n": "No"
+                    },
+                    "default_value": "n",
+                    "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "allow_null": 0,
+                    "instruction_placement": "",
+                    "acfe_permissions": "",
+                    "allow_in_bindings": 0,
+                    "layout": "horizontal"
                 },
                 {
                     "key": "field_65f46f9d8afa3",
@@ -1836,29 +1848,7 @@
                             "hide_label": "",
                             "hide_instructions": "",
                             "hide_required": "",
-                            "choices": {
-                                "": "Select",
-                                "homepage-sliding-cards": "homepage-sliding-cards",
-                                "sliding-cards": "sliding-cards",
-                                "related-events": "related-events",
-                                "related-news": "related-news",
-                                "stats": "stats",
-                                "wide-cards": "wide-cards",
-                                "sliding-cards-service-item": "sliding-cards-service-item",
-                                "contact-cards": "contact-cards",
-                                "resource-cards": "resource-cards",
-                                "leadership-cards": "leadership-cards",
-                                "people-cards": "people-cards",
-                                "staff-cards": "staff-cards",
-                                "partner-cards": "partner-cards",
-                                "locations-hours": "locations-hours",
-                                "kleinlife-updates-news": "kleinlife-updates-news",
-                                "news-category": "news-category",
-                                "posts-related-news": "posts-related-news",
-                                "support-sliding-cards": "support-sliding-cards",
-                                "staff-search-cards": "staff-search-cards",
-                                "impact-cards": "impact-cards"
-                            },
+                            "choices": {},
                             "default_value": false,
                             "return_format": "value",
                             "multiple": 0,
@@ -1938,19 +1928,7 @@
                                 "post_title": "Title",
                                 "post_name": "Slug",
                                 "post_excerpt": "Excerpt",
-                                "post_content": "Content",
-                                "Custom Post Type: Board & Staff": {
-                                    "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
-                                    "field_67066128004b8": "Description [field_67066128004b8]",
-                                    "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
-                                    "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
-                                    "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
-                                    "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
-                                },
-                                "Custom Post Type: Events": [],
-                                "Custom Post Type: Programs & Services": [],
-                                "current": "Current Post",
-                                "Custom Post Type: Posts": []
+                                "post_content": "Content"
                             },
                             "default_value": "title",
                             "return_format": "value",
@@ -1992,19 +1970,7 @@
                                 "post_title": "Title",
                                 "post_name": "Slug",
                                 "post_excerpt": "Excerpt",
-                                "post_content": "Content",
-                                "Custom Post Type: Board & Staff": {
-                                    "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
-                                    "field_67066128004b8": "Description [field_67066128004b8]",
-                                    "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
-                                    "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
-                                    "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
-                                    "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
-                                },
-                                "Custom Post Type: Events": [],
-                                "Custom Post Type: Programs & Services": [],
-                                "current": "Current Post",
-                                "Custom Post Type: Posts": []
+                                "post_content": "Content"
                             },
                             "default_value": false,
                             "return_format": "value",
@@ -2043,12 +2009,7 @@
                             "hide_instructions": "",
                             "hide_required": "",
                             "choices": {
-                                "thumbnail": "Thumbnail",
-                                "Custom Post Type: Board & Staff": [],
-                                "Custom Post Type: Events": [],
-                                "Custom Post Type: Programs & Services": [],
-                                "current": "Current Post",
-                                "Custom Post Type: Posts": []
+                                "thumbnail": "Thumbnail"
                             },
                             "default_value": "thumbnail",
                             "return_format": "value",
@@ -2087,12 +2048,7 @@
                             "hide_instructions": "",
                             "hide_required": "",
                             "choices": {
-                                "thumbnail": "Thumbnail",
-                                "Custom Post Type: Board & Staff": [],
-                                "Custom Post Type: Events": [],
-                                "Custom Post Type: Programs & Services": [],
-                                "current": "Current Post",
-                                "Custom Post Type: Posts": []
+                                "thumbnail": "Thumbnail"
                             },
                             "default_value": false,
                             "return_format": "value",
@@ -2169,13 +2125,7 @@
                             "hide_label": "",
                             "hide_instructions": "",
                             "hide_required": "",
-                            "choices": {
-                                "Custom Post Type: Board & Staff": [],
-                                "Custom Post Type: Events": [],
-                                "Custom Post Type: Programs & Services": [],
-                                "current": "Current Post",
-                                "Custom Post Type: Posts": []
-                            },
+                            "choices": {},
                             "default_value": false,
                             "return_format": "value",
                             "multiple": 0,
@@ -2220,13 +2170,7 @@
                             "hide_label": "",
                             "hide_instructions": "",
                             "hide_required": "",
-                            "choices": {
-                                "Custom Post Type: Board & Staff": [],
-                                "Custom Post Type: Events": [],
-                                "Custom Post Type: Programs & Services": [],
-                                "current": "Current Post",
-                                "Custom Post Type: Posts": []
-                            },
+                            "choices": {},
                             "default_value": false,
                             "return_format": "value",
                             "multiple": 0,
@@ -2267,19 +2211,7 @@
                                 "post_title": "Title",
                                 "post_name": "Slug",
                                 "post_excerpt": "Excerpt",
-                                "post_content": "Content",
-                                "Custom Post Type: Board & Staff": {
-                                    "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
-                                    "field_67066128004b8": "Description [field_67066128004b8]",
-                                    "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
-                                    "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
-                                    "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
-                                    "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
-                                },
-                                "Custom Post Type: Events": [],
-                                "Custom Post Type: Programs & Services": [],
-                                "current": "Current Post",
-                                "Custom Post Type: Posts": []
+                                "post_content": "Content"
                             },
                             "default_value": "excerpt",
                             "return_format": "value",
@@ -2387,13 +2319,7 @@
                             "hide_label": "",
                             "hide_instructions": "",
                             "hide_required": "",
-                            "choices": {
-                                "Custom Post Type: Board & Staff": [],
-                                "Custom Post Type: Events": [],
-                                "Custom Post Type: Programs & Services": [],
-                                "current": "Current Post",
-                                "Custom Post Type: Posts": []
-                            },
+                            "choices": {},
                             "default_value": false,
                             "return_format": "value",
                             "multiple": 0,
@@ -2574,7 +2500,15 @@
                             "type": "repeater",
                             "instructions": "",
                             "required": 0,
-                            "conditional_logic": 0,
+                            "conditional_logic": [
+															[
+																{
+																	"field": "field_663a4960f8c67",
+																	"operator": "==",
+																	"value": "field"
+																}
+															]
+														],
                             "wrapper": {
                                 "width": "",
                                 "class": "",
@@ -2624,20 +2558,7 @@
                                     "hide_label": "",
                                     "hide_instructions": "",
                                     "hide_required": "",
-                                    "choices": {
-                                        "Custom Post Type: Board & Staff": {
-                                            "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
-                                            "field_67066128004b8": "Description [field_67066128004b8]",
-                                            "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
-                                            "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
-                                            "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
-                                            "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
-                                        },
-                                        "Custom Post Type: Events": [],
-                                        "Custom Post Type: Programs & Services": [],
-                                        "current": "Current Post",
-                                        "Custom Post Type: Posts": []
-                                    },
+                                    "choices": {},
                                     "default_value": false,
                                     "return_format": "value",
                                     "multiple": 0,
@@ -2847,33 +2768,7 @@
                                     "hide_label": "",
                                     "hide_instructions": "",
                                     "hide_required": "",
-                                    "choices": {
-                                        "Custom Post Type: Board & Staff": {
-                                            "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
-                                            "field_67066128004b8": "Description [field_67066128004b8]",
-                                            "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
-                                            "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
-                                            "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
-                                            "field_6710dedfd2170": "Related Page [field_6710dedfd2170]",
-                                            "field_66d8ae296374b": "Related Location [field_66d8ae296374b]",
-                                            "field_66d8ae3b6374c": "Related Programs & Services [field_66d8ae3b6374c]",
-                                            "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
-                                        },
-                                        "Custom Post Type: Events": {
-                                            "field_66cdfa70fd280": "Related Events [field_66cdfa70fd280]",
-                                            "field_66cdfac0fd281": "Contact [field_66cdfac0fd281]",
-                                            "field_66cdfad5fd282": "Related Programs & Services [field_66cdfad5fd282]"
-                                        },
-                                        "Custom Post Type: Programs & Services": {
-                                            "field_66d1d53822ff0": "Related Programs & Services [field_66d1d53822ff0]",
-                                            "field_66db073eba733": "Featured Location [field_66db073eba733]"
-                                        },
-                                        "current": "Current Post",
-                                        "Custom Post Type: Posts": {
-                                            "field_66ec38fb71925": "Gallery [field_66ec38fb71925]",
-                                            "field_66ec393771926": "-  [field_66ec393771926]"
-                                        }
-                                    },
+                                    "choices": {},
                                     "default_value": false,
                                     "return_format": "value",
                                     "multiple": 0,
@@ -3473,33 +3368,7 @@
                             "hide_label": "",
                             "hide_instructions": "",
                             "hide_required": "",
-                            "choices": {
-                                "Custom Post Type: Board & Staff": {
-                                    "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
-                                    "field_67066128004b8": "Description [field_67066128004b8]",
-                                    "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
-                                    "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
-                                    "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
-                                    "field_6710dedfd2170": "Related Page [field_6710dedfd2170]",
-                                    "field_66d8ae296374b": "Related Location [field_66d8ae296374b]",
-                                    "field_66d8ae3b6374c": "Related Programs & Services [field_66d8ae3b6374c]",
-                                    "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
-                                },
-                                "Custom Post Type: Events": {
-                                    "field_66cdfa70fd280": "Related Events [field_66cdfa70fd280]",
-                                    "field_66cdfac0fd281": "Contact [field_66cdfac0fd281]",
-                                    "field_66cdfad5fd282": "Related Programs & Services [field_66cdfad5fd282]"
-                                },
-                                "Custom Post Type: Programs & Services": {
-                                    "field_66d1d53822ff0": "Related Programs & Services [field_66d1d53822ff0]",
-                                    "field_66db073eba733": "Featured Location [field_66db073eba733]"
-                                },
-                                "current": "Current Post",
-                                "Custom Post Type: Posts": {
-                                    "field_66ec38fb71925": "Gallery [field_66ec38fb71925]",
-                                    "field_66ec393771926": "-  [field_66ec393771926]"
-                                }
-                            },
+                            "choices": {},
                             "default_value": false,
                             "return_format": "value",
                             "multiple": 0,

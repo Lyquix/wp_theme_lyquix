@@ -46,5 +46,5 @@ if (get_post_type() == 'post') : ?>
 	<span class="author"><?php the_author() ?></span>
 </p>
 <?php endif; ?>
-<div class="content"><?php the_content(); ?></div>
+<div class="content grid-container"><?php the_content(); ?></div>
 <?php
