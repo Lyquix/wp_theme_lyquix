@@ -98,7 +98,7 @@
                             "label": "Type",
                             "name": "type",
                             "aria-label": "",
-                            "type": "select",
+                            "type": "button_group",
                             "instructions": "",
                             "required": 0,
                             "conditional_logic": 0,
@@ -115,82 +115,16 @@
                             "hide_required": "",
                             "choices": {
                                 "taxonomy": "Taxonomy",
-                                "parentless": "No Parent",
-                                "post_parent": "Parent",
                                 "field": "Field",
                                 "date": "Date",
-                                "author": "Author ID",
-                                "venue": "Venue",
-                                "dynamic": "Dynamic",
-                                "meta_key": "Meta Key"
+                                "author": "Author ID"
                             },
                             "default_value": "taxonomy",
                             "return_format": "value",
-                            "multiple": 0,
-                            "prepend": "",
-                            "append": "",
-                            "max": "",
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "allow_null": 0,
-                            "allow_in_bindings": 1,
-                            "ui": 0,
-                            "ajax": 0,
-                            "placeholder": "",
-                            "allow_custom": 0,
-                            "search_placeholder": "",
-                            "min": "",
-                            "parent_repeater": "field_65f1e9c947548"
-                        },
-                        {
-                            "key": "field_66d7593cee35f",
-                            "label": "Post Parent",
-                            "name": "post_parent",
-                            "aria-label": "",
-                            "type": "relationship",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": [
-                                [
-                                    {
-                                        "field": "field_65f1e9f847549",
-                                        "operator": "==",
-                                        "value": "post_parent"
-                                    }
-                                ]
-                            ],
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "acfe_permissions": "",
-                            "instruction_placement": "",
-                            "hide_field": "",
-                            "hide_label": "",
-                            "hide_instructions": "",
-                            "hide_required": "",
-                            "post_type": "",
-                            "post_status": "",
-                            "taxonomy": "",
-                            "filters": [
-                                "search",
-                                "post_type",
-                                "taxonomy"
-                            ],
-                            "return_format": "id",
-                            "acfe_add_post": 0,
-                            "acfe_edit_post": 0,
-                            "acfe_bidirectional": {
-                                "acfe_bidirectional_enabled": "0"
-                            },
-                            "acfe_settings": "",
-                            "acfe_validate": "",
-                            "min": "",
-                            "max": "",
-                            "elements": "",
-                            "bidirectional": 0,
-                            "bidirectional_target": [],
+                            "layout": "horizontal",
                             "parent_repeater": "field_65f1e9c947548"
                         },
                         {
@@ -224,15 +158,13 @@
                             "choices": {
                                 "date": "Created Date",
                                 "modified": "Modified Date",
-                                "field": "Field",
-                                "meta_key": "Meta Key"
+                                "field": "Field"
                             },
                             "default_value": "date",
                             "return_format": "value",
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "allow_null": 0,
-                            "allow_in_bindings": 1,
                             "layout": "horizontal",
                             "parent_repeater": "field_65f1e9c947548"
                         },
@@ -255,26 +187,6 @@
                                         "field": "field_65f1e9f847549",
                                         "operator": "!=",
                                         "value": "date"
-                                    },
-                                    {
-                                        "field": "field_65f1e9f847549",
-                                        "operator": "!=",
-                                        "value": "parentless"
-                                    },
-                                    {
-                                        "field": "field_65f1e9f847549",
-                                        "operator": "!=",
-                                        "value": "venue"
-                                    },
-                                    {
-                                        "field": "field_65f1e9f847549",
-                                        "operator": "!=",
-                                        "value": "dynamic"
-                                    },
-                                    {
-                                        "field": "field_65f1e9f847549",
-                                        "operator": "!=",
-                                        "value": "meta_key"
                                     }
                                 ]
                             ],
@@ -298,7 +210,6 @@
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "allow_null": 0,
-                            "allow_in_bindings": 1,
                             "layout": "horizontal",
                             "parent_repeater": "field_65f1e9c947548"
                         },
@@ -382,13 +293,6 @@
                                         "operator": "==",
                                         "value": "field"
                                     }
-                                ],
-                                [
-                                    {
-                                        "field": "field_65f1e9f847549",
-                                        "operator": "==",
-                                        "value": "dynamic"
-                                    }
                                 ]
                             ],
                             "wrapper": {
@@ -403,31 +307,25 @@
                             "hide_instructions": "",
                             "hide_required": "",
                             "choices": {
-                                "Custom Post Type: Board & Staff": {
-                                    "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
-                                    "field_67066128004b8": "Description [field_67066128004b8]",
-                                    "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
-                                    "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
-                                    "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
-                                    "field_6710dedfd2170": "Related Page [field_6710dedfd2170]",
-                                    "field_66d8ae296374b": "Related Location [field_66d8ae296374b]",
-                                    "field_66d8ae3b6374c": "Related Programs & Services [field_66d8ae3b6374c]",
-                                    "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
+                                "current": "Current Post",
+                                "Custom Post Type: People": {
+                                    "field_673f94e787a50": "Job Title [field_673f94e787a50]",
+                                    "field_673f94f687a51": "LinkedIn [field_673f94f687a51]",
+                                    "field_673f950287a52": "Email [field_673f950287a52]"
                                 },
-                                "Custom Post Type: Events": {
-                                    "field_66cdfa70fd280": "Related Events [field_66cdfa70fd280]",
-                                    "field_66cdfac0fd281": "Contact [field_66cdfac0fd281]",
-                                    "field_66cdfad5fd282": "Related Programs & Services [field_66cdfad5fd282]"
+                                "Custom Post Type: Projects": {
+                                    "field_6740e9a8d0337": "Logo [field_6740e9a8d0337]",
+                                    "field_673f8fa423669": "Related Services [field_673f8fa423669]",
+                                    "field_67409ec35d630": "Hover Content [field_67409ec35d630]",
+                                    "field_67409ed25d631": "- Content Type [field_67409ed25d631]",
+                                    "field_67409efe5d632": "- Image [field_67409efe5d632]",
+                                    "field_67409f2c5d633": "- Video [field_67409f2c5d633]",
+                                    "field_6744efe438208": "Testimonials [field_6744efe438208]"
                                 },
-                                "Custom Post Type: Programs & Services": {
-                                    "field_66d1d53822ff0": "Related Programs & Services [field_66d1d53822ff0]",
-                                    "field_66db073eba733": "Featured Location [field_66db073eba733]"
-                                },
-                                "Custom Post Type: Posts": {
-                                    "field_66ec38fb71925": "Gallery [field_66ec38fb71925]",
-                                    "field_66ec393771926": "-  [field_66ec393771926]"
-                                },
-                                "current": "Current Post"
+                                "Custom Post Type: Testimonials": {
+                                    "field_673f949b5c9e3": "Job Title [field_673f949b5c9e3]",
+                                    "field_6744f36aadf68": "Project [field_6744f36aadf68]"
+                                }
                             },
                             "default_value": false,
                             "return_format": "value",
@@ -439,62 +337,11 @@
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "allow_null": 1,
-                            "allow_in_bindings": 1,
                             "ui": 0,
                             "ajax": 0,
                             "allow_custom": 0,
                             "search_placeholder": "",
                             "min": "",
-                            "parent_repeater": "field_65f1e9c947548"
-                        },
-                        {
-                            "key": "field_67094de23c704",
-                            "label": "Meta Key",
-                            "name": "meta_key",
-                            "aria-label": "",
-                            "type": "text",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": [
-                                [
-                                    {
-                                        "field": "field_65f1e9f847549",
-                                        "operator": "==",
-                                        "value": "meta_key"
-                                    }
-                                ],
-                                [
-                                    {
-                                        "field": "field_65f1e9f847549",
-                                        "operator": "==",
-                                        "value": "date"
-                                    },
-                                    {
-                                        "field": "field_65f2510c7aeba",
-                                        "operator": "==",
-                                        "value": "meta_key"
-                                    }
-                                ]
-                            ],
-                            "wrapper": {
-                                "width": "30",
-                                "class": "",
-                                "id": ""
-                            },
-                            "acfe_permissions": "",
-                            "instruction_placement": "",
-                            "hide_field": "",
-                            "hide_label": "",
-                            "hide_instructions": "",
-                            "hide_required": "",
-                            "default_value": "",
-                            "acfe_settings": "",
-                            "acfe_validate": "",
-                            "maxlength": "",
-                            "allow_in_bindings": 1,
-                            "placeholder": "",
-                            "prepend": "",
-                            "append": "",
                             "parent_repeater": "field_65f1e9c947548"
                         },
                         {
@@ -511,27 +358,6 @@
                                         "field": "field_65f1e9f847549",
                                         "operator": "==",
                                         "value": "field"
-                                    }
-                                ],
-                                [
-                                    {
-                                        "field": "field_65f1e9f847549",
-                                        "operator": "==",
-                                        "value": "venue"
-                                    }
-                                ],
-                                [
-                                    {
-                                        "field": "field_65f1e9f847549",
-                                        "operator": "==",
-                                        "value": "dynamic"
-                                    }
-                                ],
-                                [
-                                    {
-                                        "field": "field_65f1e9f847549",
-                                        "operator": "==",
-                                        "value": "meta_key"
                                     }
                                 ]
                             ],
@@ -573,7 +399,6 @@
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "allow_null": 0,
-                            "allow_in_bindings": 1,
                             "ui": 0,
                             "ajax": 0,
                             "placeholder": "",
@@ -601,21 +426,6 @@
                                         "field": "field_65f1e9f847549",
                                         "operator": "!=",
                                         "value": "taxonomy"
-                                    },
-                                    {
-                                        "field": "field_65f1e9f847549",
-                                        "operator": "!=",
-                                        "value": "post_parent"
-                                    },
-                                    {
-                                        "field": "field_65f1e9f847549",
-                                        "operator": "!=",
-                                        "value": "parentless"
-                                    },
-                                    {
-                                        "field": "field_65f1e9f847549",
-                                        "operator": "!=",
-                                        "value": "dynamic"
                                     }
                                 ]
                             ],
@@ -634,83 +444,9 @@
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "maxlength": "",
-                            "allow_in_bindings": 1,
                             "placeholder": "",
                             "prepend": "",
                             "append": "",
-                            "parent_repeater": "field_65f1e9c947548"
-                        },
-                        {
-                            "key": "field_6707cced1dfc9",
-                            "label": "Value Field",
-                            "name": "value_field",
-                            "aria-label": "",
-                            "type": "select",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": [
-                                [
-                                    {
-                                        "field": "field_65f1e9f847549",
-                                        "operator": "==",
-                                        "value": "dynamic"
-                                    }
-                                ]
-                            ],
-                            "wrapper": {
-                                "width": "30",
-                                "class": "",
-                                "id": ""
-                            },
-                            "acfe_permissions": "",
-                            "instruction_placement": "",
-                            "hide_field": "",
-                            "hide_label": "",
-                            "hide_instructions": "",
-                            "hide_required": "",
-                            "choices": {
-                                "current": "Current Post",
-                                "Custom Post Type: Board & Staff": {
-                                    "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
-                                    "field_67066128004b8": "Description [field_67066128004b8]",
-                                    "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
-                                    "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
-                                    "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
-                                    "field_6710dedfd2170": "Related Page [field_6710dedfd2170]",
-                                    "field_66d8ae296374b": "Related Location [field_66d8ae296374b]",
-                                    "field_66d8ae3b6374c": "Related Programs & Services [field_66d8ae3b6374c]",
-                                    "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
-                                },
-                                "Custom Post Type: Events": {
-                                    "field_66cdfa70fd280": "Related Events [field_66cdfa70fd280]",
-                                    "field_66cdfac0fd281": "Contact [field_66cdfac0fd281]",
-                                    "field_66cdfad5fd282": "Related Programs & Services [field_66cdfad5fd282]"
-                                },
-                                "Custom Post Type: Posts": {
-                                    "field_66ec38fb71925": "Gallery [field_66ec38fb71925]",
-                                    "field_66ec393771926": "-  [field_66ec393771926]"
-                                },
-                                "Custom Post Type: Programs & Services": {
-                                    "field_66d1d53822ff0": "Related Programs & Services [field_66d1d53822ff0]",
-                                    "field_66db073eba733": "Featured Location [field_66db073eba733]"
-                                }
-                            },
-                            "default_value": false,
-                            "return_format": "value",
-                            "multiple": 0,
-                            "prepend": "",
-                            "append": "",
-                            "max": "",
-                            "acfe_settings": "",
-                            "acfe_validate": "",
-                            "allow_null": 0,
-                            "allow_in_bindings": 1,
-                            "ui": 0,
-                            "ajax": 0,
-                            "placeholder": "",
-                            "allow_custom": 0,
-                            "search_placeholder": "",
-                            "min": "",
                             "parent_repeater": "field_65f1e9c947548"
                         },
                         {
@@ -1343,7 +1079,6 @@
                             "hide_required": "",
                             "choices": {
                                 "taxonomy": "Taxonomy",
-                                "post_parent": "Parent",
                                 "field": "Field"
                             },
                             "default_value": "taxonomy",
@@ -1432,30 +1167,24 @@
                             "hide_instructions": "",
                             "hide_required": "",
                             "choices": {
-                                "Custom Post Type: Board & Staff": {
-                                    "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
-                                    "field_67066128004b8": "Description [field_67066128004b8]",
-                                    "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
-                                    "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
-                                    "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
-                                    "field_6710dedfd2170": "Related Page [field_6710dedfd2170]",
-                                    "field_66d8ae296374b": "Related Location [field_66d8ae296374b]",
-                                    "field_66d8ae3b6374c": "Related Programs & Services [field_66d8ae3b6374c]",
-                                    "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
-                                },
-                                "Custom Post Type: Events": {
-                                    "field_66cdfa70fd280": "Related Events [field_66cdfa70fd280]",
-                                    "field_66cdfac0fd281": "Contact [field_66cdfac0fd281]",
-                                    "field_66cdfad5fd282": "Related Programs & Services [field_66cdfad5fd282]"
-                                },
-                                "Custom Post Type: Programs & Services": {
-                                    "field_66d1d53822ff0": "Related Programs & Services [field_66d1d53822ff0]",
-                                    "field_66db073eba733": "Featured Location [field_66db073eba733]"
-                                },
                                 "current": "Current Post",
-                                "Custom Post Type: Posts": {
-                                    "field_66ec38fb71925": "Gallery [field_66ec38fb71925]",
-                                    "field_66ec393771926": "-  [field_66ec393771926]"
+                                "Custom Post Type: People": {
+                                    "field_673f94e787a50": "Job Title [field_673f94e787a50]",
+                                    "field_673f94f687a51": "LinkedIn [field_673f94f687a51]",
+                                    "field_673f950287a52": "Email [field_673f950287a52]"
+                                },
+                                "Custom Post Type: Projects": {
+                                    "field_6740e9a8d0337": "Logo [field_6740e9a8d0337]",
+                                    "field_673f8fa423669": "Related Services [field_673f8fa423669]",
+                                    "field_67409ec35d630": "Hover Content [field_67409ec35d630]",
+                                    "field_67409ed25d631": "- Content Type [field_67409ed25d631]",
+                                    "field_67409efe5d632": "- Image [field_67409efe5d632]",
+                                    "field_67409f2c5d633": "- Video [field_67409f2c5d633]",
+                                    "field_6744efe438208": "Testimonials [field_6744efe438208]"
+                                },
+                                "Custom Post Type: Testimonials": {
+                                    "field_673f949b5c9e3": "Job Title [field_673f949b5c9e3]",
+                                    "field_6744f36aadf68": "Project [field_6744f36aadf68]"
                                 }
                             },
                             "default_value": false,
@@ -1577,7 +1306,7 @@
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
-                                "width": "40",
+                                "width": "30",
                                 "class": "",
                                 "id": ""
                             },
@@ -1618,7 +1347,7 @@
                                 ]
                             ],
                             "wrapper": {
-                                "width": "60",
+                                "width": "24",
                                 "class": "",
                                 "id": ""
                             },
@@ -1658,7 +1387,7 @@
                                 ]
                             ],
                             "wrapper": {
-                                "width": "60",
+                                "width": "25",
                                 "class": "",
                                 "id": ""
                             },
@@ -1704,21 +1433,21 @@
                             ]
                         },
                         {
-                            "key": "field_671fe2453e931",
+                            "key": "field_667c19e452892",
                             "label": "Narrow Options",
                             "name": "narrow_options",
                             "aria-label": "",
                             "type": "button_group",
-                            "instructions": "",
+                            "instructions": "Select whether or not this controller's options will be narrowed to only show options that will return valid items with the current filter selection. (Default: Yes)",
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
-                                "width": "33",
+                                "width": "15",
                                 "class": "",
                                 "id": ""
                             },
                             "acfe_permissions": "",
-                            "instruction_placement": "",
+                            "instruction_placement": "tooltip",
                             "hide_field": "",
                             "hide_label": "",
                             "hide_instructions": "",
@@ -1732,26 +1461,25 @@
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "allow_null": 0,
-                            "allow_in_bindings": 0,
                             "layout": "horizontal",
                             "parent_repeater": "field_65f1eb2847552"
                         },
                         {
-                            "key": "field_671fe2693e932",
+                            "key": "field_66842ceb0d9e5",
                             "label": "Show View All",
                             "name": "show_view_all",
                             "aria-label": "",
                             "type": "button_group",
-                            "instructions": "",
+                            "instructions": "Select whether or not this filter's options will include a View All option that clears this control selection. (Default: Yes)",
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
-                                "width": "33",
+                                "width": "15",
                                 "class": "",
                                 "id": ""
                             },
                             "acfe_permissions": "",
-                            "instruction_placement": "",
+                            "instruction_placement": "tooltip",
                             "hide_field": "",
                             "hide_label": "",
                             "hide_instructions": "",
@@ -1765,26 +1493,33 @@
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "allow_null": 0,
-                            "allow_in_bindings": 0,
                             "layout": "horizontal",
                             "parent_repeater": "field_65f1eb2847552"
                         },
                         {
-                            "key": "field_671fe28e3e933",
+                            "key": "field_668c01b154117",
                             "label": "View All Label",
                             "name": "view_all_label",
                             "aria-label": "",
                             "type": "text",
-                            "instructions": "",
+                            "instructions": "Enter the label to be displayed for the View All option. (Default: View All)",
                             "required": 0,
-                            "conditional_logic": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_66842ceb0d9e5",
+                                        "operator": "==",
+                                        "value": "y"
+                                    }
+                                ]
+                            ],
                             "wrapper": {
-                                "width": "33",
+                                "width": "15",
                                 "class": "",
                                 "id": ""
                             },
                             "acfe_permissions": "",
-                            "instruction_placement": "",
+                            "instruction_placement": "tooltip",
                             "hide_field": "",
                             "hide_label": "",
                             "hide_instructions": "",
@@ -1793,13 +1528,44 @@
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "maxlength": "",
-                            "allow_in_bindings": 0,
                             "placeholder": "",
                             "prepend": "",
                             "append": "",
                             "parent_repeater": "field_65f1eb2847552"
                         }
                     ]
+                },
+                {
+                    "key": "field_674632c8642ab",
+                    "label": "Use Pills for Clearing",
+                    "name": "use_pills",
+                    "aria-label": "",
+                    "type": "button_group",
+                    "instructions": "Select whether or not to use horizontal pills as the clear elements for active filters instead of \"view all\" links. Disables view all links even if enabled in Controls (Default: No)",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "choices": {
+                        "y": "Yes",
+                        "n": "No"
+                    },
+                    "default_value": "n",
+                    "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "allow_null": 0,
+                    "instruction_placement": "",
+                    "acfe_permissions": "",
+                    "allow_in_bindings": 0,
+                    "layout": "horizontal"
                 },
                 {
                     "key": "field_65f46f9d8afa3",
@@ -1890,26 +1656,8 @@
                             "hide_required": "",
                             "choices": {
                                 "": "Select",
-                                "homepage-sliding-cards": "homepage-sliding-cards",
-                                "sliding-cards": "sliding-cards",
-                                "related-events": "related-events",
-                                "related-news": "related-news",
-                                "stats": "stats",
-                                "wide-cards": "wide-cards",
-                                "sliding-cards-service-item": "sliding-cards-service-item",
-                                "contact-cards": "contact-cards",
-                                "resource-cards": "resource-cards",
-                                "leadership-cards": "leadership-cards",
-                                "people-cards": "people-cards",
-                                "staff-cards": "staff-cards",
-                                "partner-cards": "partner-cards",
-                                "locations-hours": "locations-hours",
-                                "kleinlife-updates-news": "kleinlife-updates-news",
-                                "news-category": "news-category",
-                                "posts-related-news": "posts-related-news",
-                                "support-sliding-cards": "support-sliding-cards",
-                                "staff-search-cards": "staff-search-cards",
-                                "impact-cards": "impact-cards"
+                                "portfolio-category": "portfolio-category",
+                                "portfolio-testimonial": "portfolio-testimonial"
                             },
                             "default_value": false,
                             "return_format": "value",
@@ -1991,18 +1739,16 @@
                                 "post_name": "Slug",
                                 "post_excerpt": "Excerpt",
                                 "post_content": "Content",
-                                "Custom Post Type: Board & Staff": {
-                                    "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
-                                    "field_67066128004b8": "Description [field_67066128004b8]",
-                                    "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
-                                    "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
-                                    "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
-                                    "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
-                                },
-                                "Custom Post Type: Events": [],
-                                "Custom Post Type: Programs & Services": [],
                                 "current": "Current Post",
-                                "Custom Post Type: Posts": []
+                                "Custom Post Type: People": {
+                                    "field_673f94e787a50": "Job Title [field_673f94e787a50]",
+                                    "field_673f94f687a51": "LinkedIn [field_673f94f687a51]",
+                                    "field_673f950287a52": "Email [field_673f950287a52]"
+                                },
+                                "Custom Post Type: Projects": [],
+                                "Custom Post Type: Testimonials": {
+                                    "field_673f949b5c9e3": "Job Title [field_673f949b5c9e3]"
+                                }
                             },
                             "default_value": "title",
                             "return_format": "value",
@@ -2045,18 +1791,16 @@
                                 "post_name": "Slug",
                                 "post_excerpt": "Excerpt",
                                 "post_content": "Content",
-                                "Custom Post Type: Board & Staff": {
-                                    "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
-                                    "field_67066128004b8": "Description [field_67066128004b8]",
-                                    "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
-                                    "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
-                                    "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
-                                    "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
-                                },
-                                "Custom Post Type: Events": [],
-                                "Custom Post Type: Programs & Services": [],
                                 "current": "Current Post",
-                                "Custom Post Type: Posts": []
+                                "Custom Post Type: People": {
+                                    "field_673f94e787a50": "Job Title [field_673f94e787a50]",
+                                    "field_673f94f687a51": "LinkedIn [field_673f94f687a51]",
+                                    "field_673f950287a52": "Email [field_673f950287a52]"
+                                },
+                                "Custom Post Type: Projects": [],
+                                "Custom Post Type: Testimonials": {
+                                    "field_673f949b5c9e3": "Job Title [field_673f949b5c9e3]"
+                                }
                             },
                             "default_value": false,
                             "return_format": "value",
@@ -2096,11 +1840,12 @@
                             "hide_required": "",
                             "choices": {
                                 "thumbnail": "Thumbnail",
-                                "Custom Post Type: Board & Staff": [],
-                                "Custom Post Type: Events": [],
-                                "Custom Post Type: Programs & Services": [],
                                 "current": "Current Post",
-                                "Custom Post Type: Posts": []
+                                "Custom Post Type: People": [],
+                                "Custom Post Type: Projects": {
+                                    "field_6740e9a8d0337": "Logo [field_6740e9a8d0337]"
+                                },
+                                "Custom Post Type: Testimonials": []
                             },
                             "default_value": "thumbnail",
                             "return_format": "value",
@@ -2140,11 +1885,12 @@
                             "hide_required": "",
                             "choices": {
                                 "thumbnail": "Thumbnail",
-                                "Custom Post Type: Board & Staff": [],
-                                "Custom Post Type: Events": [],
-                                "Custom Post Type: Programs & Services": [],
                                 "current": "Current Post",
-                                "Custom Post Type: Posts": []
+                                "Custom Post Type: People": [],
+                                "Custom Post Type: Projects": {
+                                    "field_6740e9a8d0337": "Logo [field_6740e9a8d0337]"
+                                },
+                                "Custom Post Type: Testimonials": []
                             },
                             "default_value": false,
                             "return_format": "value",
@@ -2222,11 +1968,10 @@
                             "hide_instructions": "",
                             "hide_required": "",
                             "choices": {
-                                "Custom Post Type: Board & Staff": [],
-                                "Custom Post Type: Events": [],
-                                "Custom Post Type: Programs & Services": [],
                                 "current": "Current Post",
-                                "Custom Post Type: Posts": []
+                                "Custom Post Type: People": [],
+                                "Custom Post Type: Projects": [],
+                                "Custom Post Type: Testimonials": []
                             },
                             "default_value": false,
                             "return_format": "value",
@@ -2273,11 +2018,10 @@
                             "hide_instructions": "",
                             "hide_required": "",
                             "choices": {
-                                "Custom Post Type: Board & Staff": [],
-                                "Custom Post Type: Events": [],
-                                "Custom Post Type: Programs & Services": [],
                                 "current": "Current Post",
-                                "Custom Post Type: Posts": []
+                                "Custom Post Type: People": [],
+                                "Custom Post Type: Projects": [],
+                                "Custom Post Type: Testimonials": []
                             },
                             "default_value": false,
                             "return_format": "value",
@@ -2320,18 +2064,16 @@
                                 "post_name": "Slug",
                                 "post_excerpt": "Excerpt",
                                 "post_content": "Content",
-                                "Custom Post Type: Board & Staff": {
-                                    "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
-                                    "field_67066128004b8": "Description [field_67066128004b8]",
-                                    "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
-                                    "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
-                                    "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
-                                    "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
-                                },
-                                "Custom Post Type: Events": [],
-                                "Custom Post Type: Programs & Services": [],
                                 "current": "Current Post",
-                                "Custom Post Type: Posts": []
+                                "Custom Post Type: People": {
+                                    "field_673f94e787a50": "Job Title [field_673f94e787a50]",
+                                    "field_673f94f687a51": "LinkedIn [field_673f94f687a51]",
+                                    "field_673f950287a52": "Email [field_673f950287a52]"
+                                },
+                                "Custom Post Type: Projects": [],
+                                "Custom Post Type: Testimonials": {
+                                    "field_673f949b5c9e3": "Job Title [field_673f949b5c9e3]"
+                                }
                             },
                             "default_value": "excerpt",
                             "return_format": "value",
@@ -2440,11 +2182,10 @@
                             "hide_instructions": "",
                             "hide_required": "",
                             "choices": {
-                                "Custom Post Type: Board & Staff": [],
-                                "Custom Post Type: Events": [],
-                                "Custom Post Type: Programs & Services": [],
                                 "current": "Current Post",
-                                "Custom Post Type: Posts": []
+                                "Custom Post Type: People": [],
+                                "Custom Post Type: Projects": [],
+                                "Custom Post Type: Testimonials": []
                             },
                             "default_value": false,
                             "return_format": "value",
@@ -2619,16 +2360,24 @@
                             "other_choice": 0
                         },
                         {
-                            "key": "field_66db6295d1d84",
-                            "label": "Label Fields",
-                            "name": "label_fields",
+                            "key": "field_65f4754e7fcdb",
+                            "label": "Label Field",
+                            "name": "label_field",
                             "aria-label": "",
-                            "type": "repeater",
+                            "type": "select",
                             "instructions": "",
                             "required": 0,
-                            "conditional_logic": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_663a4960f8c67",
+                                        "operator": "==",
+                                        "value": "field"
+                                    }
+                                ]
+                            ],
                             "wrapper": {
-                                "width": "",
+                                "width": "20",
                                 "class": "",
                                 "id": ""
                             },
@@ -2638,76 +2387,33 @@
                             "hide_label": "",
                             "hide_instructions": "",
                             "hide_required": "",
-                            "acfe_repeater_stylised_button": 0,
-                            "layout": "table",
-                            "pagination": 0,
-                            "acfe_settings": "",
-                            "min": 0,
-                            "max": 0,
-                            "collapsed": "",
-                            "button_label": "Add Row",
-                            "rows_per_page": 20,
-                            "sub_fields": [
-                                {
-                                    "key": "field_65f4754e7fcdb",
-                                    "label": "Label Field",
-                                    "name": "label_field",
-                                    "aria-label": "",
-                                    "type": "select",
-                                    "instructions": "",
-                                    "required": 0,
-                                    "conditional_logic": [
-                                        [
-                                            {
-                                                "field": "field_663a4960f8c67",
-                                                "operator": "==",
-                                                "value": "field"
-                                            }
-                                        ]
-                                    ],
-                                    "wrapper": {
-                                        "width": "20",
-                                        "class": "",
-                                        "id": ""
-                                    },
-                                    "acfe_permissions": "",
-                                    "instruction_placement": "",
-                                    "hide_field": "",
-                                    "hide_label": "",
-                                    "hide_instructions": "",
-                                    "hide_required": "",
-                                    "choices": {
-                                        "Custom Post Type: Board & Staff": {
-                                            "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
-                                            "field_67066128004b8": "Description [field_67066128004b8]",
-                                            "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
-                                            "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
-                                            "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
-                                            "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
-                                        },
-                                        "Custom Post Type: Events": [],
-                                        "Custom Post Type: Programs & Services": [],
-                                        "current": "Current Post",
-                                        "Custom Post Type: Posts": []
-                                    },
-                                    "default_value": false,
-                                    "return_format": "value",
-                                    "multiple": 0,
-                                    "placeholder": "",
-                                    "prepend": "",
-                                    "append": "",
-                                    "max": "",
-                                    "acfe_settings": "",
-                                    "acfe_validate": "",
-                                    "allow_null": 1,
-                                    "ui": 0,
-                                    "ajax": 0,
-                                    "allow_custom": 0,
-                                    "search_placeholder": "",
-                                    "min": "",
-                                    "parent_repeater": "field_66db6295d1d84"
+                            "choices": {
+                                "current": "Current Post",
+                                "Custom Post Type: People": {
+                                    "field_673f94e787a50": "Job Title [field_673f94e787a50]",
+                                    "field_673f94f687a51": "LinkedIn [field_673f94f687a51]",
+                                    "field_673f950287a52": "Email [field_673f950287a52]"
+                                },
+                                "Custom Post Type: Projects": [],
+                                "Custom Post Type: Testimonials": {
+                                    "field_673f949b5c9e3": "Job Title [field_673f949b5c9e3]"
                                 }
-                            ]
+                            },
+                            "default_value": false,
+                            "return_format": "value",
+                            "multiple": 0,
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "max": "",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
+                            "allow_null": 1,
+                            "ui": 0,
+                            "ajax": 0,
+                            "allow_custom": 0,
+                            "search_placeholder": "",
+                            "min": ""
                         }
                     ]
                 },
@@ -2900,30 +2606,24 @@
                                     "hide_instructions": "",
                                     "hide_required": "",
                                     "choices": {
-                                        "Custom Post Type: Board & Staff": {
-                                            "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
-                                            "field_67066128004b8": "Description [field_67066128004b8]",
-                                            "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
-                                            "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
-                                            "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
-                                            "field_6710dedfd2170": "Related Page [field_6710dedfd2170]",
-                                            "field_66d8ae296374b": "Related Location [field_66d8ae296374b]",
-                                            "field_66d8ae3b6374c": "Related Programs & Services [field_66d8ae3b6374c]",
-                                            "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
-                                        },
-                                        "Custom Post Type: Events": {
-                                            "field_66cdfa70fd280": "Related Events [field_66cdfa70fd280]",
-                                            "field_66cdfac0fd281": "Contact [field_66cdfac0fd281]",
-                                            "field_66cdfad5fd282": "Related Programs & Services [field_66cdfad5fd282]"
-                                        },
-                                        "Custom Post Type: Programs & Services": {
-                                            "field_66d1d53822ff0": "Related Programs & Services [field_66d1d53822ff0]",
-                                            "field_66db073eba733": "Featured Location [field_66db073eba733]"
-                                        },
                                         "current": "Current Post",
-                                        "Custom Post Type: Posts": {
-                                            "field_66ec38fb71925": "Gallery [field_66ec38fb71925]",
-                                            "field_66ec393771926": "-  [field_66ec393771926]"
+                                        "Custom Post Type: People": {
+                                            "field_673f94e787a50": "Job Title [field_673f94e787a50]",
+                                            "field_673f94f687a51": "LinkedIn [field_673f94f687a51]",
+                                            "field_673f950287a52": "Email [field_673f950287a52]"
+                                        },
+                                        "Custom Post Type: Projects": {
+                                            "field_6740e9a8d0337": "Logo [field_6740e9a8d0337]",
+                                            "field_673f8fa423669": "Related Services [field_673f8fa423669]",
+                                            "field_67409ec35d630": "Hover Content [field_67409ec35d630]",
+                                            "field_67409ed25d631": "- Content Type [field_67409ed25d631]",
+                                            "field_67409efe5d632": "- Image [field_67409efe5d632]",
+                                            "field_67409f2c5d633": "- Video [field_67409f2c5d633]",
+                                            "field_6744efe438208": "Testimonials [field_6744efe438208]"
+                                        },
+                                        "Custom Post Type: Testimonials": {
+                                            "field_673f949b5c9e3": "Job Title [field_673f949b5c9e3]",
+                                            "field_6744f36aadf68": "Project [field_6744f36aadf68]"
                                         }
                                     },
                                     "default_value": false,
@@ -3436,8 +3136,7 @@
                                 "field": "Field",
                                 "rand": "Random",
                                 "name": "Slug",
-                                "title": "Title",
-                                "meta_key": "Meta Key"
+                                "title": "Title"
                             },
                             "default_value": "date",
                             "return_format": "value",
@@ -3448,7 +3147,6 @@
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "allow_null": 0,
-                            "allow_in_bindings": 1,
                             "ui": 0,
                             "ajax": 0,
                             "placeholder": "",
@@ -3526,30 +3224,24 @@
                             "hide_instructions": "",
                             "hide_required": "",
                             "choices": {
-                                "Custom Post Type: Board & Staff": {
-                                    "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
-                                    "field_67066128004b8": "Description [field_67066128004b8]",
-                                    "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
-                                    "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
-                                    "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
-                                    "field_6710dedfd2170": "Related Page [field_6710dedfd2170]",
-                                    "field_66d8ae296374b": "Related Location [field_66d8ae296374b]",
-                                    "field_66d8ae3b6374c": "Related Programs & Services [field_66d8ae3b6374c]",
-                                    "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
-                                },
-                                "Custom Post Type: Events": {
-                                    "field_66cdfa70fd280": "Related Events [field_66cdfa70fd280]",
-                                    "field_66cdfac0fd281": "Contact [field_66cdfac0fd281]",
-                                    "field_66cdfad5fd282": "Related Programs & Services [field_66cdfad5fd282]"
-                                },
-                                "Custom Post Type: Programs & Services": {
-                                    "field_66d1d53822ff0": "Related Programs & Services [field_66d1d53822ff0]",
-                                    "field_66db073eba733": "Featured Location [field_66db073eba733]"
-                                },
                                 "current": "Current Post",
-                                "Custom Post Type: Posts": {
-                                    "field_66ec38fb71925": "Gallery [field_66ec38fb71925]",
-                                    "field_66ec393771926": "-  [field_66ec393771926]"
+                                "Custom Post Type: People": {
+                                    "field_673f94e787a50": "Job Title [field_673f94e787a50]",
+                                    "field_673f94f687a51": "LinkedIn [field_673f94f687a51]",
+                                    "field_673f950287a52": "Email [field_673f950287a52]"
+                                },
+                                "Custom Post Type: Projects": {
+                                    "field_6740e9a8d0337": "Logo [field_6740e9a8d0337]",
+                                    "field_673f8fa423669": "Related Services [field_673f8fa423669]",
+                                    "field_67409ec35d630": "Hover Content [field_67409ec35d630]",
+                                    "field_67409ed25d631": "- Content Type [field_67409ed25d631]",
+                                    "field_67409efe5d632": "- Image [field_67409efe5d632]",
+                                    "field_67409f2c5d633": "- Video [field_67409f2c5d633]",
+                                    "field_6744efe438208": "Testimonials [field_6744efe438208]"
+                                },
+                                "Custom Post Type: Testimonials": {
+                                    "field_673f949b5c9e3": "Job Title [field_673f949b5c9e3]",
+                                    "field_6744f36aadf68": "Project [field_6744f36aadf68]"
                                 }
                             },
                             "default_value": false,
@@ -3570,44 +3262,6 @@
                             "parent_repeater": "field_65f24798d55a2"
                         },
                         {
-                            "key": "field_672368d9441c3",
-                            "label": "Value",
-                            "name": "value",
-                            "aria-label": "",
-                            "type": "text",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": [
-                                [
-                                    {
-                                        "field": "field_65f245f6d55a0",
-                                        "operator": "==",
-                                        "value": "meta_key"
-                                    }
-                                ]
-                            ],
-                            "wrapper": {
-                                "width": "30",
-                                "class": "",
-                                "id": ""
-                            },
-                            "acfe_permissions": "",
-                            "instruction_placement": "",
-                            "hide_field": "",
-                            "hide_label": "",
-                            "hide_instructions": "",
-                            "hide_required": "",
-                            "default_value": "",
-                            "acfe_settings": "",
-                            "acfe_validate": "",
-                            "maxlength": "",
-                            "allow_in_bindings": 1,
-                            "placeholder": "",
-                            "prepend": "",
-                            "append": "",
-                            "parent_repeater": "field_65f24798d55a2"
-                        },
-                        {
                             "key": "field_65f248b173570",
                             "label": "Data Type",
                             "name": "data_type",
@@ -3621,13 +3275,6 @@
                                         "field": "field_65f245f6d55a0",
                                         "operator": "==",
                                         "value": "field"
-                                    }
-                                ],
-                                [
-                                    {
-                                        "field": "field_65f245f6d55a0",
-                                        "operator": "==",
-                                        "value": "meta_key"
                                     }
                                 ]
                             ],
@@ -3662,7 +3309,6 @@
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "allow_null": 1,
-                            "allow_in_bindings": 1,
                             "ui": 0,
                             "ajax": 0,
                             "allow_custom": 0,
@@ -3783,5 +3429,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1730374249
+    "modified": 1732654271
 }
