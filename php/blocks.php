@@ -808,6 +808,24 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 							"value" => "y"
 						]
 					]
+				],
+				[
+					"settings" => [
+						"block_name" => "lqx/accordion",
+						"content_field" => "field_65301b9bb6ce8",
+						"global_field" => "field_65312d3d168a6",
+						"presets_field" => "field_658491eadec10",
+						"user_field" => "field_656c9b194efb7",
+						"admin_field" => "field_656a4daebe47d"
+					],
+					"rules" => [
+						[
+							"field" => "image",
+							"controller" => "show_image",
+							"operator" => "==",
+							"value" => "y"
+						]
+					]
 				]
 			];
 			foreach ($rules as $rule) {

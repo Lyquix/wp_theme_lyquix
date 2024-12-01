@@ -116,7 +116,15 @@ add_filter('acf/load_field', function ($field) {
 		if (strpos($group['title'], 'Custom Post Type: ') !== false) return true;
 	});
 
-	$field['choices']['current'] = 'Current Post';
+	if($field['key'] == 'field_6707cced1dfc9') {
+		$field['choices']['current'] = 'Current Post';
+	}
+
+	if($field['key'] == 'field_65f1ea274754b') {
+		$field['choices']['parent'] = 'Parent (dynamic type only)';
+		$field['choices']['author'] = 'Author ID (dynamic type only)';
+		$field['choices']['venue'] = 'Venue (dynamic type only)';
+	}
 
 	// Loop through field groups
 	foreach ($field_groups as $group) {
@@ -1202,11 +1210,27 @@ function prepare_query($query, $s) {
 				break;
 
 			case 'dynamic' :
-				$acf_meta_query = [
-					'key' => get_field_object($pre_filter['acf_field'])['name'],
-					'compare' => $pre_filter['operator_advanced'],
-					'value' => $pre_filter['value_field'] == 'current' ? $s['post_id'] : get_field($pre_filter['value_field'], $s['post_id'])
+				$map = [
+					'venue' => '_EventVenueID'
 				];
+
+				$value = $pre_filter['value_field'] == 'current' ? $s['post_id'] : get_field($pre_filter['value_field'], $s['post_id']);
+
+				if($key = get_field_object($pre_filter['acf_field'])['name'] ?? $map[$pre_filter['acf_field']] ?? null) {
+					$acf_meta_query = [
+						'key' => $key,
+						'compare' => $pre_filter['operator_advanced'],
+						'value' => $value
+					];
+				}
+
+				if($pre_filter['acf_field'] == 'parent') {
+					$query['post_parent'] = $value;
+				}
+
+				if($pre_filter['acf_field'] == 'author') {
+					$query['author'] = $value;
+				}
 
 				if (isset($query['meta_query'])) {
 					$query['meta_query']['relation'] = 'AND';

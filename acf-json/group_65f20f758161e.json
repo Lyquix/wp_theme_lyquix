@@ -402,33 +402,7 @@
                             "hide_label": "",
                             "hide_instructions": "",
                             "hide_required": "",
-                            "choices": {
-                                "Custom Post Type: Board & Staff": {
-                                    "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
-                                    "field_67066128004b8": "Description [field_67066128004b8]",
-                                    "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
-                                    "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
-                                    "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
-                                    "field_6710dedfd2170": "Related Page [field_6710dedfd2170]",
-                                    "field_66d8ae296374b": "Related Location [field_66d8ae296374b]",
-                                    "field_66d8ae3b6374c": "Related Programs & Services [field_66d8ae3b6374c]",
-                                    "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
-                                },
-                                "Custom Post Type: Events": {
-                                    "field_66cdfa70fd280": "Related Events [field_66cdfa70fd280]",
-                                    "field_66cdfac0fd281": "Contact [field_66cdfac0fd281]",
-                                    "field_66cdfad5fd282": "Related Programs & Services [field_66cdfad5fd282]"
-                                },
-                                "Custom Post Type: Programs & Services": {
-                                    "field_66d1d53822ff0": "Related Programs & Services [field_66d1d53822ff0]",
-                                    "field_66db073eba733": "Featured Location [field_66db073eba733]"
-                                },
-                                "Custom Post Type: Posts": {
-                                    "field_66ec38fb71925": "Gallery [field_66ec38fb71925]",
-                                    "field_66ec393771926": "-  [field_66ec393771926]"
-                                },
-                                "current": "Current Post"
-                            },
+                            "choices": {},
                             "default_value": false,
                             "return_format": "value",
                             "multiple": 0,
@@ -668,33 +642,7 @@
                             "hide_label": "",
                             "hide_instructions": "",
                             "hide_required": "",
-                            "choices": {
-                                "current": "Current Post",
-                                "Custom Post Type: Board & Staff": {
-                                    "field_66c8ad4f6b06d": "Title [field_66c8ad4f6b06d]",
-                                    "field_67066128004b8": "Description [field_67066128004b8]",
-                                    "field_66c8ad8c6b06f": "Phone Number [field_66c8ad8c6b06f]",
-                                    "field_66c8adab6b070": "Extension [field_66c8adab6b070]",
-                                    "field_66c8ad7c6b06e": "Email Address [field_66c8ad7c6b06e]",
-                                    "field_6710dedfd2170": "Related Page [field_6710dedfd2170]",
-                                    "field_66d8ae296374b": "Related Location [field_66d8ae296374b]",
-                                    "field_66d8ae3b6374c": "Related Programs & Services [field_66d8ae3b6374c]",
-                                    "field_66ed82fed58f2": "Group [field_66ed82fed58f2]"
-                                },
-                                "Custom Post Type: Events": {
-                                    "field_66cdfa70fd280": "Related Events [field_66cdfa70fd280]",
-                                    "field_66cdfac0fd281": "Contact [field_66cdfac0fd281]",
-                                    "field_66cdfad5fd282": "Related Programs & Services [field_66cdfad5fd282]"
-                                },
-                                "Custom Post Type: Posts": {
-                                    "field_66ec38fb71925": "Gallery [field_66ec38fb71925]",
-                                    "field_66ec393771926": "-  [field_66ec393771926]"
-                                },
-                                "Custom Post Type: Programs & Services": {
-                                    "field_66d1d53822ff0": "Related Programs & Services [field_66d1d53822ff0]",
-                                    "field_66db073eba733": "Featured Location [field_66db073eba733]"
-                                }
-                            },
+                            "choices": {},
                             "default_value": false,
                             "return_format": "value",
                             "multiple": 0,

@@ -33,5 +33,8 @@
 	aria-hidden="<?= $idx == 0 && $s['open_on_load'] == 'y' ? 'false' : 'true' ?>">
 	<div>
 		<?= $item['content'] ?>
+		<?php if (!empty($item['image']['url']) && ($s['show_image'] == 'y')): ?>
+			<img src="<?= htmlspecialchars($item['image']['url'], ENT_QUOTES, 'UTF-8') ?>" alt="Image">
+		<?php endif; ?>
 	</div>
 </section>
