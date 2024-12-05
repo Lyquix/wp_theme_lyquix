@@ -1233,6 +1233,14 @@ function prepare_query($query, $s) {
 						'compare' => $pre_filter['operator_advanced'],
 						'value' => $value
 					];
+
+					if (isset($query['meta_query'])) {
+						$query['meta_query']['relation'] = 'AND';
+						$query['meta_query'][] = $acf_meta_query;
+					} else {
+						$query['meta_query'] = [];
+						$query['meta_query'][] = $acf_meta_query;
+					}
 				}
 
 				if($pre_filter['acf_field'] == 'parent') {
@@ -1243,13 +1251,6 @@ function prepare_query($query, $s) {
 					$query['author'] = $value;
 				}
 
-				if (isset($query['meta_query'])) {
-					$query['meta_query']['relation'] = 'AND';
-					$query['meta_query'][] = $acf_meta_query;
-				} else {
-					$query['meta_query'] = [];
-					$query['meta_query'][] = $acf_meta_query;
-				}
 				break;
 
 			case 'meta_key' :
