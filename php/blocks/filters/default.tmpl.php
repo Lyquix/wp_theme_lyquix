@@ -38,6 +38,7 @@
 		<?php
 		switch ($s['render_mode']) {
 			case 'php':
+				require \lqx\blocks\get_template('filters', $s['preset'], 'heading');
 				require \lqx\blocks\get_template('filters', $s['preset'], 'controls');
 				require \lqx\blocks\get_template('filters', $s['preset'], 'posts');
 				require \lqx\blocks\get_template('filters', $s['preset'], 'pagination');
