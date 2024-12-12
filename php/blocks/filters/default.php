@@ -27,6 +27,13 @@
 if ($settings['processed']['preset']) { // only proceed if a preset has been selected
 	// Get the processed settings and posts with data
 	$s = \lqx\filters\get_settings_and_posts($settings);
+	$c =\lqx\util\validate_data($content, [
+		'type' => 'object',
+		'keys' => [
+			'heading_override' => \lqx\util\schema_str,
+		]
+	]);
+	if ($c['isValid']) $c = $c['data'];
 
 	require \lqx\blocks\get_template('filters', $s['preset']);
 }

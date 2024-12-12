@@ -24,6 +24,7 @@
 
 // Get block settings
 $settings = \lqx\blocks\get_settings($block);
+$content = \lqx\blocks\get_content($block);
 
 // Render the block
-\lqx\blocks\render_block($settings, null);
+\lqx\blocks\render_block($settings, $content);

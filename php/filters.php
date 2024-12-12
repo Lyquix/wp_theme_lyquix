@@ -540,7 +540,16 @@ function validate_settings($settings) {
 				]
 			],
 			'show_no_results_message' => \lqx\util\schema_str_req_y,
-			'no_results_message' => \lqx\util\schema_str_req_emp
+			'no_results_message' => \lqx\util\schema_str_req_emp,
+			'show_heading' => \lqx\util\schema_str_req_y,
+			'default_heading' => \lqx\util\schema_str,
+			'heading_style' => [
+				'type' => 'string',
+				'required' => true,
+				'default' => 'p',
+				'allowed' => ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+			],
+			'heading_override' => \lqx\util\schema_str_req_emp,
 		]
 	]);
 
@@ -879,16 +888,18 @@ function get_options($s) {
 			case 'field':
 				// Prepare the SQL query to get field values and post counts
 				//we need to get the name of the field for the query
+				//($control['narrow_options'] == 'y' ? " .
+				// TODO: are we handling sub-fields within groups and repeaters correctly? We may need a LIKE operator here
 				$field = get_field_object($control['acf_field'], null, true, false, false);
+				$id_statement =  ($control['narrow_options'] == 'y' ? "AND `post_id` IN (" . implode(',', array_map('intval', $posts)) . ") " : "");
 				$sql = $wpdb->prepare(
-					"SELECT `meta_value`, COUNT(`post_id`) as `count` " .
-					"FROM $wpdb->postmeta " .
-						"WHERE `meta_key` = '".$field['name']."' " . // TODO: are we handling sub-fields within groups and repeaters correctly? We may need a LIKE operator here
-					($control['narrow_options'] == 'y' ? "AND `post_id` IN (" . implode(',', array_map('intval', $posts)) . ") " : "") .
-					"GROUP BY `meta_value`",
-					$control['acf_field']
+					"SELECT `meta_value`, COUNT(`post_id`) as `count`
+					FROM {$wpdb->postmeta}
+					WHERE `meta_key` = %s
+					$id_statement
+					GROUP BY `meta_value`",
+						[$field['name']]
 				);
-
 				// Execute the query
 				$field_values = $wpdb->get_results($sql);
 
@@ -1222,6 +1233,14 @@ function prepare_query($query, $s) {
 						'compare' => $pre_filter['operator_advanced'],
 						'value' => $value
 					];
+
+					if (isset($query['meta_query'])) {
+						$query['meta_query']['relation'] = 'AND';
+						$query['meta_query'][] = $acf_meta_query;
+					} else {
+						$query['meta_query'] = [];
+						$query['meta_query'][] = $acf_meta_query;
+					}
 				}
 
 				if($pre_filter['acf_field'] == 'parent') {
@@ -1232,13 +1251,6 @@ function prepare_query($query, $s) {
 					$query['author'] = $value;
 				}
 
-				if (isset($query['meta_query'])) {
-					$query['meta_query']['relation'] = 'AND';
-					$query['meta_query'][] = $acf_meta_query;
-				} else {
-					$query['meta_query'] = [];
-					$query['meta_query'][] = $acf_meta_query;
-				}
 				break;
 
 			case 'meta_key' :
