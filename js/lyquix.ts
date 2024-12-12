@@ -45,6 +45,7 @@ import { modal } from './lib/lyquix/modal';
 import { popup } from './lib/lyquix/popup';
 import { tabs } from './lib/lyquix/tabs';
 import { slider } from './lib/lyquix/slider';
+import { testimonial } from './lib/lyquix/testimonial';
 
 declare const lqx;
 
@@ -78,7 +79,8 @@ const init = (customCfg) => {
 		'modal',
 		'popup',
 		'tabs',
-		'slider'
+		'slider',
+		'testimonial'
 	];
 
 	// Initialize core config
@@ -148,7 +150,8 @@ const expObj = Object.defineProperties({
 	modal,
 	popup,
 	tabs,
-	slider
+	slider,
+	testimonial
 }, {
 	// Set the cfg and vars properties as read-only
 	cfg: {
