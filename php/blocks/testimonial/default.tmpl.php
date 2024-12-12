@@ -32,7 +32,7 @@
 		class="testimonial <?= $s['slider'] == 'y' ? 'slider' : '' ?>"
 		id="<?= esc_attr($s['hash']) ?>"
 		data-slider="<?= $s['slider'] ?>"
-		data-swiper-options-override="<?= esc_attr($s['swiper_options_override']) ?>">
+		data-swiper-options-override="<?= esc_attr($s['swiper_options_override'] ?? '') ?>">
 
 		<?= $s['slider'] == 'y' ? '<div class="swiper">' : '' ?>
 		<ul class="<?= $s['slider'] == 'y' ? 'swiper-wrapper' : 'testimonial-wrapper' ?>">
