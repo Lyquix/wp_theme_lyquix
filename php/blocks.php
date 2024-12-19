@@ -698,7 +698,17 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 			[ // preset and preset_name fields
 				'user' => 'field_656f866617344',
 				'choice' => 'field_656f87fcef854'
-			]
+			],
+
+			// Testimonial
+			[ //  style and style_name fields
+				'user' => 'field_6751a226ccc6f',
+				'choice' => 'field_6751a05ca1920'
+			],
+			[ // preset and preset_name fields
+				'user' => 'field_6751a24bccc70',
+				'choice' => 'field_6751a11da1925'
+			],
 		];
 
 		foreach ($field_keys as $k) {

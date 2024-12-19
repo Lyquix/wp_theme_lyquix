@@ -26,9 +26,9 @@
 ?>
 <?php if ($s['show_heading'] == 'y'):
 	//  before rendering the heading, check it to see if an override was set on the block
-	$heading = $s['default_heading'];
+	$heading = $s['default_heading'] ?? '';
 
-	if ($c['heading_override']) {
+	if (isset($c['heading_override']) && $c['heading_override']) {
 		$heading = $c['heading_override'];
 	}
 	//  furthermore, replace wildcard strings in the text if present
