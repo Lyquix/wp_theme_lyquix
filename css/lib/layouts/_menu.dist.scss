@@ -1,0 +1,84 @@
+/**
+ * _menu.dist.scss - Menu styles
+ * @version     3.1.0
+ * @package     wp_theme_lyquix
+ * @author      Lyquix
+ * @copyright   Copyright (C) 2015 - 2024 Lyquix
+ * @license     GNU General Public License version 2 or later
+ * @link        https://github.com/Lyquix/wp_theme_lyquix
+ */
+
+/*
+    .d8888b. 88888888888 .d88888b.  8888888b.   888
+   d88P  Y88b    888    d88P" "Y88b 888   Y88b  888
+   Y88b.         888    888     888 888    888  888
+    "Y888b.      888    888     888 888   d88P  888
+       "Y88b.    888    888     888 8888888P"   888
+         "888    888    888     888 888         Y8P
+   Y88b  d88P    888    Y88b. .d88P 888          "
+    "Y8888P"     888     "Y88888P"  888         888
+
+  DO NOT MODIFY THIS FILE!
+	Instead copy it to css/custom/components/_menu.scss and make your changes there.
+*/
+
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+
+header {
+	nav {
+		@apply hidden md:block;
+		ul {
+			@apply md:max-lg:gap-x-[20px] lg:gap-x-[40px] p-0 flex;
+			li {
+				@apply m-0 list-none font-medium;
+				a {
+					@apply text-midnight-black;
+					&:hover {
+						@apply no-underline;
+					}
+				}
+			}
+		}
+	}
+	#menu-toggle {
+		@apply md:hidden w-[25px] h-[18px] content-center;
+		img {
+			@apply my-0 mx-auto;
+		}
+		.close {
+			@apply hidden w-[17px] h-[17px];
+		}
+		.open {
+			@apply block w-full;
+		}
+	}
+	&.mobile-menu-open {
+		.flex-container {
+			nav {
+				@apply xs:max-md:block xs:max-md:pt-[20px] xs:max-md:pb-[50px] xs:max-md:h-[calc(100vh-61px)] xs:max-md:fixed xs:max-md:top-[61px] xs:max-md:left-0 xs:max-md:w-full xs:max-md:bg-white z-[1000];
+				ul {
+					@apply xs:max-md:block;
+					@media screen and (max-width: 719px) {
+						@apply container;
+					}
+					li {
+						@apply xs:max-md:mb-[12px];
+						&:last-of-type {
+							@apply xs:max-md:mb-[0];
+						}
+					}
+				}
+			}
+			#menu-toggle {
+				.close {
+					@apply block;
+				}
+				.open {
+					@apply hidden;
+				}
+			}
+		}
+	}
+}
