@@ -7,7 +7,10 @@ function register_featured_meta() {
             'type'         => 'boolean',
             'single'       => true,
             'default'      => false,
-            'show_in_rest' => true, // Make it available in the REST API for Gutenberg
+            'show_in_rest' => true,
+						'auth_callback' => function() {
+								return current_user_can('edit_posts');
+						},
         ]);
     }
 }
