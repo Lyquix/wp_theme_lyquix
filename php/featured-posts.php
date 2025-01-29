@@ -85,21 +85,28 @@ function save_featured_meta_classic($post_id) {
 }
 add_action('save_post', 'save_featured_meta_classic');
 
-/*Code to add featured as a custom column in the post view*/
-add_filter('manage_portfolio_posts_columns', function($columns) {
-	$columns['featured'] = __('Featured', 'textdomain');
-	return $columns;
-});
+// We need to iterate through each public post type and add the meta box to the post view as a column
+function register_featured_boxes() {
+	$post_types = get_post_types(['public' => true], 'names'); // Get all public post types
+	foreach ($post_types as $post_type) {
+		//var_dump($post_type);
+		/*Code to add featured as a custom column in the post view*/
+		add_filter('manage_'.$post_type.'_posts_columns', function($columns) {
+			$columns['featured'] = __('Featured', 'textdomain');
+			return $columns;
+		});
 
-// Populate the custom column
-add_action('manage_portfolio_posts_custom_column', function($column, $post_id) {
-	if ($column === 'featured') {
-		$meta_value = get_post_meta($post_id, '_is_featured', true);
-		$checked = $meta_value ? 'checked' : '';
-		echo '<input type="checkbox" class="featured-checkbox" data-post-id="' . esc_attr($post_id) . '" ' . esc_attr($checked) . ' />';
+		// Populate the custom column
+		add_action('manage_'.$post_type.'_posts_custom_column', function($column, $post_id) {
+			if ($column === 'featured') {
+				$meta_value = get_post_meta($post_id, '_is_featured', true);
+				$checked = $meta_value ? 'checked' : '';
+				echo '<input type="checkbox" class="featured-checkbox" data-post-id="' . esc_attr($post_id) . '" ' . esc_attr($checked) . ' />';
+			}
+		}, 10, 2);
 	}
-}, 10, 2);
-
+}
+add_action('init', 'register_featured_boxes');
 // Enqueue JavaScript to handle checkbox interaction
 add_action('admin_enqueue_scripts', function() {
 	wp_enqueue_script('featured-checkbox-handler', get_template_directory_uri() . '/js/custom-meta-checkbox.js?v=' . filemtime(get_template_directory() . '/js/custom-meta-checkbox.js'), ['jquery'], null, true);
