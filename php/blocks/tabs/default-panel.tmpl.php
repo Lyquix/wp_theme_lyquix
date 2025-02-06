@@ -46,7 +46,7 @@
 
 	<div
 		class="tab-content"
-		id="<?= $s['hash'] . '-content-' . $idx ?>"
+		id="<?= $s['hash'] . '-content-' . $idx ?>">
 		<?= $item['heading'] ? sprintf('<%s>%s</%s>', $s['heading_style'], $item['heading'], $s['heading_style']) : '' ?>
 		<?= $item['content'] ?>
 	</div>
