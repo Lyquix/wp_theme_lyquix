@@ -1,0 +1,324 @@
+{
+    "key": "group_67a48e062ca57",
+    "title": "Block: Tabs Plus (Admin Settings)",
+    "fields": [
+        {
+            "key": "field_67a48e0633ab1",
+            "label": "Admin Settings",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "no_preference": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_67a48e0633af5",
+            "label": "",
+            "name": "tabs-plus_block_admin",
+            "aria-label": "",
+            "type": "group",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "hide_field": "",
+            "hide_label": "",
+            "hide_instructions": "",
+            "hide_required": "",
+            "layout": "block",
+            "acfe_seamless_style": 1,
+            "acfe_settings": "",
+            "instruction_placement": "",
+            "acfe_permissions": "",
+            "sub_fields": [
+                {
+                    "key": "field_67a48e063ea33",
+                    "label": "Browser History",
+                    "name": "browser_history",
+                    "aria-label": "",
+                    "type": "button_group",
+                    "instructions": "Set to Yes to track tab open in browser history",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "choices": {
+                        "y": "Yes",
+                        "n": "No"
+                    },
+                    "default_value": "",
+                    "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "allow_null": 1,
+                    "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
+                    "layout": "horizontal"
+                },
+                {
+                    "key": "field_67a48e063ea8d",
+                    "label": "Convert to Accordion",
+                    "name": "convert_to_accordion_override_group",
+                    "aria-label": "",
+                    "type": "group",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "layout": "block",
+                    "acfe_seamless_style": 1,
+                    "acfe_settings": "",
+                    "instruction_placement": "",
+                    "acfe_permissions": "",
+                    "acfe_group_modal": 0,
+                    "acfe_group_modal_close": 0,
+                    "acfe_group_modal_button": "",
+                    "acfe_group_modal_size": "large",
+                    "sub_fields": [
+                        {
+                            "key": "field_67a48e064df73",
+                            "label": "",
+                            "name": "convert_to_accordion_override",
+                            "aria-label": "",
+                            "type": "true_false",
+                            "instructions": "Select the screen sizes where the tabs will convert to accordions",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "40",
+                                "class": "",
+                                "id": ""
+                            },
+                            "acfe_permissions": "",
+                            "instruction_placement": "tooltip",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
+                            "message": "Override Global Settings",
+                            "default_value": 0,
+                            "style": "",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
+                            "ui_on_text": "",
+                            "ui_off_text": "",
+                            "ui": 1
+                        },
+                        {
+                            "key": "field_67a48e064dfef",
+                            "label": "",
+                            "name": "convert_to_accordion",
+                            "aria-label": "",
+                            "type": "checkbox",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_67a48e064df73",
+                                        "operator": "==",
+                                        "value": "1"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "60",
+                                "class": "",
+                                "id": ""
+                            },
+                            "acfe_permissions": "",
+                            "instruction_placement": "",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
+                            "choices": {
+                                "xs": "XS",
+                                "sm": "SM"
+                            },
+                            "default_value": [],
+                            "return_format": "value",
+                            "min": "",
+                            "max": "",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
+                            "allow_custom": 0,
+                            "layout": "horizontal",
+                            "toggle": 1,
+                            "save_custom": 0,
+                            "custom_choice_button_text": "Add new choice"
+                        }
+                    ]
+                },
+                {
+                    "key": "field_67a48e063eaf1",
+                    "label": "Auto Scroll",
+                    "name": "auto_scroll_override_group",
+                    "aria-label": "",
+                    "type": "group",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "layout": "block",
+                    "acfe_seamless_style": 1,
+                    "acfe_settings": "",
+                    "instruction_placement": "",
+                    "acfe_permissions": "",
+                    "acfe_group_modal": 0,
+                    "acfe_group_modal_close": 0,
+                    "acfe_group_modal_button": "",
+                    "acfe_group_modal_size": "large",
+                    "sub_fields": [
+                        {
+                            "key": "field_67a48e065b81d",
+                            "label": "",
+                            "name": "auto_scroll_override",
+                            "aria-label": "",
+                            "type": "true_false",
+                            "instructions": "Select the screen sizes where auto-scroll will be enabled",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "39",
+                                "class": "",
+                                "id": ""
+                            },
+                            "acfe_permissions": "",
+                            "instruction_placement": "tooltip",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
+                            "message": "Override Global Setting",
+                            "default_value": 0,
+                            "style": "",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
+                            "ui_on_text": "",
+                            "ui_off_text": "",
+                            "ui": 1
+                        },
+                        {
+                            "key": "field_67a48e065b869",
+                            "label": "",
+                            "name": "auto_scroll",
+                            "aria-label": "",
+                            "type": "checkbox",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_67a48e065b81d",
+                                        "operator": "==",
+                                        "value": "1"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "60",
+                                "class": "",
+                                "id": ""
+                            },
+                            "acfe_permissions": "",
+                            "instruction_placement": "",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
+                            "choices": {
+                                "xs": "XS",
+                                "sm": "SM",
+                                "md": "MD",
+                                "lq": "LG",
+                                "xl": "XL"
+                            },
+                            "default_value": [],
+                            "return_format": "value",
+                            "min": "",
+                            "max": "",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
+                            "allow_custom": 0,
+                            "layout": "horizontal",
+                            "toggle": 1,
+                            "save_custom": 0,
+                            "custom_choice_button_text": "Add new choice"
+                        }
+                    ]
+                }
+            ],
+            "acfe_group_modal": 0,
+            "acfe_group_modal_close": 0,
+            "acfe_group_modal_button": "",
+            "acfe_group_modal_size": "large"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "block",
+                "operator": "==",
+                "value": "lqx\/tabs-plus"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "acfe_autosync": [
+        "json"
+    ],
+    "acfe_form": 1,
+    "acfe_display_title": "",
+    "acfe_permissions": [
+        "administrator"
+    ],
+    "acfe_meta": "",
+    "acfe_note": "",
+    "modified": 1738837549
+}
