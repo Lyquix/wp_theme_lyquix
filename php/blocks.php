@@ -621,7 +621,7 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 			],
 			[ // preset and preset_name fields
 				'user' => 'field_656c9bb1e9e20',
-				'choice' => 'field_656d01578aa30'
+				'choice' => 'field_658491eadec12'
 			],
 
 			// Banner
