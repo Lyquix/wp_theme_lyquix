@@ -24,7 +24,7 @@
 //  Instead, copy it to /php/custom/blocks/filters/default-heading.tmpl.php to override it
 //  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/filters/{preset}-heading.tmpl.php
 ?>
-<?php if ($s['show_heading'] == 'y'):
+<?php if ($s['show_heading'] == 'y' && count($s['posts'])):
 	//  before rendering the heading, check it to see if an override was set on the block
 	$heading = $s['default_heading'] ?? '';
 
