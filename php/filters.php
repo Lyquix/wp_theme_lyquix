@@ -35,6 +35,15 @@ add_filter('acf/load_field', function ($field) {
 		[ // preset and preset_name fields
 			'user' => 'field_65fc7acd8549c',
 			'choice' => 'field_658db3c5e9695'
+		],
+		//Map
+		[ // style and style_name fields
+			'user' => 'field_66a7c06283f9b',
+			'choice' => 'field_6697e27cc4d4b'
+		],
+		[ // preset and preset_name fields
+			'user' => 'field_66a7b7c6761cb',
+			'choice' => 'field_6697e331c4d4f'
 		]
 	];
 
@@ -103,7 +112,8 @@ add_filter('acf/load_field', function ($field) {
 		],
 		'image' => ['image'],
 		'file' => ['file'],
-		'link' => ['link']
+		'link' => ['link'],
+		'map' => ['google_map'],
 	];
 
 	if (!array_key_exists($field['key'], $field_keys)) return $field;
@@ -428,7 +438,7 @@ function validate_settings($settings) {
 				'type' => 'string',
 				'required' => true,
 				'default' => 'php',
-				'allowed' => ['php', 'js']
+				'allowed' => ['php', 'js','maps-php', 'maps-js']
 			],
 			'render_php' => [
 				'type' => 'object',

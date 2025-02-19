@@ -1,0 +1,176 @@
+<?php
+
+/**
+ * default.php - Render function for Lyquix map block
+ *
+ * @version     3.0.0
+ * @package     wp_theme_lyquix
+ * @author      Lyquix
+ * @copyright   Copyright (C) 2015 - 2024 Lyquix
+ * @license     GNU General Public License version 2 or later
+ * @link        https://github.com/Lyquix/wp_theme_lyquix
+ */
+
+//    .d8888b. 88888888888 .d88888b.  8888888b.   888
+//   d88P  Y88b    888    d88P" "Y88b 888   Y88b  888
+//   Y88b.         888    888     888 888    888  888
+//    "Y888b.      888    888     888 888   d88P  888
+//       "Y88b.    888    888     888 8888888P"   888
+//         "888    888    888     888 888         Y8P
+//   Y88b  d88P    888    Y88b. .d88P 888          "
+//    "Y8888P"     888     "Y88888P"  888         888
+//
+//  DO NOT MODIFY THIS FILE!
+//  If you need a custom renderer, copy this file to php/custom/blocks/cards/default.php and modify it there
+//  You may also create custom renderer for specific presets, by copying this file to /php/custom/cards/slider/{preset}.php
+
+// Get and validate processed settings
+
+$s = \lqx\util\validate_data($settings['processed'], [
+	'type' => 'object',
+	'required' => true,
+	'keys' => [
+		'anchor' => \lqx\util\schema_str_req_emp,
+		'class' => \lqx\util\schema_str_req_emp,
+		'show_items' => [
+			'type' => 'string',
+			'required' => true,
+			'default' => 'y',
+			'allowed' => ['y', 'n']
+		],
+		'show_map' => [
+			'type' => 'string',
+			'required' => true,
+			'default' => 'y',
+			'allowed' => ['y', 'n']
+		],
+		'show_infowindows' => [
+			'type' => 'string',
+			'required' => true,
+			'default' => 'y',
+			'allowed' => ['y', 'n']
+		],
+		'show_get_directions_link' => [
+			'type' => 'string',
+			'required' => true,
+			'default' => 'y',
+			'allowed' => ['y', 'n']
+		],
+		'show_get_directions_box' => [
+			'type' => 'string',
+			'required' => true,
+			'default' => 'y',
+			'allowed' => ['y', 'n']
+		],
+		'show_search' => [
+			'type' => 'string',
+			'required' => true,
+			'default' => 'y',
+			'allowed' => ['y', 'n']
+		],
+		'show_distance_limit_drop_down' => [
+			'type' => 'string',
+			'required' => true,
+			'default' => 'y',
+			'allowed' => ['y', 'n']
+		],
+		'use_esri_map' => [
+			'type' => 'string',
+			'required' => true,
+			'default' => 'n',
+			'allowed' => ['y', 'n']
+		],
+		'google_maps_display_settings' => [
+			'type' => 'object',
+			'default' => [],
+			'elems' => [
+				'type' => 'object',
+				'required' => true,
+				'keys' => [
+					'enable_zoom' => [
+						'type' => 'string',
+						'required' => true,
+						'default' => 'y',
+						'allowed' => ['y', 'n']
+					],
+					'enable_pan' => [
+						'type' => 'string',
+						'required' => true,
+						'default' => 'y',
+						'allowed' => ['y', 'n']
+					],
+					'default_zoom_level'=> [
+						'type' => 'string',
+						'required' => false,
+						'default' => '15'
+					],
+					'type_of_map' => [
+						'type' => 'string',
+						'required' => true,
+						'default' => 'road',
+						'allowed' => ['road', 'satellite', 'terrain']
+					],
+					'snazzy_maps_styles' => [
+						'type' => 'string',
+						'required' => false,
+						'default' => ''
+					],
+					'pin_override' => [
+						'type' => 'array'
+					]
+				]
+			]
+		],
+		'items_display_settings' => [
+			'type' => 'object',
+			'default' => [],
+			'elems' => [
+				'type' => 'object',
+				'required' => true,
+				'keys' => [
+					'heading_style' => [
+						'type' => 'string',
+						'required' => true,
+						'default' => 'y',
+						'allowed' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+					],
+					'subtitle_style' => [
+						'type' => 'string',
+						'required' => true,
+						'default' => 'y',
+						'allowed' => ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+					],
+					'heading_clickable' => [
+						'type' => 'string',
+						'required' => true,
+						'default' => 'y',
+						'allowed' => ['y', 'n']
+					],
+					'image_clickable' => [
+						'type' => 'string',
+						'required' => true,
+						'default' => 'y',
+						'allowed' => ['y', 'n']
+					],
+					'show_labels' => [
+						'type' => 'string',
+						'required' => true,
+						'default' => 'y',
+						'allowed' => ['y', 'n']
+					]
+				]
+			]
+		]
+	]
+]);
+// If valid settings, use them, otherwise throw exception
+if ($s['isValid']) $s = $s['data'];
+else throw new \Exception('Invalid block settings: ' . var_export($s, true));
+// Get content and filter out invalid content
+$c = array_filter(array_map(function($item) {
+	$v = \lqx\util\validate_data($item, \lqx\cards\schema);
+	return $v['isValid'] ? $v['data'] : null;
+}, $content));
+
+if (!empty($c)) require \lqx\blocks\get_template('map', $s['preset']);
+?>

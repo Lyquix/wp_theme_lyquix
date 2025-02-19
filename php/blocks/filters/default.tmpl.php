@@ -44,7 +44,14 @@
 				require \lqx\blocks\get_template('filters', $s['preset'], 'pagination');
 				break;
 
+			case 'maps-php':
+				require \lqx\blocks\get_template('filters', $s['preset'], 'controls');
+				require \lqx\blocks\get_template('filters', $s['preset'], 'map');
+				require \lqx\blocks\get_template('filters', $s['preset'], 'pagination');
+				break;
+
 			case 'js':
+			case 'maps-js':
 				require \lqx\blocks\get_template('filters', $s['preset'], 'js');
 				break;
 		}

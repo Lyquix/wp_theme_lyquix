@@ -680,6 +680,16 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 				'choice' => 'field_65a0592361823'
 			],
 
+			//Maps
+			[ // style and style_name fields
+				'user' => 'field_6697e3b0d9419',
+				'choice' => 'field_6697e27cc4d4b'
+			],
+			[// preset and preset_name fields
+				'user' => 'field_6697e3bbd941a',
+				'choice' => 'field_6697e331c4d4f'
+			],
+
 			// Slider
 			[ //  style and style_name fields
 				'user' => 'field_659d51caf3d2a',
