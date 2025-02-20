@@ -3,7 +3,7 @@
 /**
  * default.php - Render function for Lyquix map block
  *
- * @version     3.0.0
+ * @version     3.1.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2024 Lyquix
@@ -22,7 +22,7 @@
 //
 //  DO NOT MODIFY THIS FILE!
 //  If you need a custom renderer, copy this file to php/custom/blocks/cards/default.php and modify it there
-//  You may also create custom renderer for specific presets, by copying this file to /php/custom/cards/slider/{preset}.php
+//  You may also create custom renderer for specific presets, by copying this file to /php/custom/blocks/map/{preset}.php
 
 // Get and validate processed settings
 
@@ -32,6 +32,11 @@ $s = \lqx\util\validate_data($settings['processed'], [
 	'keys' => [
 		'anchor' => \lqx\util\schema_str_req_emp,
 		'class' => \lqx\util\schema_str_req_emp,
+		'hash' => [
+			'type' => 'string',
+			'required' => true,
+			'default' => 'id-' . substr(md5(json_encode([$settings, $content, random_int(1000, 9999)])), 24)
+		],
 		'show_items' => [
 			'type' => 'string',
 			'required' => true,
@@ -173,4 +178,3 @@ $c = array_filter(array_map(function($item) {
 }, $content));
 
 if (!empty($c)) require \lqx\blocks\get_template('map', $s['preset']);
-?>
