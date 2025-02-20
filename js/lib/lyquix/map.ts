@@ -67,7 +67,7 @@ export const map = (() => {
 				// Setup maps loaded initially on the page
 				setup(jQuery(cfg.map.blockSelector));
 
-				//mutation.addHandler('addNode', cfg.map.blockSelector, setup);
+				mutation.addHandler('addNode', cfg.map.blockSelector, setup);
 			});
 
 		}
