@@ -43,30 +43,6 @@
 					"acfe_group_modal_size": "large",
 					"sub_fields": [
 							{
-									"key": "field_6697e7d8c0b83",
-									"label": "Show Items",
-									"name": "show_items",
-									"aria-label": "",
-									"type": "button_group",
-									"instructions": "",
-									"required": 0,
-									"conditional_logic": 0,
-									"wrapper": {
-											"width": "33.333",
-											"class": "",
-											"id": ""
-									},
-									"choices": {
-											"y": "Yes",
-											"n": "No"
-									},
-									"default_value": "",
-									"return_format": "value",
-									"allow_null": 1,
-									"allow_in_bindings": 1,
-									"layout": "horizontal"
-							},
-							{
 									"key": "field_6697e4e38c051",
 									"label": "Show Map",
 									"name": "show_map",
@@ -91,9 +67,9 @@
 									"layout": "horizontal"
 							},
 							{
-									"key": "field_6697e50a8c053",
-									"label": "Show Infowindows",
-									"name": "show_infowindows",
+									"key": "field_6697e7d8c0b83",
+									"label": "Show Items",
+									"name": "show_items",
 									"aria-label": "",
 									"type": "button_group",
 									"instructions": "",
@@ -118,6 +94,30 @@
 									"key": "field_669a61b47bc99",
 									"label": "Show Get Directions Link",
 									"name": "show_get_directions_link",
+									"aria-label": "",
+									"type": "button_group",
+									"instructions": "",
+									"required": 0,
+									"conditional_logic": 0,
+									"wrapper": {
+											"width": "33.333",
+											"class": "",
+											"id": ""
+									},
+									"choices": {
+											"y": "Yes",
+											"n": "No"
+									},
+									"default_value": "",
+									"return_format": "value",
+									"allow_null": 1,
+									"allow_in_bindings": 1,
+									"layout": "horizontal"
+							},
+							{
+									"key": "field_6697e50a8c053",
+									"label": "Show Infowindows",
+									"name": "show_infowindows",
 									"aria-label": "",
 									"type": "button_group",
 									"instructions": "",
@@ -213,58 +213,6 @@
 											"n": "No"
 									},
 									"default_value": "",
-									"return_format": "value",
-									"allow_null": 1,
-									"allow_in_bindings": 1,
-									"layout": "horizontal"
-							},
-							{
-									"key": "field_66b3a1cd004bf",
-									"label": "Pin Override",
-									"name": "pin_override",
-									"aria-label": "",
-									"type": "image",
-									"instructions": "",
-									"required": 0,
-									"conditional_logic": 0,
-									"wrapper": {
-											"width": "",
-											"class": "",
-											"id": ""
-									},
-									"uploader": "",
-									"return_format": "array",
-									"library": "all",
-									"upload_folder": "",
-									"acfe_thumbnail": 0,
-									"min_width": "",
-									"min_height": "",
-									"min_size": "",
-									"max_width": "",
-									"max_height": "",
-									"max_size": "",
-									"mime_types": "",
-									"preview_size": "medium"
-							},
-							{
-									"key": "field_669a64b67bca0",
-									"label": "Use ESRI Map",
-									"name": "use_esri_map",
-									"aria-label": "",
-									"type": "button_group",
-									"instructions": "",
-									"required": 0,
-									"conditional_logic": 0,
-									"wrapper": {
-											"width": "33.333",
-											"class": "",
-											"id": ""
-									},
-									"choices": {
-											"y": "Yes",
-											"n": "No"
-									},
-									"default_value": "n",
 									"return_format": "value",
 									"allow_null": 1,
 									"allow_in_bindings": 1,
@@ -438,8 +386,60 @@
 													"rows": "",
 													"placeholder": "",
 													"new_lines": ""
+											},
+											{
+													"key": "field_66b3a1cd004bf",
+													"label": "Pin Override",
+													"name": "pin_override",
+													"aria-label": "",
+													"type": "image",
+													"instructions": "",
+													"required": 0,
+													"conditional_logic": 0,
+													"wrapper": {
+															"width": "",
+															"class": "",
+															"id": ""
+													},
+													"uploader": "",
+													"return_format": "array",
+													"library": "all",
+													"upload_folder": "",
+													"acfe_thumbnail": 0,
+													"min_width": "",
+													"min_height": "",
+													"min_size": "",
+													"max_width": "",
+													"max_height": "",
+													"max_size": "",
+													"mime_types": "",
+													"preview_size": "medium"
 											}
 									]
+							},
+							{
+									"key": "field_669a64b67bca0",
+									"label": "Use ESRI Map",
+									"name": "use_esri_map",
+									"aria-label": "",
+									"type": "button_group",
+									"instructions": "",
+									"required": 0,
+									"conditional_logic": 0,
+									"wrapper": {
+											"width": "33.333",
+											"class": "",
+											"id": ""
+									},
+									"choices": {
+											"y": "Yes",
+											"n": "No"
+									},
+									"default_value": "n",
+									"return_format": "value",
+									"allow_null": 1,
+									"allow_in_bindings": 1,
+									"layout": "horizontal"
 							},
 							{
 									"key": "field_66b273ccd0a9b",
@@ -621,5 +621,5 @@
 	"acfe_display_title": "",
 	"acfe_meta": "",
 	"acfe_note": "",
-	"modified": 1739999199
+	"modified": 1740066585
 }
