@@ -21,6 +21,7 @@
 //  DO NOT MODIFY THIS FILE!
 
 import { vars, cfg, log } from './core';
+import { mutation } from './mutation';
 
 declare const google, jQuery;
 /**
@@ -45,7 +46,6 @@ export const map = (() => {
 		cfg.map = {
 			enabled: true,
 			blockSelector: '.lqx-block-map',
-			mapSelector: '#lqx-map',
 			analytics: {
 				enabled: true,
 				nonInteraction: true,
@@ -67,6 +67,7 @@ export const map = (() => {
 				// Setup maps loaded initially on the page
 				setup(jQuery(cfg.map.blockSelector));
 
+				//mutation.addHandler('addNode', cfg.map.blockSelector, setup);
 			});
 
 		}
@@ -81,7 +82,7 @@ export const map = (() => {
 				log('Setting up ' + elems.length + ' maps', elems);
 				const settings = JSON.parse(jQuery(elems[block]).attr('data-settings'));
 				const styles = JSON.parse(settings.google_maps_display_settings.snazzy_maps_styles);
-				const lqx_map = {
+				const lqxMap = {
 					map: null,
 					options: {
 						mapTypeId: settings.google_maps_display_settings.type_of_map,
@@ -103,41 +104,50 @@ export const map = (() => {
 					groupedItems: [],
 				};
 				//initialize options based off of the json settings
-				lqx_map.options.mapTypeId = google.maps.MapTypeId[lqx_map.options.mapTypeId];
-				lqx_map.map = new google.maps.Map(document.getElementById('lqx-map'), lqx_map.options);
-				for (let i = 0; i < lqx_map.items.length; i++) {
-					const itemLatLon = new google.maps.LatLng(lqx_map.items[i].lat, lqx_map.items[i].lon);
-					lqx_map.bounds.extend(itemLatLon);
-					const itemid = lqx_map.items[i].id;
-					if (lqx_map.items[i].infoWindow == 'true') lqx_map.infoWindows[itemid] = new google.maps.InfoWindow({ content: lqx_map.items[i].html });
-					//const labelString = lqx_map.items[i].title;
-					const infoWindowHTML = lqx_map.items[i].html;
+				lqxMap.options.mapTypeId = google.maps.MapTypeId[lqxMap.options.mapTypeId];
+				const mapSelector = jQuery(elems[block]).find('.map').attr('id');
+				console.log(mapSelector);
+				lqxMap.map = new google.maps.Map(document.getElementById(mapSelector), lqxMap.options, lqxMap.options);
+				for (let i = 0; i < lqxMap.items.length; i++) {
+					const itemLatLon = new google.maps.LatLng(lqxMap.items[i].lat, lqxMap.items[i].lon);
+					lqxMap.bounds.extend(itemLatLon);
+					const itemid = lqxMap.items[i].id;
+					if (lqxMap.items[i].infoWindow == 'true') lqxMap.infoWindows[itemid] = new google.maps.InfoWindow({ content: lqxMap.items[i].html });
+					//const labelString = lqxMap.items[i].title;
+					const infoWindowHTML = lqxMap.items[i].html;
 
 					const markerParams = {
 						position: itemLatLon,
-						map: lqx_map.map,
-						title: lqx_map.items[i].title,
+						map: lqxMap.map,
+						title: lqxMap.items[i].title,
 						html: infoWindowHTML,
-						icon: lqx_map.items[i].icon,
+						icon: lqxMap.items[i].icon,
 						//for future work: the code below and commented out above pertains to labels on top of pins, which I don't believe we've used yet but could be useful going forward
 						//label: (labelString == '' ? '' : { text: labelString.toString(), color: 'white' })
 					};
-					if(lqx_map.items[i].icon != '') markerParams.icon = {
-						url: lqx_map.items[i].icon,
-						//scaledSize: new google.maps.Size(lqx_map.markerSize.scaledWidth,lqx_map.markerSize.scaledHeight)
+					if(lqxMap.items[i].icon != '') markerParams.icon = {
+						url: lqxMap.items[i].icon,
+						//scaledSize: new google.maps.Size(lqxMap.markerSize.scaledWidth,lqxMap.markerSize.scaledHeight)
 					};
-					lqx_map.markers[itemid] = new google.maps.Marker(markerParams);
+					lqxMap.markers[itemid] = new google.maps.Marker(markerParams);
 
-					if (lqx_map.items[i].infoWindow == 'true') {
+					if (lqxMap.items[i].infoWindow == 'true') {
 
-						google.maps.event.addListener(lqx_map.markers[itemid], 'click', function() {
-							lqx_map.infoWindows[itemid].setContent(this.html);
-							lqx_map.infoWindows[itemid].open(lqx_map.map,this);
+						google.maps.event.addListener(lqxMap.markers[itemid], 'click', function() {
+							lqxMap.infoWindows[itemid].setContent(this.html);
+							lqxMap.infoWindows[itemid].open(lqxMap.map,this);
 						});
 					}
 				}
-				lqx_map.map.fitBounds(lqx_map.bounds);
-				lqx_map.map.panToBounds(lqx_map.bounds);
+
+				lqxMap.map.fitBounds(lqxMap.bounds);
+				lqxMap.map.panToBounds(lqxMap.bounds);
+
+				//once the map has finished loading, set the zoom level of the map
+				google.maps.event.addListenerOnce(lqxMap.map, 'idle', () => {
+					lqxMap.map.setZoom(lqxMap.options.zoom); // Adjust zoom after bounds are set
+				});
+				vars.map.maps.push(lqxMap);
 			});
 		}
 	};
