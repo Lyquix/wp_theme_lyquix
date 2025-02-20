@@ -25,7 +25,7 @@
 
 $google_maps_api_key = acf_get_setting( 'google_api_key' );
 ?>
-<div class="map" id="map-id-<?= substr(md5(json_encode([$settings, $content, random_int(1000, 9999)])), 24)?>"></div>
+<div class="map" id="<?= $s['hash'] ?>-map"></div>
 <!--Note for reviews (Remove later): I believe we need the following two tags to parse information from block settings.-->
 
 <?php wp_enqueue_script('google-maps-api', 'https://maps.googleapis.com/maps/api/js?key='.$google_maps_api_key.'&libraries=places');
