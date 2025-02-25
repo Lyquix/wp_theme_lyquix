@@ -200,7 +200,7 @@ function process_wp_post($post, $fields_map, $fields_values) {
 		'body' => $post-> post_excerpt,
 		'labels' => null,
 		'image' => \lqx\util\get_thumbnail_image_object($post->ID),
-		'icon_image' => null,
+		'icon_image' => $post->icon_image,
 		'video' => [
 			'type' => ''
 		]
