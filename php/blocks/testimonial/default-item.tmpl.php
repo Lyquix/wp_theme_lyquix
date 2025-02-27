@@ -31,11 +31,12 @@
 	<?php if($item['background_color']): ?> style="background: <?= $item['background_color'] ?>" <?php endif; ?>
 	>
 	<blockquote <?php if($item['foreground_color']): ?> style="--text-color: <?= $item['foreground_color'] ?>" <?php endif; ?>><?= $item['content'] ?></blockquote>
-
+	<?php if ($item['name'] !== ''): ?>
 	<div class="author-wrapper">
 		<div class="testimonial-author" <?php if($item['foreground_color']): ?> style="--text-color: <?= $item['foreground_color'] ?>" <?php endif; ?>>
 			<span class="name !m-0"><?= strip_tags($item['name']) ?></span>
 			<span class="job-title ml-[1ch] lg:m-0"><?= strip_tags($item['job_title']) ?></span>
 		</div>
 	</div>
+	<?php endif; ?>
 </li>
