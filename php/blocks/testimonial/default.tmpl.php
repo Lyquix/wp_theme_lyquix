@@ -38,6 +38,14 @@
 		<ul class="<?= $s['slider'] == 'y' ? 'swiper-wrapper' : 'testimonial-wrapper' ?>">
 
 			<?php
+
+			if ($s['random_display'] == 'y') {
+				if (!empty($c['testimonials'])) {
+					$random_key = array_rand($c['testimonials']);
+					$c['testimonials'] = [$c['testimonials'][$random_key]]; // Keep only one random item
+				}
+			}
+
 			foreach ($c['testimonials'] as $idx => $item) {
 				require \lqx\blocks\get_template('testimonial', $s['preset'], 'item');
 			}
