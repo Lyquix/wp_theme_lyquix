@@ -35,7 +35,7 @@
 	<div class="author-wrapper">
 		<div class="testimonial-author" <?php if($item['foreground_color']): ?> style="--text-color: <?= $item['foreground_color'] ?>" <?php endif; ?>>
 			<span class="name !m-0"><?= strip_tags($item['name']) ?></span>
-			<span class="job-title ml-[1ch] lg:m-0"><?= strip_tags($item['job_title']) ?></span>
+			<?php if ($item['job_title'] !== '' && $item['job_title'] !== null): ?><span class="job-title ml-[1ch] lg:m-0"><?= strip_tags($item['job_title']) ?></span><?php endif; ?>
 		</div>
 	</div>
 	<?php endif; ?>
