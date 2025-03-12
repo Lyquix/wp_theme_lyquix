@@ -95,14 +95,17 @@ require_once get_template_directory() . '/php/filters.php';
 // Livereload
 require_once get_template_directory() . '/php/livereload.php';
 
+// Featured Posts
+require_once get_template_directory() . '/php/featured-posts.php';
+
 // Custom functions.php
-if (file_exists(get_template_directory() . '/php/custom/functions.php')) {
-	require_once get_template_directory() . '/php/custom/functions.php';
+if (file_exists(get_stylesheet_directory() . '/php/custom/functions.php')) {
+	require_once get_stylesheet_directory() . '/php/custom/functions.php';
 }
 
 // Shortcodes
-if (file_exists(get_template_directory() . '/php/custom/shortcodes.php')) {
-	require_once get_template_directory() . '/php/custom/shortcodes.php';
+if (file_exists(get_stylesheet_directory() . '/php/custom/shortcodes.php')) {
+	require_once get_stylesheet_directory() . '/php/custom/shortcodes.php';
 }
 
 // Updates checker

@@ -1,0 +1,625 @@
+{
+	"key": "group_6697e4a678217",
+	"title": "Block: Map (Admin Settings)",
+	"fields": [
+			{
+					"key": "field_6697e4a661944",
+					"label": "Admin Settings",
+					"name": "",
+					"aria-label": "",
+					"type": "tab",
+					"instructions": "",
+					"required": 0,
+					"conditional_logic": 0,
+					"wrapper": {
+							"width": "",
+							"class": "",
+							"id": ""
+					},
+					"placement": "top",
+					"endpoint": 0,
+					"no_preference": 0,
+					"selected": 0
+			},
+			{
+					"key": "field_6697e4be61945",
+					"label": "",
+					"name": "map_block_admin",
+					"aria-label": "",
+					"type": "group",
+					"instructions": "",
+					"required": 0,
+					"conditional_logic": 0,
+					"wrapper": {
+							"width": "",
+							"class": "",
+							"id": ""
+					},
+					"layout": "block",
+					"acfe_seamless_style": 0,
+					"acfe_group_modal": 0,
+					"acfe_group_modal_close": 0,
+					"acfe_group_modal_button": "",
+					"acfe_group_modal_size": "large",
+					"sub_fields": [
+							{
+									"key": "field_6697e4e38c051",
+									"label": "Show Map",
+									"name": "show_map",
+									"aria-label": "",
+									"type": "button_group",
+									"instructions": "",
+									"required": 0,
+									"conditional_logic": 0,
+									"wrapper": {
+											"width": "33.333",
+											"class": "",
+											"id": ""
+									},
+									"choices": {
+											"y": "Yes",
+											"n": "No"
+									},
+									"default_value": "",
+									"return_format": "value",
+									"allow_null": 1,
+									"allow_in_bindings": 1,
+									"layout": "horizontal"
+							},
+							{
+									"key": "field_6697e7d8c0b83",
+									"label": "Show Items",
+									"name": "show_items",
+									"aria-label": "",
+									"type": "button_group",
+									"instructions": "",
+									"required": 0,
+									"conditional_logic": 0,
+									"wrapper": {
+											"width": "33.333",
+											"class": "",
+											"id": ""
+									},
+									"choices": {
+											"y": "Yes",
+											"n": "No"
+									},
+									"default_value": "",
+									"return_format": "value",
+									"allow_null": 1,
+									"allow_in_bindings": 1,
+									"layout": "horizontal"
+							},
+							{
+									"key": "field_669a61b47bc99",
+									"label": "Show Get Directions Link",
+									"name": "show_get_directions_link",
+									"aria-label": "",
+									"type": "button_group",
+									"instructions": "",
+									"required": 0,
+									"conditional_logic": 0,
+									"wrapper": {
+											"width": "33.333",
+											"class": "",
+											"id": ""
+									},
+									"choices": {
+											"y": "Yes",
+											"n": "No"
+									},
+									"default_value": "",
+									"return_format": "value",
+									"allow_null": 1,
+									"allow_in_bindings": 1,
+									"layout": "horizontal"
+							},
+							{
+									"key": "field_6697e50a8c053",
+									"label": "Show Infowindows",
+									"name": "show_infowindows",
+									"aria-label": "",
+									"type": "button_group",
+									"instructions": "",
+									"required": 0,
+									"conditional_logic": 0,
+									"wrapper": {
+											"width": "33.333",
+											"class": "",
+											"id": ""
+									},
+									"choices": {
+											"y": "Yes",
+											"n": "No"
+									},
+									"default_value": "",
+									"return_format": "value",
+									"allow_null": 1,
+									"allow_in_bindings": 1,
+									"layout": "horizontal"
+							},
+							{
+									"key": "field_669a61cc7bc9a",
+									"label": "Show Get Directions Box",
+									"name": "show_get_directions_box",
+									"aria-label": "",
+									"type": "button_group",
+									"instructions": "",
+									"required": 0,
+									"conditional_logic": 0,
+									"wrapper": {
+											"width": "33.333",
+											"class": "",
+											"id": ""
+									},
+									"choices": {
+											"y": "Yes",
+											"n": "No"
+									},
+									"default_value": "",
+									"return_format": "value",
+									"allow_null": 1,
+									"allow_in_bindings": 1,
+									"layout": "horizontal"
+							},
+							{
+									"key": "field_669a61ee7bc9b",
+									"label": "Show Search",
+									"name": "show_search",
+									"aria-label": "",
+									"type": "button_group",
+									"instructions": "",
+									"required": 0,
+									"conditional_logic": 0,
+									"wrapper": {
+											"width": "33.333",
+											"class": "",
+											"id": ""
+									},
+									"choices": {
+											"y": "Yes",
+											"n": "No"
+									},
+									"default_value": "",
+									"return_format": "value",
+									"allow_null": 1,
+									"allow_in_bindings": 1,
+									"layout": "horizontal"
+							},
+							{
+									"key": "field_669a61fd7bc9c",
+									"label": "Show Distance Limit Drop Down",
+									"name": "show_distance_limit_drop_down",
+									"aria-label": "",
+									"type": "button_group",
+									"instructions": "",
+									"required": 0,
+									"conditional_logic": [
+											[
+													{
+															"field": "field_669a61ee7bc9b",
+															"operator": "==",
+															"value": "y"
+													}
+											]
+									],
+									"wrapper": {
+											"width": "33.333",
+											"class": "",
+											"id": ""
+									},
+									"choices": {
+											"y": "Yes",
+											"n": "No"
+									},
+									"default_value": "",
+									"return_format": "value",
+									"allow_null": 1,
+									"allow_in_bindings": 1,
+									"layout": "horizontal"
+							},
+							{
+									"key": "field_669a63017bc9d",
+									"label": "Google Maps Display Settings",
+									"name": "google_maps_display_settings",
+									"aria-label": "",
+									"type": "group",
+									"instructions": "",
+									"required": 0,
+									"conditional_logic": 0,
+									"wrapper": {
+											"width": "",
+											"class": "",
+											"id": ""
+									},
+									"layout": "block",
+									"acfe_seamless_style": 0,
+									"acfe_group_modal": 0,
+									"acfe_group_modal_close": 0,
+									"acfe_group_modal_button": "",
+									"acfe_group_modal_size": "large",
+									"sub_fields": [
+											{
+													"key": "field_6697e4fb8c052",
+													"label": "Enable Zoom",
+													"name": "enable_zoom",
+													"aria-label": "",
+													"type": "button_group",
+													"instructions": "",
+													"required": 0,
+													"conditional_logic": 0,
+													"wrapper": {
+															"width": "25",
+															"class": "",
+															"id": ""
+													},
+													"choices": {
+															"y": "Yes",
+															"n": "No"
+													},
+													"default_value": "",
+													"return_format": "value",
+													"allow_null": 1,
+													"allow_in_bindings": 1,
+													"layout": "horizontal"
+											},
+											{
+													"key": "field_6697e59a8c054",
+													"label": "Enable Pan",
+													"name": "enable_pan",
+													"aria-label": "",
+													"type": "button_group",
+													"instructions": "",
+													"required": 0,
+													"conditional_logic": 0,
+													"wrapper": {
+															"width": "25",
+															"class": "",
+															"id": ""
+													},
+													"choices": {
+															"y": "Yes",
+															"n": "No"
+													},
+													"default_value": "",
+													"return_format": "value",
+													"allow_null": 1,
+													"allow_in_bindings": 1,
+													"layout": "horizontal"
+											},
+											{
+													"key": "field_669e70a26ddda",
+													"label": "Default Zoom Level",
+													"name": "default_zoom_level",
+													"aria-label": "",
+													"type": "select",
+													"instructions": "",
+													"required": 0,
+													"conditional_logic": 0,
+													"wrapper": {
+															"width": "25",
+															"class": "",
+															"id": ""
+													},
+													"choices": {
+															"1": "1",
+															"2": "2",
+															"3": "3",
+															"4": "4",
+															"5": "5",
+															"6": "6",
+															"7": "7",
+															"8": "8",
+															"9": "9",
+															"10": "10",
+															"11": "11",
+															"12": "12",
+															"13": "13",
+															"14": "14",
+															"15": "15",
+															"16": "16",
+															"17": "17",
+															"18": "18",
+															"19": "19",
+															"20": "20"
+													},
+													"default_value": false,
+													"return_format": "value",
+													"multiple": 0,
+													"allow_custom": 0,
+													"placeholder": "",
+													"search_placeholder": "",
+													"prepend": "",
+													"append": "",
+													"max": "",
+													"allow_null": 0,
+													"allow_in_bindings": 1,
+													"ui": 0,
+													"ajax": 0,
+													"min": ""
+											},
+											{
+													"key": "field_669a63c07bc9e",
+													"label": "Type of Map",
+													"name": "type_of_map",
+													"aria-label": "",
+													"type": "radio",
+													"instructions": "",
+													"required": 0,
+													"conditional_logic": 0,
+													"wrapper": {
+															"width": "25",
+															"class": "",
+															"id": ""
+													},
+													"choices": {
+															"road": "Road",
+															"satellite": "Satellite",
+															"terrain": "Terrain"
+													},
+													"default_value": "road",
+													"return_format": "value",
+													"allow_null": 1,
+													"other_choice": 0,
+													"allow_in_bindings": 1,
+													"layout": "vertical",
+													"save_other_choice": 0
+											},
+											{
+													"key": "field_669a63f47bc9f",
+													"label": "Snazzy Maps Styles",
+													"name": "snazzy_maps_styles",
+													"aria-label": "",
+													"type": "textarea",
+													"instructions": "",
+													"required": 0,
+													"conditional_logic": 0,
+													"wrapper": {
+															"width": "",
+															"class": "",
+															"id": ""
+													},
+													"default_value": "[{}]",
+													"acfe_textarea_code": 0,
+													"maxlength": "",
+													"allow_in_bindings": 1,
+													"rows": "",
+													"placeholder": "",
+													"new_lines": ""
+											},
+											{
+													"key": "field_66b3a1cd004bf",
+													"label": "Pin Override",
+													"name": "pin_override",
+													"aria-label": "",
+													"type": "image",
+													"instructions": "",
+													"required": 0,
+													"conditional_logic": 0,
+													"wrapper": {
+															"width": "",
+															"class": "",
+															"id": ""
+													},
+													"uploader": "",
+													"return_format": "array",
+													"library": "all",
+													"upload_folder": "",
+													"acfe_thumbnail": 0,
+													"min_width": "",
+													"min_height": "",
+													"min_size": "",
+													"max_width": "",
+													"max_height": "",
+													"max_size": "",
+													"mime_types": "",
+													"preview_size": "medium"
+											}
+									]
+							},
+							{
+									"key": "field_669a64b67bca0",
+									"label": "Use ESRI Map",
+									"name": "use_esri_map",
+									"aria-label": "",
+									"type": "button_group",
+									"instructions": "",
+									"required": 0,
+									"conditional_logic": 0,
+									"wrapper": {
+											"width": "33.333",
+											"class": "",
+											"id": ""
+									},
+									"choices": {
+											"y": "Yes",
+											"n": "No"
+									},
+									"default_value": "n",
+									"return_format": "value",
+									"allow_null": 1,
+									"allow_in_bindings": 1,
+									"layout": "horizontal"
+							},
+							{
+									"key": "field_66b273ccd0a9b",
+									"label": "Items Display Settings",
+									"name": "items_display_settings",
+									"aria-label": "",
+									"type": "group",
+									"instructions": "",
+									"required": 0,
+									"conditional_logic": 0,
+									"wrapper": {
+											"width": "",
+											"class": "",
+											"id": ""
+									},
+									"layout": "block",
+									"acfe_seamless_style": 0,
+									"acfe_group_modal": 0,
+									"acfe_group_modal_close": 0,
+									"acfe_group_modal_button": "",
+									"acfe_group_modal_size": "large",
+									"sub_fields": [
+											{
+													"key": "field_66b273d8d0a9c",
+													"label": "Heading Style",
+													"name": "heading_style",
+													"aria-label": "",
+													"type": "button_group",
+													"instructions": "",
+													"required": 0,
+													"conditional_logic": 0,
+													"wrapper": {
+															"width": "50",
+															"class": "",
+															"id": ""
+													},
+													"choices": {
+															"h1": "H1",
+															"h2": "H2",
+															"h3": "H3",
+															"h4": "H4",
+															"h5": "H5",
+															"h6": "H6"
+													},
+													"default_value": "",
+													"return_format": "value",
+													"allow_null": 1,
+													"allow_in_bindings": 1,
+													"layout": "horizontal"
+											},
+											{
+													"key": "field_66b273efd0a9d",
+													"label": "Subtitle Style",
+													"name": "subtitle_style",
+													"aria-label": "",
+													"type": "button_group",
+													"instructions": "",
+													"required": 0,
+													"conditional_logic": 0,
+													"wrapper": {
+															"width": "50",
+															"class": "",
+															"id": ""
+													},
+													"choices": {
+															"p": "P and STRONG",
+															"h1": "H1",
+															"h2": "H2",
+															"h3": "H3",
+															"h4": "H4",
+															"h5": "H5",
+															"h6": "H6"
+													},
+													"default_value": "",
+													"return_format": "value",
+													"allow_null": 1,
+													"allow_in_bindings": 1,
+													"layout": "horizontal"
+											},
+											{
+													"key": "field_66b27402d0a9e",
+													"label": "Heading Clickable",
+													"name": "heading_clickable",
+													"aria-label": "",
+													"type": "button_group",
+													"instructions": "",
+													"required": 0,
+													"conditional_logic": 0,
+													"wrapper": {
+															"width": "33.333",
+															"class": "",
+															"id": ""
+													},
+													"choices": {
+															"y": "Yes",
+															"n": "No"
+													},
+													"default_value": "",
+													"return_format": "value",
+													"allow_null": 1,
+													"allow_in_bindings": 1,
+													"layout": "horizontal"
+											},
+											{
+													"key": "field_66b27410d0a9f",
+													"label": "Image Clickable",
+													"name": "image_clickable",
+													"aria-label": "",
+													"type": "button_group",
+													"instructions": "",
+													"required": 0,
+													"conditional_logic": 0,
+													"wrapper": {
+															"width": "33.333",
+															"class": "",
+															"id": ""
+													},
+													"choices": {
+															"y": "Yes",
+															"n": "No"
+													},
+													"default_value": "",
+													"return_format": "value",
+													"allow_null": 1,
+													"allow_in_bindings": 1,
+													"layout": "horizontal"
+											},
+											{
+													"key": "field_66b2741fd0aa0",
+													"label": "Show Labels",
+													"name": "show_labels",
+													"aria-label": "",
+													"type": "button_group",
+													"instructions": "",
+													"required": 0,
+													"conditional_logic": 0,
+													"wrapper": {
+															"width": "33.333",
+															"class": "",
+															"id": ""
+													},
+													"choices": {
+															"y": "Yes",
+															"n": "No"
+													},
+													"default_value": "",
+													"return_format": "value",
+													"allow_null": 1,
+													"allow_in_bindings": 1,
+													"layout": "horizontal"
+											}
+									]
+							}
+					]
+			}
+	],
+	"location": [
+			[
+					{
+							"param": "block",
+							"operator": "==",
+							"value": "lqx\/map"
+					}
+			]
+	],
+	"menu_order": 0,
+	"position": "normal",
+	"style": "default",
+	"label_placement": "top",
+	"instruction_placement": "label",
+	"hide_on_screen": "",
+	"active": true,
+	"description": "",
+	"show_in_rest": 0,
+	"acfe_autosync": [
+			"json"
+	],
+	"acfe_form": 0,
+	"acfe_display_title": "",
+	"acfe_meta": "",
+	"acfe_note": "",
+	"modified": 1740066585
+}

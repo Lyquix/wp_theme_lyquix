@@ -32,7 +32,10 @@ if (count($s['posts'])) {
 	$cards_settings['processed']['hash'] = $s['hash'] . '-posts';
 
 	// Add class 'posts' to the classes array
-	$cards_settings['processed']['class'] = 'posts';
+	$cards_settings['processed']['class'] = 'posts ' . ($s['render_php']['style'] ?: '');
+
+	// Pass filter preset to cards if cards preset is empty
+	$cards_settings['processed']['preset'] = $cards_settings['processed']['preset'] ?: $s['preset'];
 
 	// Render the cards
 	\lqx\blocks\render_block($cards_settings, $s['posts']);

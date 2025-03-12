@@ -30,7 +30,7 @@ if (get_theme_mod('feat_modules', '1') === '1') {
 	// Get directories under php/modules
 	$modules = array_merge(
 		glob(get_template_directory() . '/php/modules/*'),
-		glob(get_template_directory() . '/php/custom/modules/*')
+		glob(get_stylesheet_directory() . '/php/custom/modules/*')
 	);
 	$modules = array_filter($modules, 'is_dir');
 	$modules = array_map('basename', $modules);
@@ -101,7 +101,7 @@ function get_renderer($module_name) {
 	if (file_exists($dir . $filename)) {
 		return $dir . $filename;
 	} else {
-		return get_stylesheet_directory() . '/php/modules/' . $module_name . '/' . $filename;
+        return get_template_directory() . '/php/modules/' . $module_name . '/' . $filename;
 	}
 }
 
@@ -127,6 +127,6 @@ function get_template($module_name, $sub_template = null) {
 	if (file_exists($dir . $filename)) {
 		return $dir . $filename;
 	} else {
-		return get_stylesheet_directory() . '/php/modules/' . $module_name . '/' . $filename;
+		return get_template_directory() . '/php/modules/' . $module_name . '/' . $filename;
 	}
 }

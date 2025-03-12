@@ -26,7 +26,7 @@
 
 $p = $s['pagination'];
 
-if ($p['total_pages'] > 1) : ?>
+if ($p['total_pages'] > 1 && $p['pagination'] == 'y') : ?>
 <div class="pagination" id="<?= $s['hash'] ?>-pagination">
 
 	<ul class="pageslinks">

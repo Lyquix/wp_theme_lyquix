@@ -1,5 +1,7 @@
+<?php
+
 /**
- * rollup.scripts.js - Rollup configuration for custom scripts
+ * tab.php - Lyquix tab item block
  *
  * @version     3.1.0
  * @package     wp_theme_lyquix
@@ -20,27 +22,11 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-// Rollup plugins
-import typescript from '@rollup/plugin-typescript';
+// Get block settings and content
+$settings = \lqx\blocks\get_settings($block);
+$content = \lqx\blocks\get_content($block);
 
-// Rollup configuration
-export default {
-	input: 'js/scripts.ts',
-	output: [
-		{
-			file: 'js/scripts.js',
-			format: 'iife',
-			name: '$lqx',
-			sourcemap: false
-		}
-	],
-	plugins: [
-		typescript({
-			tsconfig: 'tsconfig.scripts.json',
-		})
-	],
-	watch: {
-		include: ['js/scripts.ts', 'js/custom/scripts/*.ts'],
-		clearScreen: false
-	}
-};
+$settings['processed']['convert_to_accordion'] = $context['acf/fields']['tabs-plus_block_admin_convert_to_accordion_override_group_convert_to_accordion_override'];
+
+// Render the block
+\lqx\blocks\render_block($settings, $content);

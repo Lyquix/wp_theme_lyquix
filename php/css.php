@@ -140,11 +140,11 @@ function get_stylesheets() {
 	}
 
 	// Custom Project Styles
-	if (file_exists(get_template_directory() . '/css/styles' . ($non_min_css ? '' : '.min') . '.css')) {
+	if (file_exists(get_stylesheet_directory() . '/css/styles' . ($non_min_css ? '' : '.min') . '.css')) {
 		$stylesheets[] = [
 			'handle' => 'styles',
-			'url' => get_template_directory_uri() . '/css/styles' . ($non_min_css ? '' : '.min') . '.css',
-			'version' => date("YmdHis", filemtime(get_template_directory() . '/css/styles' . ($non_min_css ? '' : '.min') . '.css'))
+			'url' => get_stylesheet_directory_uri() . '/css/styles' . ($non_min_css ? '' : '.min') . '.css',
+			'version' => date("YmdHis", filemtime(get_stylesheet_directory() . '/css/styles' . ($non_min_css ? '' : '.min') . '.css'))
 		];
 	}
 
@@ -172,7 +172,7 @@ function get_critical_css() {
 	if (in_array($post_type, $exclude_types)) return null;
 
 	$slug = str_replace('/', '---', $slug);
-	$filename = get_template_directory() . "/css/critical/{$post_type}" . ($post_type === 'page' ? "-{$slug}" : '') . '.css';
+	$filename = get_stylesheet_directory() . "/css/critical/{$post_type}" . ($post_type === 'page' ? "-{$slug}" : '') . '.css';
 
 	// Skip if file doesn't exist
 	if (!file_exists($filename)) return null;

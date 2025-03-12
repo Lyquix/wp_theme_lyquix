@@ -22,4 +22,4 @@
 //  DO NOT MODIFY THIS FILE!
 //  If you want to customize the theme, create a file called custom.php
 
-require get_template_directory() . '/custom.php';
+require get_stylesheet_directory() . '/custom.php';

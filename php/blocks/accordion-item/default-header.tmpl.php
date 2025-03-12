@@ -1,5 +1,7 @@
+<?php
+
 /**
- * rollup.vue.js - Rollup configuration for vue library
+ * default-header.tmpl.php - Default template for the Lyquix Accordion Item block, header sub-template
  *
  * @version     3.1.0
  * @package     wp_theme_lyquix
@@ -19,32 +21,16 @@
 //    "Y8888P"     888     "Y88888P"  888         888
 //
 //  DO NOT MODIFY THIS FILE!
+//  Instead, copy it to /php/custom/blocks/accordion-item/default-header.tmpl.php to override it
+//  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/accordion-item/{preset}-header.tmpl.php
 
-// Rollup plugins
-import vue from 'rollup-plugin-vue';
-import css from 'rollup-plugin-css-only';
-
-// Rollup configuration
-export default [
-	{
-		input: 'js/lib/vue/index.js',
-		output: {
-			format: 'iife',
-			file: 'js/vue.js',
-			globals: {
-				vue: 'Vue'
-			}
-		},
-		external: ['vue'],
-		plugins: [
-			vue(),
-			css({
-				output: 'vue.css'
-			})
-		],
-		watch: {
-			include: ['js/lib/vue/*'],
-			clearScreen: false
-		}
-	}
-];
+?>
+<<?= $s['heading_style'] ?>>
+	<button
+		class="accordion-header"
+		id="<?= $s['hash'] . '-header-' . $s['uid'] ?>"
+		aria-expanded="<?= $s['open_on_load'] == 'y' ? 'true' : 'false' ?>"
+		aria-controls="<?= $s['hash'] . '-panel-' . $s['uid'] ?>">
+		<?= $c['heading'] ?>
+	</button>
+</<?= $s['heading_style'] ?>>

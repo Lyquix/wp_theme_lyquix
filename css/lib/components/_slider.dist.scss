@@ -27,4 +27,7 @@
 @use "../abstracts/mixins" as *;
 
 .lqx-block-slider {
+	.swiper {
+		max-width: 100vw;
+	}
 }

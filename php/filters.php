@@ -35,6 +35,15 @@ add_filter('acf/load_field', function ($field) {
 		[ // preset and preset_name fields
 			'user' => 'field_65fc7acd8549c',
 			'choice' => 'field_658db3c5e9695'
+		],
+		//Map
+		[ // style and style_name fields
+			'user' => 'field_66a7c06283f9b',
+			'choice' => 'field_6697e27cc4d4b'
+		],
+		[ // preset and preset_name fields
+			'user' => 'field_66a7b7c6761cb',
+			'choice' => 'field_6697e331c4d4f'
 		]
 	];
 
@@ -103,7 +112,8 @@ add_filter('acf/load_field', function ($field) {
 		],
 		'image' => ['image'],
 		'file' => ['file'],
-		'link' => ['link']
+		'link' => ['link'],
+		'map' => ['google_map'],
 	];
 
 	if (!array_key_exists($field['key'], $field_keys)) return $field;
@@ -116,7 +126,15 @@ add_filter('acf/load_field', function ($field) {
 		if (strpos($group['title'], 'Custom Post Type: ') !== false) return true;
 	});
 
-	$field['choices']['current'] = 'Current Post';
+	if($field['key'] == 'field_6707cced1dfc9') {
+		$field['choices']['current'] = 'Current Post';
+	}
+
+	if($field['key'] == 'field_65f1ea274754b') {
+		$field['choices']['parent'] = 'Parent (dynamic type only)';
+		$field['choices']['author'] = 'Author ID (dynamic type only)';
+		$field['choices']['venue'] = 'Venue (dynamic type only)';
+	}
 
 	// Loop through field groups
 	foreach ($field_groups as $group) {
@@ -420,7 +438,7 @@ function validate_settings($settings) {
 				'type' => 'string',
 				'required' => true,
 				'default' => 'php',
-				'allowed' => ['php', 'js']
+				'allowed' => ['php', 'js','maps-php', 'maps-js']
 			],
 			'render_php' => [
 				'type' => 'object',
@@ -532,7 +550,16 @@ function validate_settings($settings) {
 				]
 			],
 			'show_no_results_message' => \lqx\util\schema_str_req_y,
-			'no_results_message' => \lqx\util\schema_str_req_emp
+			'no_results_message' => \lqx\util\schema_str_req_emp,
+			'show_heading' => \lqx\util\schema_str_req_y,
+			'default_heading' => \lqx\util\schema_str,
+			'heading_style' => [
+				'type' => 'string',
+				'required' => true,
+				'default' => 'p',
+				'allowed' => ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+			],
+			'heading_override' => \lqx\util\schema_str_req_emp,
 		]
 	]);
 
@@ -871,21 +898,23 @@ function get_options($s) {
 			case 'field':
 				// Prepare the SQL query to get field values and post counts
 				//we need to get the name of the field for the query
+				//($control['narrow_options'] == 'y' ? " .
+				// TODO: are we handling sub-fields within groups and repeaters correctly? We may need a LIKE operator here
 				$field = get_field_object($control['acf_field'], null, true, false, false);
+				$id_statement =  ($control['narrow_options'] == 'y' ? "AND `post_id` IN (" . implode(',', array_map('intval', $posts)) . ") " : "");
 				$sql = $wpdb->prepare(
-					"SELECT `meta_value`, COUNT(`post_id`) as `count` " .
-					"FROM $wpdb->postmeta " .
-						"WHERE `meta_key` = '".$field['name']."' " . // TODO: are we handling sub-fields within groups and repeaters correctly? We may need a LIKE operator here
-					($control['narrow_options'] == 'y' ? "AND `post_id` IN (" . implode(',', array_map('intval', $posts)) . ") " : "") .
-					"GROUP BY `meta_value`",
-					$control['acf_field']
+					"SELECT `meta_value`, COUNT(`post_id`) as `count`
+					FROM {$wpdb->postmeta}
+					WHERE `meta_key` = %s
+					$id_statement
+					GROUP BY `meta_value`",
+						[$field['name']]
 				);
-
 				// Execute the query
 				$field_values = $wpdb->get_results($sql);
 
 				if (is_array($field_values)) {
-					if ($control['field_type'] == 'relation') {
+					if ($control['field_type'] == 'relationship') {
 						foreach ($field_values as $field_value) {
 							// Relation fields returns ids and so we need to get the slug and name for the posts
 							$relation_values = unserialize($field_value->meta_value);
@@ -1202,19 +1231,36 @@ function prepare_query($query, $s) {
 				break;
 
 			case 'dynamic' :
-				$acf_meta_query = [
-					'key' => get_field_object($pre_filter['acf_field'])['name'],
-					'compare' => $pre_filter['operator_advanced'],
-					'value' => $pre_filter['value_field'] == 'current' ? $s['post_id'] : get_field($pre_filter['value_field'], $s['post_id'])
+				$map = [
+					'venue' => '_EventVenueID'
 				];
 
-				if (isset($query['meta_query'])) {
-					$query['meta_query']['relation'] = 'AND';
-					$query['meta_query'][] = $acf_meta_query;
-				} else {
-					$query['meta_query'] = [];
-					$query['meta_query'][] = $acf_meta_query;
+				$value = $pre_filter['value_field'] == 'current' ? $s['post_id'] : get_field($pre_filter['value_field'], $s['post_id']);
+
+				if($key = get_field_object($pre_filter['acf_field'])['name'] ?? $map[$pre_filter['acf_field']] ?? null) {
+					$acf_meta_query = [
+						'key' => $key,
+						'compare' => $pre_filter['operator_advanced'],
+						'value' => $value
+					];
+
+					if (isset($query['meta_query'])) {
+						$query['meta_query']['relation'] = 'AND';
+						$query['meta_query'][] = $acf_meta_query;
+					} else {
+						$query['meta_query'] = [];
+						$query['meta_query'][] = $acf_meta_query;
+					}
 				}
+
+				if($pre_filter['acf_field'] == 'parent') {
+					$query['post_parent'] = $value;
+				}
+
+				if($pre_filter['acf_field'] == 'author') {
+					$query['author'] = $value;
+				}
+
 				break;
 
 			case 'meta_key' :

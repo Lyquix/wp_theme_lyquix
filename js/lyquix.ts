@@ -34,6 +34,7 @@ import { swipe } from './lib/lyquix/swipe';
 import { responsive } from './lib/lyquix/responsive';
 import { theme } from './lib/lyquix/theme';
 import { util } from './lib/lyquix/util';
+import { menu } from './lib/lyquix/menu';
 
 // Import functionality for Gutenberg blocks and modules
 import { accordion } from './lib/lyquix/accordion';
@@ -41,10 +42,12 @@ import { alerts } from './lib/lyquix/alerts';
 import { cards } from './lib/lyquix/cards';
 import { filters } from './lib/lyquix/filters';
 import { gallery } from './lib/lyquix/gallery';
+import { map } from './lib/lyquix/map';
 import { modal } from './lib/lyquix/modal';
 import { popup } from './lib/lyquix/popup';
 import { tabs } from './lib/lyquix/tabs';
 import { slider } from './lib/lyquix/slider';
+import { testimonial } from './lib/lyquix/testimonial';
 
 declare const lqx;
 
@@ -69,16 +72,19 @@ const init = (customCfg) => {
 		'swipe',
 		'lyqbox',
 		'theme',
+		'menu',
 		// Gutenberg blocks
 		'accordion',
 		'alerts',
 		'cards',
 		'filters',
 		'gallery',
+		'map',
 		'modal',
 		'popup',
 		'tabs',
-		'slider'
+		'slider',
+		'testimonial'
 	];
 
 	// Initialize core config
@@ -139,16 +145,19 @@ const expObj = Object.defineProperties({
 	swipe,
 	util,
 	theme,
+	menu,
 	/* Gutenberg blocks */
 	accordion,
 	alerts,
 	cards,
 	filters,
 	gallery,
+	map,
 	modal,
 	popup,
 	tabs,
-	slider
+	slider,
+	testimonial
 }, {
 	// Set the cfg and vars properties as read-only
 	cfg: {
@@ -178,3 +187,8 @@ const expObj = Object.defineProperties({
 });
 
 export default expObj;
+
+// Manually assign the exported object to the global variable 'lqx'
+if (typeof window !== 'undefined') {
+	(window as any).lqx = expObj;
+}

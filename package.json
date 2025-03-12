@@ -76,8 +76,8 @@
 	"scripts": {
 		"postinstall": "chmod +x ./postinstall.sh && ./postinstall.sh",
 		"watch": "run-p watch:**",
-		"watch:lyquix": "rollup -c rollup.lyquix.js -w",
-		"watch:scripts": "rollup -c rollup.scripts.js -w",
+		"watch:lyquix": "bun build js/lyquix.ts --outdir ./js --target browser --format iife --watch",
+		"watch:scripts": "bun build js/scripts.ts --outdir ./js --target browser --format iife --watch",
 		"watch:gulp": "gulp"
 	}
 }

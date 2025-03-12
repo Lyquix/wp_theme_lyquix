@@ -1,5 +1,7 @@
+<?php
+
 /**
- * rollup.lyquix.js - Rollup configuration for Lyquix library
+ * gallery.php - Lyquix testimonial block
  *
  * @version     3.1.0
  * @package     wp_theme_lyquix
@@ -20,27 +22,9 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-// Rollup plugins
-import typescript from '@rollup/plugin-typescript';
+// Get block settings and content
+$settings = \lqx\blocks\get_settings($block, $post_id);
+$content = \lqx\blocks\get_content($block);
 
-// Rollup configuration
-export default {
-	input: 'js/lyquix.ts',
-	output: [
-		{
-			file: 'js/lyquix.js',
-			format: 'iife',
-			name: 'lqx',
-			sourcemap: false
-		}
-	],
-	plugins: [
-		typescript({
-			tsconfig: 'tsconfig.lyquix.json',
-		})
-	],
-	watch: {
-		include: ['js/lyquix.ts', 'js/lib/lyquix/*.ts'],
-		clearScreen: false
-	}
-};
+// Render the block
+\lqx\blocks\render_block($settings, $content);

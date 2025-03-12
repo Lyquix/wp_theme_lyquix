@@ -245,4 +245,8 @@ if (
 
 </div>
 
+<?php if($s['use_pills'] == 'y') : ?>
+	<div class="pills" id="<?= $s['hash'] ?>-pills"></div>
+<?php endif; ?>
+
 <?php endif;

@@ -136,7 +136,7 @@ function process_wp_posts($posts, $fields_map, $fields_values) {
 
     if(is_array($posts)) {
         foreach ($posts as $i => $post) {
-            $processed_post = isset($fields_values[$i]) ? process_wp_post($post, $fields_map, $fields_values[$i]) : null;
+            $processed_post = process_wp_post($post, $fields_map, $fields_values[$i] ?? null);
             if ($processed_post) $processed_posts[] = $processed_post;
         }
     }
@@ -200,7 +200,7 @@ function process_wp_post($post, $fields_map, $fields_values) {
 		'body' => $post-> post_excerpt,
 		'labels' => null,
 		'image' => \lqx\util\get_thumbnail_image_object($post->ID),
-		'icon_image' => null,
+		'icon_image' => $post->icon_image,
 		'video' => [
 			'type' => ''
 		]

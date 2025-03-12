@@ -38,6 +38,13 @@ module.exports = {
 		'./css/tailwind/whitelist.html',
 	],
 	theme: require('./theme.js'),
+	safelist: [
+		'p-[2.5%]',
+		'p-[5%]',
+		'p-[7.5%]',
+		'p-[10%]',
+		'p-[12.5%]'
+	],
 	plugins: [
 		require('@tailwindcss/container-queries'),
 		require('@tailwindcss/aspect-ratio'),

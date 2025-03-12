@@ -1,5 +1,7 @@
+<?php
+
 /**
- * prettier.config.cjs - Prettier configuration
+ * tab.php - Lyquix tabs plus block
  *
  * @version     3.1.0
  * @package     wp_theme_lyquix
@@ -20,7 +22,8 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-module.exports = {
-	plugins: ['prettier-plugin-tailwindcss'],
-	tailwindConfig: './css/tailwind/config.js',
-};
+// Get block settings and content
+$settings = \lqx\blocks\get_settings($block);
+
+// Render the block
+\lqx\blocks\render_block($settings, null);

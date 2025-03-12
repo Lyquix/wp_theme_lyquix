@@ -28,7 +28,7 @@
 <section
 	id="<?= esc_attr($s['anchor']) ?>"
 	class="lqx-block-cards <?= esc_attr($s['class']) ?>"
-	data-preset="<?= esc_attr($s['preset']) ?>">
+	<?php if ($s['preset']): ?>data-preset="<?= esc_attr($s['preset']) ?>"<?php endif; ?>>
 
 	<div
 		class="cards <?= implode(' ', $css_classes) ?>"

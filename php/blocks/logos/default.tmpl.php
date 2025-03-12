@@ -28,7 +28,7 @@
 <section
 	id="<?= $s['anchor']; ?>"
 	class="lqx-block-logos <?= $s['class']; ?>"
-	data-preset="<?= esc_attr($s['preset']) ?>">
+	<?php if ($s['preset']): ?>data-preset="<?= esc_attr($s['preset']) ?>"<?php endif; ?>>
 
 	<ul
 		class="logos">

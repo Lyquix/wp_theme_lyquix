@@ -332,7 +332,7 @@ function find_value_by_key($array, $keyToFind) {
 function get_global_field_groups() {
 	$field_groups = [];
 
-	$json_files = glob(get_stylesheet_directory() . '/acf-json/*.json');
+	$json_files = glob(get_template_directory() . '/acf-json/*.json'); // Always use the parent theme directory
 	foreach ($json_files as $json_file) {
 		$field_group = json_decode(file_get_contents($json_file), true);
 		if (!empty($field_group['fields'])) {
@@ -549,7 +549,7 @@ function get_renderer($block_name, $preset = null) {
 	} elseif (file_exists($dir . 'default.php')) {
 		return $dir . 'default.php';
 	} else {
-		return get_stylesheet_directory() . '/php/blocks/' . $block_name . '/default.php';
+		return get_template_directory() . '/php/blocks/' . $block_name . '/default.php';
 	}
 }
 
@@ -582,7 +582,7 @@ function get_template($block_name, $preset = null, $sub_template = null) {
 	} elseif (file_exists($dir . $default_file)) {
 		return $dir . $default_file;
 	} else {
-		return get_stylesheet_directory() . '/php/blocks/' . $block_name . '/' . $default_file;
+		return get_template_directory() . '/php/blocks/' . $block_name . '/' . $default_file;
 	}
 }
 
@@ -600,7 +600,7 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 	// Register ACF blocks
 	add_action('init', function () {
 		// Use glob to find 'block.json' files in the 'blocks' directory
-		$matches = array_merge(glob(__DIR__ . '/blocks/*/block.json'), glob(__DIR__ . '/custom/blocks/*/block.json'));
+		$matches = array_merge(glob(__DIR__ . '/blocks/*/block.json'), glob(get_stylesheet_directory() . '/php/custom/blocks/*/block.json'));
 
 		// Check if any matches were found
 		if (!empty($matches)) {
@@ -621,7 +621,7 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 			],
 			[ // preset and preset_name fields
 				'user' => 'field_656c9bb1e9e20',
-				'choice' => 'field_656d01578aa30'
+				'choice' => 'field_658491eadec12'
 			],
 
 			// Banner
@@ -680,6 +680,16 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 				'choice' => 'field_65a0592361823'
 			],
 
+			//Maps
+			[ // style and style_name fields
+				'user' => 'field_6697e3b0d9419',
+				'choice' => 'field_6697e27cc4d4b'
+			],
+			[// preset and preset_name fields
+				'user' => 'field_6697e3bbd941a',
+				'choice' => 'field_6697e331c4d4f'
+			],
+
 			// Slider
 			[ //  style and style_name fields
 				'user' => 'field_659d51caf3d2a',
@@ -698,7 +708,17 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 			[ // preset and preset_name fields
 				'user' => 'field_656f866617344',
 				'choice' => 'field_656f87fcef854'
-			]
+			],
+
+			// Testimonial
+			[ //  style and style_name fields
+				'user' => 'field_6751a226ccc6f',
+				'choice' => 'field_6751a05ca1920'
+			],
+			[ // preset and preset_name fields
+				'user' => 'field_6751a24bccc70',
+				'choice' => 'field_6751a11da1925'
+			],
 		];
 
 		foreach ($field_keys as $k) {
@@ -804,6 +824,24 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 						[
 							"field" => "breadcrumbs_override",
 							"controller" => "show_breadcrumbs",
+							"operator" => "==",
+							"value" => "y"
+						]
+					]
+				],
+				[
+					"settings" => [
+						"block_name" => "lqx/accordion",
+						"content_field" => "field_65301b9bb6ce8",
+						"global_field" => "field_65312d3d168a6",
+						"presets_field" => "field_658491eadec10",
+						"user_field" => "field_656c9b194efb7",
+						"admin_field" => "field_656a4daebe47d"
+					],
+					"rules" => [
+						[
+							"field" => "image",
+							"controller" => "show_image",
 							"operator" => "==",
 							"value" => "y"
 						]

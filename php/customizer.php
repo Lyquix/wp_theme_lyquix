@@ -412,8 +412,8 @@ function customizer_add($wp_customize)
 	];
 
 	// Add custom menu positions to $menus array
-	if (file_exists(get_template_directory() . '/php/custom/features.php')) {
-		require get_template_directory() . '/php/custom/features.php';
+	if (file_exists(get_stylesheet_directory() . '/php/custom/features.php')) {
+		require get_stylesheet_directory() . '/php/custom/features.php';
 
 		if (count($feature_flags)) {
 			foreach ($feature_flags as $code => $title) {

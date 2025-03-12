@@ -336,8 +336,8 @@ export const analytics = (() => {
 				if (elems.length) {
 					log('Setting up ' + elems.length + ' download links', elems);
 					elems.forEach((elem) => {
-						// check if it has an href attribute, otherwise it is just a page anchor
 						try {
+							// check if it has an href attribute, otherwise it is just a page anchor
 							if (elem.href) {
 								elem = jQuery(elem);
 

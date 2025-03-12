@@ -137,7 +137,7 @@ export const accordion = (() => { // Change the accordion name
 		// The elements
 		const panelElem = jQuery('#' + panelId);
 		const headerElem = jQuery('#' + panelId.replace('-panel-', '-header-'));
-		const accElem = panelElem.parent();
+		const accElem = panelElem.parents('.accordion');
 		// TODO Handle missing elements
 
 		// Remove closed class

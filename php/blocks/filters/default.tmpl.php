@@ -28,7 +28,7 @@
 <section
 	id="<?= esc_attr($s['anchor']) ?>"
 	class="lqx-block-filters <?= esc_attr($s['class']) ?>"
-	data-preset="<?= esc_attr($s['preset']) ?>">
+	<?php if ($s['preset']): ?>data-preset="<?= esc_attr($s['preset']) ?>"<?php endif; ?>>
 
 	<div
 		class="filters"
@@ -38,12 +38,20 @@
 		<?php
 		switch ($s['render_mode']) {
 			case 'php':
+				require \lqx\blocks\get_template('filters', $s['preset'], 'heading');
 				require \lqx\blocks\get_template('filters', $s['preset'], 'controls');
 				require \lqx\blocks\get_template('filters', $s['preset'], 'posts');
 				require \lqx\blocks\get_template('filters', $s['preset'], 'pagination');
 				break;
 
+			case 'maps-php':
+				require \lqx\blocks\get_template('filters', $s['preset'], 'controls');
+				require \lqx\blocks\get_template('filters', $s['preset'], 'map');
+				require \lqx\blocks\get_template('filters', $s['preset'], 'pagination');
+				break;
+
 			case 'js':
+			case 'maps-js':
 				require \lqx\blocks\get_template('filters', $s['preset'], 'js');
 				break;
 		}

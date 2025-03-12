@@ -142,21 +142,18 @@
                     "hide_label": "",
                     "hide_instructions": "",
                     "hide_required": "",
-                    "choices": [
-                        "None",
-                        "XS",
-                        "SM",
-                        "MD",
-                        "LG",
-                        "XL"
-                    ],
+                    "choices": {
+                        "0": "None",
+                        "[2.5%]": "XS",
+                        "[5%]": "SM",
+                        "[7.5%]": "MD",
+                        "[10%]": "LG",
+                        "[12.5%]": "XL"
+                    },
                     "default_value": 0,
                     "return_format": "value",
                     "multiple": 0,
                     "max": "",
-                    "allow_custom": 0,
-                    "placeholder": "",
-                    "search_placeholder": "",
                     "prepend": "",
                     "append": "",
                     "acfe_settings": "",
@@ -164,8 +161,12 @@
                     "allow_null": 0,
                     "instruction_placement": "tooltip",
                     "acfe_permissions": "",
+                    "allow_in_bindings": 1,
                     "ui": 0,
                     "ajax": 0,
+                    "placeholder": "",
+                    "allow_custom": 0,
+                    "search_placeholder": "",
                     "min": "",
                     "parent_repeater": "field_65a053720a10e"
                 },
@@ -277,5 +278,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1731218957
+    "modified": 1740740870
 }
