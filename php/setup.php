@@ -185,7 +185,6 @@ function theme_setup() {
 					'advanced-custom-fields-pro/acf.php' => 'https://www.advancedcustomfields.com/pro/',
 					'acf-extended-pro/acf-extended.php' => 'https://www.acf-extended.com/',
 					'acf-extended-pro-libphonenumber/acf-extended-libphonenumber.php' => 'https://www.acf-extended.com/features/fields/phone-number#phone-number-addon',
-					'admin-menu-editor-pro/menu-editor.php' => 'https://adminmenueditor.com/',
 					'gravityforms/gravityforms.php' => 'https://www.gravityforms.com/',
 					'gravityformsrecaptcha/recaptcha.php' => 'https://www.gravityforms.com/add-ons/recaptcha/',
 				];
