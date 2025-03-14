@@ -51,6 +51,8 @@ foreach($c as $item) {
 	$phone_numbers = $location_fields['phone_numbers'];
 	$business_hours = $location_fields['business_hours'];
 	$display_address_override =$location_fields['display_address_override'];
+	$custom_class = $location_fields['additional_classes'];
+	$custom_id = $location_fields['item_id'];
 	$processed_item = [
 		'title' => $heading,
 		'subtitle' => $subheading,
@@ -70,6 +72,8 @@ foreach($c as $item) {
 		'icon' => ($s['google_maps_display_settings']['pin_override'] !== null ? $s['google_maps_display_settings']['pin_override']['url'] : 'http://maps.google.com/mapfiles/ms/icons/' . $item['pin_color'] . '-dot.png'),
 		'infoWindow' => $s['show_infowindows'] == 'y' ? 'true' : 'false',
 		'html' => ($s['show_infowindows'] == 'y' ? require \lqx\blocks\get_template('map', $s['preset'], 'infowindow'): ''),
+		'additional_classes' => $custom_class,
+		'item_id' => $custom_id
 	];
 	array_push($processed_items, $processed_item);
 }

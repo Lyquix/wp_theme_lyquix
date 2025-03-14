@@ -40,11 +40,13 @@ if ($item['image']): ?>
 	</<?= $s['items_display_settings']['subtitle_style'] == 'p' ? 'strong></p' : $s['items_display_settings']['subtitle_style'] ?>>
 	<?php endif; ?>
 	<div class="address"><?= ($item['display_address'] !== '' ? $item['display_address'] : $item['address']) ?></div>
+	<?php if ($item['phone_numbers']): ?>
 	<div class="phone-numbers">
 		<?php foreach($item['phone_numbers'] as $phone): ?>
 			<div><?= $phone['label']?>: <a href=tel:"<?= $phone['phone_number'] ?>"><?= $phone['phone_number'] ?></a></div>
 		<?php endforeach; ?>
 	</div>
+	<?php endif; ?>
 	<?= $item['description'] ?>
 	<?php if (is_array($item['business_hours']) && count($item['business_hours']) > 0) require \lqx\blocks\get_template('map', $s['preset'], 'office-hours'); ?>
 	<?php	if ($s['show_get_directions_link'] == 'y'): ?><a href="https://maps.google.com/?q=<?=URLEncode($item['address'])?>">Get Directions</a><?php endif;?>

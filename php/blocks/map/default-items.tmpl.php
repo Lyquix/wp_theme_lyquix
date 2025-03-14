@@ -26,7 +26,10 @@
 if (is_array($c) and count($c) > 0):?>
 <ul class="lqx-map-items">
 <?php foreach($processed_items as $item):?>
-	<li class="lqx-map-item">
+	<li
+		class="lqx-map-item <?= $item['additional_classes'] ? esc_attr($item['additional_classes']) : '' ?>"
+		id="<?= ($item['item_id'] !== '' ? esc_attr($item['item_id']) : $s['hash'] . '-' . $idx) ?>"
+	>
 		<?php require \lqx\blocks\get_template('map', $s['preset'], 'item'); ?>
 	</li>
 <?php endforeach;?>
