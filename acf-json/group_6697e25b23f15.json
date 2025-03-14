@@ -63,11 +63,7 @@
 							"id": ""
 					},
 					"layout": "block",
-					"acfe_seamless_style": 0,
-					"acfe_group_modal": 0,
-					"acfe_group_modal_close": 0,
-					"acfe_group_modal_button": "",
-					"acfe_group_modal_size": "large",
+					"acfe_seamless_style": 1,
 					"sub_fields": [
 							{
 									"key": "field_669a8fe6550f2",
@@ -90,6 +86,7 @@
 									"default_value": "",
 									"return_format": "value",
 									"allow_null": 0,
+									"allow_in_bindings": 1,
 									"layout": "horizontal"
 							},
 							{
@@ -113,6 +110,7 @@
 									"default_value": "",
 									"return_format": "value",
 									"allow_null": 0,
+									"allow_in_bindings": 1,
 									"layout": "horizontal"
 							},
 							{
@@ -125,7 +123,7 @@
 									"required": 0,
 									"conditional_logic": 0,
 									"wrapper": {
-											"width": "25",
+											"width": "30",
 											"class": "",
 											"id": ""
 									},
@@ -136,6 +134,7 @@
 									"default_value": "",
 									"return_format": "value",
 									"allow_null": 0,
+									"allow_in_bindings": 1,
 									"layout": "horizontal"
 							},
 							{
@@ -159,6 +158,7 @@
 									"default_value": "",
 									"return_format": "value",
 									"allow_null": 0,
+									"allow_in_bindings": 1,
 									"layout": "horizontal"
 							},
 							{
@@ -179,7 +179,7 @@
 											]
 									],
 									"wrapper": {
-											"width": "25",
+											"width": "30",
 											"class": "",
 											"id": ""
 									},
@@ -187,9 +187,10 @@
 											"y": "Yes",
 											"n": "No"
 									},
-									"default_value": "n",
+									"default_value": "",
 									"return_format": "value",
 									"allow_null": 0,
+									"allow_in_bindings": 1,
 									"layout": "horizontal"
 							},
 							{
@@ -202,7 +203,7 @@
 									"required": 0,
 									"conditional_logic": 0,
 									"wrapper": {
-											"width": "25",
+											"width": "30",
 											"class": "",
 											"id": ""
 									},
@@ -213,6 +214,7 @@
 									"default_value": "",
 									"return_format": "value",
 									"allow_null": 0,
+									"allow_in_bindings": 1,
 									"layout": "horizontal"
 							},
 							{
@@ -233,7 +235,7 @@
 											]
 									],
 									"wrapper": {
-											"width": "25",
+											"width": "30",
 											"class": "",
 											"id": ""
 									},
@@ -244,6 +246,31 @@
 									"default_value": "",
 									"return_format": "value",
 									"allow_null": 0,
+									"allow_in_bindings": 1,
+									"layout": "horizontal"
+							},
+							{
+									"key": "field_669a9072550fe",
+									"label": "Map Vendor",
+									"name": "map_vendor",
+									"aria-label": "",
+									"type": "button_group",
+									"instructions": "Select whether to use a Google or ESRI map (Default: Google)",
+									"required": 0,
+									"conditional_logic": 0,
+									"wrapper": {
+											"width": "",
+											"class": "",
+											"id": ""
+									},
+									"choices": {
+											"google": "Google",
+											"esri": "ESRI"
+									},
+									"default_value": "google",
+									"return_format": "value",
+									"allow_null": 0,
+									"allow_in_bindings": 1,
 									"layout": "horizontal"
 							},
 							{
@@ -254,7 +281,15 @@
 									"type": "group",
 									"instructions": "",
 									"required": 0,
-									"conditional_logic": 0,
+									"conditional_logic": [
+											[
+													{
+															"field": "field_669a9072550fe",
+															"operator": "==",
+															"value": "google"
+													}
+											]
+									],
 									"wrapper": {
 											"width": "",
 											"class": "",
@@ -284,6 +319,7 @@
 													"default_value": "",
 													"return_format": "value",
 													"allow_null": 0,
+													"allow_in_bindings": 1,
 													"layout": "horizontal"
 											},
 											{
@@ -307,6 +343,7 @@
 													"default_value": "",
 													"return_format": "value",
 													"allow_null": 0,
+													"allow_in_bindings": 1,
 													"layout": "horizontal"
 											},
 											{
@@ -323,35 +360,36 @@
 															"class": "",
 															"id": ""
 													},
-													"choices": [
-															"0",
-															"1",
-															"2",
-															"3",
-															"4",
-															"5",
-															"6",
-															"7",
-															"8",
-															"9",
-															"10",
-															"11",
-															"12",
-															"13",
-															"14",
-															"15",
-															"16",
-															"17",
-															"18",
-															"19"
-													],
-													"default_value": 15,
+													"choices": {
+															"1": "1",
+															"2": "2",
+															"3": "3",
+															"4": "4",
+															"5": "5",
+															"6": "6",
+															"7": "7",
+															"8": "8",
+															"9": "9",
+															"10": "10",
+															"11": "11",
+															"12": "12",
+															"13": "13",
+															"14": "14",
+															"15": "15",
+															"16": "16",
+															"17": "17",
+															"18": "18",
+															"19": "19",
+															"20": "20"
+													},
+													"default_value": false,
 													"return_format": "value",
 													"multiple": 0,
 													"prepend": "",
 													"append": "",
 													"max": "",
 													"allow_null": 0,
+													"allow_in_bindings": 1,
 													"ui": 0,
 													"ajax": 0,
 													"placeholder": "",
@@ -364,12 +402,12 @@
 													"label": "Type of Map",
 													"name": "type_of_map",
 													"aria-label": "",
-													"type": "button_group",
+													"type": "radio",
 													"instructions": "Select what type of map Google Maps uses as its baseline for the map features and styles (Default: Road)",
 													"required": 0,
 													"conditional_logic": 0,
 													"wrapper": {
-															"width": "16.667",
+															"width": "16.666",
 															"class": "",
 															"id": ""
 													},
@@ -378,10 +416,13 @@
 															"satellite": "Satellite",
 															"terrain": "Terrain"
 													},
-													"default_value": "",
+													"default_value": "road",
 													"return_format": "value",
 													"allow_null": 0,
-													"layout": "horizontal"
+													"other_choice": 0,
+													"allow_in_bindings": 1,
+													"layout": "vertical",
+													"save_other_choice": 0
 											},
 											{
 													"key": "field_66a3ac0ef7f15",
@@ -409,6 +450,7 @@
 													"max_height": "",
 													"max_size": "",
 													"mime_types": "",
+													"allow_in_bindings": 1,
 													"preview_size": "medium"
 											},
 											{
@@ -416,24 +458,22 @@
 													"label": "Snazzy Maps Styles",
 													"name": "snazzy_maps_styles",
 													"aria-label": "",
-													"type": "acfe_code_editor",
+													"type": "textarea",
 													"instructions": "Add a custom style for the map in JSON formatted generated by Snazzy Maps",
 													"required": 0,
 													"conditional_logic": 0,
 													"wrapper": {
-															"width": "16.666",
+															"width": "16.667",
 															"class": "",
 															"id": ""
 													},
 													"default_value": "",
-													"placeholder": "",
-													"mode": "application\/x-json",
-													"lines": 1,
-													"indent_unit": 4,
+													"acfe_textarea_code": 0,
 													"maxlength": "",
+													"allow_in_bindings": 1,
 													"rows": "",
-													"max_rows": 8,
-													"return_format": []
+													"placeholder": "",
+													"new_lines": ""
 											}
 									],
 									"acfe_group_modal": 0,
@@ -449,7 +489,15 @@
 									"type": "group",
 									"instructions": "",
 									"required": 0,
-									"conditional_logic": 0,
+									"conditional_logic": [
+											[
+													{
+															"field": "field_669a8fe6550f2",
+															"operator": "==",
+															"value": "y"
+													}
+											]
+									],
 									"wrapper": {
 											"width": "",
 											"class": "",
@@ -459,6 +507,30 @@
 									"acfe_seamless_style": 1,
 									"sub_fields": [
 											{
+													"key": "field_67d46e3c520fa",
+													"label": "Show Heading",
+													"name": "show_heading",
+													"aria-label": "",
+													"type": "button_group",
+													"instructions": "",
+													"required": 0,
+													"conditional_logic": 0,
+													"wrapper": {
+															"width": "10",
+															"class": "",
+															"id": ""
+													},
+													"choices": {
+															"y": "Yes",
+															"n": "No"
+													},
+													"default_value": "",
+													"return_format": "value",
+													"allow_null": 0,
+													"allow_in_bindings": 0,
+													"layout": "horizontal"
+											},
+											{
 													"key": "field_66a2aa11b4c92",
 													"label": "Heading Style",
 													"name": "heading_style",
@@ -466,7 +538,15 @@
 													"type": "button_group",
 													"instructions": "",
 													"required": 0,
-													"conditional_logic": 0,
+													"conditional_logic": [
+															[
+																	{
+																			"field": "field_67d46e3c520fa",
+																			"operator": "==",
+																			"value": "y"
+																	}
+															]
+													],
 													"wrapper": {
 															"width": "30",
 															"class": "",
@@ -483,6 +563,63 @@
 													"default_value": "",
 													"return_format": "value",
 													"allow_null": 0,
+													"allow_in_bindings": 1,
+													"layout": "horizontal"
+											},
+											{
+													"key": "field_66a2aa11b4c94",
+													"label": "Heading Clickable",
+													"name": "heading_clickable",
+													"aria-label": "",
+													"type": "button_group",
+													"instructions": "",
+													"required": 0,
+													"conditional_logic": [
+															[
+																	{
+																			"field": "field_67d46e3c520fa",
+																			"operator": "==",
+																			"value": "y"
+																	}
+															]
+													],
+													"wrapper": {
+															"width": "10",
+															"class": "",
+															"id": ""
+													},
+													"choices": {
+															"y": "Yes",
+															"n": "No"
+													},
+													"default_value": "",
+													"return_format": "value",
+													"allow_null": 0,
+													"allow_in_bindings": 1,
+													"layout": "horizontal"
+											},
+											{
+													"key": "field_67d46e87520fb",
+													"label": "Show Subheading",
+													"name": "show_subheading",
+													"aria-label": "",
+													"type": "button_group",
+													"instructions": "",
+													"required": 0,
+													"conditional_logic": 0,
+													"wrapper": {
+															"width": "10",
+															"class": "",
+															"id": ""
+													},
+													"choices": {
+															"y": "Yes",
+															"n": "No"
+													},
+													"default_value": "",
+													"return_format": "value",
+													"allow_null": 0,
+													"allow_in_bindings": 0,
 													"layout": "horizontal"
 											},
 											{
@@ -493,9 +630,17 @@
 													"type": "button_group",
 													"instructions": "",
 													"required": 0,
-													"conditional_logic": 0,
+													"conditional_logic": [
+															[
+																	{
+																			"field": "field_67d46e87520fb",
+																			"operator": "==",
+																			"value": "y"
+																	}
+															]
+													],
 													"wrapper": {
-															"width": "30",
+															"width": "40",
 															"class": "",
 															"id": ""
 													},
@@ -511,19 +656,20 @@
 													"default_value": "",
 													"return_format": "value",
 													"allow_null": 0,
+													"allow_in_bindings": 1,
 													"layout": "horizontal"
 											},
 											{
-													"key": "field_66a2aa11b4c94",
-													"label": "Heading Clickable",
-													"name": "heading_clickable",
+													"key": "field_67d46ee2520fc",
+													"label": "Show Image",
+													"name": "show_image",
 													"aria-label": "",
 													"type": "button_group",
 													"instructions": "",
 													"required": 0,
 													"conditional_logic": 0,
 													"wrapper": {
-															"width": "13.333",
+															"width": "16.666",
 															"class": "",
 															"id": ""
 													},
@@ -534,6 +680,7 @@
 													"default_value": "",
 													"return_format": "value",
 													"allow_null": 0,
+													"allow_in_bindings": 0,
 													"layout": "horizontal"
 											},
 											{
@@ -544,9 +691,17 @@
 													"type": "button_group",
 													"instructions": "",
 													"required": 0,
-													"conditional_logic": 0,
+													"conditional_logic": [
+															[
+																	{
+																			"field": "field_67d46ee2520fc",
+																			"operator": "==",
+																			"value": "y"
+																	}
+															]
+													],
 													"wrapper": {
-															"width": "13.333",
+															"width": "16.667",
 															"class": "",
 															"id": ""
 													},
@@ -557,6 +712,7 @@
 													"default_value": "",
 													"return_format": "value",
 													"allow_null": 0,
+													"allow_in_bindings": 1,
 													"layout": "horizontal"
 											},
 											{
@@ -569,7 +725,7 @@
 													"required": 0,
 													"conditional_logic": 0,
 													"wrapper": {
-															"width": "13.333",
+															"width": "16.666",
 															"class": "",
 															"id": ""
 													},
@@ -580,6 +736,79 @@
 													"default_value": "",
 													"return_format": "value",
 													"allow_null": 0,
+													"allow_in_bindings": 1,
+													"layout": "horizontal"
+											},
+											{
+													"key": "field_67d46f2d520fd",
+													"label": "Show Phone Numbers",
+													"name": "show_phone_numbers",
+													"aria-label": "",
+													"type": "button_group",
+													"instructions": "",
+													"required": 0,
+													"conditional_logic": 0,
+													"wrapper": {
+															"width": "16.667",
+															"class": "",
+															"id": ""
+													},
+													"choices": {
+															"y": "Yes",
+															"n": "No"
+													},
+													"default_value": "",
+													"return_format": "value",
+													"allow_null": 0,
+													"allow_in_bindings": 0,
+													"layout": "horizontal"
+											},
+											{
+													"key": "field_67d46f45520fe",
+													"label": "Show Description",
+													"name": "show_description",
+													"aria-label": "",
+													"type": "button_group",
+													"instructions": "",
+													"required": 0,
+													"conditional_logic": 0,
+													"wrapper": {
+															"width": "16.666",
+															"class": "",
+															"id": ""
+													},
+													"choices": {
+															"y": "Yes",
+															"n": "No"
+													},
+													"default_value": "",
+													"return_format": "value",
+													"allow_null": 0,
+													"allow_in_bindings": 0,
+													"layout": "horizontal"
+											},
+											{
+													"key": "field_67d46f64520ff",
+													"label": "Show Business Hours",
+													"name": "show_business_hours",
+													"aria-label": "",
+													"type": "button_group",
+													"instructions": "",
+													"required": 0,
+													"conditional_logic": 0,
+													"wrapper": {
+															"width": "16.667",
+															"class": "",
+															"id": ""
+													},
+													"choices": {
+															"y": "Yes",
+															"n": "No"
+													},
+													"default_value": "",
+													"return_format": "value",
+													"allow_null": 0,
+													"allow_in_bindings": 0,
 													"layout": "horizontal"
 											}
 									],
@@ -588,7 +817,11 @@
 									"acfe_group_modal_button": "",
 									"acfe_group_modal_size": "large"
 							}
-					]
+					],
+					"acfe_group_modal": 0,
+					"acfe_group_modal_close": 0,
+					"acfe_group_modal_button": "",
+					"acfe_group_modal_size": "large"
 			},
 			{
 					"key": "field_6697e313c4d4d",
@@ -676,9 +909,9 @@
 	],
 	"menu_order": 0,
 	"position": "normal",
-	"style": "seamless",
+	"style": "default",
 	"label_placement": "top",
-	"instruction_placement": "tooltip",
+	"instruction_placement": "label",
 	"hide_on_screen": "",
 	"active": true,
 	"description": "",
@@ -690,5 +923,5 @@
 	"acfe_display_title": "",
 	"acfe_meta": "",
 	"acfe_note": "",
-	"modified": 1732046623
+	"modified": 1741976520
 }

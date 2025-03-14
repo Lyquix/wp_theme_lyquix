@@ -142,7 +142,15 @@
 									"type": "button_group",
 									"instructions": "Select whether or not a box that controls what type of directions the user will receive if they click the get directions link (Default: No)",
 									"required": 0,
-									"conditional_logic": 0,
+									"conditional_logic": [
+											[
+													{
+															"field": "field_669a61b47bc99",
+															"operator": "==",
+															"value": "y"
+													}
+											]
+									],
 									"wrapper": {
 											"width": "25",
 											"class": "",
@@ -220,7 +228,7 @@
 									"name": "map_vendor",
 									"aria-label": "",
 									"type": "button_group",
-									"instructions": "",
+									"instructions": "Select whether to use a Google or ESRI map (Default: Google)",
 									"required": 0,
 									"conditional_logic": 0,
 									"wrapper": {
@@ -806,5 +814,5 @@
 	"acfe_display_title": "",
 	"acfe_meta": "",
 	"acfe_note": "",
-	"modified": 1741972208
+	"modified": 1741976522
 }
