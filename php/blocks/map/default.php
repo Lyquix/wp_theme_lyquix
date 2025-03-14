@@ -79,11 +79,11 @@ $s = \lqx\util\validate_data($settings['processed'], [
 			'default' => 'y',
 			'allowed' => ['y', 'n']
 		],
-		'use_esri_map' => [
+		'map_vendor' => [
 			'type' => 'string',
 			'required' => true,
-			'default' => 'n',
-			'allowed' => ['y', 'n']
+			'default' => 'google',
+			'allowed' => ['google', 'esri']
 		],
 		'google_maps_display_settings' => [
 			'type' => 'object',
