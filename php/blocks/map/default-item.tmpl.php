@@ -23,7 +23,7 @@
 //  If you need a custom renderer, copy this file to php/custom/blocks/cards/default-item.tmpl.php and modify it there
 //  You may also create custom renderer for specific presets, by copying this file to /php/custom/blocks/map/{preset}.php
 
-if ($item['image']): ?>
+if ($item['image'] && $s['items_display_settings']['show_image'] == 'y'): ?>
 	<div class="image">
 	<?= ($s['items_display_settings']['image_clickable'] == 'y' && $item['link'] !== '' ? '<a href="' . $item['link']['url'] . '">' : '')?>
 		<img
@@ -34,20 +34,24 @@ if ($item['image']): ?>
 	</div>
 <?php endif;?>
 <div class="text">
-	<<?= $s['items_display_settings']['heading_style'] ?>><?= ($s['items_display_settings']['heading_clickable'] == 'y' && $item['link'] !== '' ? '<a href="' . $item['link']['url'] . '">' : '')?><?= $item['title'] ?><?= ($s['items_display_settings']['heading_clickable'] == 'y' && $item['link'] !== '' ? '</a>' : '')?></<?= $s['items_display_settings']['heading_style'] ?>>
-	<?php if ($item['subtitle'] != ''): ?><<?= $s['items_display_settings']['subtitle_style'] == 'p' ? 'p class="subheading"><strong' : $s['items_display_settings']['subtitle_style'] ?>>
+	<?php if ($s['items_display_settings']['show_heading'] == 'y'):?>
+		<<?= $s['items_display_settings']['heading_style'] ?>>
+			<?= ($s['items_display_settings']['heading_clickable'] == 'y' && $item['link'] !== '' ? '<a href="' . $item['link']['url'] . '">' : '')?><?= $item['title'] ?><?= ($s['items_display_settings']['heading_clickable'] == 'y' && $item['link'] !== '' ? '</a>' : '')?>
+		</<?= $s['items_display_settings']['heading_style'] ?>>
+	<?php endif; ?>
+	<?php if ($item['subtitle'] != '' && $s['items_display_settings']['show_subheading'] == 'y'): ?><<?= $s['items_display_settings']['subtitle_style'] == 'p' ? 'p class="subheading"><strong' : $s['items_display_settings']['subtitle_style'] ?>>
 		<?= $item['subtitle'] ?>
 	</<?= $s['items_display_settings']['subtitle_style'] == 'p' ? 'strong></p' : $s['items_display_settings']['subtitle_style'] ?>>
 	<?php endif; ?>
 	<div class="address"><?= ($item['display_address'] !== '' ? $item['display_address'] : $item['address']) ?></div>
-	<?php if ($item['phone_numbers']): ?>
+	<?php if ($item['phone_numbers'] && $s['items_display_settings']['show_phone_numbers'] == 'y'): ?>
 	<div class="phone-numbers">
 		<?php foreach($item['phone_numbers'] as $phone): ?>
 			<div><?= $phone['label']?>: <a href=tel:"<?= $phone['phone_number'] ?>"><?= $phone['phone_number'] ?></a></div>
 		<?php endforeach; ?>
 	</div>
 	<?php endif; ?>
-	<?= $item['description'] ?>
-	<?php if (is_array($item['business_hours']) && count($item['business_hours']) > 0) require \lqx\blocks\get_template('map', $s['preset'], 'office-hours'); ?>
+	<?php if ($s['items_display_settings']['show_description'] == 'y'):?> <?= $item['description'] ?> <?php endif; ?>
+	<?php if (is_array($item['business_hours']) && count($item['business_hours']) > 0 && $s['items_display_settings']['show_business_hours'] == 'y') require \lqx\blocks\get_template('map', $s['preset'], 'office-hours'); ?>
 	<?php	if ($s['show_get_directions_link'] == 'y'): ?><a href="https://maps.google.com/?q=<?=URLEncode($item['address'])?>">Get Directions</a><?php endif;?>
 </div>

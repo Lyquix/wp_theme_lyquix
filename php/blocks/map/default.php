@@ -133,11 +133,29 @@ $s = \lqx\util\validate_data($settings['processed'], [
 				'type' => 'object',
 				'required' => true,
 				'keys' => [
+					'show_heading' => [
+						'type' => 'string',
+						'required' => true,
+						'default' => 'y',
+						'allowed' => ['y', 'n']
+					],
 					'heading_style' => [
 						'type' => 'string',
 						'required' => true,
 						'default' => 'y',
 						'allowed' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+					],
+					'heading_clickable' => [
+						'type' => 'string',
+						'required' => true,
+						'default' => 'y',
+						'allowed' => ['y', 'n']
+					],
+					'show_subheading' => [
+						'type' => 'string',
+						'required' => true,
+						'default' => 'y',
+						'allowed' => ['y', 'n']
 					],
 					'subtitle_style' => [
 						'type' => 'string',
@@ -145,7 +163,7 @@ $s = \lqx\util\validate_data($settings['processed'], [
 						'default' => 'y',
 						'allowed' => ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
 					],
-					'heading_clickable' => [
+					'show_image' => [
 						'type' => 'string',
 						'required' => true,
 						'default' => 'y',
@@ -162,7 +180,25 @@ $s = \lqx\util\validate_data($settings['processed'], [
 						'required' => true,
 						'default' => 'y',
 						'allowed' => ['y', 'n']
-					]
+					],
+					'show_phone_numbers' => [
+						'type' => 'string',
+						'required' => true,
+						'default' => 'y',
+						'allowed' => ['y', 'n']
+					],
+					'show_description' => [
+						'type' => 'string',
+						'required' => true,
+						'default' => 'y',
+						'allowed' => ['y', 'n']
+					],
+					'show_business_hours' => [
+						'type' => 'string',
+						'required' => true,
+						'default' => 'y',
+						'allowed' => ['y', 'n']
+					],
 				]
 			]
 		]
