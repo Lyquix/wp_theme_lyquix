@@ -36,8 +36,7 @@
                 "id": ""
             },
             "layout": "block",
-            "acfe_seamless_style": 0,
-            "acfe_group_modal": 0,
+            "acfe_seamless_style": 1,
             "sub_fields": [
                 {
                     "key": "field_67519fcaba479",
@@ -121,6 +120,7 @@
                     "layout": "horizontal"
                 }
             ],
+            "acfe_group_modal": 0,
             "acfe_group_modal_close": 0,
             "acfe_group_modal_button": "",
             "acfe_group_modal_size": "large"
@@ -151,5 +151,5 @@
     "acfe_display_title": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1734005054
+    "modified": 1741979881
 }
