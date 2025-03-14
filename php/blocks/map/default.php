@@ -173,7 +173,56 @@ if ($s['isValid']) $s = $s['data'];
 else throw new \Exception('Invalid block settings: ' . var_export($s, true));
 // Get content and filter out invalid content
 $c = array_filter(array_map(function($item) {
-	$v = \lqx\util\validate_data($item, \lqx\cards\schema);
+	$v = \lqx\util\validate_data($item, [
+		'type' => 'object',
+		'keys' => [
+			'location' => [
+				'type' => 'object',
+				'default' => [],
+				'elems' => [
+					'type' => 'object',
+					'required' => true,
+					'keys' => [
+						'heading' => \lqx\util\schema_str_req_emp,
+						'subheading' => \lqx\util\schema_str_req_emp,
+						'address' => [
+							'type' => 'object',
+							'required' => true,
+						],
+						'display_address_override' => \lqx\util\schema_str_req_n,
+						'lattitude_override' => \lqx\util\schema_str_req_n,
+						'longitude_override' => \lqx\util\schema_str_req_n,
+						'image' => [
+							'type' => 'object',
+							'default' => [],
+							'keys' => \lqx\util\schema_data_image
+						],
+						'phone_numbers' => [
+							'type' => 'object',
+							'default' => [],
+						],
+						'description' => \lqx\util\schema_str_req_emp,
+						'link' => [
+							'type' => 'object',
+							'default' => [],
+							'keys' => \lqx\util\schema_data_link
+						],
+						'labels'=> [
+							'type' => 'object',
+							'default' => [],
+						],
+						'business_hours' => [
+							'type' => 'object',
+							'default' => [],
+						],
+						'pin_color' => \lqx\util\schema_str_req_n,
+					],
+					'additional_classes' => \lqx\util\schema_str_req_emp,
+					'item_id' => \lqx\util\schema_str_req_emp,
+				],
+			],
+		],
+	]);
 	return $v['isValid'] ? $v['data'] : null;
 }, $content));
 
