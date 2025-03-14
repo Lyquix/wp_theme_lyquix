@@ -222,6 +222,27 @@
                                     "append": ""
                                 },
                                 {
+                                    "key": "field_67d48f23d3538",
+                                    "label": "Company Name",
+                                    "name": "company_name",
+                                    "aria-label": "",
+                                    "type": "text",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "default_value": "",
+                                    "maxlength": "",
+                                    "allow_in_bindings": 0,
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": ""
+                                },
+                                {
                                     "key": "field_675827d0382d8",
                                     "label": "Additional Classes",
                                     "name": "additional_classes",
@@ -341,5 +362,5 @@
     "acfe_display_title": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1741979859
+    "modified": 1741983540
 }
