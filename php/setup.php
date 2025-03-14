@@ -340,6 +340,11 @@ function theme_setup() {
 		});
 
 	}
+
+	//Hide excerpt config from editor sidepanel
+	add_action('admin_head', function () {
+		echo '<style>.editor-sidebar__panel{.editor-post-featured-image+.components-flex:has(.editor-post-excerpt__dropdown){display: none;}}</style>';
+	});
 }
 
 add_action('after_setup_theme', '\lqx\setup\theme_setup');
