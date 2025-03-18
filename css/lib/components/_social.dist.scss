@@ -26,8 +26,8 @@
 @use "../abstracts/variables" as *;
 @use "../abstracts/mixins" as *;
 
-.lqx-social-icons > .icons-list,
-.lqx-social-share > .share-list {
+.lqx-module-social > .icons-list,
+.lqx-module-share > .share-list {
 	list-style: none;
 	display: flex;
 	gap: 0.25em;
