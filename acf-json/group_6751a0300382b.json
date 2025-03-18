@@ -146,6 +146,78 @@
                     "allow_null": 0,
                     "allow_in_bindings": 0,
                     "layout": "horizontal"
+                },
+                {
+                    "key": "field_67d9ad43e5e75",
+                    "label": "Show Image",
+                    "name": "show_image",
+                    "aria-label": "",
+                    "type": "button_group",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "choices": {
+                        "y": "Yes",
+                        "n": "No"
+                    },
+                    "default_value": "n",
+                    "return_format": "value",
+                    "allow_null": 1,
+                    "allow_in_bindings": 0,
+                    "layout": "horizontal"
+                },
+                {
+                    "key": "field_67d9ad56e5e76",
+                    "label": "Custom Colors",
+                    "name": "custom_colors",
+                    "aria-label": "",
+                    "type": "button_group",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "choices": {
+                        "y": "Yes",
+                        "n": "No"
+                    },
+                    "default_value": "n",
+                    "return_format": "value",
+                    "allow_null": 1,
+                    "allow_in_bindings": 0,
+                    "layout": "horizontal"
+                },
+                {
+                    "key": "field_67d9ad66e5e77",
+                    "label": "Custom Classes\/ID",
+                    "name": "custom_classesid",
+                    "aria-label": "",
+                    "type": "button_group",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "choices": {
+                        "y": "Yes",
+                        "n": "No"
+                    },
+                    "default_value": "n",
+                    "return_format": "value",
+                    "allow_null": 1,
+                    "allow_in_bindings": 0,
+                    "layout": "horizontal"
                 }
             ],
             "acfe_group_modal": 0,
@@ -254,5 +326,5 @@
     "acfe_display_title": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1741979871
+    "modified": 1742319631
 }

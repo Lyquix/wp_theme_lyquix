@@ -846,6 +846,48 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 							"value" => "y"
 						]
 					]
+				],
+				[
+					"settings" => [
+						"block_name" => "lqx/testimonial",
+						"content_field" => "field_6751a710aeac7",
+						"global_field" => "field_6751a07aa1921",
+						"presets_field" => "field_6751a0fea1924",
+						"user_field" => "field_6751a208ccc6e",
+						"admin_field" => "field_67519f8cba478"
+					],
+					"rules" => [
+						[
+							"field" => "image",
+							"controller" => "show_image",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "background_color",
+							"controller" => "custom_colors",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "foreground_color",
+							"controller" => "custom_colors",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "additional_classes",
+							"controller" => "custom_classesid",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "item_id",
+							"controller" => "custom_classesid",
+							"operator" => "==",
+							"value" => "y"
+						]
+					]
 				]
 			];
 			foreach ($rules as $rule) {

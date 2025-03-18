@@ -97,30 +97,6 @@
                             "acfe_seamless_style": 1,
                             "sub_fields": [
                                 {
-                                    "key": "field_67d83c929b514",
-                                    "label": "Custom Colors",
-                                    "name": "custom_colors",
-                                    "aria-label": "",
-                                    "type": "button_group",
-                                    "instructions": "",
-                                    "required": 0,
-                                    "conditional_logic": 0,
-                                    "wrapper": {
-                                        "width": "",
-                                        "class": "",
-                                        "id": ""
-                                    },
-                                    "choices": {
-                                        "y": "Yes",
-                                        "n": "No"
-                                    },
-                                    "default_value": "n",
-                                    "return_format": "value",
-                                    "allow_null": 0,
-                                    "allow_in_bindings": 0,
-                                    "layout": "horizontal"
-                                },
-                                {
                                     "key": "field_67519eafccc76",
                                     "label": "Background Color",
                                     "name": "background_color",
@@ -128,15 +104,7 @@
                                     "type": "color_picker",
                                     "instructions": "",
                                     "required": 0,
-                                    "conditional_logic": [
-                                        [
-                                            {
-                                                "field": "field_67d83c929b514",
-                                                "operator": "==",
-                                                "value": "y"
-                                            }
-                                        ]
-                                    ],
+                                    "conditional_logic": 0,
                                     "wrapper": {
                                         "width": "50",
                                         "class": "",
@@ -163,15 +131,7 @@
                                     "type": "color_picker",
                                     "instructions": "",
                                     "required": 0,
-                                    "conditional_logic": [
-                                        [
-                                            {
-                                                "field": "field_67d83c929b514",
-                                                "operator": "==",
-                                                "value": "y"
-                                            }
-                                        ]
-                                    ],
+                                    "conditional_logic": 0,
                                     "wrapper": {
                                         "width": "50",
                                         "class": "",
@@ -191,30 +151,6 @@
                                     "allow_in_bindings": 0
                                 },
                                 {
-                                    "key": "field_67d83d6e9b515",
-                                    "label": "Show Image",
-                                    "name": "show_image",
-                                    "aria-label": "",
-                                    "type": "button_group",
-                                    "instructions": "",
-                                    "required": 0,
-                                    "conditional_logic": 0,
-                                    "wrapper": {
-                                        "width": "",
-                                        "class": "",
-                                        "id": ""
-                                    },
-                                    "choices": {
-                                        "y": "Yes",
-                                        "n": "No"
-                                    },
-                                    "default_value": "n",
-                                    "return_format": "value",
-                                    "allow_null": 0,
-                                    "allow_in_bindings": 0,
-                                    "layout": "horizontal"
-                                },
-                                {
                                     "key": "field_67582d62f2474",
                                     "label": "Image",
                                     "name": "image",
@@ -222,15 +158,7 @@
                                     "type": "image",
                                     "instructions": "",
                                     "required": 0,
-                                    "conditional_logic": [
-                                        [
-                                            {
-                                                "field": "field_67d83d6e9b515",
-                                                "operator": "==",
-                                                "value": "y"
-                                            }
-                                        ]
-                                    ],
+                                    "conditional_logic": 0,
                                     "wrapper": {
                                         "width": "",
                                         "class": "",
@@ -315,30 +243,6 @@
                                     "append": ""
                                 },
                                 {
-                                    "key": "field_67d83d989b516",
-                                    "label": "Customize Classes and ID",
-                                    "name": "customize_classes_and_id",
-                                    "aria-label": "",
-                                    "type": "button_group",
-                                    "instructions": "",
-                                    "required": 0,
-                                    "conditional_logic": 0,
-                                    "wrapper": {
-                                        "width": "",
-                                        "class": "",
-                                        "id": ""
-                                    },
-                                    "choices": {
-                                        "y": "Yes",
-                                        "n": "No"
-                                    },
-                                    "default_value": "n",
-                                    "return_format": "value",
-                                    "allow_null": 0,
-                                    "allow_in_bindings": 0,
-                                    "layout": "horizontal"
-                                },
-                                {
                                     "key": "field_675827d0382d8",
                                     "label": "Additional Classes",
                                     "name": "additional_classes",
@@ -346,15 +250,7 @@
                                     "type": "text",
                                     "instructions": "",
                                     "required": 0,
-                                    "conditional_logic": [
-                                        [
-                                            {
-                                                "field": "field_67d83d989b516",
-                                                "operator": "==",
-                                                "value": "y"
-                                            }
-                                        ]
-                                    ],
+                                    "conditional_logic": 0,
                                     "wrapper": {
                                         "width": "50",
                                         "class": "",
@@ -375,15 +271,7 @@
                                     "type": "acfe_slug",
                                     "instructions": "",
                                     "required": 0,
-                                    "conditional_logic": [
-                                        [
-                                            {
-                                                "field": "field_67d83d989b516",
-                                                "operator": "==",
-                                                "value": "y"
-                                            }
-                                        ]
-                                    ],
+                                    "conditional_logic": 0,
                                     "wrapper": {
                                         "width": "50",
                                         "class": "",
@@ -474,5 +362,5 @@
     "acfe_display_title": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1742224851
+    "modified": 1742318595
 }
