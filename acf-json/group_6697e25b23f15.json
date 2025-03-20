@@ -935,7 +935,7 @@
     "position": "normal",
     "style": "default",
     "label_placement": "top",
-    "instruction_placement": "label",
+    "instruction_placement": "tooltip",
     "hide_on_screen": "",
     "active": true,
     "description": "",
@@ -947,5 +947,5 @@
     "acfe_display_title": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1742484806
+    "modified": 1742493834
 }
