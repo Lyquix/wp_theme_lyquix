@@ -343,11 +343,11 @@
                         "y": "Yes",
                         "n": "No"
                     },
-                    "default_value": "n",
+                    "default_value": "",
                     "return_format": "value",
                     "acfe_settings": "",
                     "acfe_validate": "",
-                    "allow_null": 0,
+                    "allow_null": 1,
                     "instruction_placement": "",
                     "acfe_permissions": "",
                     "allow_in_bindings": 0,
@@ -384,5 +384,5 @@
     ],
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1742392995
+    "modified": 1742485342
 }

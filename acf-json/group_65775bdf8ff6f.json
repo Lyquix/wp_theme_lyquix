@@ -210,7 +210,7 @@
                         "y": "Yes",
                         "n": "No"
                     },
-                    "default_value": "n",
+                    "default_value": "",
                     "return_format": "value",
                     "acfe_settings": "",
                     "acfe_validate": "",
@@ -242,7 +242,7 @@
                         "y": "Yes",
                         "n": "No"
                     },
-                    "default_value": "y",
+                    "default_value": "",
                     "return_format": "value",
                     "acfe_settings": "",
                     "acfe_validate": "",
@@ -274,7 +274,7 @@
                         "y": "Yes",
                         "n": "No"
                     },
-                    "default_value": "y",
+                    "default_value": "",
                     "return_format": "value",
                     "acfe_settings": "",
                     "acfe_validate": "",
@@ -306,7 +306,7 @@
                         "y": "Yes",
                         "n": "No"
                     },
-                    "default_value": "y",
+                    "default_value": "",
                     "return_format": "value",
                     "acfe_settings": "",
                     "acfe_validate": "",
@@ -338,7 +338,7 @@
                         "y": "Yes",
                         "n": "No"
                     },
-                    "default_value": "y",
+                    "default_value": "",
                     "return_format": "value",
                     "acfe_settings": "",
                     "acfe_validate": "",
@@ -370,7 +370,7 @@
                         "y": "Yes",
                         "n": "No"
                     },
-                    "default_value": "y",
+                    "default_value": "",
                     "return_format": "value",
                     "acfe_settings": "",
                     "acfe_validate": "",
@@ -402,7 +402,7 @@
                         "y": "Yes",
                         "n": "No"
                     },
-                    "default_value": "y",
+                    "default_value": "",
                     "return_format": "value",
                     "acfe_settings": "",
                     "acfe_validate": "",
@@ -443,5 +443,5 @@
     ],
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1742483909
+    "modified": 1742485432
 }

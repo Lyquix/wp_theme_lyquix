@@ -952,7 +952,7 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 						],
 						[
 							"field" => "heading_override",
-							"controller" => "show_heading",
+							"controller" => "show_heading_override",
 							"operator" => "==",
 							"value" => "y"
 						],
