@@ -87,6 +87,7 @@
                     "maxlength": "",
                     "instruction_placement": "tooltip",
                     "acfe_permissions": "",
+                    "allow_in_bindings": 1,
                     "placeholder": "",
                     "prepend": "",
                     "append": "",
@@ -252,5 +253,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1731214693
+    "modified": 1742479151
 }

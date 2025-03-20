@@ -44,6 +44,10 @@
             "acfe_settings": "",
             "instruction_placement": "",
             "acfe_permissions": "",
+            "acfe_group_modal": 0,
+            "acfe_group_modal_close": 0,
+            "acfe_group_modal_button": "",
+            "acfe_group_modal_size": "large",
             "sub_fields": [
                 {
                     "key": "field_67a490009819b",
@@ -80,11 +84,7 @@
                     "acfe_permissions": "",
                     "layout": "horizontal"
                 }
-            ],
-            "acfe_group_modal": 0,
-            "acfe_group_modal_close": 0,
-            "acfe_group_modal_button": "",
-            "acfe_group_modal_size": "large"
+            ]
         }
     ],
     "location": [
@@ -115,5 +115,5 @@
     ],
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1738838053
+    "modified": 1742480626
 }

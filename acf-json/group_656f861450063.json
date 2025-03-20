@@ -323,6 +323,70 @@
                             "custom_choice_button_text": "Add new choice"
                         }
                     ]
+                },
+                {
+                    "key": "field_67db1d8903b51",
+                    "label": "Show Heading",
+                    "name": "show_heading",
+                    "aria-label": "",
+                    "type": "button_group",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "choices": {
+                        "y": "Yes",
+                        "n": "No"
+                    },
+                    "default_value": "",
+                    "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "allow_null": 1,
+                    "instruction_placement": "",
+                    "acfe_permissions": "",
+                    "allow_in_bindings": 0,
+                    "layout": "horizontal"
+                },
+                {
+                    "key": "field_67db1da003b52",
+                    "label": "Ues Custom Classes\/ID",
+                    "name": "use_custom_classesid",
+                    "aria-label": "",
+                    "type": "button_group",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "choices": {
+                        "y": "Yes",
+                        "n": "No"
+                    },
+                    "default_value": "",
+                    "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "allow_null": 1,
+                    "instruction_placement": "",
+                    "acfe_permissions": "",
+                    "allow_in_bindings": 0,
+                    "layout": "horizontal"
                 }
             ]
         }
@@ -355,5 +419,5 @@
     ],
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1718724373
+    "modified": 1742481420
 }

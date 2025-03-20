@@ -747,6 +747,36 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 			$rules = [
 				[
 					"settings" => [
+						"block_name" => "lqx/accordion",
+						"content_field" => "field_65301b9bb6ce8",
+						"global_field" => "field_65312d3d168a6",
+						"presets_field" => "field_658491eadec10",
+						"user_field" => "field_656c9b194efb7",
+						"admin_field" => "field_656a4daebe47d"
+					],
+					"rules" => [
+						[
+							"field" => "image",
+							"controller" => "show_image",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "additional_classes",
+							"controller" => "custom_classesid",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "item_id",
+							"controller" => "custom_classesid",
+							"operator" => "==",
+							"value" => "y"
+						]
+					]
+				],
+				[
+					"settings" => [
 						"block_name" => "lqx/cards",
 						"content_field" => "field_658db3b2c1203",
 						"global_field" => "field_658db3c317b3c",
@@ -790,6 +820,99 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 							"controller" => "show_links",
 							"operator" => "==",
 							"value" => "y"
+						],
+						[
+							"field" => "additional_classes",
+							"controller" => "custom_classesid",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "item_id",
+							"controller" => "custom_classesid",
+							"operator" => "==",
+							"value" => "y"
+						]
+					]
+				],
+				[
+					"settings" => [
+						"block_name" => "lqx/filters",
+						"content_field" => "field_6751c8c470f53",
+						//filters has no global settings. How do we wish to reconcile this?
+						"global_field" => "",
+						"presets_field" => "field_65f20fbdb1bde",
+						"user_field" => "field_65f1dcf400025",
+						//we don't really have an admin tab on filters either because we don't want clients messing around here.
+						//presets are working for swapping settings and hiding/showing the override. We should consider how we want to handle the other cases.
+						"admin_field" => "field_65f20f764800f"
+					],
+					"rules" => [
+						[
+							"field" => "heading_override",
+							"controller" => "use_heading_override",
+							"operator" => "==",
+							"value" => "y"
+						],
+					]
+					],
+				[
+					"settings" => [
+						"block_name" => "lqx/gallery",
+						"content_field" => "field_65c2b093fc2bb",
+						"global_field" => "field_65775ad9a7c3b",
+						"presets_field" => "field_658061b1e7ed1",
+						"user_field" => "field_6577582ae9049",
+						"admin_field" => "field_65775bdf959d5"
+					],
+					"rules" => [
+						[
+							"field" => "additional_classes",
+							"controller" => "use_custom_classesids",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "item_id",
+							"controller" => "use_custom_classesids",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "title",
+							"controller" => "show_title",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "image",
+							"controller" => "show_image",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "video",
+							"controller" => "show_video",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "caption",
+							"controller" => "show_caption",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "thumbnail",
+							"controller" => "show_thumbnail",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "teaser",
+							"controller" => "show_teaser",
+							"operator" => "==",
+							"value" => "y"
 						]
 					]
 				],
@@ -826,22 +949,199 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 							"controller" => "show_breadcrumbs",
 							"operator" => "==",
 							"value" => "y"
+						],
+						[
+							"field" => "heading_override",
+							"controller" => "show_heading",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "links",
+							"controller" => "show_links",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "intro_text",
+							"controller" => "show_intro_text",
+							"operator" => "==",
+							"value" => "y"
 						]
 					]
 				],
 				[
 					"settings" => [
-						"block_name" => "lqx/accordion",
-						"content_field" => "field_65301b9bb6ce8",
+						"block_name" => "lqx/logos",
+						"content_field" => "field_65a053720a10e",
+						//global is very underpopulated, missing presets and global settings??
 						"global_field" => "field_65312d3d168a6",
 						"presets_field" => "field_658491eadec10",
-						"user_field" => "field_656c9b194efb7",
+						"user_field" => "field_65a05775994f1",
+						//we are missing an admin group for logos
 						"admin_field" => "field_656a4daebe47d"
 					],
 					"rules" => [
+						//TBD once the above issues are resolved
+					]
+				],
+				[
+					"settings" => [
+						"block_name" => "lqx/map",
+						"content_field" => "field_6697d93a623ba",
+						"global_field" => "field_6697e2efc4d4c",
+						"presets_field" => "field_6697e313c4d4d",
+						"user_field" => "field_6697e397d9418",
+						"admin_field" => "field_6697e4be61945"
+					],
+					"rules" => [
+						[
+							"field" => "heading",
+							"controller" => "show_heading",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "subheading",
+							"controller" => "show_subheading",
+							"operator" => "==",
+							"value" => "y"
+						],
 						[
 							"field" => "image",
 							"controller" => "show_image",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "phone_numbers",
+							"controller" => "show_phone_numbers",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "business_hours",
+							"controller" => "show_business_hours",
+							"operator" => "==",
+							"value" => "y"
+						],
+							[
+								"field" => "description",
+								"controller" => "show_description",
+								"operator" => "==",
+								"value" => "y"
+							],
+							[
+								"field" => "labels",
+								"controller" => "show_labels",
+								"operator" => "==",
+								"value" => "y"
+							],
+							[
+								"field" => "pin_color",
+								"controller" => "show_pin_color",
+								"operator" => "==",
+								"value" => "y"
+							],
+						]
+				],
+				[
+					"settings" => [
+						"block_name" => "lqx/slider",
+						"content_field" => "field_659d0ea6112e6",
+						"global_field" => "field_659d2fd7b3e35",
+						"presets_field" => "field_659d3012b3e36",
+						"user_field" => "field_659d2e57346b8",
+						"admin_field" => "field_659d17af1fdf2"
+					],
+					"rules" => [
+						[
+							"field" => "additional_classes",
+							"controller" => "custom_classesid",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "item_id",
+							"controller" => "custom_classesid",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "heading",
+							"controller" => "show_heading",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "body",
+							"controller" => "show_body",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "image_mobile",
+							"controller" => "show_image_mobile",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "video",
+							"controller" => "show_video",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "image_link",
+							"controller" => "show_image_link",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "links",
+							"controller" => "show_links",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "thumbnail",
+							"controller" => "show_thumbnail",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "teaser_text",
+							"controller" => "show_teaser_text",
+							"operator" => "==",
+							"value" => "y"
+						],
+					]
+				],
+				[
+					"settings" => [
+						"block_name" => "lqx/tabs",
+						"content_field" => "field_654a45cad8716",
+						"global_field" => "field_654959b6163da",
+						"presets_field" => "field_656f87e9ef853",
+						"user_field" => "field_656f866617342",
+						"admin_field" => "field_656f861459d96"
+					],
+					"rules" => [
+						[
+							"field" => "heading",
+							"controller" => "show_heading",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "additional_classes",
+							"controller" => "use_custom_classesid",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+						"field" => "item_id",
+							"controller" => "use_custom_classesid",
 							"operator" => "==",
 							"value" => "y"
 						]
