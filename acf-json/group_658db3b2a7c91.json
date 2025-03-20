@@ -393,10 +393,11 @@
                     "acfe_validate": "",
                     "instruction_placement": "tooltip",
                     "acfe_permissions": "",
+                    "allow_in_bindings": 1,
                     "tabs": "all",
                     "toolbar": "full",
                     "media_upload": 1,
-                    "delay": 0,
+                    "delay": 1,
                     "acfe_wysiwyg_auto_init": 0,
                     "acfe_wysiwyg_min_height": 300,
                     "acfe_wysiwyg_toolbar_buttons": [],
@@ -487,6 +488,7 @@
                     "collapsed": "",
                     "button_label": "Add Row",
                     "rows_per_page": 20,
+                    "parent_repeater": "field_658db3b2c1203",
                     "sub_fields": [
                         {
                             "key": "field_658db8410c9b3",
@@ -540,8 +542,7 @@
                             "append": "",
                             "parent_repeater": "field_658db8320c9b2"
                         }
-                    ],
-                    "parent_repeater": "field_658db3b2c1203"
+                    ]
                 },
                 {
                     "key": "field_665f1731a1b2a",
@@ -630,5 +631,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1731215597
+    "modified": 1742494817
 }

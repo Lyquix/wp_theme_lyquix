@@ -231,11 +231,14 @@
                                 "class": "",
                                 "id": ""
                             },
+                            "acfe_permissions": "",
+                            "instruction_placement": "tooltip",
                             "hide_field": "",
                             "hide_label": "",
                             "hide_instructions": "",
                             "hide_required": "",
                             "default_value": "",
+                            "acfe_wysiwyg_auto_init": 0,
                             "acfe_wysiwyg_height": 300,
                             "acfe_wysiwyg_max_height": "",
                             "acfe_wysiwyg_valid_elements": "",
@@ -250,13 +253,11 @@
                             "acfe_wysiwyg_custom_toolbar": 0,
                             "acfe_settings": "",
                             "acfe_validate": "",
-                            "instruction_placement": "tooltip",
-                            "acfe_permissions": "",
+                            "allow_in_bindings": 1,
                             "tabs": "all",
                             "toolbar": "basic",
                             "media_upload": 1,
-                            "delay": 0,
-                            "acfe_wysiwyg_auto_init": 0,
+                            "delay": 1,
                             "acfe_wysiwyg_min_height": 300,
                             "acfe_wysiwyg_toolbar_buttons": [],
                             "parent_repeater": "field_655b8006311d0"
@@ -417,5 +418,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1731214466
+    "modified": 1742494348
 }
