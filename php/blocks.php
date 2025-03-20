@@ -868,13 +868,13 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 					"rules" => [
 						[
 							"field" => "additional_classes",
-							"controller" => "use_custom_classesids",
+							"controller" => "custom_classesid",
 							"operator" => "==",
 							"value" => "y"
 						],
 						[
 							"field" => "item_id",
-							"controller" => "use_custom_classesids",
+							"controller" => "custom_classesid",
 							"operator" => "==",
 							"value" => "y"
 						],
@@ -974,15 +974,42 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 					"settings" => [
 						"block_name" => "lqx/logos",
 						"content_field" => "field_65a053720a10e",
-						//global is very underpopulated, missing presets and global settings??
-						"global_field" => "field_65312d3d168a6",
-						"presets_field" => "field_658491eadec10",
+						"global_field" => "field_67dc2d4243d67",
+						"presets_field" => "field_67dc2dbb43d6b",
 						"user_field" => "field_65a05775994f1",
-						//we are missing an admin group for logos
-						"admin_field" => "field_656a4daebe47d"
+						"admin_field" => "field_67dc2b485fcae"
 					],
 					"rules" => [
-						//TBD once the above issues are resolved
+						[
+							"field" => "link",
+							"controller" => "show_link",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "tailwind_p-",
+							"controller" => "show_padding",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "title",
+							"controller" => "show_title",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "additional_classes",
+							"controller" => "custom_classesid",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "item_id",
+							"controller" => "custom_classesid",
+							"operator" => "==",
+							"value" => "y"
+						],
 					]
 				],
 				[
@@ -1025,25 +1052,37 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 							"operator" => "==",
 							"value" => "y"
 						],
-							[
-								"field" => "description",
-								"controller" => "show_description",
-								"operator" => "==",
-								"value" => "y"
-							],
-							[
-								"field" => "labels",
-								"controller" => "show_labels",
-								"operator" => "==",
-								"value" => "y"
-							],
-							[
-								"field" => "pin_color",
-								"controller" => "show_pin_color",
-								"operator" => "==",
-								"value" => "y"
-							],
-						]
+						[
+							"field" => "description",
+							"controller" => "show_description",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "labels",
+							"controller" => "show_labels",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "pin_color",
+							"controller" => "show_pin_color",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "additional_classes",
+							"controller" => "custom_classesid",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "item_id",
+							"controller" => "custom_classesid",
+							"operator" => "==",
+							"value" => "y"
+						],
+					]
 				],
 				[
 					"settings" => [
@@ -1135,13 +1174,13 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 						],
 						[
 							"field" => "additional_classes",
-							"controller" => "use_custom_classesid",
+							"controller" => "custom_classesid",
 							"operator" => "==",
 							"value" => "y"
 						],
 						[
 						"field" => "item_id",
-							"controller" => "use_custom_classesid",
+							"controller" => "custom_classesid",
 							"operator" => "==",
 							"value" => "y"
 						]

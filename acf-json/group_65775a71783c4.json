@@ -209,8 +209,8 @@
                 },
                 {
                     "key": "field_67dade8ea5465",
-                    "label": "Use Custom Classes\/ID",
-                    "name": "use_custom_classesid",
+                    "label": "Custom Classes\/ID",
+                    "name": "custom_classesid",
                     "aria-label": "",
                     "type": "button_group",
                     "instructions": "",
@@ -541,5 +541,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1742397198
+    "modified": 1742483924
 }

@@ -358,8 +358,8 @@
                 },
                 {
                     "key": "field_67db1da003b52",
-                    "label": "Ues Custom Classes\/ID",
-                    "name": "use_custom_classesid",
+                    "label": "Custom Classes\/ID",
+                    "name": "custom_classesid",
                     "aria-label": "",
                     "type": "button_group",
                     "instructions": "",
@@ -419,5 +419,5 @@
     ],
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1742481420
+    "modified": 1742483776
 }
