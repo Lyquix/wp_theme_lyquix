@@ -90,6 +90,40 @@ export const cards = (() => {
 			elems.each((idx, cardsElem) => {
 				// The accordion element
 				cardsElem = jQuery(cardsElem);
+				//listeners for lazyloading videos within each cards block
+				const videos = jQuery(cardsElem).find('.lazy-video');
+				videos.each((video) => {
+					if (video !== null) {
+						const target = videos[video];
+						const source = target.querySelector('source');
+						if (source !== null) {
+							const observer = new IntersectionObserver((entries, observer) => {
+								entries.forEach(entry => {
+									if (entry.isIntersecting) {
+										// Load video source only when in viewport
+										source.src = source.dataset.src;
+										target.load();  // Load the video
+										observer.unobserve(target);
+									}
+								});
+							}, { threshold: 0.5 });
+
+							observer.observe(target);
+
+							// Play on hover, pause on mouse leave
+							target.parentElement.addEventListener('mouseenter', () => {
+								if (target.readyState >= 3) { // Check if video is loaded
+									target.play();
+								}
+							});
+
+							target.parentElement.addEventListener('mouseleave', () => {
+								target.pause();
+							});
+						}
+					}
+				});
+
 
 				// Skip if there isn't no swiper element
 				if (cardsElem.find(cfg.cards.swiperSelector).length == 0) return;
