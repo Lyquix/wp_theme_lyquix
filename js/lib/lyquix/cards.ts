@@ -52,7 +52,7 @@ export const cards = (() => {
 
 		cfg.cards = {
 			enabled: true,
-			cardsBlockSelector: '.lqx-module-cards > .cards',
+			cardsBlockSelector: '.lqx-block-cards > .cards',
 			swiperWrapperSelector: '.swiper-wrapper',
 			swiperSelector: '.swiper',
 			swiperSlideClass: 'swiper-slide',
@@ -65,8 +65,7 @@ export const cards = (() => {
 			}
 		};
 		// Copy default opts and vars
-		if (customCfg) cfg.cards = jQuery.extend(true, cfg.alert, customCfg);
-
+		if (customCfg) cfg.cards = jQuery.extend(true, cfg.cards, customCfg);
 		// Initialize only if enabled
 		if (cfg.cards.enabled) {
 			log('Initializing `cards`');
