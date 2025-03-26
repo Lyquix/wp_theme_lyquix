@@ -175,8 +175,22 @@ export const lyqbox = (() => {
 					};
 				}
 				else {
-					mode = 'gallery';
-					vars.lyqbox.lightboxes[opts.name].mode = mode;
+					//we should include a check to see if the same slug exists in the same lightbox to create a new pointer instead of forcing gallery mode
+					//if it has a slug, run the array
+					let slugFound = false;
+					if(opts.slug) {
+						slugFound = vars.lyqbox.lightboxes[opts.name].slides.filter(e => e['slug'] == opts.slug);
+						//if we don't find the slug, we set the mode to gallery and add the new slide
+						//if we do, we treat this as a new pointer and don't add the slide
+						if (slugFound == false) {
+							mode = 'gallery';
+							vars.lyqbox.lightboxes[opts.name].mode = mode;
+						}
+					//without a slug we just init gallery mode
+					} else {
+						mode = 'gallery';
+						vars.lyqbox.lightboxes[opts.name].mode = mode;
+					}
 				}
 
 				// Check the type
