@@ -425,6 +425,30 @@
                             "save_other_choice": 0
                         },
                         {
+                            "key": "field_67e56d468b448",
+                            "label": "Show Pin Color",
+                            "name": "show_pin_color",
+                            "aria-label": "",
+                            "type": "button_group",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "16.667",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "y": "Yes",
+                                "n": "No"
+                            },
+                            "default_value": "y",
+                            "return_format": "value",
+                            "allow_null": 0,
+                            "allow_in_bindings": 0,
+                            "layout": "horizontal"
+                        },
+                        {
                             "key": "field_66a3ac0ef7f15",
                             "label": "Pin Override",
                             "name": "pin_override",
@@ -463,7 +487,7 @@
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
-                                "width": "16.667",
+                                "width": "",
                                 "class": "",
                                 "id": ""
                             },
@@ -947,5 +971,5 @@
     "acfe_display_title": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1742493834
+    "modified": 1743092911
 }
