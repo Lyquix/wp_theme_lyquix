@@ -240,7 +240,7 @@
                         "google": "Google",
                         "esri": "ESRI"
                     },
-                    "default_value": "google",
+                    "default_value": "",
                     "return_format": "value",
                     "allow_null": 1,
                     "allow_in_bindings": 1,
@@ -862,5 +862,5 @@
     "acfe_display_title": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1743092870
+    "modified": 1743099229
 }
