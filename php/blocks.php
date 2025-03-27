@@ -679,6 +679,10 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 				'user' => 'field_65a05775a0471',
 				'choice' => 'field_65a0592361823'
 			],
+			[ // preset and style_name fields
+				'user' => 'field_67e5ab32af0b2',
+				'choice' => 'field_67dc2dd543d6c'
+			],
 
 			//Maps
 			[ // style and style_name fields

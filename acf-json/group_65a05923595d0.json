@@ -209,12 +209,18 @@
                 "class": "",
                 "id": ""
             },
+            "hide_field": "",
+            "hide_label": "",
+            "hide_instructions": "",
+            "hide_required": "",
             "acfe_repeater_stylised_button": 0,
-            "layout": "table",
+            "layout": "block",
             "pagination": 0,
             "acfe_settings": "",
             "min": 0,
             "max": 0,
+            "instruction_placement": "",
+            "acfe_permissions": "",
             "collapsed": "",
             "button_label": "Add Row",
             "rows_per_page": 20,
@@ -301,5 +307,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1742483733
+    "modified": 1743105418
 }
