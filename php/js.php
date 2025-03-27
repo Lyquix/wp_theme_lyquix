@@ -190,14 +190,19 @@ function render_lyquix_options() {
 
 	// Merge with options from template settings
 	$theme_lqx_options = json_decode(get_theme_mod('lqx_options'), true);
-	if (!$theme_lqx_options) $theme_lqx_options = [];
-	$lqx_options = array_replace_recursive($lqx_options, $theme_lqx_options);
-	$theme_script_options = json_decode(get_theme_mod('scripts_options'), true);
-	if (!$theme_script_options) $theme_script_options = [];
-	$scripts_options = array_replace_recursive([], $theme_script_options);
+	if (is_array($theme_lqx_options)) $lqx_options = array_replace_recursive($lqx_options, $theme_lqx_options);
+	echo '<script>((lqxOptions) => {
+		if (typeof lqx !== "undefined" && typeof lqx.init === "function") lqx.init(lqxOptions);
+		else document.addEventListener("lqxload", function () { lqx.init(lqxOptions); });
+	})(JSON.parse(atob("' . base64_encode(json_encode($lqx_options)) . '")));</script>';
 
-	echo "<script>lqx.init(JSON.parse(atob('" . base64_encode(json_encode($lqx_options)) . "')));\n";
-	echo "\$lqx.init(JSON.parse(atob('" . base64_encode(json_encode($scripts_options)) . "')));</script>\n";
+	$scripts_options = json_decode(get_theme_mod('scripts_options'), true);
+	if (is_array($scripts_options)) {
+		echo '<script>(($lqxOptions) => {
+			if (typeof $lqx !== "undefined" && typeof $lqx.init === "function") $lqx.init($lqxOptions);
+			else document.addEventListener("$lqxload", function () { $lqx.init($lqxOptions); });
+		})(JSON.parse(atob("' . base64_encode(json_encode($scripts_options)) . '")));</script>';
+	}
 }
 
 /**
