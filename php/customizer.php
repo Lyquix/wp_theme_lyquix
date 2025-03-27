@@ -119,6 +119,12 @@ function customizer_add($wp_customize)
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
 			],
+			'enable_jquery_migrate' => [
+				'type' => 'radio',
+				'label' => 'Enable jQuery Migrate',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '0'
+			],
 			'enable_jquery_ui' => [
 				'type' => 'radio',
 				'label' => 'Enable jQuery UI',

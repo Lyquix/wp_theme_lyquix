@@ -45,6 +45,13 @@ function enqueue_scripts() {
 		wp_dequeue_script('jquery');
 	}
 
+	// Enable jQuery Migrate
+	if (get_theme_mod('enable_jquery_migrate', '0')) {
+		wp_enqueue_script('jquery-migrate');
+	} else {
+		wp_dequeue_script('jquery-migrate');
+	}
+
 	// Enable jQuery UI
 	if (get_theme_mod('enable_jquery_ui', '0')) {
 		wp_enqueue_script('jquery-ui-core');
