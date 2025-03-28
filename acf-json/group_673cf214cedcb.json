@@ -12,7 +12,7 @@
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "",
+                "width": "50",
                 "class": "",
                 "id": ""
             },
@@ -163,8 +163,7 @@
                         "id": ""
                     },
                     "layout": "block",
-                    "acfe_seamless_style": 0,
-                    "acfe_group_modal": 0,
+                    "acfe_seamless_style": 1,
                     "sub_fields": [
                         {
                             "key": "field_673cf31a365b8",
@@ -241,6 +240,7 @@
                             "min": ""
                         }
                     ],
+                    "acfe_group_modal": 0,
                     "acfe_group_modal_close": 0,
                     "acfe_group_modal_button": "",
                     "acfe_group_modal_size": "large",
@@ -261,8 +261,7 @@
                         "id": ""
                     },
                     "layout": "block",
-                    "acfe_seamless_style": 0,
-                    "acfe_group_modal": 0,
+                    "acfe_seamless_style": 1,
                     "sub_fields": [
                         {
                             "key": "field_673cf354365bb",
@@ -317,6 +316,7 @@
                             "max_sec": ""
                         }
                     ],
+                    "acfe_group_modal": 0,
                     "acfe_group_modal_close": 0,
                     "acfe_group_modal_button": "",
                     "acfe_group_modal_size": "large",
@@ -336,7 +336,7 @@
     ],
     "menu_order": 0,
     "position": "normal",
-    "style": "default",
+    "style": "seamless",
     "label_placement": "left",
     "instruction_placement": "label",
     "hide_on_screen": "",
@@ -350,5 +350,5 @@
     "acfe_display_title": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1732047728
+    "modified": 1743106925
 }
