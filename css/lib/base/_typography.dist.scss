@@ -24,6 +24,9 @@
 @use "../abstracts/variables" as *;
 @use "../abstracts/mixins" as *;
 
+@import url("https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap");
+
 html {
 	// Set default font-size to 10px, then use rem units for the rest of the stylesheet
 	font-size: 10px;
@@ -46,7 +49,7 @@ p {
 
 ul,
 ol {
-	@apply list-inside pl-list;
+	@apply pl-list;
 }
 
 ul {
@@ -69,17 +72,21 @@ samp {
 }
 
 a {
-	@apply text-link;
-	text-decoration: none;
+	@apply text-lyquix-green-accessible underline;
 	outline: none;
 
 	&:hover {
 		@apply text-link-hover;
-		text-decoration: underline;
+		text-decoration: none;
 	}
 
-	&:visited {
+	/*&:visited {
 		@apply text-link-visited;
+	}*/
+}
+nav ul li a:not(.button) {
+	&:hover {
+		text-decoration: none;
 	}
 }
 
@@ -97,4 +104,12 @@ a {
 			@apply #{$s}:text-size-#{$h}-#{$s} #{$s}:leading-#{$h}-#{$s};
 		}
 	}
+}
+
+.readmore {
+	@include readmore;
+}
+
+h1, h2, h3, h4, h5, h6, p, li, blockquote {
+	@apply text-pretty;
 }

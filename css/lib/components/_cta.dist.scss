@@ -27,12 +27,46 @@
 @use "../abstracts/mixins" as *;
 
 .lqx-module-cta {
-	.image {
-	}
+	@apply grid-container;
 
-	.content {
-	}
+	.cta {
+		&.contact {
+			@apply bg-midnight-black full-width-grid;
 
-	.links {
+			.image {
+				@apply h-[180px] md:h-full order-2 col-span-full md:col-start-7 md:col-span-8 md:-ml-[20px] relative;
+
+				img {
+					@apply max-h-full h-full w-full object-cover absolute;
+				}
+			}
+
+			.content {
+				@apply col-start-2 col-span-12 md:col-start-2 md:col-span-4 xs:max-md:pt-[16.55px] xs:max-md:pb-[40px] md:max-lg:pt-[36.55px] md:max-lg:pb-[60px] lg:py-24;
+
+				.title {
+					@apply md:max-lg:tracking-[-0.36px] md:max-lg:text-[35px] md:max-lg:leading-[42px] mt-0 h2;
+
+					strong {
+						@apply text-white font-bold;
+					}
+				}
+
+				.links {
+					@apply p-0 list-none;
+
+					li {
+						@apply border-b border-b-white;
+						&:last-of-type {
+							@apply mb-0;
+						}
+					}
+
+					a {
+						@apply text-white justify-between no-underline hover:no-underline;
+					}
+				}
+			}
+		}
 	}
 }

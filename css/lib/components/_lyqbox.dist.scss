@@ -1,0 +1,89 @@
+@use "../abstracts/mixins" as *;
+
+.lyqbox {
+	@apply xs:max-sm:w-[300px] sm:w-[460px] p-[30px] fixed rounded-[10px];
+	box-shadow: 4px 4px 20px 4px #00000014;
+
+	.close {
+		@apply absolute top-[30px] right-[30px] w-[18px] h-[18px] outline-0 outline-transparent m-0 border-0 p-0 bg-[url(../images/icons/menu-close.svg)] bg-no-repeat bg-center bg-contain block cursor-pointer;
+		background-color: transparent;
+		outline: none;
+		&:after {
+			@apply hidden;
+		}
+		&:hover {
+			background-color: transparent;
+		}
+		&:focus, &:focus-visible {
+			@apply outline-0;
+		}
+	}
+	.wrapper.active {
+		.content {
+			#mc_embed_signup {
+				form {
+					@apply m-0;
+					.indicates-required {
+						@apply text-left text-[#414349] xs:max-sm:text-[1.6rem] sm:text-[1.8rem] leading-[1.5] my-[16px];
+						.asterisk {
+							@apply text-[#414349];
+						}
+					}
+					h2 {
+						@apply xs:max-sm:text-[3.5rem] xs:max-sm:leading-[42px] sm:text-[4.5rem] sm:leading-[1.333] tracking-[-0.36px] m-0 pr-[20px];
+					}
+					label {
+						@apply text-[#414349] text-[1.6rem] leading-[1.5] mb-[0] w-full;
+						.asterisk {
+							@apply text-[#414349];
+						}
+					}
+
+					.mc-field-group {
+						@apply pb-[19px];
+						input {
+							@apply mx-0 mb-0 mt-[6px] border-[#DBDBDB] rounded-[4px] w-full leading-[29px];
+						}
+					}
+					.clear {
+						@apply w-[194px] flex relative;
+						input[type=submit] {
+							@include common-button;
+							@apply text-[18px] leading-[30px] text-left font-semibold h-auto m-0 w-full;
+						}
+						&:after {
+							@apply absolute right-[15px] top-[50%] transform translate-y-[-50%];
+							background-image: url(../images/white-arrow.svg);
+							background-size: 47px 15px;
+							background-position: right center;
+							content: " ";
+							display: block;
+							height: 15px;
+							transition: width 0.5s;
+							width: 47px;
+							pointer-events: none;
+						}
+						transition: color 0.5s;
+						&:hover {
+							input[type=submit] {
+								@apply text-white bg-midnight-black;
+							}
+							text-decoration: none;
+							&:after {
+								width: 28px;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	.wrapper:not(.active) {
+		display: none;
+	}
+	&[data-lyqbox-name=email-signup-footer] {
+		.counter, .navigation {
+			display: none;
+		}
+	}
+}

@@ -1,0 +1,156 @@
+.grey-box {
+  @apply bg-[#F6F6F6] py-[35px] md:py-[70px];
+
+  > h2,
+  > .lqx-block-filters,
+  > p,
+  > .wp-block-buttons
+  {
+    @apply col-span-12 col-start-2;
+  }
+
+  > h2 {
+    @apply mb-[20px] lg:mb-[35px] mt-0 text-midnight-black;
+  }
+
+  > p {
+    @apply md:col-start-2 md:col-span-10 lg:col-start-2 lg:col-span-7 md:-mr-[20px] text-[#595B60] mb-[24px] mt-0;
+  }
+
+  .readmore {
+    @apply py-0
+  }
+}
+
+.community-box {
+  @apply grid grid-cols-12 gap-x-[8px] sm:gap-x-[20px] mb-[35px] md:mb-[60px] lg:mb-[70px];
+
+  p {
+    @apply col-span-full lg:col-span-9 text-[#595B60];
+
+    &:last-of-type {
+      @apply mb-[35px];
+    }
+  }
+
+  .box-l {
+    @apply md:py-[45px] mb-[27px] sm:mb-[35px] col-span-full xl:col-span-9 flex flex-wrap justify-center lg:justify-start xl:justify-around max-md:gap-x-[54px] md:gap-y-[30px];
+
+    figure {
+      @apply flex justify-center md:px-[40px];
+
+      img {
+        @apply max-md:w-[80px] max-md:h-[80px]  object-contain opacity-70;
+      }
+    }
+  }
+
+  h3 {
+    @apply col-span-full lg:col-span-9 mb-0 text-midnight-black text-[20px] leading-[30px];
+  }
+}
+
+.box-l {
+  &.grouped-content {
+    @apply full-width-grid bg-[#F6F6F6] py-[35px] md:py-[60px] lg:py-[70px];
+
+    h2 {
+      @apply col-span-12 col-start-2 mt-0 mb-[14px] md:mb-[20px] lg:mb-[35px] text-midnight-black;
+    }
+
+    .lqx-block-cards {
+      @apply col-span-12 col-start-2;
+    }
+  }
+
+  &.dark-wrapper {
+    @apply full-width-grid bg-midnight-black text-white md:py-[60px] lg:py-[70px] py-[35px] md:mb-[70px] mb-[35px] relative;
+
+    h2.wp-block-heading {
+      @apply row-start-1 col-start-2 col-span-12 text-white font-bold mb-0 mb-[20px] lg:mb-[35px] mt-0 text-[35px] leading-[42px] lg:text-[45px] lg:leading-[60px];
+    }
+
+    &:has(.lqx-block-accordion) {
+      h2.wp-block-heading {
+        @apply md:max-w-[60%];
+      }
+    }
+
+    .lqx-block-accordion {
+      @apply col-start-2 md:col-start-2 col-span-12 row-start-3 md:col-span-7 md:row-start-2;
+    }
+
+    .wp-block-image {
+      @apply col-span-12 col-start-2 row-start-2 md:col-span-4 md:col-start-10 md:row-start-1 md:row-span-2;
+
+      img {
+        @apply w-full object-cover rounded-[5px] max-md:aspect-[3/2] md:aspect-[4/3];
+      }
+    }
+
+    &:has(.lqx-block-cards) {
+      @apply py-[35px] lg:py-[70px];
+
+      .wp-block-heading {
+        @apply max-md:mb-[20px] col-span-12 lg:col-span-3 !col-start-2;
+      }
+
+      .lqx-block-cards {
+        @apply col-start-2 lg:col-start-5 col-span-12 lg:col-span-9;
+
+        .cards-wrapper {
+          @apply p-0 gap-y-[30px] lg:gap-y-[60px];
+
+          .card {
+            @apply flex max-md:flex-col lg:grid md:grid-cols-9 gap-[10px] md:gap-[20px] col-span-full p-0 border-0;
+            min-height: auto;
+
+            .image {
+              @apply lg:col-span-3 xl:col-span-2 flex justify-start md:justify-center items-start lg:items-center;
+
+              img {
+                @apply w-[80px] h-[80px] md:min-w-[85px] md:min-h-[85px] lg:w-[150px] lg:h-[150px];
+              }
+            }
+
+            .text {
+              @apply max-md:flex-col max-md:p-0 lg:col-start-4 lg:col-span-6 xl:col-start-3 xl:col-span-7 xl:py-[9px];
+
+              h3 {
+                @apply text-[#F6F6F6] text-[20px] lg:text-[22px] leading-[30px] lg:leading-[32px] font-semibold mb-[14px] lg:mb-[16px];
+              }
+
+              p {
+                @apply max-md:block text-[#F6F6F6];
+
+                &:last-child {
+                  @apply mb-0;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &:has(.lqx-block-filters[data-preset=team-members]) {
+    @apply xl:grid xl:grid-cols-12 xl:gap-x-[20px] mb-[30px] sm:mb-[40px] md:mb-[60px] xl:mb-[70px];
+
+    h2 {
+      @apply mb-[20px] mt-0 xl:col-span-4 xl:row-start-1 xl:col-start-9;
+
+      &:first-of-type {
+        @apply xl:col-span-8 xl:col-start-1;
+      }
+    }
+
+    .lqx-block-filters[data-preset=team-members] {
+      @apply xl:row-start-2 xl:col-span-8;
+    }
+
+    .lqx-block-cards[data-preset=the-lyquix-team] {
+      @apply col-span-12 xl:col-span-4 xl:col-start-9;
+    }
+  }
+}

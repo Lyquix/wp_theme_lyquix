@@ -31,4 +31,39 @@ button,
 [type="reset"],
 .button,
 .btn {
+  &:not(.clear, .pill, .cta-btn) {
+    @include common-button;
+  }
+}
+
+.cta-btn {
+  @include readmore;
+}
+
+.pill {
+  @apply relative bg-[#F6F6F6] py-[8px] pl-[12px] pr-[32px] rounded-[5px] text-[1.3rem] leading-[19px] tracking-[-0.17px] text-midnight-black font-normal font-headings xs:mt-[20px] sm:mt-[25px] mx-0;
+  transition: background-color 0.3s;
+  &:hover {
+    @apply bg-[#E8E8E8];
+  }
+  &:before {
+    @apply content-[''] bg-[url(../images/icons/menu-close.svg)] w-[8px] h-[8px] bg-no-repeat bg-center bg-contain block absolute right-[12px] top-[50%] transform translate-y-[-50%];
+  }
+}
+
+#content {
+  .wp-block-button {
+    display: inherit;
+
+    .wp-block-button__link {
+      color: inherit;
+      padding: inherit;
+      background: inherit;
+      font-size: inherit;
+
+      &:hover {
+        @apply text-link-hover;
+      }
+    }
+  }
 }

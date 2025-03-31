@@ -21,3 +21,69 @@
   DO NOT MODIFY THIS FILE!
 	Instead copy it to css/custom/abstracts/_mixins.scss and make your changes there.
 */
+@mixin readmore {
+  align-items: center;
+  display: flex;
+  line-height: 1.667;
+  gap: 20px;
+  padding: 10px 0;
+  font-family: "Inter";
+  font-weight: 600;
+  @apply text-color-base no-underline;
+  &:after {
+    background-image: url(../images/green-arrow.svg);
+    background-size: 47px 15px;
+    background-position: right center;
+    content: " ";
+    display: block;
+    height: 15px;
+    transition: width 0.5s;
+    width: 47px;
+  }
+  //note: some readmore links were added as a block, and the class applies to the parent, not the link. It mostly has the same styles but not the color and underline
+  a.wp-block-button__link {
+    color: #595B60 !important;
+  }
+  transition: color 0.5s, gap 0.5s;
+  &:hover {
+    @apply gap-x-[39px] text-midnight-black;
+    text-decoration: none;
+    a.wp-block-button__link {
+      color: #35393E !important;
+      text-decoration: none !important;
+    }
+    &:after {
+      @apply w-[28px];
+    }
+  }
+}
+
+@mixin common-button {
+  @apply bg-lyquix-green-accessible text-white;
+  align-items: center;
+  display: flex;
+  line-height: 1.667;
+  justify-content: space-between;
+  padding: 10px 15px;
+  width: 152px;
+  border-radius: 3px;
+  transition: background-color 0.5s;
+  &:after {
+    background-image: url(../images/white-arrow.svg);
+    background-size: 47px 15px;
+    background-position: right center;
+    content: " ";
+    display: block;
+    height: 15px;
+    transition: width 0.5s;
+    width: 47px;
+  }
+  transition: color 0.5s;
+  &:hover {
+    @apply text-white bg-midnight-black;
+    text-decoration: none;
+    &:after {
+      width: 28px;
+    }
+  }
+}

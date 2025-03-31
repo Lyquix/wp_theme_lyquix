@@ -1,0 +1,36 @@
+.single-portfolio {
+  .lqx-block-banner:not([data-preset]) .banner .image img, .lqx-block-banner[data-preset=portfolio-section] .banner .image img {
+    @apply object-contain md:relative
+  }
+
+  picture:has(img.full-width) {
+    grid-column: full-width;
+  }
+  .content {
+    h1 {
+      @apply h2;
+    }
+
+    h4 {
+      @apply h3;
+    }
+
+    .lqx-block-banner[data-preset=portfolio-section] {
+      .text {
+        @apply md:col-span-8 lg:col-span-7;
+
+        h4 {
+          @apply text-lyquix-green-accessible
+        }
+
+        .intro {
+          @apply mb-[16px] xl:mb-[30px];
+        }
+      }
+
+      .image {
+        @apply max-md:hidden lg:col-span-3 lg:col-start-10;
+      }
+    }
+  }
+}

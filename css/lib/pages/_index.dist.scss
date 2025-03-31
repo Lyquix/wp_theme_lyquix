@@ -22,6 +22,11 @@
 	Instead copy it to css/custom/pages/_index.scss and make your changes there.
 */
 @forward "404";
+@forward "about";
 @forward "contact";
 @forward "home";
+@forward "portfolio";
 @forward "search";
+@forward "team";
+@forward "post";
+@forward "slideshow";

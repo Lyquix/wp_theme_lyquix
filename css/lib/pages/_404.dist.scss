@@ -26,4 +26,11 @@
 @use "../abstracts/mixins" as *;
 
 body.error-404 {
+  .search-form {
+    @apply flex flex-wrap gap-[1rem] mb-28;
+
+    .search-submit {
+      @apply button;
+    }
+  }
 }

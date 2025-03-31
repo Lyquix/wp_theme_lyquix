@@ -26,5 +26,134 @@
 @use "../abstracts/variables" as *;
 @use "../abstracts/mixins" as *;
 
+@mixin default-testimonial {
+  @apply full-width;
+
+  ul {
+    @apply p-0 list-none;
+
+    li {
+      @apply full-width-grid py-[35px] md:py-[60px] lg:py-[7rem] my-0;
+
+      blockquote {
+        @apply h2 col-span-12 col-start-2 col-start-2 lg:col-start-3 lg:col-span-10 !m-0 !mb-[30px];
+        quotes: "“" "”";
+        color: var(--text-color, theme('colors.color-headings'));
+
+        > :first-child {
+          &:before {
+            content: open-quote;
+          }
+        }
+
+        > :last-child {
+          &:after {
+            content: close-quote;
+          }
+        }
+
+        & > * {
+          @apply inline;
+        }
+      }
+
+      .author-wrapper {
+        @apply col-span-12 col-start-2 lg:col-start-3 lg:col-span-10 flex items-end;
+      }
+
+      .testimonial-author {
+        @apply flex flex-wrap gap-x-[1ch] flex-col relative pl-[30px];
+
+        &:before {
+          background: var(--text-color, theme('colors.color-headings'));
+          @apply content-[''] block absolute w-[20px] h-[2px] top-[1.3ch] left-0;
+        }
+
+        .name {
+          @apply text-[20px] lg:text-[22px] leading-[30px] lg:leading-[32px] font-semibold;
+        }
+
+        .job-title {
+          @apply m-0 text-[14px] lg:text-[15px] leading-[18px] lg:leading-[20px] font-normal;
+        }
+
+        .name, .job-title {
+          color: var(--text-color, theme('colors.color-headings'));
+        }
+      }
+    }
+  }
+}
+
 .lqx-block-testimonial {
+  &:not([data-preset]) {
+    @include default-testimonial;
+  }
+
+  &[data-preset=project-testimonial] {
+    ul {
+      @apply list-none p-0;
+    }
+
+    .testimonial-slide {
+      @apply full-width-grid py-[7rem] m-0;
+
+      blockquote {
+        @apply text-4xl col-span-12 col-start-2 lg:col-span-8 lg:col-start-4 text-center italic mb-4 leading-relaxed;
+        quotes: "“" "”";
+        color: var(--text-color, white);
+
+        > :first-child {
+          &:before {
+            content: open-quote;
+          }
+        }
+
+        > :last-child {
+          &:after {
+            content: close-quote;
+          }
+        }
+
+        & > * {
+          @apply inline;
+        }
+      }
+
+      .author-wrapper {
+        @apply col-span-12 col-start-2 lg:col-span-8 lg:col-start-4 text-center;
+      }
+
+      .testimonial-author {
+        .name, .job-title {
+          color: var(--text-color, white);
+        }
+      }
+    }
+  }
+
+  &[data-preset=home-testimonial] {
+    @include default-testimonial;
+    @apply bg-[#F6F6F6] mb-[35px] lg:mb-[70px] min-h-[66dvh] flex flex-wrap content-center;
+
+    .testimonial {
+      @apply w-full;
+    }
+  }
+
+  &:has(blockquote:empty) {
+    @apply hidden;
+  }
+}
+
+body.single-portfolio {
+  .lqx-block-testimonial {
+    ul {
+      li {
+        blockquote {
+          @apply font-semibold lg:font-bold leading-[28px] lg:leading-[40px] text-[18px] lg:text-[26px];
+        }
+      }
+    }
+  }
 }

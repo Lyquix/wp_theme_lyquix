@@ -62,10 +62,27 @@
 					minmax($cntMrg, 1fr)
 					[full-width-end];
 			}
+
+			.full-width-grid {
+				grid-template-columns:
+								[full-width-start]
+								minmax(calc($cntMrg - $grdGap), 1fr)
+								[container-start]
+								repeat(calc($grdCls - 2), minmax(0, calc(calc($xlCntWth - calc($grdCls - 3) * $grdGap) / calc($grdCls - 2))))
+								[container-end]
+								minmax(calc($cntMrg - $grdGap), 1fr)
+								[full-width-end];
+				@apply gap-x-[#{$grdGap}]
+			}
+
+			.inner-grid {
+				grid-template-columns: repeat(calc($grdCls - 2), 1fr);
+				@apply grid gap-x-[#{$grdGap}]
+			}
 		} @else {
 			.container {
 				margin: 0 $cntMrg;
-				width: 100%;
+				width: calc(100% - 2 * #{$cntMrg});
 				max-width: none;
 			}
 			.grid-container {
@@ -78,21 +95,50 @@
 					$cntMrg
 					[full-width-end];
 			}
+
+			.full-width-grid {
+				grid-template-columns:
+								[full-width-start]
+								minmax(calc($cntMrg - $grdGap), 1fr)
+								[container-start]
+								repeat(calc($grdCls - 2), 1fr)
+								[container-end]
+								minmax(calc($cntMrg - $grdGap), 1fr)
+								[full-width-end];
+				@apply gap-x-[#{$grdGap}];
+			}
+
+			.inner-grid {
+				grid-template-columns: repeat(calc($grdCls - 2), 1fr);
+				@apply grid gap-x-[#{$grdGap}];
+			}
 		}
 	}
 }
 
 .grid-container {
-	display: grid;
+	@apply grid;
+
+	> * {
+		grid-column: container;
+	}
 }
 
-.grid-container > :not(.full-width),
-.full-width > :not(.full-width) {
-	grid-column: container;
-}
-
-.grid-container > .full-width {
+.full-width {
 	grid-column: full-width;
-	//display: grid;
-	//grid-template-columns: inherit;
+}
+
+.full-width-grid {
+	grid-column: full-width;
+	@apply grid;
+}
+
+.flex-container {
+	display: flex;
+}
+
+.content {
+	> * {
+		//@apply xs:max-md:mb-[35px] md:mb-[70px] mt-0;
+	}
 }

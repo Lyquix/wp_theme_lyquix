@@ -26,27 +26,64 @@
 @use "../abstracts/mixins" as *;
 
 .lqx-block-accordion {
-	.accordion-header {
-		display: block;
-		background: none;
-		outline: none;
-		border: none;
-		padding: 0;
-		width: 100%;
-		text-align: left;
-	}
+  @apply grid grid-cols-12 gap-x-[20px];
 
-	.accordion-panel {
-		display: grid;
-		grid-template-rows: 1fr;
-		transition: grid-template-rows 0.5s ease-out;
+  .accordion {
+    @apply col-span-full;
 
-		&.closed {
-			grid-template-rows: 0fr;
-		}
+    .accordion-item {
+      @apply py-[25px] border-b-[1px] border-[#FFFFFF];
 
-		& > div {
-			overflow: hidden;
-		}
-	}
+      &:first-of-type {
+        @apply md:pt-[10px];
+      }
+
+      h3 {
+        @apply m-0;
+
+        .accordion-header {
+          @apply flex ml-0 font-semibold leading-[30px];
+          background: none;
+          outline: none;
+          border: none;
+          padding: 0;
+          width: 100%;
+          text-align: left;
+
+          &:after {
+            transition: transform 0.3s ease;
+            @apply w-[24px] h-[24px] bg-center bg-no-repeat bg-[url('../images/icons/green-plus.svg')];
+          }
+
+          &[aria-expanded="true"] {
+            &:after {
+              @apply rotate-45;
+            }
+          }
+        }
+      }
+
+      .accordion-panel {
+        display: grid;
+        grid-template-rows: 1fr;
+        transition: grid-template-rows 0.5s ease-out;
+
+        &.closed {
+          grid-template-rows: 0fr;
+        }
+
+        & > div {
+          overflow: hidden;
+
+          p {
+            @apply my-[10px];
+          }
+
+          img {
+            @apply object-cover w-full rounded-[5px] mt-[5px];
+          }
+        }
+      }
+    }
+  }
 }

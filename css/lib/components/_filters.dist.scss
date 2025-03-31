@@ -26,5 +26,697 @@
 @use "../abstracts/variables" as *;
 @use "../abstracts/mixins" as *;
 
+:root {
+  interpolate-size: allow-keywords;
+}
+
+@mixin controls {
+  .controls {
+    @apply flex flex-wrap md:gap-x-[40px] mb-[35px] pt-[34px] relative overflow-hidden;
+
+    &:before {
+      @apply content-[''] absolute block w-full h-[1px] top-[33px] left-0 bg-[#A7A7A7];
+    }
+
+    .clear, .control-wrapper label {
+      @apply absolute top-0 font-sans-alt tracking-[1%] xs:max-lg:text-[1.6rem] leading-[28px] border-solid inline-block m-0 bg-transparent text-color-base font-normal pb-[2px] px-0 pt-0 border-b-[3px] border-t-0 border-x-0 border-transparent cursor-pointer font-medium;
+
+      .label {
+        @apply xs:max-md:relative xs:max-md:pr-[18px];
+
+        &:hover {
+          @apply text-lyquix-green-accessible;
+        }
+      }
+    }
+
+    .clear:hover {
+      @apply text-lyquix-green-accessible;
+    }
+
+    .control-wrapper {
+      label .label:before {
+        @apply content-[''] absolute block xs:max-md:w-[10px] xs:max-md:h-[5px] xs:max-md:top-[8px] xs:max-md:right-0 xs:max-md:bg-[url(../images/icons/arrow-up.svg)] xs:max-md:bg-center xs:max-md:bg-[length:10px_5px] xs:max-md:rotate-0;
+      }
+
+      &:not(.open) label .label:before {
+        @apply rotate-180;
+      }
+    }
+
+    .clear {
+      @apply left-0 xs:max-md:hidden font-medium;
+    }
+
+    .control-wrapper:not(.open) ~ .clear {
+      @apply border-lyquix-green;
+    }
+
+    .control-wrapper {
+      @apply w-full h-0;
+      transition: height 0.5s;
+
+      .control-list {
+        @apply xs:max-md:columns-1 md:max-lg:columns-2 lg:columns-3 m-0 xs:max-lg:pt-[20px] xs:max-lg:pb-[15px] lg:pt-[35px] pb-[30px] border-b-[1px] border-[#A7A7A7] px-0 invisible opacity-0;
+        transition: visibility 0.5s, opacity 0.5s;
+
+        li {
+          @apply list-none mt-[15px] mb-0 xs:max-md:relative xs:max-md:pr-[18px] font-medium;
+
+          &:first-of-type {
+            @apply mt-0;
+          }
+
+          &:hover {
+            @apply cursor-pointer text-lyquix-green-accessible;
+          }
+        }
+      }
+
+      &.open {
+        @apply h-auto block;
+
+        label {
+          @apply border-lyquix-green;
+        }
+
+        .control-list {
+          @apply visible opacity-100;
+        }
+      }
+    }
+
+    .control-wrapper[data-control="by-industry"] label {
+      @apply xs:max-md:left-0 md:max-lg:left-[139px] lg:left-[135px];
+    }
+
+    .control-wrapper[data-control="filters"] label {
+      @apply xs:max-md:left-0 md:max-lg:left-[126px] lg:left-[135px];
+    }
+
+    .control-wrapper[data-control="by-services"] label {
+      @apply xs:max-md:left-[124px] md:max-lg:left-[279px] lg:left-[272px];
+    }
+
+    .pills {
+      @apply flex gap-x-4 flex-wrap;
+    }
+  }
+}
+
 .lqx-block-filters {
+  .filters-heading:empty {
+    @apply hidden;
+  }
+
+  &.sub-services-grey-full-width {
+    @apply full-width-grid bg-[#F6F6F6];
+
+    .filters {
+      @apply col-span-12 col-start-2;
+    }
+  }
+
+  &[data-preset=portfolio-home] {
+    @apply col-[full-width];
+
+    .cards-wrapper {
+      @apply block;
+    }
+
+    .image {
+      @apply overflow-hidden absolute z-[1] w-full h-full;
+
+      img.back-image {
+        @apply w-full h-full object-cover;
+      }
+
+      .img-overlay {
+        transition-duration: .8s;
+        transition-delay: 0s;
+        @apply absolute z-[2] w-full h-full bg-black/80 top-0 opacity-80
+      }
+    }
+    .inner-pinned-grid {
+      grid-template-rows: 1fr min-content 1fr;
+    }
+    .text {
+      @apply w-full xl:mx-auto justify-self-center relative xs:max-lg:col-start-2 xs:max-lg:col-span-12 lg:col-start-3 lg:col-span-10 z-10 xs:max-sm:gap-y-[30px] sm:max-md:gap-y-[35px] md:gap-y-[50px] inner-grid md:place-content-center;
+      grid-template-rows: min-content min-content;
+      grid-row: 2;
+      .logo-wrapper {
+        transition-duration: .8s;
+        transition-delay: 0s;
+        @apply absolute flex justify-center items-center xs:max-sm:!top-[calc(50%-125px)] xs:max-sm:!left-[calc(50%-125px)] sm:max-md:!top-[calc(50%-200px)] sm:max-md:!left-[calc(50%-200px)] md:top-[calc(50%-250px)] md:left-[calc(50%-250px)] xs:max-sm:w-[250px] sm:max-md:w-[400px] md:w-[500px];
+
+
+        .icon {
+          transition-duration: .8s;
+          transition-delay: 0s;
+        }
+      }
+
+      .inner-text {
+        transition-duration: .3s;
+        transition-delay: 0s;
+        @apply col-span-full col-start-1 md:pl-[220px] translate-y-[20px] opacity-0 row-start-2;
+
+        p {
+          @apply tracking-[-0.36px] xs:max-lg:leading-[1.4] xs:max-lg:text-[2.5rem] md:max-lg:text-[2.2rem] md:max-lg:leading-[1.455] lg:text-[3rem] lg:leading-[1.467] h2 !text-white !mt-0;
+        }
+        //on different screen sizes there are combinations of width and height where we hide the text. We need to do this with media queries.
+        @media screen and (max-width: 479px) and (max-height:483px) {
+          p {
+            @apply hidden;
+          }
+        }
+        @media screen and (min-width:480px) and (max-width: 719px) and (max-height:550px) {
+          p {
+            @apply hidden;
+          }
+        }
+        .card-link {
+          @apply sm:max-md:flex sm:max-md:justify-end;
+        }
+        a {
+          @apply xs:max-md:py-[10px] text-white;
+
+          &:after {
+            background-image: url(../images/white-arrow.svg);
+          }
+        }
+      }
+
+      .side-media {
+        transition-duration: .3s;
+        transition-delay: 0s;
+        @apply col-span-full rounded-[5px] overflow-hidden translate-y-[20px] opacity-0 row-start-1 w-full;
+        .video {
+          @apply aspect-[2/1] block;
+        }
+        .hover {
+          video, picture {
+            @apply aspect-[2/1] block;
+          }
+          video {
+            @apply rounded-[5px];
+          }
+          picture {
+            img {
+              @apply absolute w-[calc(100%+4px)] h-[calc(100%+4px)] top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] object-cover object-center;
+            }
+          }
+          picture, img {
+            @apply rounded-[5px];
+          }
+        }
+      }
+    }
+
+    .card {
+      @apply m-0;
+
+      &.active {
+        .img-overlay {
+          transition: 1s;
+          transition-delay: 2s;
+          @apply opacity-100
+        }
+
+        .logo-wrapper {
+          transition: 1s;
+          transition-delay: 2s;
+          @apply w-[200px] xs:max-md:opacity-0 xs:max-md:invisible md:left-[0] xs:max-md:!top-[calc(50%-100px)] xs:max-md:!left-[calc(50%-100px)];
+        }
+
+        .inner-text {
+          transition: 1s;
+          transition-delay: 2.5s;
+          @apply opacity-100 translate-y-0;
+        }
+
+        .side-media {
+          transition: 1s;
+          transition-delay: 2.75s;
+          @apply opacity-100 translate-y-0 relative;
+        }
+      }
+    }
+  }
+
+  &[data-preset=insights-home], &[data-preset=insights] {
+    .cards-wrapper {
+      @apply inner-grid xs:max-md:gap-y-[20px] md:gap-y-[35px];
+
+      .card {
+        @apply my-0 col-span-full md:col-span-4;
+
+        .card-link {
+          @apply hidden;
+        }
+
+        .image {
+          @apply rounded-[5px] overflow-hidden;
+        }
+
+        img {
+          @apply aspect-[3/2] md:max-h-[281px] object-cover w-full;
+        }
+
+        .text {
+          @apply py-0 px-[1.5rem];
+
+          h3 {
+            @apply text-[16px] lg:text-[18px] leading-[26px] lg:leading-[28px] text-color-base font-medium;
+            a {
+              @apply text-color-base no-underline;
+            }
+            &:hover a{
+              @apply no-underline text-lyquix-green-accessible;
+            }
+          }
+        }
+      }
+      .email-link {
+        @apply my-0 rounded-[5px] col-span-full bg-background-fill xs:max-lg:p-[25px] lg:p-[35px];
+        h2 {
+          @apply my-0 text-color-base;
+        }
+        p {
+          @apply my-[15px];
+        }
+        span {
+          @apply text-midnight-black;
+          &:hover{
+            @apply gap-[39px] cursor-pointer;
+          }
+        }
+      }
+    }
+  }
+
+  &[data-preset=insights] {
+    @apply mb-28;
+    @include controls;
+
+    .text {
+      h3 + p {
+        @apply hidden;
+      }
+    }
+    .cards-wrapper {
+      .card {
+        @apply col-span-full sm:col-span-6 md:col-span-4 flex flex-col;
+
+        &:first-child {
+          @apply flex col-span-full inner-grid mb-0 border-b border-light-b-gray pb-16;
+
+          .image {
+            @apply self-center md:col-start-8 col-span-full xs:max-md:order-1 md:order-2 md:col-span-5 rounded-[5px] overflow-hidden row-span-1;
+            img {
+              @apply max-h-none;
+            }
+          }
+
+          .text {
+            @apply self-center col-span-full xs:max-md:order-2 md:order-1 md:col-span-6;
+
+            h3 {
+              @apply my-[10px] xs:max-lg:text-[3.5rem] xs:max-lg:leading-[42px] lg:text-[4.5rem] lg:leading-[60px] font-semibold;
+
+              a {
+                @apply text-color-headings font-bold no-underline;
+              }
+
+              &:hover a {
+                @apply text-lyquix-green-accessible;
+              }
+            }
+
+            h3 + p {
+              @apply block mt-0;
+            }
+          }
+
+          .labels {
+            @apply text-color-base col-span-full pl-0 mb-[10px] md:col-span-6;
+          }
+        }
+
+        .image {
+          @apply order-1;
+        }
+
+        .labels {
+          @apply pl-0 mb-[5px] list-none flex gap-[.5rem] order-2;
+
+          li {
+            @apply text-color-base uppercase h6 hidden;
+            margin-bottom: 0;
+
+            &:first-child {
+              @apply list-item text-color-base;
+            }
+          }
+        }
+
+        .text {
+          @apply order-3;
+
+          h3 {
+            @apply mt-0 text-midnight-black;
+            a {
+              @apply text-color-headings;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &[data-preset=testimonials] {
+    @apply full-width-grid bg-background-fill py-28 mt-20;
+
+    .filters {
+      grid-column-end: 14;
+      @apply col-start-2;
+
+      .card {
+        @apply inner-grid;
+
+        blockquote {
+          @apply h2 col-span-8;
+        }
+
+        .author-wrapper {
+          @apply col-span-2 col-start-11 flex flex-col justify-end;
+        }
+
+        .testimonial-author {
+          @apply flex flex-col relative;
+
+          &:before {
+            @apply content-[''] block absolute w-[20px] h-[2px] -left-[40px] top-1/2 bg-color-base;
+          }
+        }
+      }
+    }
+  }
+
+  &[data-preset=portfolio-category] {
+    @include controls;
+    @apply xs:max-md:mb-[35px] md:mb-[70px];
+    .lqx-block-cards .cards-wrapper {
+      @apply flex gap-x-[20px] xs:max-sm:gap-y-[20px] sm:gap-y-[40px] flex-wrap;
+
+      .card {
+        @apply m-0 xs:max-sm:w-full sm:w-[calc(50%-10px)];
+
+        .image {
+          @apply relative;
+
+          a {
+            @apply block relative;
+
+            &:before {
+              @apply content-[''] min-w-full min-h-full w-full h-full block absolute rounded-[5px] top-0 left-0 bg-black/[.5] z-20;
+              transition: opacity 0.5s, visibility 0.5s;
+            }
+
+            picture, img:not(.hover,.icon) {
+              @apply relative z-10;
+            }
+            picture {
+              @apply rounded-[5px] h-full w-full block;
+              background: white;
+              img, source {
+                background: white;
+              }
+              img {
+                @apply w-full h-full;
+              }
+            }
+            .hover {
+
+            }
+            img:not(.icon) {
+              @apply rounded-[5px] object-cover;
+              transition: opacity 0.5s, visibility 0.5s;
+            }
+
+            .icon {
+              @apply min-h-full absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-30;
+              transition: opacity 0.5s, visibility 0.5s;
+            }
+          }
+
+          video {
+            @apply absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-full h-full rounded-[5px] z-0 object-cover;
+          }
+
+          &:hover a {
+            > picture, > img, .icon, &:before {
+              @apply opacity-0 invisible;
+            }
+          }
+        }
+
+        .text {
+          @apply xs:max-sm:pt-[10px] sm:pt-[15px] px-[10px];
+
+          h3 {
+            @apply mt-0 mb-[2px];
+
+            a {
+              @apply no-underline;
+              &:hover {
+                @apply no-underline;
+              }
+            }
+          }
+
+          p {
+            @apply m-0;
+          }
+        }
+      }
+    }
+  }
+
+  &[data-preset=open-positions] {
+    .cards-wrapper {
+      @apply gap-y-0 mb-[35px] md:mb-[60px] lg:mb-[70px];
+
+      .card {
+        @apply my-0 py-[15px] border-b-[1px] border-midnight-black;
+
+        .text {
+          @apply no-underline flex justify-between items-center duration-300;
+
+          h3 {
+            @apply my-[10px] text-[20px] leading-[30px] text-midnight-black max-md:max-w-[calc(100%-67px)];
+          }
+
+          .card-link {
+            @apply flex;
+
+            .readmore {
+              @apply text-[0px];
+            }
+          }
+
+          &:hover {
+            @apply no-underline;
+
+            h3 {
+              @apply text-lyquix-green-accessible;
+            }
+
+            .readmore {
+              &:after {
+                @apply w-[28px];
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &[data-preset=team-members] {
+    .cards {
+      .cards-wrapper {
+        @apply grid grid-cols-12 gap-y-[20px] md:gap-y-[35px] max-xl:mb-[35px];
+
+        .card {
+          @apply col-span-full md:col-span-6 p-0 h-auto border-none my-0;
+
+          .image {
+            @apply mb-[10px];
+
+            img {
+              @apply object-cover rounded-[10px] w-full aspect-[9/10];
+            }
+          }
+
+          .text {
+            @apply h-auto py-0 px-[15px] flex flex-col;
+
+            h3 {
+              @apply flex mb-[5px] text-[20px] mt-0;
+              a {
+                @apply text-color-headings no-underline;
+              }
+              &:hover a {
+                @apply text-lyquix-green-accessible underline;
+              }
+            }
+
+            .subtitle {
+              @apply max-md:block font-medium text-[13px] text-[#595B60] leading-[23px] uppercase mb-0 mt-0;
+
+              strong {
+                @apply font-medium;
+              }
+            }
+
+            .card-link {
+              @apply hidden;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &[data-preset=sub-services] {
+    @apply py-[35px] md:py-[70px];
+
+    .filters-heading {
+      @apply mt-0 max-md:mb-0;
+    }
+  }
+
+  &[data-preset=insights-home] {
+    .card h4 {
+      @apply font-medium;
+      a {
+        @apply text-color-base no-underline;
+        &:hover {
+          @apply text-lyquix-green-accessible no-underline;
+        }
+      }
+    }
+  }
+}
+
+.pagination {
+  @apply xs:max-sm:mt-[30px] sm:mt-[60px];
+
+  .pageslinks, .nav-links {
+    @apply flex gap-x-[20px] items-center;
+
+    li, .page-numbers {
+      @apply m-0 list-none leading-[25px];
+
+      &:hover {
+        @apply text-midnight-black cursor-pointer;
+      }
+
+      &.current {
+        @apply text-white bg-color-headings rounded-full w-[25px] text-center;
+      }
+
+      &.page-prev, &.prev {
+        @apply bg-[url(../images/icons/prev.svg)] bg-center bg-[length:8px_15px] block w-[8px] h-[15px] mr-[5px] text-[0];
+
+        &:hover {
+          @apply bg-[url(../images/icons/prev-hover.svg)];
+        }
+      }
+
+      &.page-next, &.next {
+        @apply bg-[url(../images/icons/next.svg)] bg-center bg-[length:8px_15px] block w-[8px] h-[15px] ml-[5px] text-[0];
+
+        &:hover {
+          @apply bg-[url(../images/icons/next-hover.svg)];
+        }
+      }
+    }
+  }
+}
+
+//aspectratio based rules for the homepage projects block
+//aspectratio is the main rule, and we then write separate usecases for different screen sizes within our theme.
+body[aspectratio=wide] {
+  &[screen=lg], &[screen=xl] {
+    .lqx-block-filters[data-preset=portfolio-home] {
+      .card {
+        @media screen and (max-height: 800px) {
+          .text {
+            @apply max-w-[960px] gap-y-[30px];
+          }
+          .inner-text {
+            @apply pl-0;
+            p {
+              @apply text-[2.2rem] leading-[1.455];
+            }
+          }
+          &.active {
+            .logo-wrapper {
+              @apply opacity-0 invisible md:!top-[calc(50%-100px)] md:!left-[calc(50%-100px)];;
+            }
+          }
+        }
+        .side-media {
+          @apply max-w-[80%] mx-auto;
+        }
+      }
+    }
+  }
+  &[screen=md] {
+    .lqx-block-filters[data-preset=portfolio-home] {
+      .card {
+        .text {
+          @apply max-w-[720px] gap-y-[30px];
+        }
+        .inner-text {
+          @apply pl-0
+        }
+        .side-media {
+          @apply max-w-[60%] mx-auto;
+        }
+        &.active {
+          .logo-wrapper {
+            @apply opacity-0 invisible md:!top-[calc(50%-100px)] md:!left-[calc(50%-100px)];;
+          }
+        }
+      }
+    }
+  }
+}
+body[aspectratio=ultrawide]{
+  &[screen=lg], &[screen=xl] {
+    .lqx-block-filters[data-preset=portfolio-home] {
+      .card {
+        @media screen and (max-height: 800px) {
+          .text {
+            @apply max-w-[960px] gap-y-[30px];
+          }
+          .inner-text {
+            @apply pl-0
+          }
+          &.active {
+            .logo-wrapper {
+              @apply opacity-0 invisible md:!top-[calc(50%-100px)] md:!left-[calc(50%-100px)];
+            }
+          }
+        }
+        .side-media {
+          @apply max-w-[75%] mx-auto;
+        }
+
+      }
+    }
+  }
 }

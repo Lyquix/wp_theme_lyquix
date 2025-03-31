@@ -25,4 +25,53 @@
 @use "../abstracts/mixins" as *;
 
 body.search {
+  .search-form {
+    @apply flex flex-wrap;
+    input, button {
+      @apply m-0;
+    }
+    input {
+      @apply rounded-tl-[5px] rounded-bl-[5px];
+    }
+    button {
+      @apply rounded-tl-[0] rounded-bl-[0] rounded-tr-[5px] rounded-br-[5px];
+    }
+  }
+
+  .search-results {
+    @apply mb-28;
+  }
+  .navigation.pagination {
+    @apply xs:max-md:mt-[35px] md:mt-[70px];
+    .nav-links {
+      @apply flex gap-x-[20px] items-center;
+      span, a {
+        @apply m-0 list-none leading-[25px];
+
+        &:hover {
+          @apply text-midnight-black cursor-pointer;
+        }
+
+        &.current {
+          @apply text-white bg-color-headings rounded-full w-[25px] text-center;
+        }
+
+        &.prev {
+          @apply bg-[url(../images/icons/prev.svg)] bg-center bg-[length:8px_15px] block w-[8px] h-[15px] mr-[5px];
+
+          &:hover {
+            @apply bg-[url(../images/icons/prev-hover.svg)];
+          }
+        }
+
+        &.next {
+          @apply bg-[url(../images/icons/next.svg)] bg-center bg-[length:8px_15px] block w-[8px] h-[15px] ml-[5px];
+
+          &:hover {
+            @apply bg-[url(../images/icons/next-hover.svg)];
+          }
+        }
+      }
+    }
+  }
 }

@@ -26,19 +26,44 @@
 @use "../abstracts/mixins" as *;
 
 .lqx-block-logos {
+	@apply xs:max-md:py-[35px] sm:max-md:py-[60px] md:py-[70px];
+
 	.logos {
-		@apply m-0 flex flex-wrap justify-center p-0;
-		gap: 1em;
+		@apply m-0 flex flex-wrap justify-center p-0 gap-x-[20px];
 
 		li {
-			@apply m-0 flex list-none items-center justify-center p-0 text-center;
-			flex: 1 1 300px;
-			background-color: #eee;
+			@apply m-0 flex list-none items-center justify-center p-0 text-center xs:max-sm:w-[calc(50%-10px)] sm:max-md:w-[calc(33.333%-20px)] md:w-[calc(25%-15px)] xs:max-md:h-[80px] md:h-[186px];
+
 			a {
 				@apply block;
 			}
+
 			img {
-				@apply object-contain;
+				@apply h-full object-contain;
+			}
+		}
+	}
+
+	&.selected-clients {
+		@apply col-start-2 col-span-12 py-0 mb-0;
+
+		.logos {
+			li {
+				img {
+					@apply max-md:h-[125%] opacity-70;
+				}
+			}
+		}
+	}
+
+	&.community-logos {
+		@apply bg-transparent py-0 mb-[14px] md:mb-[35px] lg-three-quarters;
+
+		.logos {
+			@apply col-span-full max-w-[1034px] flex flex-wrap justify-start max-md:gap-y-[25px];
+
+			li {
+				@apply flex justify-center md:min-w-[152px];
 			}
 		}
 	}

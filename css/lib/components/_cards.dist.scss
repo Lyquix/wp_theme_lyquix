@@ -29,31 +29,597 @@
 $cards-image-positions: left top right;
 $cards-image-icon-positions: left center right;
 
-.lqx-block-cards {
-	.cards-wrapper {
-		display: grid;
-		gap: 1em;
-		list-style: none;
-		padding: 0;
-	}
+@mixin default-cards {
+  .cards-wrapper {
+    @apply grid-cols-12 max-md:gap-y-0 pb-[35px] md:pb-[70px];
 
-	@each $size in $screen-sizes {
-		@screen #{$size} {
-			@for $i from 1 through 12 {
-				.#{$size}\:columns-#{$i} .cards-wrapper {
-					grid-template-columns: repeat(#{$i}, 1fr);
-				}
-			}
-			@each $i in $cards-image-positions {
-				.#{$size}\:image-position-#{$i} .image {
-					/* image position */
-				}
-			}
-			@each $i in $cards-image-icon-positions {
-				.#{$size}\:image-icon-position-#{$i} .icon {
-					/* image icon position */
-				}
-			}
-		}
-	}
+    .card {
+      @apply md:min-h-[303px] col-span-full md:p-[20px] md:pb-[15px] md:col-span-6 lg:col-span-4 md:rounded-[4px] md:border-[1px] md:border-lyquix-green-accessible max-md:border-b-[1px] max-md:border-[#DBDBDB] my-0;
+
+      .text {
+        @apply flex justify-between max-md:py-[25px] md:flex-col md:h-full md:justify-start;
+
+        h3 {
+          @apply text-midnight-black my-0 md:mb-[14px];
+
+          a {
+            @apply text-midnight-black duration-[300];
+
+            &:hover {
+              @apply text-[#408316];
+            }
+          }
+        }
+
+        p {
+          @apply hidden md:block mt-0;
+        }
+
+        .card-link {
+          @apply flex md:mt-auto;
+
+          .button {
+            @apply p-0 w-auto text-[0px] bg-transparent md:ml-auto;
+
+            &:after {
+              @apply bg-[url('../images/green-arrow.svg')];
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.lqx-block-cards {
+  .cards-wrapper {
+    @apply grid p-0 gap-[1em] list-none;
+  }
+
+  &:not([data-preset]) {
+    @include default-cards;
+  }
+
+  @each $size in $screen-sizes {
+    @screen #{$size} {
+      @for $i from 1 through 12 {
+        .#{$size}\:columns-#{$i} .cards-wrapper {
+          grid-template-columns: repeat(#{$i}, 1fr);
+        }
+      }
+      @each $i in $cards-image-positions {
+        .#{$size}\:image-position-#{$i} .image {
+          /* image position */
+        }
+      }
+      @each $i in $cards-image-icon-positions {
+        .#{$size}\:image-icon-position-#{$i} .icon {
+          /* image icon position */
+        }
+      }
+    }
+  }
+
+  &.service-cards-home {
+    .cards-wrapper {
+      @apply inner-grid xs:max-md:gap-y-[50px] md:gap-y-[35px];
+
+      .card {
+        @apply xs:max-md:gap-x-[25px] xs:max-md:flex-nowrap m-0 xs:max-md:col-span-full md:max-lg:px-[10px] lg:min-w-0 md:col-span-4 flex md:flex-col items-center;
+
+        .image {
+          @apply flex place-content-center xs:max-sm:w-[94px] sm:max-md:w-[122px] md:max-lg:w-[158px] xs:max-md:h-auto md:max-lg:h-[117px] lg:w-[265px] lg:h-[265px] rounded-full mb-[14px] md:mb-[25px];
+
+          img {
+            @apply w-full h-full object-contain;
+          }
+        }
+
+        .text {
+          @apply lg:max-w-[277px] text-left;
+
+          h3 {
+            @apply mt-0 mb-[4px] md:mb-[12px] xs:max-lg:w-auto mx-auto;
+            a {
+              @apply md:max-lg:flex gap-x-[8px] xs:max-lg:items-center no-underline text-color-base;
+              transition: gap 0.5s;
+              &:after {
+                @apply xs:max-md:mt-[8px];
+                @media screen and (max-width: 1079px) {
+                  background-image: url(../images/green-arrow.svg);
+                  background-size: 25px 10px;
+                  background-position: right center;
+                  flex-shrink: 0;
+                  content: " ";
+                  display: block;
+                  height: 10px;
+                  transition: width 0.5s;
+                  width: 25px;
+                }
+              }
+            }
+            &:hover a {
+              @apply gap-x-[18px];
+              &:after {
+                @media screen and (max-width: 1020px) {
+                  width: 15px;
+                }
+              }
+            }
+
+          }
+
+          p {
+            @apply xs:max-lg:hidden mt-0 mb-[4px] md:mb-[12px];
+            @media screen and (min-width: 1080px) and (max-height: 540px) {
+              @apply hidden;
+            }
+            strong {
+              @apply font-normal;
+            }
+          }
+
+          .card-link a {
+            @apply xs:max-lg:hidden after:hidden underline duration-300 py-0 text-[14px] leading-[28px] lg:text-[16px] lg:leading-[32px] font-light text-midnight-black max-lg:justify-center;
+
+            &:hover {
+              @apply text-[#408316];
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &[data-preset=portfolio-sliding-cards] {
+    .controls {
+      @apply flex static;
+
+      .swiper-button-prev, .swiper-button-next {
+        @apply w-[40px] h-[40px] static bg-[url(../images/icons/arrow-button.svg)] bg-no-repeat bg-center bg-contain mt-0;
+      }
+    }
+  }
+
+  &[data-preset=portfolio-category] .cards-wrapper {
+    @apply flex gap-x-[20px] xs:max-sm:gap-y-[20px] sm:gap-y-[40px] flex-wrap;
+
+    .card {
+      @apply m-0 xs:max-sm:w-full sm:w-[calc(50%-10px)];
+
+      .image {
+        @apply relative;
+
+        a {
+          @apply relative;
+
+          &:before {
+            @apply content-[''] w-full h-full block absolute rounded-[5px] top-0 left-0 bg-black/[.5] z-20;
+            transition: opacity 0.5s, visibility 0.5s;
+          }
+
+          picture, img:not(.hover,.icon) {
+            @apply relative z-10;
+          }
+
+          > picture img:not(.hover,.icon), > img:not(.hover,.icon) {
+            @apply rounded-[5px] aspect-[2/1];
+            transition: opacity 0.5s, visibility 0.5s;
+          }
+
+          .icon {
+            @apply w-auto h-full absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-30;
+            transition: opacity 0.5s, visibility 0.5s;
+          }
+
+          .hover {
+            @apply absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-full h-full rounded-[5px] object-cover aspect-[2/1] z-0;
+            img {
+              @apply rounded-[5px] aspect-[2/1];
+            }
+          }
+        }
+
+        video {
+          @apply absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-full h-full rounded-[5px] z-0 object-cover;
+        }
+
+        &:hover a {
+          > img, .icon, &:before, > picture img {
+            @apply opacity-0 invisible;
+          }
+        }
+      }
+
+      .text {
+        @apply xs:max-sm:pt-[10px] sm:pt-[15px] px-[10px];
+
+        h3 {
+          @apply mt-0 mb-[2px];
+
+          a {
+            @apply text-color-base no-underline;
+            &:hover {
+              @apply text-lyquix-green-accessible no-underline;
+            }
+          }
+        }
+
+        p {
+          @apply m-0;
+        }
+      }
+    }
+  }
+
+  &[data-preset=related-projects] {
+    @apply mb-[35px] md:mb-[70px];
+    #preloaded-images {
+      @apply hidden;
+    }
+
+    .cards-wrapper {
+      @apply flex gap-x-[20px] xs:max-sm:gap-y-[20px] sm:gap-y-[40px] flex-wrap mb-[20px] lg:mb-[35px];
+
+      .card {
+        @apply m-0 xs:max-md:w-full md:w-[calc(33.333%-13.333px)];
+
+        .image {
+          @apply relative;
+
+          a {
+            @apply block relative;
+
+            &:before {
+              @apply content-[''] w-full h-full block absolute rounded-[5px] top-0 left-0 bg-black/[.5] z-20;
+              transition: opacity 0.5s, visibility 0.5s;
+            }
+
+            picture, img:not(.hover,.icon) {
+              @apply relative z-10;
+            }
+
+            img:not(.icon) {
+              @apply rounded-[5px] aspect-[3/2] object-cover;
+              transition: opacity 0.5s, visibility 0.5s;
+            }
+
+            .icon {
+              @apply w-auto h-full absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-30;
+              transition: opacity 0.5s, visibility 0.5s;
+            }
+          }
+
+          video {
+            @apply absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-full h-full rounded-[5px] z-0 object-cover;
+          }
+
+          .hover {
+            @apply absolute top-0 left-0 w-full h-full z-40 flex items-center justify-center rounded-[5px] transition-opacity duration-500;
+            img {
+              @apply opacity-0 invisible;
+            }
+            picture {
+              @apply rounded-[5px];
+            }
+          }
+
+          &:hover a {
+            img, .icon, &:before {
+              @apply opacity-0 invisible;
+            }
+
+            .hover img {
+              @apply opacity-100 visible;
+            }
+          }
+        }
+
+        .text {
+          @apply pt-[10px] px-[15px];
+
+          h4 {
+            @apply m-0 font-medium;
+
+            a {
+              @apply text-color-base no-underline;
+              &:hover {
+                @apply text-lyquix-green-accessible no-underline;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &[data-preset=portfolio-simple-cards] .cards-wrapper {
+    @apply xs:max-md:gap-y-[20px] flex xs:max-md:flex-wrap gap-8 xs:max-md:mb-[35px] md:mb-[70px];
+
+    .card {
+      @apply xs:max-md:w-full md:w-[calc(33.333%-13.333px)] m-0;
+      h3 {
+        @apply xs:max-md:mt-0;
+      }
+      p {
+        @apply xs:max-md:mb-0;
+      }
+    }
+  }
+
+  &[data-preset=service-cards] .cards-wrapper {
+    @apply grid grid-cols-12 p-0 max-md:gap-y-0 gap-[1em] list-none;
+
+    .card {
+      @apply md:min-h-[303px] col-span-full md:col-span-6 lg:col-span-4 md:rounded-[4px] md:border-[1px] md:border-lyquix-green-accessible max-md:border-b-[1px] max-md:border-[#DBDBDB] my-0;
+
+      .text {
+        @apply flex no-underline justify-between max-md:py-[25px] md:p-[20px] md:pb-[15px] md:flex-col md:h-full md:justify-start;
+
+        h3 {
+          @apply duration-300 text-midnight-black my-0 md:mb-[14px] max-md:max-w-[calc(100%-67px)];
+        }
+
+        p {
+          @apply text-color-base hidden md:block mt-0;
+        }
+
+        .card-link {
+          @apply flex md:mt-auto;
+
+          .readmore {
+            @apply p-0 w-auto text-[0px] bg-transparent md:ml-auto;
+          }
+        }
+
+        &:hover {
+          @apply no-underline;
+
+          h3 {
+            @apply md:underline text-lyquix-green-accessible;
+          }
+
+          p {
+            @apply text-[#595B60];
+          }
+
+          .readmore {
+            &:after {
+              @apply w-[28px];
+            }
+          }
+        }
+      }
+
+      &:hover {
+        @apply md:outline md:outline-1 md:outline-lyquix-green-accessible;
+      }
+    }
+  }
+
+  &[data-preset=grouped-cards] .cards-wrapper {
+    @apply gap-y-[35px] lg:gap-y-[50px];
+
+    .card {
+      @apply my-0 flex max-md:flex-col md:grid md:grid-cols-12 md:gap-x-[20px];
+
+      .image {
+        @apply max-md:order-2 md:col-span-4 md:col-start-1 md:relative lg:aspect-[7/5];
+
+        img {
+          @apply max-md:aspect-[3/2] w-full object-cover rounded-[5px] md:absolute md:max-h-[100%] md:h-full max-md:max-h-[268px];
+        }
+      }
+
+      .text {
+        @apply max-md:order-1 md:col-span-7 md:col-start-6 md:-ml-[20px] lg:flex lg:flex-col lg:justify-center;
+
+        h3 {
+          @apply mt-0 mb-[14px] lg:mb-[16px] md:text-[20px] md:leading-[30px] text-midnight-black lg:text-[22px] leading-[32px];
+        }
+
+        p {
+          @apply mt-0 mb-[14px] md:mb-0;
+        }
+      }
+
+      &.right-image {
+        .image {
+          @apply md:order-2 md:col-start-9;
+        }
+
+        .text {
+          @apply md:order-1 md:col-start-1 md:ml-0 md:-mr-[20px];
+        }
+      }
+    }
+  }
+
+  &[data-preset=services-top-level] {
+    @apply mb-[35px] max-md:pt-[25px] xl:grid xl:grid-cols-12 xl:gap-[20px];
+
+    .cards {
+      @apply xl:col-start-2 xl:col-span-10;
+
+      .cards-wrapper {
+        @apply gap-y-[20px] md:gap-y-0;
+
+        .card {
+          @apply my-0 pt-[10px] pb-[15px] max-md:gap-y-[20px] md:px-0 md:pt-[70px] md:pb-[35px] col-span-full border-0 border-b-[1px] rounded-none border-b-[#A7A7A7] grid grid-cols-12 gap-x-[8px] sm:gap-x-[20px];
+
+          .image {
+            @apply max-sm:w-[132px] max-md:w-[157px] h-auto md:col-span-2 max-md:row-start-1 max-md:row-end-1 md:-mr-[20px];
+
+            img {
+              @apply w-full;
+            }
+          }
+
+          .text {
+            @apply max-md:row-start-2 max-md:row-end-2 col-span-full flex-col md:col-span-9 md:col-start-4 md:-ml-[20px];
+
+            h3 {
+              @apply font-bold text-[35px] lg:text-[45px] leading-[42px] lg:leading-[60px] text-midnight-black mb-[14px] lg:mb-[16px] mt-0;
+              a {
+                @apply text-midnight-black duration-300 no-underline;
+              }
+              &:hover a {
+                @apply text-lyquix-green-accessible no-underline;
+              }
+            }
+
+            .card-link {
+              .button {
+                @apply md:ml-0 text-[16px] lg:text-[18px] text-color-base leading-[30px] flex gap-x-[15px] lg:gap-x-[20px] font-semibold;
+              }
+            }
+
+            .text-content {
+              @apply flex justify-between;
+
+              p {
+                @apply md:max-w-[68%] mb-[4px] mt-0;
+              }
+
+              ul {
+                @apply max-md:hidden list-none md:max-w-[24%] lg:max-w-[22%] w-full pl-0 xl:min-w-[140px];
+
+                li {
+                  @apply mt-0 mb-[8px] lg:mb-[10px] text-color-base font-medium text-[16px] leading-[22px] lg:leading-[24px];
+                  a {
+                    @apply text-color-base no-underline;
+                    &:hover {
+                      @apply text-lyquix-green-accessible underline;
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          &:last-child {
+            @apply border-b-0 pb-0 md:mb-[35px];
+
+            .card-link {
+              .readmore {
+                @apply pb-0;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &[data-preset=sub-services] {
+    @include default-cards;
+  }
+
+  &[data-preset=project-service] {
+    h3 {
+      @apply font-semibold mb-[15px] lg:mb-[20px] mt-0 text-[#595B60] text-[20px] lg:text-[22px] leading-[30px] lg:leading-[32px];
+    }
+
+    .cards {
+      .cards-wrapper {
+        @apply flex gap-[15px] flex-wrap ;
+
+        .card {
+          @apply m-0 rounded-[30px];
+
+          .text {
+            @apply rounded-[30px];
+
+            h3 {
+              @apply m-0 flex rounded-[30px];
+
+              a {
+                @apply bg-[#E4F1DF] duration-300 no-underline rounded-[30px] m-0 py-[8px] px-[20px] text-color-base text-[16px] lg:text-[18px] leading-[30px] font-semibold;
+              }
+            }
+
+            .card-link {
+              @apply hidden;
+            }
+
+            &:hover {
+              h3 {
+                a {
+                  @apply no-underline text-white bg-[#408316];
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &[data-preset=the-lyquix-team] {
+    @apply bg-[#F6F6F6] p-[20px] md:p-[35px] flex flex-wrap xl:aspect-[9/10] rounded-[10px];
+
+    .cards {
+      @apply w-full;
+
+      .cards-wrapper {
+        @apply xl:gap-[36px] max-xl:flex max-xl:flex-wrap max-xl:gap-x-0 max-xl:gap-y-[30px] max-lg:gap-y-[20px];
+
+        .card {
+          @apply m-0 w-full md:w-[50%] xl:w-full flex gap-[10px] lg:gap-[20px] xl:gap-[27px];
+
+          h3 {
+            @apply m-0 text-[20px] lg:text-[22px] leading-[30px] lg:leading-[32px] font-semibold;
+          }
+
+          .image {
+            img {
+              @apply w-[35px] h-[35px] lg:w-[40px] lg:h-[40px];
+            }
+          }
+
+          .text {
+            @apply flex flex-wrap items-center;
+          }
+        }
+      }
+    }
+  }
+}
+body[aspectratio=ultrawide], body[aspectratio=wide]{
+  &[screen=lg], &[screen=xl] {
+    @media screen and (max-height: 800px) {
+      &.home .services-box {
+        h2 {
+          @apply mb-0;
+        }
+      }
+      .service-cards-home {
+        .cards-wrapper {
+          .card {
+            .text {
+              p {
+                @apply hidden;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+body[aspectratio=narrow] {
+  &[screen=sm], &[screen=xs] {
+    @media screen and (max-height: 640px) {
+      &.home .services-box {
+        h2 {
+          @apply mb-[20px];
+        }
+      }
+      .service-cards-home {
+        .cards-wrapper {
+          @apply gap-y-0;
+        }
+      }
+    }
+  }
 }

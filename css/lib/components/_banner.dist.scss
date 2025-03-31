@@ -26,12 +26,191 @@
 @use "../abstracts/variables" as *;
 @use "../abstracts/mixins" as *;
 
-.lqx-block-banner {
-	.banner {
-		.image {
-		}
+@mixin default-banner {
+  .banner {
+    @apply grid grid-cols-12 px-0 py-[35px] md:py-28 gap-8;
 
-		.text {
-		}
-	}
+    .image {
+      @apply w-full h-full md:col-start-9 col-span-12 md:col-span-4 md:relative lg:aspect-[7/5];
+
+      img {
+        @apply max-md:my-0 max-md:mx-auto md:absolute w-full h-full object-cover rounded-[5px] max-md:aspect-[3/2];
+      }
+    }
+
+    .text {
+      @apply col-span-12 md:col-span-7 md:self-center;
+
+      h3, h2 {
+        @apply mt-0 mr-0 mb-[16px];
+      }
+
+      p {
+        @apply mt-0 mr-0 mb-[16px];
+
+        &:last-child {
+          @apply mb-0;
+        }
+      }
+
+      ul {
+        @apply p-0;
+        li {
+          @apply list-none;
+          &:last-of-type {
+            @apply mb-0;
+          }
+        }
+      }
+    }
+  }
+}
+
+@mixin left-image {
+  .text {
+    @apply col-span-12 md:col-start-6 md:col-span-7 md:order-2 md:-ml-[20px] lg:ml-0;
+  }
+
+  .image {
+    @apply col-span-12 md:col-start-1 md:col-span-4 self-center md:h-full max-lg:max-h-[346px];
+
+    img {
+      @apply max-md:my-0 max-md:mx-auto;
+    }
+  }
+}
+
+.lqx-block-banner {
+  &:not([data-preset]) {
+    @include default-banner;
+
+    &.left-image {
+      @include left-image;
+    }
+  }
+
+  &[data-preset=portfolio-section] {
+    @include default-banner;
+
+    &.left-image {
+      @include left-image;
+    }
+  }
+
+  &[data-preset=dark-banner] {
+      @apply grid-container bg-midnight-black text-white mb-[35px] md:mb-[60px] lg:mb-[70px] py-[35px] md:py-[70px];
+
+      .banner {
+        @apply grid grid-cols-12 md:gap-x-[20px];
+
+        h2 {
+          @apply col-span-full text-white mt-0 mb-[20px] md:mb-[35px];
+        }
+
+        .text {
+          @apply col-span-full max-md:mb-[20px];
+
+          &:has(ol) {
+            @apply md:order-2 md:-ml-[20px] md:col-span-7 md:col-start-6;
+
+            ol {
+              @apply pl-0 list-none md:pl-[50px];
+              counter-reset: custom-counter;
+
+              li {
+                @apply relative my-0 text-[16px] lg:text-[18px] font-normal leading-[25px] lg:leading-[28px] mb-[30px] md:mb-[50px] text-[#F6F6F6];
+                counter-increment: custom-counter;
+
+                &:last-of-type {
+                  @apply mb-0;
+                }
+
+                &::before {
+                  @apply md:absolute md:-left-[50px] mb-[10px] flex justify-center items-center w-[30px] h-[30px] border-[2px] rounded-full text-lyquix-green text-[22px] leading-[32px] border-dashed border-lyquix-green;
+                  content: counter(custom-counter);
+                }
+
+                strong {
+                  @apply block font-semibold leading-[30px] text-[20px] lg:leading-[32px] lg:text-[22px] mb-[16px];
+                }
+              }
+            }
+          }
+
+          &:has(ul) {
+            @apply col-span-full md:col-span-7 -mr-[20px];
+
+            .intro {
+              p {
+                @apply opacity-80 mt-0 mb-[10px];
+              }
+
+              ul {
+                @apply pl-[6px] list-none;
+
+                li {
+                  @apply flex my-[10px] font-medium capitalize;
+
+                  &::before {
+
+                    @apply mr-[8px] content-['•'] font-black;
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        .text:has(ul) + .image {
+          @apply col-span-full md:col-start-9;
+
+          img {
+            @apply md:absolute;
+          }
+        }
+
+        .image {
+          @apply col-span-full md:col-span-4 relative;
+
+          img {
+            @apply max-md:aspect-[3/2] w-full md:h-auto object-cover max-h-full relative rounded-[5px];
+          }
+        }
+      }
+  }
+
+  &.banner-gray {
+    @apply full-width-grid bg-background-fill;
+
+    .banner {
+      grid-column: container;
+      @apply inner-grid py-[3.5rem] md:py-[6rem] lg:py-28;
+
+      .image {
+        @apply w-full h-full col-span-full md:order-1 md:col-span-4 rounded-[5px] overflow-hidden relative lg:aspect-[7/5];
+
+        img {
+          @apply md:absolute object-cover w-full h-full max-md:aspect-[3/2];
+        }
+      }
+
+      .text {
+        @apply md:order-2 col-span-full md:col-start-6 md:col-span-7 md:-ml-[20px] lg:ml-0;
+
+        h2 {
+          @apply mt-0 text-midnight-black;
+        }
+
+        .links {
+          @apply p-0 list-none;
+        }
+      }
+    }
+  }
+}
+
+figure.full-width {
+  img {
+    @apply w-full
+  }
 }

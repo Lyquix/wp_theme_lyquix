@@ -26,15 +26,31 @@
 @use "../abstracts/variables" as *;
 @use "../abstracts/mixins" as *;
 
+.lqx-module-social{
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 15px;
+	&:before {
+		content: "Follow Us";
+		font-weight: 500;
+	}
+	.icons-list {
+		@apply w-full;
+	}
+}
 .lqx-module-social > .icons-list,
 .lqx-module-share > .share-list {
 	list-style: none;
 	display: flex;
 	gap: 0.25em;
-
+	padding: 0;
+	li {
+		margin: 0;
+	}
 	svg {
-		width: 48px;
-		height: 48px;
+		width: 29px;
+		height: 29px;
 	}
 
 	&.circle {

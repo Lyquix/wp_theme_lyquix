@@ -1,0 +1,287 @@
+@use "../abstracts/mixins" as *;
+
+.single-slideshow {
+  @apply pt-0 overflow-hidden;
+
+  #content {
+    @apply h-[100dvh] grid place-content-center bg-black overflow-hidden;
+  }
+
+  article {
+    transition: .3s;
+    @apply w-[1920px] h-[1080px] relative origin-center max-w-full opacity-0;
+
+    &.scaled {
+      @apply opacity-100
+    }
+  }
+
+  .slideshow-wrapper {
+    @apply w-full h-full;
+
+    .swiper-wrapper {
+      @apply box-border;
+
+      .swiper-slide {
+        @apply flex;
+
+        & > picture {
+          @apply w-full h-full;
+        }
+      }
+    }
+  }
+
+  .slideshow-cover {
+    @apply relative flex bg-transparent w-full h-full;
+
+    .overlay {
+      transition: .5s;
+      @apply absolute w-full h-full z-[1] bg-[#408316] bg-opacity-90;
+    }
+
+    video {
+      @apply h-full w-full object-cover absolute grayscale-[66.7%];
+    }
+
+    .cover-text {
+      @apply z-[2] w-full h-full py-[100px] px-[117px] flex flex-col justify-end gap-y-[297px];
+
+      .cover-middle {
+        @apply flex w-full justify-between;
+
+        img {
+          @apply w-[352px] h-[82px];
+        }
+
+        > div {
+          @apply cursor-pointer flex w-[450px] gap-x-[20px] flex-wrap items-center justify-between text-white text-[80px] leading-[65px] font-extrabold py-0 tracking-[2px];
+
+          &:after {
+            @apply block w-[73px] h-[23px];
+            background-image: url(../images/white-arrow.svg);
+            background-size: 73px 23px;
+            background-position: right center;
+            content: " ";
+            display: block;
+            transition: width 0.5s;
+          }
+
+          &:hover {
+            &:after {
+              @apply w-[44px];
+            }
+          }
+        }
+      }
+
+      .cover-bottom {
+        @apply flex w-full justify-between items-end;
+
+        .left {
+          .slideshow-title {
+            @apply mt-0 mb-[10px] text-white text-[50px] leading-[65px] font-bold;
+          }
+
+          .slideshow-subtitle {
+            @apply text-white text-[25px] leading-[35px] font-semibold;
+          }
+        }
+
+        .right {
+          @apply cursor-pointer text-white flex flex-wrap content-end gap-x-[20px] py-[10px] px-[7.5px] duration-300 border-[2px] border-transparent rounded-[5px] text-[22px] leading-[30px] font-normal;
+
+          &:after {
+            @apply block w-[25px];
+            background-image: url(../images/icons/how-to.svg);
+            background-size: 25px 25px;
+            background-position: right center;
+            content: " ";
+            background-repeat: no-repeat;
+          }
+
+          &:hover {
+            @apply border-white;
+          }
+        }
+      }
+    }
+
+    &.close {
+      .cover-text {
+        @apply gap-y-[350px];
+
+        .cover-middle {
+          @apply flex-wrap justify-center;
+
+          h2 {
+            @apply text-white text-[80px] leading-[65px] font-extrabold my-0;
+          }
+        }
+
+        .cover-bottom {
+          @apply flex-wrap justify-center;
+
+          img {
+            @apply w-[237px] h-[55px];
+          }
+        }
+      }
+    }
+
+    #howToUseModal {
+      @apply hidden fixed z-[50] left-0 top-0 w-full h-full bg-black bg-opacity-50;
+
+      .modal-content {
+        @apply bg-white rounded-[10px] p-[50px] w-[729px] h-[494px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
+
+        .close {
+          @apply absolute top-[20px] right-[20px] cursor-pointer;
+
+          &:after {
+            @apply content-[""] bg-[url(../images/icons/menu-close.svg)] w-[14px] h-[14px] bg-no-repeat bg-center bg-contain block;
+          }
+        }
+
+        h2 {
+          @apply mt-0 mb-[40px] text-[45px] leading-[60px] font-bold;
+        }
+
+        img {
+          @apply w-[628px] h-[143px] mb-[40px];
+        }
+
+        p {
+          @apply my-0 text-[28px] leading-[37px] font-normal text-[#595B60];
+        }
+      }
+    }
+  }
+
+  .project-item {
+    @apply w-full h-full;
+
+    .project-cover {
+      transition: width .3s;
+      @apply w-full h-full relative bg-cover bg-center;
+
+      &:after {
+        @apply content-[''] absolute inset-0 bg-black/50;
+      }
+
+      .logo {
+        @apply absolute inset-0 m-auto w-[650px] h-[650px] z-[2];
+      }
+    }
+
+    .project-content {
+      transition: .3s;
+      @apply bg-white absolute h-full flex flex-col justify-center left-full w-1/2;
+
+      .content-top {
+        @apply px-[117px] mb-[50px];
+
+        h6 {
+          @apply uppercase text-color-base mt-0 mb-[10px] text-[30px] leading-[40px] font-medium;
+        }
+
+        h2 {
+          @apply mt-0 mb-[10px] text-[#35393E] text-[70px] leading-[85px] font-bold;
+        }
+
+        h4 {
+          @apply my-0 font-medium text-[30px] leading-[40px];
+        }
+      }
+
+      .services {
+        @apply px-[117px];
+
+        h3 {
+          @apply mb-[30px] text-[30px] leading-[40px] font-semibold;
+        }
+
+        .cards .cards-wrapper {
+          @apply flex gap-[15px] flex-wrap ;
+
+          .card {
+            @apply my-0 rounded-[30px];
+
+            .text {
+              @apply rounded-[30px];
+              h3 {
+                @apply m-0 flex rounded-[30px] text-[23px] leading-[35px] bg-[#E4F1DF] duration-300 no-underline rounded-[30px] m-0 py-[8px] px-[20px] text-color-base ;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    &.show-content {
+      .project-cover {
+        @apply w-1/2
+      }
+
+      .project-content {
+        @apply left-1/2
+      }
+    }
+  }
+
+  .controls {
+    @apply absolute right-0 bottom-0 z-[2] flex;
+
+    > div {
+      @apply cursor-pointer block w-[50px] h-[50px] duration-300;
+      background-size: 50px 50px;
+      background-position: right center;
+
+      &.fullscreen {
+        background-image: url(../images/icons/fullscreen.svg);
+
+
+        &:hover {
+          background-image: url(../images/icons/fullscreen-hover.svg);
+        }
+      }
+
+      &.home {
+        background-image: url(../images/icons/home-white.svg);
+
+
+        &:hover {
+          background-image: url(../images/icons/home-white-hover.svg);
+        }
+      }
+
+      &.prev {
+        background-image: url(../images/icons/prev-white.svg);
+
+
+        &:hover {
+          background-image: url(../images/icons/prev-white-hover.svg);
+        }
+      }
+
+      &.next {
+        background-image: url(../images/icons/next-white.svg);
+
+
+        &:hover {
+          background-image: url(../images/icons/next-white-hover.svg);
+        }
+      }
+    }
+
+    &:has(.prev.swiper-button-disabled) {
+      .home {
+        @apply w-0
+      }
+    }
+
+    .swiper-button-disabled {
+      @apply w-0
+    }
+  }
+}
