@@ -255,9 +255,23 @@ function customizer_add($wp_customize)
 				'type' => 'text',
 				'label' => 'p:domain_verify',
 			],
+			'rel_preconnect' => [
+				'type' => 'textarea',
+				'label' => 'rel=preconnect URLs',
+				'default' => implode("\n", [
+					'https://cdn.jsdelivr.net',
+					'https://www.google.com',
+					'https://www.google-analytics.com',
+					'https://www.googletagmanager.com',
+					'https://www.gstatic.com',
+					'https://fonts.gstatic.com',
+					'https://fonts.googleapis.com'
+				])
+			],
 			'add_meta_tags' => [
 				'type' => 'textarea',
-				'label' => 'Additional Meta Tags'
+				'label' => 'Additional Meta Tags',
+				'sanitize_callback' => null
 			]
 		],
 		'Browser Alert' => [
@@ -439,39 +453,47 @@ function customizer_add($wp_customize)
 			'priority' => 30,
 		]);
 		foreach ($setting as $name => $options) {
-			$wp_customize->add_setting($name, [
+			$settings_opts = [
 				'type' => 'theme_mod',
 				'transport' => 'refresh',
-				'default' => $options['default'] ?? null,
-				'sanitize_callback' => 'sanitize_text_field'
-			]);
+				'default' => $options['default'] ?? null
+			];
+
+			if (array_key_exists('sanitize_callback', $options)) $settings_opts['sanitize_callback'] = $options['sanitize_callback'];
+			else {
+				switch ($options['type']) {
+					case 'text':
+						$settings_opts['sanitize_callback'] = 'sanitize_text_field';
+						break;
+
+					case 'textarea':
+						$settings_opts['sanitize_callback'] = 'sanitize_textarea_field';
+						break;
+				}
+			}
+
+			$wp_customize->add_setting($name, $settings_opts);
+
+			$control_opts = [
+				'label' => __($options['label'], 'lyquix'),
+				'section' => 'lqx_' . strtolower($section),
+				'settings' => $name,
+			];
+
+			if (array_key_exists('choices', $options)) $control_opts['choices'] = $options['choices'];
 
 			switch ($options['type']) {
 				case 'checkbox-group':
-					$wp_customize->add_control(new checkbox_group_custom_control($wp_customize, $name, [
-						'label' => __($options['label'], 'lyquix'),
-						'section' => 'lqx_' . strtolower($section),
-						'settings' => $name,
-						'choices' => $options['choices']
-					]));
+					$wp_customize->add_control(new checkbox_group_custom_control($wp_customize, $name, $control_opts));
 					break;
 
 				case 'viewports':
-					$wp_customize->add_control(new viewports_custom_control($wp_customize, $name, [
-						'label' => __($options['label'], 'lyquix'),
-						'section' => 'lqx_' . strtolower($section),
-						'settings' => $name
-					]));
+					$wp_customize->add_control(new viewports_custom_control($wp_customize, $name, $control_opts));
 					break;
 
 				default:
-					$wp_customize->add_control($name, [
-						'type' => $options['type'] ?? null,
-						'label' => __($options['label'], 'lyquix'),
-						'section' => 'lqx_' . strtolower($section),
-						'settings' => $name,
-						'choices' => $options['choices'] ?? null
-					]);
+					if (array_key_exists('type', $options)) $control_opts['type'] = $options['type'];
+					$wp_customize->add_control($name, $control_opts);
 					break;
 			}
 		}

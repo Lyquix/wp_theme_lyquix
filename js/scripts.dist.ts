@@ -51,7 +51,7 @@ const ready = (callback) => {
 	if (vars.init === true) {
 		callback();
 	} else {
-		vars.document.on('$lqxready', callback);
+		lqx.vars.document.on('$lqxready', callback);
 	}
 };
 
@@ -87,3 +87,7 @@ export default expObj;
 if (typeof window !== 'undefined') {
 	(window as any).$lqx = expObj;
 }
+
+// Trigger $lqxload event
+lqx.vars.document.trigger('$lqxload');
+lqx.log('$lqxload Event');
