@@ -26,15 +26,26 @@
 
 ?>
 <div class="image" <?= $video_attrs ?>>
-	<?php if ($c['video']['type'] == 'upload' && $c['video']['upload']) : ?>
-		<video class="<? echo ($s['lazy_load'] == 'y' ? 'lazyload-video' : '') ?> <? echo ($s['hover_play'] == 'y' ? 'video-hover-play' : '') ?> <? echo ($s['viewport_play'] == 'y' ? 'video-viewport-play' : '') ?>" preload="auto"
+	<?php if ($c['video']['type'] == 'upload' && $c['video']['upload']) :
+		$video_classes = [];
+		if ($s['lazy_load'] == 'y') {
+			$video_classes[] = 'lazyload-video';
+		}
+		if ($s['hover_play'] == 'y') {
+			$video_classes[] = 'video-hover-play';
+		}
+		if ($s['viewport_play'] == 'y') {
+			$video_classes[] = 'video-viewport-play';
+		}
+		?>
+		<video class="<?= implode(' ', $video_classes)?>" preload="auto"
 			loop muted playsinline autoplay
-			poster="<?= $item['image']['sizes']['medium'] ?>"
-			data-src="<?= esc_attr($hover_content['video']['url']) ?>"
-			type="<?= esc_attr($hover_content['video']['mime_type']) ?>">
+			poster="<?= $c['image']['sizes']['medium'] ?>"
+			data-src="<?= esc_attr($c['video']['upload']['url']) ?>"
+			type="<?= esc_attr($c['video']['mime_type']) ?>">
 			<source
-				src="<?= esc_attr($item['video']['upload']['url']) ?>"
-				type="<?= esc_attr($item['video']['upload']['mime_type']) ?>"/>
+				src="<?= esc_attr($c['video']['upload']['url']) ?>"
+				type="<?= esc_attr($c['video']['upload']['mime_type']) ?>"/>
 		</video>
 	<?php else: ?>
 		<img

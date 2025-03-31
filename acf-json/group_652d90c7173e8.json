@@ -286,20 +286,29 @@
                                 "class": "",
                                 "id": ""
                             },
+                            "acfe_permissions": "",
+                            "instruction_placement": "",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
                             "uploader": "",
-                            "return_format": "url",
+                            "return_format": "array",
+                            "library": "all",
+                            "preview_style": "default",
                             "upload_folder": "",
+                            "button_label": "Add File",
+                            "file_count": 0,
                             "multiple": 0,
                             "max": "",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
                             "min_size": "",
                             "max_size": "",
                             "mime_types": "mp4",
-                            "library": "all",
-                            "preview_style": "default",
+                            "allow_in_bindings": 1,
                             "placeholder": "Select",
-                            "button_label": "Add File",
                             "stylised_button": 0,
-                            "file_count": 0,
                             "min": ""
                         }
                     ]
@@ -450,5 +459,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1742494383
+    "modified": 1743432166
 }
