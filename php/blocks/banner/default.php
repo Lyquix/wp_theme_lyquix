@@ -41,7 +41,10 @@ $s = \lqx\util\validate_data($settings['processed'], [
 			'required' => true,
 			'default' => 'h3',
 			'allowed' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
-		]
+		],
+		'lazy_load' => \lqx\util\schema_str_req_y,
+		'hover_play' => \lqx\util\schema_str_req_y,
+		'viewport_play' => \lqx\util\schema_str_req_y
 	]
 ]);
 

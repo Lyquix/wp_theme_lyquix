@@ -34,6 +34,7 @@ import { swipe } from './lib/lyquix/swipe';
 import { responsive } from './lib/lyquix/responsive';
 import { theme } from './lib/lyquix/theme';
 import { util } from './lib/lyquix/util';
+import { video } from './lib/lyquix/video';
 import { menu } from './lib/lyquix/menu';
 
 // Import functionality for Gutenberg blocks and modules
@@ -73,6 +74,7 @@ const init = (customCfg) => {
 		'lyqbox',
 		'theme',
 		'menu',
+		'video',
 		// Gutenberg blocks
 		'accordion',
 		'alerts',
@@ -146,6 +148,7 @@ const expObj = Object.defineProperties({
 	util,
 	theme,
 	menu,
+	video,
 	/* Gutenberg blocks */
 	accordion,
 	alerts,

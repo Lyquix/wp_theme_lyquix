@@ -69,7 +69,10 @@ $s = \lqx\util\validate_data($settings['processed'], [
 				],
 				'show_current' => \lqx\util\schema_str_req_n
 			]
-		]
+		],
+		'lazy_load' => \lqx\util\schema_str_req_y,
+		'hover_play' => \lqx\util\schema_str_req_y,
+		'viewport_play' => \lqx\util\schema_str_req_y
 	]
 ]);
 

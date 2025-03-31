@@ -27,12 +27,14 @@
 ?>
 <div class="image" <?= $video_attrs ?>>
 	<?php if ($item['video']['type'] == 'upload' && isset($item['video']['upload'])  && $s['show_video'] == 'y') : ?>
-		<video
-			autoplay loop muted playsinline
-			poster="<?= $item['image']['sizes']['large'] ?>">
+		<video class="<? echo ($s['lazy_load'] == 'y' ? 'lazyload-video' : '') ?> <? echo ($s['hover_play'] == 'y' ? 'video-hover-play' : '') ?> <? echo ($s['viewport_play'] == 'y' ? 'video-viewport-play' : '') ?>" preload="auto"
+			loop muted playsinline autoplay
+			poster="<?= $item['image']['sizes']['medium'] ?>"
+			data-src="<?= esc_attr($hover_content['video']['url']) ?>"
+			type="<?= esc_attr($hover_content['video']['mime_type']) ?>">
 			<source
 				src="<?= esc_attr($item['video']['upload']['url']) ?>"
-				type="<?= esc_attr($item['video']['upload']['mime_type']) ?>">
+				type="<?= esc_attr($item['video']['upload']['mime_type']) ?>"/>
 		</video>
 	<?php else: ?>
 		<?= $s['image_clickable'] == 'y' && $item['link']['url'] ? sprintf('<a href="%s" target ="%s">', esc_attr($item['link']['url']), $item['link']['target']) : '' ?>
