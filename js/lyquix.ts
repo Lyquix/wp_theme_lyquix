@@ -192,3 +192,7 @@ export default expObj;
 if (typeof window !== 'undefined') {
 	(window as any).lqx = expObj;
 }
+
+// Trigger lqxload event
+vars.document.trigger('lqxload');
+log('lqxload Event');
