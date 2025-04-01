@@ -442,7 +442,7 @@
                         "y": "Yes",
                         "n": "No"
                     },
-                    "default_value": "n",
+                    "default_value": "y",
                     "return_format": "value",
                     "acfe_settings": "",
                     "acfe_validate": "",
@@ -506,7 +506,7 @@
                         "y": "Yes",
                         "n": "No"
                     },
-                    "default_value": "",
+                    "default_value": "n",
                     "return_format": "value",
                     "acfe_settings": "",
                     "acfe_validate": "",
@@ -857,5 +857,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1743427594
+    "modified": 1743524374
 }

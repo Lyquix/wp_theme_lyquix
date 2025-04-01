@@ -54,7 +54,10 @@ $s = \lqx\util\validate_data($settings['processed'], [
 		'swiper_options_override' => \lqx\util\schema_str_req_emp,
 		'loop' => \lqx\util\schema_str_req_y,
 		'pagination' => \lqx\util\schema_str_req_y,
-		'navigation' => \lqx\util\schema_str_req_y
+		'navigation' => \lqx\util\schema_str_req_y,
+		'lazy_load' => \lqx\util\schema_str_req_y,
+		'hover_play' => \lqx\util\schema_str_req_y,
+		'viewport_play' => \lqx\util\schema_str_req_y,
 	]
 ]);
 

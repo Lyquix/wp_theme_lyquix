@@ -47,7 +47,18 @@ if ($item['video']['type'] == 'url' && $item['video']['url']) {
 			target="<?= $item['image_link']['target'] ?>">
 	<?php endif; ?>
 
-		<?php if ($item['video']['type'] == 'upload' && $item['video']['upload']) : ?>
+		<?php if ($item['video']['type'] == 'upload' && $item['video']['upload']) :
+			$video_classes = [];
+			if ($s['lazy_load'] == 'y') {
+				$video_classes[] = 'lazyload-video';
+			}
+			if ($s['hover_play'] == 'y') {
+				$video_classes[] = 'video-hover-play';
+			}
+			if ($s['viewport_play'] == 'y') {
+				$video_classes[] = 'video-viewport-play';
+			}
+			?>
 			<video
 				autoplay loop muted playsinline
 				poster="<?= $item['image']['sizes']['large'] ?>">
