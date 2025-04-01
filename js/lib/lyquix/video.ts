@@ -80,14 +80,14 @@ export const video = (() => {
 	};
 
 	const lazyLoad = (elems: Array) => {
-		const lazyObserver = new IntersectionObserver((elems, observer) => {
+		const lazyObserver = new IntersectionObserver((videos = elems, observer) => {
 
-			elems.forEach(entry => {
+			videos.forEach(entry => {
 
 				if (entry.isIntersecting) {
 
 					const video = entry.target;
-					console.log(video.dataset, video.src);
+
 					if (!video.src && video.dataset.src) {
 
 						video.src = video.dataset.src;
@@ -104,7 +104,12 @@ export const video = (() => {
 
 		});
 
-		elems.forEach(video => lazyObserver.observe(video));
+		if (elems.length !== undefined) {
+			elems.forEach(video => lazyObserver.observe(video));
+		} else {
+			lazyObserver.observe(elems);
+		}
+
 	};
 
 	const hoverPlay = (elems: Array) => {
@@ -146,8 +151,11 @@ export const video = (() => {
 			threshold: 0.5 // You can tweak this to control how much needs to be visible
 
 		});
-
-		elems.forEach(video => viewportObserver.observe(video));
+		if (elems.length !== undefined) {
+			elems.forEach(video => viewportObserver.observe(video));
+		} else {
+			viewportObserver.observe(elems);
+		}
 	};
 
 	return {
