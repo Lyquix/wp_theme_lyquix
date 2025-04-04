@@ -38,11 +38,11 @@ add_filter('acf/load_field', function ($field) {
 		],
 		//Map
 		[ // style and style_name fields
-			'user' => 'field_66a7c06283f9b',
+			'user' => 'field_67efef082dff9',
 			'choice' => 'field_6697e27cc4d4b'
 		],
 		[ // preset and preset_name fields
-			'user' => 'field_66a7b7c6761cb',
+			'user' => 'field_67efeef72dff8',
 			'choice' => 'field_6697e331c4d4f'
 		]
 	];
@@ -747,6 +747,25 @@ function init_settings($s) {
 		$s['controls'][$i] = $control;
 	}
 
+	if ($s['render_mode'] == 'maps-js' || $s['render_mode'] == 'cards-js') {
+		// Convert post_fields to an array of field objects
+		$post_fields = [];
+
+		foreach ($s['render_js']['post_fields'] as $field_obj) {
+			$field_obj = get_field_object($field_obj['acf_field'], null, true, false, false);
+
+			$post_fields[$field_obj['name']] = [
+				'key' => $field_obj['key'],
+				'name' => $field_obj['name'],
+				'label' => $field_obj['label'],
+				'type' => $field_obj['type'],
+				'choices' => isset($field_obj['choices']) ? $field_obj['choices'] : []
+			];
+		}
+
+		$s['render_js']['post_fields'] = $post_fields;
+	}
+
 	if ($s['render_mode'] == 'js') {
 		// Convert post_fields to an array of field objects
 		$post_fields = [];
@@ -829,10 +848,12 @@ function init_settings($s) {
 
 	// Remove unused render mode data
 	switch ($s['render_mode']) {
+		case 'maps-php':
 		case 'php':
 			unset($s['render_js']);
 			break;
 
+		case 'maps-js':
 		case 'js':
 			unset($s['render_php']);
 			break;
@@ -1423,6 +1444,7 @@ function get_posts_with_data($s) {
 			$post = get_post(get_the_ID());
 
 			switch ($s['render_mode']) {
+				case 'maps-js':
 				case 'js':
 					// Set the post object
 					$post = [
@@ -1467,6 +1489,7 @@ function get_posts_with_data($s) {
 
 					break;
 
+				case 'maps-php':
 				case 'php':
 					// List of field names that represent WP_Post fields, not ACF fields
 					$wp_post_keys = ['post_content', 'post_title', 'post_excerpt', 'post_name'];
@@ -1702,7 +1725,7 @@ function prepare_json_data($s) {
 	foreach (['post_type', 'pre_filters', 'posts_order', 'render_php'] as $key) unset($res[$key]);
 
 	// Handle server-side rendering
-	if ($s['render_mode'] == 'php') {
+	if ($s['render_mode'] == 'php' || $s['render_mode'] == 'maps-php') {
 		foreach(['anchor', 'block', 'class', 'clear_label', 'posts', 'render_js',
 					'search_placeholder', 'show_clear', 'show_search'] as $key) unset($res[$key]);
 	}
@@ -1866,7 +1889,7 @@ function handle_api_call($request) {
 	$res = \lqx\filters\prepare_json_data($s);
 
 	// Prepare JSON render
-	if ($s['render_mode'] == 'php') {
+	if ($s['render_mode'] == 'php' || $s['render_mode'] == 'maps-php') {
 		$res['render'] = [
 			'controls' => \lqx\util\minify_html(render_controls($s)),
 			'posts' => \lqx\util\minify_html(render_posts($s)),
