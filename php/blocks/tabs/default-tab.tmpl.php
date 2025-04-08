@@ -35,4 +35,11 @@
 		tabindex="<?= $idx == 0 ? '' : '-1' ?>">
 		<?= $item['label'] ?>
 	</button>
+	<?php if (!empty($item['subheading'])): ?>
+		<<?= $s['subheading_style'] ?>
+		class="subheading"
+		aria-hidden="true">
+		<?= $item['subheading'] ?>
+		</<?= $s['subheading_style'] ?>>
+	<?php endif; ?>
 </li>

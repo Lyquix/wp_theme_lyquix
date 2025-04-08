@@ -55,6 +55,7 @@ export const tabs = (() => {
 			tabSelector: '.tab',
 			tabPanelSelector: '.tab-panel',
 			headerSelector: '.accordion-header',
+			subheadingSelector: '.accordion-subheading',
 			tabContentSelector: '.tab-content',
 			analytics: {
 				enabled: true,
@@ -125,12 +126,14 @@ export const tabs = (() => {
 							// Toggle aria-hidden
 							tabsElem.find(cfg.tabs.tabsListSelector).attr('aria-hidden', 'true');
 							tabsElem.find(cfg.tabs.headerSelector).attr('aria-hidden', 'false');
+							tabsElem.find(cfg.tabs.subheadingSelector).attr('aria-hidden', 'false');
 						}
 						else {
 							// Convert to tabs
 							// Toggle aria-hidden
 							tabsElem.find(cfg.tabs.tabsListSelector).attr('aria-hidden', 'false');
 							tabsElem.find(cfg.tabs.headerSelector).attr('aria-hidden', 'true');
+							tabsElem.find(cfg.tabs.subheadingSelector).attr('aria-hidden', 'true');
 						}
 					};
 

@@ -34,3 +34,9 @@
 		<?= $item['heading'] ?>
 	</button>
 </<?= $s['heading_style'] ?>>
+
+<?php if ($s['show_subheading'] == 'y' && !empty($item['subheading'])): ?>
+	<<?= $s['subheading_style'] ?> class="subheading">
+		<?= $item['subheading'] ?>
+	</<?= $s['subheading_style'] ?>>
+<?php endif; ?>
