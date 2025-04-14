@@ -42,6 +42,13 @@
 			aria-hidden="true">
 			<?= $item['label'] ?>
 		</button>
+		<?php if (!empty($item['subheading'])): ?>
+				<<?= $s['subheading_style'] ?>
+				class="accordion-subheading"
+				aria-hidden="true">
+				<?= $item['subheading'] ?>
+				</<?= $s['subheading_style'] ?>>
+		<?php endif; ?>
 	<?php endif; ?>
 
 	<div
@@ -49,6 +56,9 @@
 		id="<?= $s['hash'] . '-content-' . $idx ?>">
 		<?= $item['heading'] ? sprintf('<%s>%s</%s>', $s['heading_style'], $item['heading'], $s['heading_style']) : '' ?>
 		<?= $item['content'] ?>
+		<?php if (!empty($item['image']['url']) && ($s['show_image'] == 'y')): ?>
+			<img src="<?= htmlspecialchars($item['image']['url'], ENT_QUOTES, 'UTF-8') ?>" alt="Image">
+		<?php endif; ?>
 	</div>
 
 </section>

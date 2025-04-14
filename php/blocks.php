@@ -766,6 +766,12 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 							"value" => "y"
 						],
 						[
+							"field" => "subheading",
+							"controller" => "show_subheading",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
 							"field" => "additional_classes",
 							"controller" => "custom_classesid",
 							"operator" => "==",
@@ -1173,6 +1179,18 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 						[
 							"field" => "heading",
 							"controller" => "show_heading",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "subheading",
+							"controller" => "show_subheading",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
+							"field" => "image",
+							"controller" => "show_image",
 							"operator" => "==",
 							"value" => "y"
 						],
