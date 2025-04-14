@@ -1,7 +1,31 @@
 <?php
+/**
+ * featured-posts.php - Add featured posts and filtering by them
+ *
+ * @version     3.1.0
+ * @package     wp_theme_lyquix
+ * @author      Lyquix
+ * @copyright   Copyright (C) 2015 - 2024 Lyquix
+ * @license     GNU General Public License version 2 or later
+ * @link        https://github.com/Lyquix/wp_theme_lyquix
+ */
+
+//    .d8888b. 88888888888 .d88888b.  8888888b.   888
+//   d88P  Y88b    888    d88P" "Y88b 888   Y88b  888
+//   Y88b.         888    888     888 888    888  888
+//    "Y888b.      888    888     888 888   d88P  888
+//       "Y88b.    888    888     888 8888888P"   888
+//         "888    888    888     888 888         Y8P
+//   Y88b  d88P    888    Y88b. .d88P 888          "
+//    "Y8888P"     888     "Y88888P"  888         888
+//
+//  DO NOT MODIFY THIS FILE!
+
+namespace lqx\featured_posts;
+
 // Register the meta field
-function register_featured_meta() {
-    $post_types = get_post_types(['public' => true], 'names'); // Get all public post types
+add_action('init', function(){
+	$post_types = get_post_types(['public' => true], 'names'); // Get all public post types
     foreach ($post_types as $post_type) {
         register_post_meta($post_type, '_is_featured', [
             'type'         => 'boolean',
@@ -13,32 +37,39 @@ function register_featured_meta() {
 						},
         ]);
     }
-}
-add_action('init', 'register_featured_meta');
+});
 
 // Add a meta box for the Classic Editor
-function add_featured_meta_box_classic() {
+add_action('add_meta_boxes', function(){
 	$post_types = get_post_types(['public' => true], 'names'); // Get all public post types
 	foreach ($post_types as $post_type) {
 			add_meta_box(
 					'featured_meta_box_classic',
 					__('Featured', 'featured-posts'),
-					'render_featured_meta_box_classic',
+					function($post) {
+						$value = get_post_meta($post->ID, '_is_featured', true);
+						wp_nonce_field('save_featured_meta_classic', 'featured_meta_nonce_classic');
+						?>
+						<label>
+								<input type="checkbox" name="is_featured" value="1" <?php checked($value, '1'); ?>>
+								<?php _e('Featured', 'featured-posts'); ?>
+						</label>
+						<?php
+					},
 					$post_type,
 					'side',
 					'core'
 			);
 	}
-}
-add_action('add_meta_boxes', 'add_featured_meta_box_classic');
+});
 
-function enqueue_custom_meta_field_script() {
+add_action('enqueue_block_editor_assets', function() {
 	wp_enqueue_script(
-			'custom-meta-field',
-			get_template_directory_uri() . '/js/featured-posts.js', // Update with your file path
-			['wp-plugins', 'wp-edit-post', 'wp-components', 'wp-data', 'wp-element'],
-			filemtime(get_template_directory() . '/js/featured-posts.js'), // Cache-busting
-			true
+		'custom-meta-field',
+		get_template_directory_uri() . '/js/featured-posts.js', // Update with your file path
+		['wp-plugins', 'wp-edit-post', 'wp-components', 'wp-data', 'wp-element'],
+		filemtime(get_template_directory() . '/js/featured-posts.js'), // Cache-busting
+		true
 	);
 
 	// Add type="module" to the script
@@ -47,26 +78,13 @@ function enqueue_custom_meta_field_script() {
 				$tag = str_replace(' src', ' type="module" src', $tag);
 		}
 		return $tag;
-}, 10, 3);
-}
-add_action('enqueue_block_editor_assets', 'enqueue_custom_meta_field_script');
-
-// Render the meta box for Classic Editor
-function render_featured_meta_box_classic($post) {
-	$value = get_post_meta($post->ID, '_is_featured', true);
-	wp_nonce_field('save_featured_meta_classic', 'featured_meta_nonce_classic');
-	?>
-	<label>
-			<input type="checkbox" name="is_featured" value="1" <?php checked($value, '1'); ?>>
-			<?php _e('Featured', 'featured-posts'); ?>
-	</label>
-	<?php
-}
+	}, 10, 3);
+});
 
 // Save the meta value for Classic Editor
-function save_featured_meta_classic($post_id) {
+add_action('save_post', function($post_id){
 	if (!isset($_POST['featured_meta_nonce_classic']) || !wp_verify_nonce($_POST['featured_meta_nonce_classic'], 'save_featured_meta_classic')) {
-			return;
+		return;
 	}
 
 	if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
@@ -82,11 +100,10 @@ function save_featured_meta_classic($post_id) {
 	} else {
 			delete_post_meta($post_id, '_is_featured');
 	}
-}
-add_action('save_post', 'save_featured_meta_classic');
+});
 
 // We need to iterate through each public post type and add the meta box to the post view as a column
-function register_featured_boxes() {
+add_action('init', function(){
 	$post_types = get_post_types(['public' => true], 'names'); // Get all public post types
 	foreach ($post_types as $post_type) {
 		//var_dump($post_type);
@@ -105,8 +122,7 @@ function register_featured_boxes() {
 			}
 		}, 10, 2);
 	}
-}
-add_action('init', 'register_featured_boxes');
+});
 // Enqueue JavaScript to handle checkbox interaction
 add_action('admin_enqueue_scripts', function() {
 	wp_enqueue_script('featured-checkbox-handler', get_template_directory_uri() . '/js/custom-meta-checkbox.js?v=' . filemtime(get_template_directory() . '/js/custom-meta-checkbox.js'), ['jquery'], null, true);
