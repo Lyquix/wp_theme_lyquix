@@ -98,6 +98,9 @@ require_once get_template_directory() . '/php/livereload.php';
 // Featured Posts
 require_once get_template_directory() . '/php/featured-posts.php';
 
+// Fields
+require_once get_template_directory() . '/php/fields.php';
+
 // Custom functions.php
 if (file_exists(get_stylesheet_directory() . '/php/custom/functions.php')) {
 	require_once get_stylesheet_directory() . '/php/custom/functions.php';
