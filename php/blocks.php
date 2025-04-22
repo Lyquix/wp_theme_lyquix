@@ -1201,6 +1201,12 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 							"value" => "y"
 						],
 						[
+							"field" => "header_image",
+							"controller" => "show_header_image",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
 							"field" => "additional_classes",
 							"controller" => "custom_classesid",
 							"operator" => "==",
