@@ -40,3 +40,7 @@
 		<?= $item['subheading'] ?>
 	</<?= $s['subheading_style'] ?>>
 <?php endif; ?>
+
+<?php if (!empty($item['header_image']['url']) && ($s['show_header_image'] == 'y')): ?>
+	<img src="<?= htmlspecialchars($item['header_image']['url'], ENT_QUOTES, 'UTF-8') ?>" alt="Accordion Header Image">
+<?php endif; ?>
