@@ -425,6 +425,38 @@
                     "layout": "horizontal"
                 },
                 {
+                    "key": "field_68077946774bb",
+                    "label": "Show Header Image",
+                    "name": "show_header_image",
+                    "aria-label": "",
+                    "type": "button_group",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "choices": {
+                        "y": "Yes",
+                        "n": "No"
+                    },
+                    "default_value": "",
+                    "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "allow_null": 1,
+                    "acfe_permissions": "",
+                    "instruction_placement": "",
+                    "allow_in_bindings": 0,
+                    "layout": "horizontal"
+                },
+                {
                     "key": "field_67e6e57d3b9a7",
                     "label": "Show Image",
                     "name": "show_image",
@@ -519,5 +551,5 @@
     ],
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1744129844
+    "modified": 1745320274
 }

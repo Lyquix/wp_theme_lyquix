@@ -39,6 +39,7 @@ $s = \lqx\util\validate_data($settings['processed'], [
 		'open_on_load' => \lqx\util\schema_str_req_n,
 		'open_multiple' => \lqx\util\schema_str_req_y,
 		'show_subheading' => \lqx\util\schema_str_req_y,
+		'show_header_image' => \lqx\util\schema_str_req_y,
 		'show_image' => \lqx\util\schema_str_req_y,
 		'heading_style' => [
 			'type' => 'string',
