@@ -40,6 +40,7 @@
 			<?php endif; ?>
 		</div>
 		<div class="content">
+			<?php if ($cta['show_breadcrumb']) : ?><p class="breadcrumb"><?= $cta['breadcrumb'] ?></p><?php endif;?>
 			<<?= $s['heading_style'] == 'p' ? 'p class="title"><strong' : $s['heading_style'] ?>>
 				<?= $cta['heading'] ?>
 			</<?= $s['heading_style'] == 'p' ? 'strong></p' : $s['heading_style'] ?>>
