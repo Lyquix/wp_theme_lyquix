@@ -793,6 +793,24 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 				],
 				[
 					"settings" => [
+						"block_name" => "lqx/banner",
+						"content_field" => "field_654bbd87bfd2f",
+						"global_field" => "field_6584920d2639c",
+						"presets_field" => "field_656cfd759ac31",
+						"user_field" => "field_657727e668c45",
+						"admin_field" => "field_657726ebd0590"
+					],
+					"rules" => [
+						[
+							"field" => "breadcrumb",
+							"controller" => "show_breadcrumb",
+							"operator" => "==",
+							"value" => "y"
+						]
+					]
+				],
+				[
+					"settings" => [
 						"block_name" => "lqx/cards",
 						"content_field" => "field_658db3b2c1203",
 						"global_field" => "field_658db3c317b3c",

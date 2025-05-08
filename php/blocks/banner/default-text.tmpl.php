@@ -26,6 +26,9 @@
 
 ?>
 <div class="text">
+	<?php if (isset($s['show_breadcrumb']) && $s['show_breadcrumb'] === 'y' && !empty($c['breadcrumb'])): ?>
+		<p class="breadcrumb"><?= $c['breadcrumb'] ?></p>
+	<?php endif; ?>
 	<?php if ($c['heading']): ?>
 	<<?= $s['heading_style'] ?> class="title"><?= $c['heading'] ?></<?= $s['heading_style'] ?>>
 	<?php endif; ?>
