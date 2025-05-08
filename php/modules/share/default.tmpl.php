@@ -32,7 +32,7 @@
 			<li>
 				<a class="link-<?= $p['platform_name']['value'] ?>"
 					href="<?= $share_link ?>"
-					target="_blank"
+					<?php if ($p['platform_name']['value'] !== 'email' && $p['platform_name']['value'] !== 'print') : ?>target="_blank"<?php endif;?>
 					rel="noopener noreferrer"
 					aria-label="Share on <?= $p['platform_name']['label'] ?>">
 					<svg aria-hidden="true" class="icon" width="48" height="48">
