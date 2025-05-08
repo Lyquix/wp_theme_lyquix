@@ -24,8 +24,6 @@
 //  If you need a custom renderer, copy this file to php/custom/blocks/gallery/default.php and modify it there
 //  You may also create custom renderer for specific presets, by copying this file to /php/custom/blocks/gallery/{preset}.php
 
-namespace lqx\blocks\gallery;
-
 /**
  * Render gallery
  *
@@ -58,81 +56,79 @@ namespace lqx\blocks\gallery;
  * @return void
  * @throws Exception if settings are invalid
  */
-function render($settings, $content) {
-	// Get and validate processed settings
-	$s = \lqx\util\validate_data($settings['processed'], [
-		'type' => 'object',
-		'required' => true,
-		'keys' => [
-			'anchor' => \lqx\util\schema_str_req_emp,
-			'class' => \lqx\util\schema_str_req_emp,
+
+$s = \lqx\util\validate_data($settings['processed'], [
+	'type' => 'object',
+	'required' => true,
+	'keys' => [
+		'anchor' => \lqx\util\schema_str_req_emp,
+		'class' => \lqx\util\schema_str_req_emp,
 			'hash' => [
-				'type' => 'string',
-				'required' => true,
-				'default' => 'id-' . substr(md5(json_encode([$settings, $content, random_int(1000, 9999)])), 24)
+			'type' => 'string',
+			'required' => true,
+			'default' => 'id-' . substr(md5(json_encode([$settings, $content, random_int(1000, 9999)])), 24)
+		],
+		'slider' => \lqx\util\schema_str_req_n,
+		'swiper_options_override' => \lqx\util\schema_str_req_emp,
+		'heading_style' => [
+			'type' => 'string',
+			'required' => true,
+			'default' => 'h3',
+			'allowed' => ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+		],
+		'browser_history' => \lqx\util\schema_str_req_n
+	]
+]);
+
+// If valid settings, use them, otherwise throw exception
+if ($s['isValid']) $s = $s['data'];
+else throw new \Exception('Invalid block settings: ' . var_export($s, true));
+
+// Get the top level items first
+$c = \lqx\util\validate_data($content, [
+	'type' => 'object',
+		'required' => true,
+	'keys' => [
+		'lightbox_slug' => \lqx\util\schema_str_req_emp,
+		'slides' => [
+			'type' =>	'array',
+			'required' => true,
+			'default' => []
+		]
+	]
+])['data'];
+
+// Get content and filter our invalid content
+$c['slides'] = array_filter(array_map(function($item) {
+	$v = \lqx\util\validate_data($item, [
+		'type' => 'object',
+		'keys' => [
+			'title' => \lqx\util\schema_str_req_emp,
+			'image' => [
+				'type' => 'object',
+				'default' => [],
+				'keys' => \lqx\util\schema_data_image
 			],
-			'slider' => \lqx\util\schema_str_req_n,
-			'swiper_options_override' => \lqx\util\schema_str_req_emp,
-			'heading_style' => [
-				'type' => 'string',
-				'required' => true,
-				'default' => 'h3',
-				'allowed' => ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+			'video' => \lqx\util\schema_str_req_emp,
+			'caption' => \lqx\util\schema_str_req_emp,
+			'thumbnail' => [
+				'type' => 'object',
+				'default' => [],
+				'keys' => \lqx\util\schema_data_image
 			],
-			'browser_history' => \lqx\util\schema_str_req_n
+			'teaser' => \lqx\util\schema_str_req_emp,
+			'additional_classes' => \lqx\util\schema_str_req_emp,
+			'item_id' => \lqx\util\schema_str_req_emp
 		]
 	]);
 
-	// If valid settings, use them, otherwise throw exception
-	if ($s['isValid']) $s = $s['data'];
-	else throw new \Exception('Invalid block settings: ' . var_export($s, true));
+	// Skip if data is not valid
+	if (!$v['isValid']) return null;
 
-	// Get the top level items first
-	$c = \lqx\util\validate_data($content, [
-		'type' => 'object',
-		'required' => true,
-		'keys' => [
-			'lightbox_slug' => \lqx\util\schema_str_req_emp,
-			'slides' => [
-				'type' =>	'array',
-				'required' => true,
-				'default' => []
-			]
-		]
-	])['data'];
+	// Skip slide if both image and video are missing
+	if (!$v['data']['image']['url'] && !$v['data']['video']) return null;
 
-	// Get content and filter our invalid content
-	$c['slides'] = array_filter(array_map(function($item) {
-		$v = \lqx\util\validate_data($item, [
-			'type' => 'object',
-			'keys' => [
-				'title' => \lqx\util\schema_str_req_emp,
-				'image' => [
-					'type' => 'object',
-					'default' => [],
-					'keys' => \lqx\util\schema_data_image
-				],
-				'video' => \lqx\util\schema_str_req_emp,
-				'caption' => \lqx\util\schema_str_req_emp,
-				'thumbnail' => [
-					'type' => 'object',
-					'default' => [],
-					'keys' => \lqx\util\schema_data_image
-				],
-				'teaser' => \lqx\util\schema_str_req_emp,
-				'additional_classes' => \lqx\util\schema_str_req_emp,
-				'item_id' => \lqx\util\schema_str_req_emp
-			]
-		]);
+	return $v['data'];
+}, $c['slides']));
 
-		// Skip if data is not valid
-		if (!$v['isValid']) return null;
-
-		// Skip slide if both image and video are missing
-		if (!$v['data']['image']['url'] && !$v['data']['video']) return null;
-
-		return $v['data'];
-	}, $c['slides']));
-
-	require \lqx\blocks\get_template('gallery', $s['preset']);
-}
+require \lqx\blocks\get_template('gallery', $s['preset']);
