@@ -1051,6 +1051,12 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 							"value" => "y"
 						],
 						[
+							"field" => "link",
+							"controller" => "show_link",
+							"operator" => "==",
+							"value" => "y"
+						],
+						[
 							"field" => "image",
 							"controller" => "show_image",
 							"operator" => "==",
