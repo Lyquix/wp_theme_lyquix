@@ -1359,10 +1359,12 @@ function get_presets_styles_options($request)
 {
     $block_type = str_replace('lqx/', '', sanitize_text_field($request->get_param('block_type')));
     $setting = sanitize_text_field($request->get_param('setting'));
-    $options = [];
+    $options = [
+			[$setting.'_name' => '-']
+		];
 
     if ($block_type && $setting) {
-        $options = get_field($block_type.'_block_'.$setting.'s', 'option') ?? [];
+        $options =  array_merge($options, get_field($block_type.'_block_'.$setting.'s', 'option') ?: []);
     }
 
     return rest_ensure_response($options);
@@ -1374,6 +1376,7 @@ function search_posts_by_block_and_setting($request) {
     $block_type = $request->get_param('block_type');
     $setting = $request->get_param('select');
     $value = $request->get_param('option');
+		$value = $value != '-' ? $value : '';
 
     $block_search = '<!-- wp:'.$block_type;
     $setting_search = '"' . str_replace('lqx/', '', $block_type) . '_block_user_' . $setting . '":"' . $value . '"';
@@ -1402,8 +1405,6 @@ function search_posts_by_block_and_setting($request) {
     return rest_ensure_response($result);
 }
 
-
-
 add_action('rest_api_init', function () {
     register_rest_route('lyquix/v3', '/get-options', array(
         'methods' => 'GET',
@@ -1417,3 +1418,42 @@ add_action('rest_api_init', function () {
         'permission_callback' => '__return_true',
     ));
 });
+
+add_filter( 'acf/load_field/key=field_6729f97d9e5be', function($field) {
+	$field['choices'] = lqx_get_block_choices();
+	return $field;
+});
+
+function lqx_get_block_choices() {
+
+	$choices  = [];
+	$base_dir = get_template_directory() . '/php/blocks';
+
+	if ( ! is_dir( $base_dir ) ) {
+		return $choices;
+	}
+
+	$iterator = new \RecursiveIteratorIterator(
+		new \RecursiveDirectoryIterator( $base_dir, \RecursiveDirectoryIterator::SKIP_DOTS )
+	);
+
+	foreach ( $iterator as $file ) {
+
+		if ( 'block.json' !== $file->getBasename() ) {
+			continue;
+		}
+
+		$json = file_get_contents( $file->getRealPath() );
+		$data = json_decode( $json, true );
+
+		if ( ! $data || empty( $data['name'] ) || empty( $data['title'] ) ) {
+			continue;
+		}
+
+		$choices[ $data['name'] ] = $data['title'];
+	}
+
+	asort( $choices, SORT_NATURAL | SORT_FLAG_CASE );
+
+	return $choices;
+}
