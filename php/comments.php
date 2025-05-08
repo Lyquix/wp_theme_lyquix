@@ -3,7 +3,7 @@
 /**
  * comments.php - Disable all comment functionality
  *
- * @version     3.1.0
+ * @version     3.2.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2024 Lyquix

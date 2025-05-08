@@ -1,7 +1,7 @@
 /**
  * lyqbox.js - LyqBox - Lyquix lightbox functionality
  *
- * @version     2.4.1
+ * @version     3.2.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2024 Lyquix
