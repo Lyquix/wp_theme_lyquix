@@ -485,7 +485,7 @@ define('lqx\util\schema_data_video', [
  */
 function get_video_urls($url) {
 	// Check if the video is from YouTube
-	if (preg_match('/^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/', $url, $match)) {
+	if (preg_match('/^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/|live\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/', $url, $match)) {
 		$youtube_id = $match[1];
 		if ($youtube_id) {
 			$url = 'https://www.youtube.com/embed/' . $youtube_id . '?rel=0&amp;autoplay=1&amp;mute=1&amp;modestbranding=1';
