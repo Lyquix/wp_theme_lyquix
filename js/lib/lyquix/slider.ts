@@ -20,9 +20,9 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-import { vars, cfg, log, warn } from './core';
-import { mutation } from './mutation';
-import { analytics } from './analytics';
+import {vars, cfg, log, warn} from './core';
+import {mutation} from './mutation';
+import {analytics} from './analytics';
 
 declare const jQuery, Swiper;
 
@@ -133,53 +133,52 @@ export const slider = (() => {
 								'</span>';
 						},
 					};
+				}
 
+				if (navigation == true) {
+					swiperOptions['navigation'] = {
+						enabled: true,
+						prevEl: cfg.slider.swiperPrevSelector,
+						nextEl: cfg.slider.swiperNextSelector
+					};
+				}
 
-					if (navigation == true) {
-						swiperOptions['navigation'] = {
-							enabled: true,
-							prevEl: cfg.slider.swiperPrevSelector,
-							nextEl: cfg.slider.swiperNextSelector
-						};
+				// Swiper options override
+				const swiperOptionsOverride = sliderElem.attr('data-swiper-options-override');
+				if (swiperOptionsOverride) {
+					try {
+						swiperOptions = jQuery.extend(true, swiperOptions, JSON.parse(swiperOptionsOverride));
+					} catch (e) {
+						warn('Swiper options override is not valid JSON');
 					}
+				}
 
-					// Swiper options override
-					const swiperOptionsOverride = sliderElem.attr('data-swiper-options-override');
-					if (swiperOptionsOverride) {
-						try {
-							swiperOptions = jQuery.extend(true, swiperOptions, JSON.parse(swiperOptionsOverride));
-						} catch (e) {
-							warn('Swiper options override is not valid JSON');
+				new Swiper('#' + sliderElem.attr('id') + ' ' + cfg.slider.swiperSelector, swiperOptions);
+
+				if (navigation == true) {
+					// Prev/Next button listeners
+					sliderElem.find(cfg.slider.swiperPrevSelector).click(() => {
+						// Send event for alerts previous button click
+						if (cfg.slider.analytics.enabled && cfg.slider.analytics.onPrevNext) {
+							analytics.sendGAEvent({
+								'eventCategory': 'Slider',
+								'eventAction': 'Previous',
+								'eventLabel': '',
+								'nonInteraction': cfg.slider.analytics.nonInteraction
+							});
 						}
-					}
-
-					new Swiper('#' + sliderElem.attr('id') + ' ' + cfg.slider.swiperSelector, swiperOptions);
-
-					if (navigation == true) {
-						// Prev/Next button listeners
-						sliderElem.find(cfg.slider.swiperPrevSelector).click(() => {
-							// Send event for alerts previous button click
-							if (cfg.slider.analytics.enabled && cfg.slider.analytics.onPrevNext) {
-								analytics.sendGAEvent({
-									'eventCategory': 'Slider',
-									'eventAction': 'Previous',
-									'eventLabel': '',
-									'nonInteraction': cfg.slider.analytics.nonInteraction
-								});
-							}
-						});
-						sliderElem.find(cfg.slider.swiperNextSelector).click(() => {
-							// Send event for alerts next button click
-							if (cfg.slider.analytics.enabled && cfg.slider.analytics.onPrevNext) {
-								analytics.sendGAEvent({
-									'eventCategory': 'Slider',
-									'eventAction': 'Next',
-									'eventLabel': '',
-									'nonInteraction': cfg.slider.analytics.nonInteraction
-								});
-							}
-						});
-					}
+					});
+					sliderElem.find(cfg.slider.swiperNextSelector).click(() => {
+						// Send event for alerts next button click
+						if (cfg.slider.analytics.enabled && cfg.slider.analytics.onPrevNext) {
+							analytics.sendGAEvent({
+								'eventCategory': 'Slider',
+								'eventAction': 'Next',
+								'eventLabel': '',
+								'nonInteraction': cfg.slider.analytics.nonInteraction
+							});
+						}
+					});
 				}
 			});
 		}
