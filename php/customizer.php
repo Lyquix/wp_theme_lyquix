@@ -196,6 +196,12 @@ function lqx_customizer_add($wp_customize) {
 				'label' => 'Allow SVG Upload',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
+			],
+			'feat_disable_srcset' => [
+				'type' => 'radio',
+				'label' => 'Disable Image srcset',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
 			]
 		]
 	];

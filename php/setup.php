@@ -49,6 +49,13 @@ function lqx_setup() {
 		});
 	}
 
+	// Disable srcset on images
+	if (get_theme_mod('feat_disable_srcset', '1') === '1') {
+		add_filter('wp_calculate_image_srcset', function ($sources) {
+			return false;
+		});
+	}
+
 	//Remove WordPress Meta Generator Tag
 	remove_action('wp_head', 'wp_generator');
 
