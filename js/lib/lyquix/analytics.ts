@@ -336,106 +336,108 @@ export const analytics = (() => {
 				if (elems.length) {
 					log('Setting up ' + elems.length + ' download links', elems);
 					elems.forEach((elem) => {
-						try {
-							// check if it has an href attribute, otherwise it is just a page anchor
-							if (elem.href) {
-								elem = jQuery(elem);
+						// check if it has an href attribute, otherwise it is just a page anchor
+						if (elem.href) {
+							elem = jQuery(elem);
 
-								// get absolute url
-								const url = new URL(elem.attr('href'), window.location.href);
+							// get absolute url
+							let url;
+							try {
+								url = new URL(elem.attr('href'), window.location.href);
+							} catch(e) {
+								log(e);
+								return;
+							}
 
-								// determine if the link target is opening in a new window
-								let newWindow = (elem.attr('target') && !elem.attr('target').match(/^_(self|parent|top)$/i));
+							// determine if the link target is opening in a new window
+							let newWindow = (elem.attr('target') && !elem.attr('target').match(/^_(self|parent|top)$/i));
 
-								// check if it is an outbound link, track as event
-								if (cfg.analytics.outbound.enabled && url.host != window.location.host && cfg.analytics.outbound.exclude.indexOf(url.host) == -1) {
-									log('Found outbound link to ' + url.href);
-									elem.on('click', (e) => {
-										log('Outbound link to: ' + url.href);
+							// check if it is an outbound link, track as event
+							if (cfg.analytics.outbound.enabled && url.host != window.location.host && cfg.analytics.outbound.exclude.indexOf(url.host) == -1) {
+								log('Found outbound link to ' + url.href);
+								elem.on('click', (e) => {
+									log('Outbound link to: ' + url.href);
 
-										// links opens in a new window when user holds the ctrl key
-										newWindow = newWindow || e.ctrlKey || e.shiftKey || e.metaKey;
+									// links opens in a new window when user holds the ctrl key
+									newWindow = newWindow || e.ctrlKey || e.shiftKey || e.metaKey;
 
-										// Fallback function - open the link in case the event callback isn't triggered
-										let timer;
-										if (!newWindow) timer = setTimeout(() => {
-											window.location.href = url.href;
-										}, 2000);
+									// Fallback function - open the link in case the event callback isn't triggered
+									let timer;
+									if (!newWindow) timer = setTimeout(() => {
+										window.location.href = url.href;
+									}, 2000);
 
-										// set label
-										const label = elem.attr('title') ? elem.attr('title') + ' [' + url.href + ']' : url.href;
+									// set label
+									const label = elem.attr('title') ? elem.attr('title') + ' [' + url.href + ']' : url.href;
 
-										// send event
+									// send event
+									sendGAEvent({
+										eventCategory: 'Outbound Links',
+										eventAction: 'click',
+										eventLabel: label,
+										nonInteraction: cfg.analytics.outbound.nonInteraction,
+										hitCallback: newWindow ? null : () => {
+											clearTimeout(timer); // cancel the fallback function
+											window.location.href = url.href; // when opening in same window, wait for ga event to be sent
+										}
+									});
+
+									// when opening in new window, allow the link to proceed, otherwise wait for ga event
+									return newWindow;
+								});
+							}
+
+							// check if it is a download link (not a webpage) and track as pageview
+							if (cfg.analytics.downloads.enabled && url.href.match(new RegExp('\\.(' + cfg.analytics.downloads.extensions.join('|') + ')$', 'i')) !== null) {
+								log('Found download link to ' + url.href);
+								elem.on('click', (e) => {
+									log('Download link to: ' + url.href);
+
+									// links opens in a new window when user holds the ctrl key
+									newWindow = newWindow || e.ctrlKey || e.shiftKey || e.metaKey;
+
+									// Fallback function - open the link in case the event callback isn't triggered
+									let timer;
+									if (!newWindow) timer = setTimeout(() => {
+										window.location.href = url.href;
+									}, 2000);
+
+									// set labels
+									const loc = url.protocol + '//' + url.hostname + url.pathname + url.search;
+									const page = url.pathname + url.search;
+									const title = elem.attr('title') ? elem.attr('title') : 'Download: ' + page;
+									const label = elem.attr('title') ? elem.attr('title') + ' [' + page + ']' : page;
+
+									// send pageview
+									if (cfg.analytics.downloads.hitType == 'pageview') {
+										sendGAPageview({
+											url: loc,
+											title: title,
+											callback: newWindow ? null : () => {
+												clearTimeout(timer); // cancel the fallback function
+												window.location.href = url.href; // when opening in same window, wait for ga event to be sent
+											}
+										});
+									}
+
+									// or send event
+									else if (cfg.analytics.downloads.hitType == 'event') {
 										sendGAEvent({
-											eventCategory: 'Outbound Links',
+											eventCategory: 'Download Links',
 											eventAction: 'click',
 											eventLabel: label,
-											nonInteraction: cfg.analytics.outbound.nonInteraction,
+											nonInteraction: cfg.analytics.downloads.nonInteraction,
 											hitCallback: newWindow ? null : () => {
 												clearTimeout(timer); // cancel the fallback function
 												window.location.href = url.href; // when opening in same window, wait for ga event to be sent
 											}
 										});
+									}
 
-										// when opening in new window, allow the link to proceed, otherwise wait for ga event
-										return newWindow;
-									});
-								}
-
-								// check if it is a download link (not a webpage) and track as pageview
-								if (cfg.analytics.downloads.enabled && url.href.match(new RegExp('\\.(' + cfg.analytics.downloads.extensions.join('|') + ')$', 'i')) !== null) {
-									log('Found download link to ' + url.href);
-									elem.on('click', (e) => {
-										log('Download link to: ' + url.href);
-
-										// links opens in a new window when user holds the ctrl key
-										newWindow = newWindow || e.ctrlKey || e.shiftKey || e.metaKey;
-
-										// Fallback function - open the link in case the event callback isn't triggered
-										let timer;
-										if (!newWindow) timer = setTimeout(() => {
-											window.location.href = url.href;
-										}, 2000);
-
-										// set labels
-										const loc = url.protocol + '//' + url.hostname + url.pathname + url.search;
-										const page = url.pathname + url.search;
-										const title = elem.attr('title') ? elem.attr('title') : 'Download: ' + page;
-										const label = elem.attr('title') ? elem.attr('title') + ' [' + page + ']' : page;
-
-										// send pageview
-										if (cfg.analytics.downloads.hitType == 'pageview') {
-											sendGAPageview({
-												url: loc,
-												title: title,
-												callback: newWindow ? null : () => {
-													clearTimeout(timer); // cancel the fallback function
-													window.location.href = url.href; // when opening in same window, wait for ga event to be sent
-												}
-											});
-										}
-
-										// or send event
-										else if (cfg.analytics.downloads.hitType == 'event') {
-											sendGAEvent({
-												eventCategory: 'Download Links',
-												eventAction: 'click',
-												eventLabel: label,
-												nonInteraction: cfg.analytics.downloads.nonInteraction,
-												hitCallback: newWindow ? null : () => {
-													clearTimeout(timer); // cancel the fallback function
-													window.location.href = url.href; // when opening in same window, wait for ga event to be sent
-												}
-											});
-										}
-
-										// when opening in new window, allow the link to proceed, otherwise wait for ga event
-										return newWindow;
-									});
-								}
+									// when opening in new window, allow the link to proceed, otherwise wait for ga event
+									return newWindow;
+								});
 							}
-						} catch(e) {
-							log(e);
 						}
 					});
 				}
