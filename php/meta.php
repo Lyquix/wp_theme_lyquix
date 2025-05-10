@@ -15,14 +15,39 @@
 <meta charset="<?php bloginfo('charset'); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <?php
-if(get_theme_mod('polyfill', '1')): ?>
-<script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=default,Math.imul"></script>
-<?php endif;
 // Adds search engine domain validation strings to home page only
-if($home) {
-	echo get_theme_mod('google_site_verification', '') ? '<meta name="google-site-verification" content="' . get_theme_mod('google_site_verification', '') . '" />' . "\n" : '';
-	echo get_theme_mod('msvalidate', '') ? '<meta name="msvalidate.01" content="' . get_theme_mod('msvalidate', '') . '" />' . "\n" : '';
-	echo get_theme_mod('p_domain_verify', '') ? '<meta name="p:domain_verify" content="' . get_theme_mod('p_domain_verify', '') . '"/>' . "\n" : '';
+if (is_front_page()) {
+	foreach ([
+		'google_site_verification' => 'google-site-verification',
+		'msvalidate' => 'msvalidate.01',
+		'p_domain_verify' => 'p:domain_verify'
+	] as $theme_option_name => $meta_tag_name) {
+		$theme_option_value = get_theme_mod($theme_option_name, '');
+		if ($theme_option_value) echo '<meta name="' . $meta_tag_name . '" content="' . esc_attr($theme_option_value) . '" />' . "\n";
+	}
 }
+
+// Add preconnect tags
+$rel_preconnect = explode("\n", get_theme_mod('rel_preconnect', implode("\n", [
+	'https://cdn.jsdelivr.net',
+	'https://www.google.com',
+	'https://www.google-analytics.com',
+	'https://www.googletagmanager.com',
+	'https://www.gstatic.com',
+	'https://fonts.gstatic.com',
+	'https://fonts.googleapis.com'
+])));
+foreach ($rel_preconnect as $rel_preconnect_url) {
+	$rel_preconnect_url = trim($rel_preconnect_url);
+	if ($rel_preconnect_url) echo '<link rel="preconnect" href="' . $rel_preconnect_url . '" />' . "\n";
+}
+
+// Additional meta tags
+if (get_theme_mod('add_meta_tags', '')) echo get_theme_mod('add_meta_tags', '') . "\n";
 ?>
-<script>(function(html){html.className = html.className.replace(/\bno-js\b/,'js')})(document.documentElement);</script>
+<script>
+	// Add class js to html element
+	(function(html) {
+		html.className = html.className.replace(/\bno-js\b/, 'js')
+	})(document.documentElement);
+</script>

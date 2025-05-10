@@ -87,12 +87,6 @@ function lqx_customizer_add($wp_customize) {
 				'type' => 'textarea',
 				'label' => 'Scripts Options',
 			],
-			'polyfill' => [
-				'type' => 'radio',
-				'label' => 'Use polyfill.io',
-				'choices' => ['0' => 'No', '1' => 'Yes'],
-				'default' => '1'
-			],
 			'lodash' => [
 				'type' => 'radio',
 				'label' => 'LoDash library',
@@ -126,7 +120,7 @@ function lqx_customizer_add($wp_customize) {
 				'label' => 'Remove JS Libraries'
 			]
 		],
-		'Accounts' => [
+		'Analytics' => [
 			'ga_account' => [
 				'label' => 'Google Analytics Account',
 			],
@@ -153,7 +147,9 @@ function lqx_customizer_add($wp_customize) {
 			],
 			'gtm_account' => [
 				'label' => 'Google Tag Manager Account',
-			],
+			]
+		],
+		'Meta Tags' => [
 			'google_site_verification' => [
 				'label' => 'google-site-verification',
 			],
@@ -162,6 +158,24 @@ function lqx_customizer_add($wp_customize) {
 			],
 			'p_domain_verify' => [
 				'label' => 'p:domain_verify',
+			],
+			'rel_preconnect' => [
+				'type' => 'textarea',
+				'label' => 'rel=preconnect URLs',
+				'default' => implode("\n", [
+					'https://cdn.jsdelivr.net',
+					'https://www.google.com',
+					'https://www.google-analytics.com',
+					'https://www.googletagmanager.com',
+					'https://www.gstatic.com',
+					'https://fonts.gstatic.com',
+					'https://fonts.googleapis.com'
+				])
+			],
+			'add_meta_tags' => [
+				'type' => 'textarea',
+				'label' => 'Additional Meta Tags',
+				'sanitize_callback' => null
 			]
 		],
 		'IE' => [
@@ -224,11 +238,27 @@ function lqx_customizer_add($wp_customize) {
 			'priority' => 30,
 		]);
 		foreach($setting as $name => $options) {
-			$wp_customize -> add_setting($name , [
+			$settings_opts = [
 				'type' => 'theme_mod',
 				'transport' => 'refresh',
-				'default' => array_key_exists('default', $options) ? $options['default'] : null
-			]);
+				'default' => $options['default'] ?? null
+			];
+
+			if (array_key_exists('sanitize_callback', $options)) $settings_opts['sanitize_callback'] = $options['sanitize_callback'];
+			else {
+				switch ($options['type']) {
+					case 'text':
+						$settings_opts['sanitize_callback'] = 'sanitize_text_field';
+						break;
+
+					case 'textarea':
+						$settings_opts['sanitize_callback'] = 'sanitize_textarea_field';
+						break;
+				}
+			}
+
+			$wp_customize->add_setting($name, $settings_opts);
+
 			$wp_customize -> add_control($name, [
 				'type' => array_key_exists('type', $options) ? $options['type'] : null,
 				'label' => __($options['label'], 'lyquix'),
