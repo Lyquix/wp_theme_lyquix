@@ -56,6 +56,13 @@ function lqx_setup() {
 		});
 	}
 
+	// Hide PHP upgrade alert from dashboard
+	if (get_theme_mod('feat_hide_php_version_alert', '1') === '1') {
+		add_action('admin_head', function () {
+			echo '<style>#dashboard_php_nag {display:none;}</style>';
+		});
+	}
+
 	//Remove WordPress Meta Generator Tag
 	remove_action('wp_head', 'wp_generator');
 

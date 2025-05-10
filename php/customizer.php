@@ -202,6 +202,12 @@ function lqx_customizer_add($wp_customize) {
 				'label' => 'Disable Image srcset',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
+			],
+			'feat_hide_php_version_alert' => [
+				'type' => 'radio',
+				'label' => 'Hide PHP Version Alert',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
 			]
 		]
 	];
