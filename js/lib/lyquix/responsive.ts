@@ -88,6 +88,9 @@ export const responsive = (() => {
 				window.addEventListener('orientationchange', () => {
 					// Update orientation attribute in body tag
 					setOrientation();
+
+					// Update aspect ratio attribute in body tag
+					setAspectRatio();
 				}, { passive: true });
 			}
 
@@ -96,10 +99,6 @@ export const responsive = (() => {
 
 			// Listner for setAspectRatio
 			window.addEventListener('resize', () => {
-				// Update aspect ratio attribute in body tag
-				setAspectRatio();
-			}, { passive: true });
-			window.addEventListener('orientationchange', () => {
 				// Update aspect ratio attribute in body tag
 				setAspectRatio();
 			}, { passive: true });
