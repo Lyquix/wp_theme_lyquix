@@ -10,8 +10,6 @@
  * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
 
-// Remove WordPress generator meta tag
-remove_action('wp_head', 'wp_generator');
 ?>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta charset="<?php bloginfo('charset'); ?>">
