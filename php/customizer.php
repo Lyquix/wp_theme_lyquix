@@ -190,6 +190,12 @@ function lqx_customizer_add($wp_customize) {
 				'label' => 'Disable Comments',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
+			],
+			'feat_allow_svg_upload' => [
+				'type' => 'radio',
+				'label' => 'Allow SVG Upload',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
 			]
 		]
 	];

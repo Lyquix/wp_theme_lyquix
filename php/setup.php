@@ -41,6 +41,14 @@ function lqx_setup() {
 		echo '<script>document.getElementById(\'pw-checkbox\').disabled = true;</script>';
 	}
 
+	// Allow SVGs in WP Uploads
+	if (get_theme_mod('feat_allow_svg_upload', '1') === '1') {
+		add_filter('upload_mimes', function ($mimes) {
+			$mimes['svg'] = 'image/svg+xml';
+			return $mimes;
+		});
+	}
+
 	//Remove WordPress Meta Generator Tag
 	remove_action('wp_head', 'wp_generator');
 
