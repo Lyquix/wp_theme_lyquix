@@ -63,6 +63,19 @@ function lqx_setup() {
 		});
 	}
 
+	// Add user management capabilities to editor user role
+	if (get_theme_mod('feat_user_management_editors', '1') === '1') {
+		add_action('admin_init', function () {
+			$role = get_role('editor');
+			$role->add_cap('create_users');
+			$role->add_cap('edit_users');
+			$role->add_cap('delete_users');
+			$role->add_cap('promote_users');
+			$role->add_cap('list_users');
+			$role->add_cap('remove_users');
+		});
+	}
+
 	//Remove WordPress Meta Generator Tag
 	remove_action('wp_head', 'wp_generator');
 

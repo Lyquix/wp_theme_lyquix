@@ -208,6 +208,12 @@ function lqx_customizer_add($wp_customize) {
 				'label' => 'Hide PHP Version Alert',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
+			],
+			'feat_user_management_editors' => [
+				'type' => 'radio',
+				'label' => 'Enable User Management for Editor Role',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
 			]
 		]
 	];
