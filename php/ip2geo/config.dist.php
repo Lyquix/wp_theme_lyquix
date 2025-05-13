@@ -2,7 +2,7 @@
 /**
  * config.dist.php - Configuration settings for ip2geo functionality
  *
- * @version     2.5.1
+ * @version     2.6.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2018 Lyquix
