@@ -44,6 +44,9 @@ export const menu = (() => {
 
 	const setup = (elems) => {
 		jQuery(elems).click(() => {
+			const $toggle = jQuery('#menu-toggle');
+			const expanded = $toggle.attr('aria-expanded') === 'true';
+			$toggle.attr('aria-expanded', !expanded);
 			jQuery('header').toggleClass('mobile-menu-open');
 		});
 	};
