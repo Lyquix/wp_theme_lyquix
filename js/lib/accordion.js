@@ -193,6 +193,29 @@ if(lqx && !('accordion' in lqx)) {
 						}
 					});
 
+					// Track whether focus is inside the accordion
+					let isFocusInsideAccordion = false;
+
+					a.elem.on('focusin', function(){
+						isFocusInsideAccordion = true;
+						if(a.elem.hasClass('closed')) {
+							open(a.elem.attr('data-accordion'));
+						}
+					});
+
+					a.elem.on('focusout', function(event){
+						// Use a timeout to check if focus moved outside the accordion
+						setTimeout(function() {
+							if (!a.elem.has(event.relatedTarget).length) {
+								// Focus has moved outside the accordion, close it
+								if(a.elem.hasClass('open')) {
+									close(a.elem.attr('data-accordion'));
+								}
+								isFocusInsideAccordion = false;
+							}
+						}, 0);
+					});
+
 					// Save accordion index
 					a.elem.attr('data-accordion', vars.length);
 

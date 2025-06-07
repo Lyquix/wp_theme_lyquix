@@ -68,7 +68,7 @@ if(lqx && !('lyqbox' in lqx)) {
 							'<div class="credit"></div>' +
 						'</div>' +
 					'</div>' +
-					'<div class="close"></div>' +
+					'<button class="close" aria-label="Close modal"></button>' +
 					'<div class="prev"></div>' +
 					'<div class="next"></div>' +
 					'<div class="zoom-in"></div>' +
@@ -404,6 +404,35 @@ if(lqx && !('lyqbox' in lqx)) {
 
 			// Load content
 			load(startIndex);
+
+			// Set focus to the close button
+			vars.closeElem.focus();
+
+			// Trap focus within the lightbox
+			trapFocus();
+		};
+
+		// Function to trap focus within the lyqbox
+		var trapFocus = function() {
+			var focusableElements = vars.overlay.find('a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])');
+			var firstFocusableElement = focusableElements.first();
+			var lastFocusableElement = focusableElements.last();
+
+			// Handle forward tabbing
+			lastFocusableElement.on('keydown', function(e) {
+				if (e.key === 'Tab' && !e.shiftKey) {
+					e.preventDefault();
+					firstFocusableElement.focus();
+				}
+			});
+
+			// Handle backward tabbing
+			firstFocusableElement.on('keydown', function(e) {
+				if (e.key === 'Tab' && e.shiftKey) {
+					e.preventDefault();
+					lastFocusableElement.focus();
+				}
+			});
 		};
 
 		// change content, for now we have 3 types, image, iframe and HTML.
@@ -423,7 +452,7 @@ if(lqx && !('lyqbox' in lqx)) {
 					break;
 
 				case 'video':
-					updateContent('<iframe src="' + vars.album[index].link + '"></iframe>', index, vars.album[index].type);
+					updateContent('<iframe tabindex="0" aria-label="Play Video" src="' + vars.album[index].link + '"></iframe>', index, vars.album[index].type);
 					break;
 
 				case 'html':
@@ -613,6 +642,9 @@ if(lqx && !('lyqbox' in lqx)) {
 
 		// Closing time
 		var end = function() {
+			// Store the element that had focus before the lightbox was opened
+			var previouslyFocusedElement = document.activeElement;
+
 			// Check if we are exiting from an alert, set cookie and show hash
 			if(vars.album[vars.currentIndex].type == 'alert') {
 				lqx.util.cookie('lyqbox-alert-' + vars.album[vars.currentIndex].albumId.slugify(), 1, {maxAge: parseInt(vars.album[vars.currentIndex].expire)});
@@ -644,6 +676,9 @@ if(lqx && !('lyqbox' in lqx)) {
 					'nonInteraction': opts.analytics.nonInteraction
 				});
 			}
+
+			// Return focus to the previously focused element
+			previouslyFocusedElement.focus();
 		};
 
 		return {
