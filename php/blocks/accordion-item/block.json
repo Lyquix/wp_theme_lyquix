@@ -32,7 +32,7 @@
 		"accordion-item"
 	],
 	"acf": {
-		"mode": "edit",
+		"mode": "preview",
 		"renderTemplate": "accordion-item.php"
 	},
 	"supports": {

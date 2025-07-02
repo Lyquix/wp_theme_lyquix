@@ -32,7 +32,7 @@
 		"plus"
 	],
 	"acf": {
-		"mode": "edit",
+		"mode": "preview",
 		"renderTemplate": "accordion-plus.php"
 	},
 	"supports": {

@@ -54,7 +54,7 @@ $c = \lqx\util\validate_data($content,[
 	'type' => 'object',
 	'required' => true,
 	'keys' => [
-		'heading' => \lqx\util\schema_str_req_notemp,
+		'heading' => lqx\util\schema_str_req_emp,
 		'additional_classes' => \lqx\util\schema_str_req_emp,
 		'item_id' => \lqx\util\schema_str_req_emp
 	]

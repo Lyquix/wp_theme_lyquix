@@ -31,7 +31,7 @@
 		"tabs"
 	],
 	"acf": {
-		"mode": "edit",
+		"mode": "preview",
 		"renderTemplate": "tabs-plus.php"
 	},
 	"supports": {

@@ -186,7 +186,7 @@
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
-                                "width": "40",
+                                "width": "",
                                 "class": "",
                                 "id": ""
                             },
@@ -201,6 +201,7 @@
                             "style": "",
                             "acfe_settings": "",
                             "acfe_validate": "",
+                            "allow_in_bindings": 1,
                             "ui_on_text": "",
                             "ui_off_text": "",
                             "ui": 1
@@ -223,7 +224,7 @@
                                 ]
                             ],
                             "wrapper": {
-                                "width": "60",
+                                "width": "",
                                 "class": "",
                                 "id": ""
                             },
@@ -247,6 +248,7 @@
                             "acfe_settings": "",
                             "acfe_validate": "",
                             "allow_custom": 0,
+                            "allow_in_bindings": 1,
                             "layout": "horizontal",
                             "toggle": 1,
                             "save_custom": 0,
@@ -285,5 +287,5 @@
     ],
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1742392304
+    "modified": 1751478459
 }

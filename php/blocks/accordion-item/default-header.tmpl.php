@@ -27,7 +27,7 @@
 ?>
 <<?= $s['heading_style'] ?>>
 	<button
-		class="accordion-header"
+		class="accordion-header <?= !$c['heading'] ? 'hidden' : '' ?>"
 		id="<?= $s['hash'] . '-header-' . $s['uid'] ?>"
 		aria-expanded="<?= $s['open_on_load'] == 'y' ? 'true' : 'false' ?>"
 		aria-controls="<?= $s['hash'] . '-panel-' . $s['uid'] ?>">

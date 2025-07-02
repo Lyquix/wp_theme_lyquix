@@ -32,7 +32,7 @@
 		"tab-item"
 	],
 	"acf": {
-		"mode": "edit",
+		"mode": "preview",
 		"renderTemplate": "tab-item.php"
 	},
 	"supports": {
