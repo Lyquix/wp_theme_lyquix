@@ -537,6 +537,8 @@ export const util = (() => {
 			// Handle arrays
 			if (schema.type === 'array') {
 				if ('elems' in schema) {
+					// Array to store valid and fixed elements
+					let arrayResult: any[] = [];
 					data.forEach((elem, index) => {
 						// Handle array data by calling validateData recursively
 						const elemResult = validateData(elem, schema.elems, `${field}[${index}]`);
@@ -550,13 +552,14 @@ export const util = (() => {
 							if (elemResult.isValid) {
 								if (elemResult.isFixed) {
 									isFixed = true;
-									data[index] = elemResult.data;
 								}
-							} else {
-								isValid = false;
+								arrayResult.push(elemResult.data);
 							}
+							// Note: we do not make the entire result as invalid just because an element in an array is invalid
 						}
 					});
+					// Update data with valid and fixed elements
+					data = Object.assign([], arrayResult);
 				}
 			}
 

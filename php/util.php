@@ -331,6 +331,8 @@ function validate_data($data, $schema, $field = 'root') {
 		// Handle arrays
 		if ($schema['type'] === 'array') {
 			if (array_key_exists('elems', $schema)) {
+				// Array to store valid and fixed elements
+				$arrayResult = [];
 				foreach ($data as $i => $item) {
 					// Handle array data by calling validate_data recursively
 					$elemResult = validate_data($item, $schema['elems'], $field . '[' . $i . ']');
@@ -344,13 +346,14 @@ function validate_data($data, $schema, $field = 'root') {
 						if ($elemResult['isValid']) {
 							if ($elemResult['isFixed']) {
 								$isFixed = true;
-								$data[$i] = $elemResult['data'];
 							}
-						} else {
-							$isValid = false;
+							$arrayResult[] = $elemResult['data'];
 						}
+						// Note: we do not make the entire result as invalid just because an element in an array is invalid
 					}
 				}
+				// Update data with valid and fixed elements
+				$data = $arrayResult;
 			}
 		}
 
