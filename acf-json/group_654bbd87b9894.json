@@ -320,7 +320,7 @@
                     "name": "links",
                     "aria-label": "",
                     "type": "repeater",
-                    "instructions": "Up to 3 links or buttons",
+                    "instructions": "",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -328,18 +328,10 @@
                         "class": "",
                         "id": ""
                     },
-                    "hide_field": "",
-                    "hide_label": "",
-                    "hide_instructions": "",
-                    "hide_required": "",
-                    "acfe_repeater_stylised_button": 0,
                     "layout": "table",
                     "pagination": 0,
-                    "acfe_settings": "",
                     "min": 0,
-                    "max": 3,
-                    "instruction_placement": "tooltip",
-                    "acfe_permissions": "",
+                    "max": 0,
                     "collapsed": "",
                     "button_label": "Add Row",
                     "rows_per_page": 20,
@@ -452,13 +444,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "acfe_autosync": [
-        "json"
-    ],
-    "acfe_form": 1,
-    "acfe_display_title": "",
-    "acfe_permissions": "",
-    "acfe_meta": "",
-    "acfe_note": "",
-    "modified": 1746728520
+    "modified": 1757503341
 }
