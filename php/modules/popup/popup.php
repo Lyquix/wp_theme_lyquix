@@ -49,7 +49,7 @@ function rest_route() {
 
 		// Convert expiration to UTC
 		if ($popupExpiration !== false) {
-			$popup['expiration'] = date('c', $popupExpiration . ' ' . get_option('timezone_string'));
+			$popup['expiration'] = wp_date('c', $popupExpiration);
 		}
 
 		// Convert zero hide delay and dismiss duration to blank

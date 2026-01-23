@@ -123,7 +123,7 @@ export const alerts = (() => {
 						if (util.cookie(alert.id) !== null) return;
 
 						// Skip if alert has expired
-						if (alert.expiration != '' && now <= dayjs(alert.expiration).valueOf()) return;
+						if (alert.expiration != '' && now > dayjs(alert.expiration).valueOf()) return;
 
 						// Skip if alert has no content
 						if (!alert.heading && !alert.body) return;

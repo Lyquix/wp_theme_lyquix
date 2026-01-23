@@ -42,7 +42,7 @@ function rest_route() {
 
 		// Convert expiration to UTC
 		if ($alertExpiration !== false) {
-			$alert['expiration'] = date('c', $alertExpiration . ' ' . get_option('timezone_string'));
+			$alert['expiration'] = wp_date('c', $alertExpiration);
 		}
 
 		return $alert;

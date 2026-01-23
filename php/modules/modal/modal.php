@@ -44,7 +44,7 @@ function rest_route() {
 
 		// Convert expiration to UTC
 		if ($modalExpiration !== false) {
-			$modal['expiration'] = date('c', $modalExpiration . ' ' . get_option('timezone_string'));
+			$modal['expiration'] = wp_date('c', $modalExpiration);
 		}
 
 		// Convert zero hide delay and dismiss duration to blank
