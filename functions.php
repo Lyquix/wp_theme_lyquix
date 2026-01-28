@@ -116,3 +116,6 @@ require_once get_template_directory() . '/php/update.php';
 
 // Critical path CSS configuration endpoint
 require_once get_template_directory() . '/php/critical.php';
+
+// Miscelaneous functions
+require_once get_template_directory() . '/php/misc.php';
