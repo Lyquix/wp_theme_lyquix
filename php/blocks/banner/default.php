@@ -50,8 +50,11 @@ $s = \lqx\util\validate_data($settings['processed'], [
 ]);
 
 // If valid settings, use them, otherwise throw exception
-if ($s['isValid']) $s = $s['data'];
-else throw new \Exception('Invalid block settings: ' . var_export($s, true));
+$s = $s['isValid'] ? $s['data'] : null;
+if (empty($s)) {
+	if (\lqx\util\is_local_environment()) throw new \Exception('Invalid block settings: ' . var_export($settings['processed'], true));
+	return;
+}
 
 // Filter out any content missing heading or content
 $c = \lqx\util\validate_data($content, [
@@ -112,7 +115,6 @@ $c = \lqx\util\validate_data($content, [
 // If valid content, use it, otherwise return
 if ($c['isValid']) $c = $c['data'];
 else return;
-
 
 // If no content, return
 if (!$c['heading'] && !$c['image'] && !$c['links'] && !$c['intro_text']) return;

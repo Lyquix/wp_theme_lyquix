@@ -27,6 +27,7 @@
 if ($settings['processed']['preset']) { // only proceed if a preset has been selected
 	// Get the processed settings and posts with data
 	$s = \lqx\filters\get_settings_and_posts($settings);
+	if ($s === null) return;
 	$c =\lqx\util\validate_data($content, [
 		'type' => 'object',
 		'keys' => [

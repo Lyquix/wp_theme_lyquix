@@ -67,6 +67,13 @@ function get_data_type($data) {
 }
 
 /**
+ * Checks if the site is running in a local environment based on the WPCONFIG_ENVNAME environment variable or the .test TLD
+ */
+function is_local_environment() {
+	return (getenv('WPCONFIG_ENVNAME') === 'local' || substr($_SERVER['HTTP_HOST'], -5) === '.test');
+}
+
+/**
  * Validates and processes data based on a provided schema.
  *
  * This function checks whether the given data conforms to the specified schema

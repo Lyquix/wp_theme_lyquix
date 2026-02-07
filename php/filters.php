@@ -565,7 +565,8 @@ function validate_settings($settings) {
 
 	// If valid settings, use them, otherwise throw exception
 	if ($s['isValid']) return $s['data'];
-	else throw new \Exception('Invalid block settings: ' . var_export($s, true));
+	if (\lqx\util\is_local_environment()) throw new \Exception('Invalid block settings: ' . var_export($s, true));
+	return;
 }
 
 /**

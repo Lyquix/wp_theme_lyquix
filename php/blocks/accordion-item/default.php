@@ -46,8 +46,11 @@ $s = \lqx\util\validate_data($settings['processed'], [
 ]);
 
 // If valid settings, use them, otherwise throw exception
-if ($s['isValid']) $s = $s['data'];
-else throw new \Exception('Invalid block settings: ' . var_export($s, true));
+$s = $s['isValid'] ? $s['data'] : null;
+if (empty($s)) {
+	if (\lqx\util\is_local_environment()) throw new \Exception('Invalid block settings: ' . var_export($settings['processed'], true));
+	return;
+}
 
 // Get content and filter our invalid content
 $c = \lqx\util\validate_data($content,[
@@ -62,4 +65,4 @@ $c = \lqx\util\validate_data($content,[
 
 $c = $c['isValid'] ? $c['data'] : null;
 // If there is content, render the accordion
-if ($c) require \lqx\blocks\get_template('accordion-item', $s['preset']);
+if (!empty($c)) require \lqx\blocks\get_template('accordion-item', $s['preset']);
