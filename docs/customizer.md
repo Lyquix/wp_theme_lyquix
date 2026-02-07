@@ -1,6 +1,20 @@
 # Theme Customizer
 
-The Lyquix theme adds 60+ settings to the WordPress Theme Customizer, organized into 9 sections. Access them via **Appearance > Customize** in the WordPress admin.
+The Lyquix theme adds 60+ settings to the WordPress Theme Customizer, organized into 11 sections. Access them via **Appearance > Customize** in the WordPress admin.
+
+## Branding Settings
+
+| Setting | Type | Default | Description |
+|---------|------|---------|-------------|
+| Login Logo (wp-login.php) | Media Image | (none) | Select an image from the Media Library to replace the default WordPress logo on the login screen. The logo links to the site home URL and uses the site name as the title text. |
+
+## Admin Bar Settings
+
+| Setting | Type | Default | Description |
+|---------|------|---------|-------------|
+| Hide Admin Bar on Frontend for Roles | Checkbox Group | (none) | Select user roles that should not see the admin bar on the frontend. Users with any selected role will have the bar hidden. Does not affect the admin dashboard. |
+| Enable Admin Bar Expand/Collapse (Notch) | Radio | No | Adds a small "notch" button that lets logged-in users collapse and expand the admin bar on the frontend. When collapsed, the admin bar slides up out of view and only the notch remains visible. |
+| Notch Position | Radio | Center | Where to place the notch button: Left corner, Center, or Right corner. Only applies when the expand/collapse notch is enabled. |
 
 ## CSS Settings
 
@@ -134,10 +148,13 @@ These toggles control various theme behaviors:
 
 ## Custom Controls
 
-The customizer includes two custom control types:
+The customizer includes three control types beyond the standard WordPress controls:
 
 ### Checkbox Group
-A multi-select control that stores selected values as a JSON array. Used for "Exclude Post Types" and "Exclude Pages" settings.
+A multi-select control that stores selected values as a JSON array. Used for "Exclude Post Types", "Exclude Pages", and "Hide Admin Bar for Roles" settings.
 
 ### Viewports
 A control for configuring width and height pairs for each breakpoint. Used for critical path CSS viewport dimensions. Stores values as a JSON object.
+
+### Media Image
+Uses the built-in `WP_Customize_Media_Control` to provide a Media Library picker filtered to images. Stores the attachment ID (integer). Used for the login logo setting.

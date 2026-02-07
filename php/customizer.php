@@ -34,6 +34,46 @@ namespace lqx\customizer;
 function customizer_add($wp_customize)
 {
 	$add_settings = [
+		'Branding' => [
+			'login_logo_image_id' => [
+				'type' => 'media-image',
+				'label' => 'Login Logo (wp-login.php)',
+				'default' => 0,
+				'sanitize_callback' => 'absint'
+			],
+		],
+		'Admin Bar' => [
+			'admin_bar_hide_roles' => [
+				'type' => 'checkbox-group',
+				'label' => 'Hide Admin Bar on Frontend for Roles',
+				'choices' => (function () {
+					$roles = [];
+					$wp_roles = wp_roles();
+					foreach ($wp_roles->roles as $role_key => $role) {
+						$roles[$role_key] = $role['name'];
+					}
+					ksort($roles);
+					return $roles;
+				})(),
+				'default' => '[]'
+			],
+			'admin_bar_collapse' => [
+				'type' => 'radio',
+				'label' => 'Enable Admin Bar Expand/Collapse (Notch)',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '0'
+			],
+			'admin_bar_notch_position' => [
+				'type' => 'radio',
+				'label' => 'Notch Position',
+				'choices' => [
+					'left'   => 'Left corner',
+					'center' => 'Center',
+					'right'  => 'Right corner',
+				],
+				'default' => 'center'
+			],
+		],
 		'CSS' => [
 			'non_min_css' => [
 				'type' => 'radio',
@@ -489,6 +529,18 @@ function customizer_add($wp_customize)
 
 				case 'viewports':
 					$wp_customize->add_control(new viewports_custom_control($wp_customize, $name, $control_opts));
+					break;
+
+				case 'media-image':
+					// Uses the Media Library uploader/selector (returns attachment ID)
+					if (class_exists('\WP_Customize_Media_Control')) {
+						$control_opts['mime_type'] = 'image';
+						$wp_customize->add_control(new \WP_Customize_Media_Control($wp_customize, $name, $control_opts));
+					} else {
+						// Fallback to a plain input if media control is unavailable
+						$control_opts['type'] = 'number';
+						$wp_customize->add_control($name, $control_opts);
+					}
 					break;
 
 				default:

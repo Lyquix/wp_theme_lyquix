@@ -22,7 +22,7 @@ Lyquix started releasing its own starter theme in 2016 with the goals of:
 - **Tailwind CSS + SMACSS** - Hybrid styling with utility-first and component-based approaches
 - **TypeScript Library** - 28 modules for detection, analytics, UI components, and utilities
 - **Custom Template Router** - Flexible routing engine replacing the standard WordPress template hierarchy
-- **60+ Customizer Options** - CSS, JS, analytics, geolocation, browser detection, and feature flags
+- **60+ Customizer Options** - Branding, admin bar, CSS, JS, analytics, geolocation, browser detection, and feature flags
 - **Critical Path CSS** - Per-post-type inline critical CSS with async stylesheet loading
 - **Modern Build Chain** - Bun + Gulp + Sass + Tailwind + PostCSS with LiveReload
 
@@ -68,7 +68,7 @@ bun run watch
 - **[JavaScript](docs/javascript.md)** - lqx and $lqx libraries, TypeScript modules, adding custom scripts
 
 ### Configuration
-- **[Theme Customizer](docs/customizer.md)** - All 60+ options: CSS, JS, analytics, geolocation, features
+- **[Theme Customizer](docs/customizer.md)** - All 60+ options: branding, admin bar, CSS, JS, analytics, geolocation, features
 - **[Integrations](docs/integrations.md)** - Google Maps, GA4, GTM, Clarity, MaxMind, browser detection
 
 ### Development

@@ -345,6 +345,165 @@ function theme_setup() {
 	add_action('admin_head', function () {
 		echo '<style>.editor-sidebar__panel{.editor-post-featured-image+.components-flex:has(.editor-post-excerpt__dropdown){display: none;}}</style>';
 	});
+
+	// Replace WP login logo if a custom logo is set in the Customizer.
+	add_action('login_enqueue_scripts', function () {
+		// Get custom login image attachment ID from Customizer
+		$custom_login_image_id = (int) get_theme_mod('login_logo_image_id', 0);
+		if (!$custom_login_image_id) return;
+
+		// Get image URL from attachment ID
+		$src = wp_get_attachment_image_src($custom_login_image_id, 'full');
+
+		// Safety check
+		if (empty($src[0])) return;
+		$url = $src[0];
+		?>
+		<style>
+			/* Custom login logo */
+			.login h1 a {
+				background-image: url('<?php echo esc_url($url); ?>') !important;
+				background-size: 100% !important;
+				width: 80% !important;
+				margin-top: 24px;
+			}
+		</style>
+		<?php
+	});
+
+	// Change login logo URL and title text to site home URL and name
+	add_filter('login_headerurl', function () { return home_url('/'); });
+	add_filter('login_headertext', function () { return get_bloginfo('name'); });
+
+	// Hide admin bar on frontend for selected roles.
+	add_filter('show_admin_bar', function ($show) {
+		if (is_admin()) return $show; // only frontend
+
+		$hidden_roles_raw = get_theme_mod('admin_bar_hide_roles', '[]');
+		$hidden_roles = is_string($hidden_roles_raw) ? json_decode($hidden_roles_raw, true) : $hidden_roles_raw;
+		if (!is_array($hidden_roles)) $hidden_roles = [];
+
+		if (!$hidden_roles || !is_user_logged_in()) return $show;
+
+		$user_roles = wp_get_current_user()->roles ?? [];
+		if (!$user_roles) return $show;
+
+		// If user has ANY role in the hidden list, hide the bar
+		if (array_intersect($user_roles, $hidden_roles)) return false;
+
+		return $show;
+	}, 20);
+
+	// Admin bar collapse/expand behavior with a "notch" (frontend only).
+	add_action('wp_enqueue_scripts', function () {
+		if (is_admin() || !is_user_logged_in()) return;
+		if (!is_admin_bar_showing()) return;
+
+		$collapse_enabled = (string) get_theme_mod('admin_bar_collapse', '0') === '1';
+		if (!$collapse_enabled) return;
+
+		// Disable WP's default "bump" that adds margin-top, since we're sliding the bar
+		remove_action('wp_head', '_admin_bar_bump_cb');
+
+		$pos = (string) get_theme_mod('admin_bar_notch_position', 'center');
+		if (!in_array($pos, ['center', 'left', 'right'], true)) $pos = 'center';
+
+		// CSS: slide admin bar out leaving a notch visible; toggle with body class
+		$css = '
+			/* Ensure no WP admin-bar bump */
+			html { margin-top: 0 !important; }
+
+			:root {
+				--lqx-ab-h: 32px;
+			}
+			@media screen and (max-width: 782px) {
+				:root { --lqx-ab-h: 46px; }
+			}
+
+			/* Slide bar out, leaving only notch height visible */
+			#wpadminbar {
+				position: fixed !important;
+				top: 0; left: 0; right: 0;
+				transform: translateY(calc(-1 * var(--lqx-ab-h)));
+				transition: transform 200ms ease;
+				will-change: transform;
+			}
+			body.lqx-adminbar-open #wpadminbar {
+				transform: translateY(0);
+			}
+
+			/* Notch button */
+			#lqx-adminbar-notch {
+				position: fixed;
+				top: 0;
+				height: 16px;
+				width: var(--lqx-notch-w);
+				z-index: 999999; /* above admin bar */
+				border: 0;
+				padding: 0;
+				cursor: pointer;
+				background: rgba(128,128,128,0.65);
+				transition: top 200ms ease;
+			}
+
+			/* Position variants */
+			body.lqx-notch-center #lqx-adminbar-notch {
+				width: 32px;
+				left: 50%;
+				border-radius: 0 0 32px 32px;
+				transform: translateX(-50%);
+			}
+			body.lqx-notch-left #lqx-adminbar-notch {
+				width: 16px;
+				left: 0;
+				border-radius: 0 0 32px 0;
+			}
+			body.lqx-notch-right #lqx-adminbar-notch {
+				width: 16px;
+				right: 0;
+				border-radius: 0 0 0 32px;
+			}
+
+			/* When open, keep notch visible and aligned */
+			body.lqx-adminbar-open #lqx-adminbar-notch {
+				top: var(--lqx-ab-h);
+			}
+		';
+
+		wp_register_style('lqx-adminbar-notch', false);
+		wp_enqueue_style('lqx-adminbar-notch');
+		wp_add_inline_style('lqx-adminbar-notch', $css);
+
+		// JS: toggle
+		$js = '
+			(function () {
+				var body = document.body;
+				if (!body) return;
+
+				// Apply notch position class
+				body.classList.add("lqx-notch-' . esc_js($pos) . '");
+
+				// Create notch button
+				var btn = document.createElement("button");
+				btn.id = "lqx-adminbar-notch";
+				btn.type = "button";
+				btn.setAttribute("aria-label", "Toggle admin bar");
+				btn.setAttribute("aria-expanded", open ? "true" : "false");
+
+				btn.addEventListener("click", function () {
+					var isOpen = body.classList.toggle("lqx-adminbar-open");
+					btn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+				});
+
+				body.appendChild(btn);
+			})();
+		';
+
+		wp_register_script('lqx-adminbar-notch', '', [], false, true);
+		wp_enqueue_script('lqx-adminbar-notch');
+		wp_add_inline_script('lqx-adminbar-notch', $js);
+	}, 20);
+
 }
 
 add_action('after_setup_theme', '\lqx\setup\theme_setup');
