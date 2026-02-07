@@ -135,10 +135,16 @@ export const filters = (() => {
 				}
 
 				// Get the settings of the filter element
-				const settings = JSON.parse(jQuery(filterElem).attr('data-settings') || '{}');
+				let settings;
+				try {
+					settings = JSON.parse(jQuery(filterElem).attr('data-settings') || '{}');
+				} catch (e) {
+					warn('Filter element has invalid JSON settings', filterElem);
+					return;
+				}
 
 				// Check if the filter element has settings
-				if (!settings) {
+				if (!settings || typeof settings !== 'object') {
 					warn('Filter element does not have settings', filterElem);
 					return;
 				}
@@ -957,24 +963,26 @@ export const filters = (() => {
 	const processAPIResponse = (data) => {
 		log('Filters processAPIResponse');
 
-		// TODO
-		// Validate the data
-		validateData();
+		// Validate the API response
+		if (!data || typeof data !== 'object' || !data.hash) {
+			warn('Invalid filters API response', data);
+			return;
+		}
 
 		// Get the filter object
 		const id = data.hash;
 		const filterObj = vars.filters.filters[id];
+
+		if (!filterObj) {
+			warn('Filter ID from API response not found', id);
+			return;
+		}
 
 		// Update the filter object with the received data
 		vars.filters.filters[id] = jQuery.extend(true, filterObj, data);
 
 		// Update the filter
 		update(id);
-
-	};
-
-	// TODO
-	const validateData = () => {
 
 	};
 

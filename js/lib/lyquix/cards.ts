@@ -109,15 +109,20 @@ export const cards = (() => {
 				};
 
 				// Slides per view
-				const responsiveRules = JSON.parse(cardsElem.attr('data-responsive-rules'));
-				// TODO Handle empty rules, invalid JSON
-				responsiveRules.forEach((rule) => {
-					rule.screens.forEach((screen) => {
-						swiperOptions.breakpoints[cfg.responsive.breakPoints[cfg.responsive.sizes.indexOf(screen)]] = {
-							slidesPerView: parseInt(rule.columns)
-						};
-					});
-				});
+				try {
+					const responsiveRules = JSON.parse(cardsElem.attr('data-responsive-rules'));
+					if (Array.isArray(responsiveRules)) {
+						responsiveRules.forEach((rule) => {
+							rule.screens.forEach((screen) => {
+								swiperOptions.breakpoints[cfg.responsive.breakPoints[cfg.responsive.sizes.indexOf(screen)]] = {
+									slidesPerView: parseInt(rule.columns)
+								};
+							});
+						});
+					}
+				} catch (e) {
+					warn('Responsive rules is not valid JSON');
+				}
 
 				// Swiper options override
 				try {

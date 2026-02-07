@@ -77,9 +77,12 @@ export const swipe = (() => {
 
 	// Enable swipe detection
 	const add = (sel, callback, customCfg) => {
-		log(`Setting up swipe detection for ${sel}`);
+		if (typeof sel !== 'string' || typeof callback !== 'function') {
+			warn('Invalid swipe selector or callback', sel);
+			return;
+		}
 
-		// TODO Data validation
+		log(`Setting up swipe detection for ${sel}`);
 
 		// Create a swipes object for selector
 		const swipes: {
@@ -171,7 +174,10 @@ export const swipe = (() => {
 	};
 
 	const update = (sel, callback, customCfg) => {
-		// TODO Data validation
+		if (typeof sel !== 'string' || typeof callback !== 'function') {
+			warn('Invalid swipe selector or callback', sel);
+			return;
+		}
 
 		// Remove current swipes
 		swipe.remove(sel);

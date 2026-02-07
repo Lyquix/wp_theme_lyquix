@@ -20,7 +20,7 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-import { vars, cfg, log } from './core';
+import { vars, cfg, log, warn } from './core';
 import { store } from './store';
 
 /**
@@ -85,7 +85,10 @@ export const theme = (() => {
 	};
 
 	const set = (userPref: 'dark' | 'light') => {
-		// TODO Data validation
+		if (userPref !== 'dark' && userPref !== 'light') {
+			warn('Invalid theme preference, must be "dark" or "light"', userPref);
+			return;
+		}
 
 		vars.theme.userPref = userPref;
 		setAttribute();

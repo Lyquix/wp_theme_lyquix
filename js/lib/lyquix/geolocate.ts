@@ -20,7 +20,7 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-import { vars, cfg, log } from './core';
+import { vars, cfg, log, warn } from './core';
 import { mutation } from './mutation';
 import { util } from './util';
 declare const jQuery;
@@ -153,8 +153,11 @@ export const geolocate = (() => {
 			success: (data) => {
 				// Do not overwrite existing GPS location
 				if (vars.geolocate.location.source !== 'gps' && vars.geolocate.location.source !== 'gps-cookie') {
+					if (!data || typeof data !== 'object') {
+						warn('Invalid IP geolocation response', data);
+						return;
+					}
 					vars.geolocate.location = data;
-					// TODO Data validation
 					vars.geolocate.location.source = 'ip2geo';
 				}
 
@@ -180,7 +183,6 @@ export const geolocate = (() => {
 			vars.geolocate.status.gps = 'wait';
 
 			window.navigator.geolocation.getCurrentPosition((position) => {
-				// TODO Data validation
 				vars.geolocate.location.lat = position.coords.latitude;
 				vars.geolocate.location.lon = position.coords.longitude;
 				vars.geolocate.location.radius = position.coords.accuracy / 1000; // in km
@@ -229,12 +231,14 @@ export const geolocate = (() => {
 
 	// Check if a point is inside a circle
 	const inCircle = (test, center, radius) => {
-		// TODO Data validation
 		/** Accepts:
 		 * test: location to test, object with keys lat and lon
 		 * center: circle center point, object with keys lat and lon
 		 * radius: circle radius in kilometers
 		 */
+		if (typeof test?.lat !== 'number' || typeof test?.lon !== 'number' ||
+			typeof center?.lat !== 'number' || typeof center?.lon !== 'number' ||
+			typeof radius !== 'number') return false;
 		const deg2rad = (deg) => { return deg * Math.PI / 180; };
 		const dLat = deg2rad(test.lat - center.lat);
 		const dLon = deg2rad(test.lon - center.lon);
@@ -247,13 +251,15 @@ export const geolocate = (() => {
 
 	// Check if a point is inside a square
 	const inSquare = (test, corner1, corner2) => {
-		// TODO Data validation
 		/** Accepts:
 		 * test: location to test, object with keys lat and lon
 		 * corner1: a corner of the square, object with keys lat and lon
 		 * corner2: opposite corner of the square, object with keys lat and lon
 		 * Known limitation: doesn't handle squares that cross the poles or the international date line
 		 */
+		if (typeof test?.lat !== 'number' || typeof test?.lon !== 'number' ||
+			typeof corner1?.lat !== 'number' || typeof corner1?.lon !== 'number' ||
+			typeof corner2?.lat !== 'number' || typeof corner2?.lon !== 'number') return false;
 		return test.lat <= Math.max(corner1.lat, corner2.lat) &&
 			test.lat >= Math.min(corner1.lat, corner2.lat) &&
 			test.lon <= Math.max(corner1.lon, corner2.lon) &&
@@ -262,13 +268,13 @@ export const geolocate = (() => {
 
 	// Check if a point is inside a polygon
 	const inPolygon = (test, poly) => {
-		// TODO Data validation
 		/** Accepts:
 		 * test: location to test, object with keys lat and lon
 		 * poly: defines the polygon, array of objects, each with keys lat and lon
 		 * Based on http://alienryderflex.com/polygon/
 		 * Known limitation: doesn't handle polygons that cross the poles or the international date line
 		 */
+		if (typeof test?.lat !== 'number' || typeof test?.lon !== 'number' || !Array.isArray(poly) || poly.length < 3) return false;
 		let i, j = poly.length - 1, oddNodes = false;
 
 		for (i = 0; i < poly.length; i++) {
@@ -331,9 +337,17 @@ export const geolocate = (() => {
 		const regions = {};
 
 		// Parse geoJSON
-		geoJSON = JSON.parse(geoJSON);
+		try {
+			geoJSON = JSON.parse(geoJSON);
+		} catch (e) {
+			warn('Invalid geoJSON string');
+			return regions;
+		}
 
-		// TODO Data validation
+		if (!geoJSON?.features || !Array.isArray(geoJSON.features)) {
+			warn('Invalid geoJSON structure');
+			return regions;
+		}
 
 		// Loop through features
 		geoJSON.features.forEach((feature) => {
@@ -389,7 +403,10 @@ export const geolocate = (() => {
 		 * }
 		 */
 
-		// TODO Data validation
+		if (!regions || typeof regions !== 'object') {
+			warn('Invalid regions definition', regions);
+			return vars.geolocate.regions;
+		}
 
 		// Get current lat / lon
 		const here = {

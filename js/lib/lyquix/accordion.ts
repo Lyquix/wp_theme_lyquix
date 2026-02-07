@@ -20,10 +20,11 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-import { vars, cfg, log } from './core';
+import { vars, cfg, log, warn, error } from './core';
 import { mutation } from './mutation';
 import { analytics } from './analytics';
 import { responsive } from './responsive';
+import { util } from './util';
 
 /**
  * Provides functionality for managing and controlling accordion components on a web page.
@@ -109,6 +110,38 @@ export const accordion = (() => { // Change the accordion name
 				// The accordion element
 				accElem = jQuery(accElem);
 
+				// Validate accordion settings from data attributes
+				const s = util.validateData({
+					openOnLoad: accElem.attr('data-open-on-load') ?? '',
+					openMultiple: accElem.attr('data-open-multiple') ?? '',
+					browserHistory: accElem.attr('data-browser-history') ?? '',
+					autoScroll: (accElem.attr('data-auto-scroll') || '').split(',').filter(x => x)
+				}, {
+					type: 'object',
+					keys: {
+						openOnLoad: util.schemaStrReqN,
+						openMultiple: util.schemaStrReqY,
+						browserHistory: util.schemaStrReqN,
+						autoScroll: {
+							type: 'array',
+							required: true,
+							default: [],
+							elems: {
+								type: 'string',
+								allowed: ['xs', 'sm', 'md', 'lg', 'xl']
+							}
+						}
+					}
+				} as any);
+
+				if (!s || !s.isValid) {
+					error('Invalid accordion settings', accElem);
+					return;
+				}
+
+				// Store validated settings on element
+				accElem.data('settings', s.data);
+
 				// Cycle through each header element
 				accElem.find(cfg.accordion.headerSelector).each((idx, headerElem) => {
 					// The header element
@@ -116,7 +149,10 @@ export const accordion = (() => { // Change the accordion name
 
 					// The panel element
 					const panelElem = jQuery('#' + headerElem.attr('id').replace('-header-', '-panel-'));
-					// TODO Handle missing panel
+					if (!panelElem.length) {
+						warn('Accordion panel element not found', headerElem.attr('id'));
+						return;
+					}
 					const panelId = panelElem.attr('id');
 
 					// Add click listener
@@ -138,7 +174,14 @@ export const accordion = (() => { // Change the accordion name
 		const panelElem = jQuery('#' + panelId);
 		const headerElem = jQuery('#' + panelId.replace('-panel-', '-header-'));
 		const accElem = panelElem.parents('.accordion');
-		// TODO Handle missing elements
+		if (!panelElem.length || !headerElem.length || !accElem.length) {
+			warn('Accordion elements not found', panelId);
+			return;
+		}
+
+		// Get validated settings
+		const s = accElem.data('settings');
+		if (!s) return;
 
 		// Remove closed class
 		panelElem.removeClass('closed');
@@ -150,20 +193,17 @@ export const accordion = (() => { // Change the accordion name
 		headerElem.attr('aria-expanded', 'true');
 
 		// Auto scroll top
-		const autoScrollScreens = (accElem.attr('data-auto-scroll') || '').split(',');
-		// TODO Handle invalid autoScrollScreens
-
-		if (autoScrollScreens.includes(responsive.screen)) {
+		if (s.autoScroll.includes(responsive.screen)) {
 			// TODO: Auto Scroll functionality
 		}
 
 		// Browser history
-		if (accElem.attr('data-browser-history') == 'y') {
+		if (s.browserHistory == 'y') {
 			// TODO: Browser history functionality
 		}
 
 		// Open multiple
-		if (accElem.attr('data-open-multiple') == 'n') {
+		if (s.openMultiple == 'n') {
 			// Close all other panels
 			accElem.find(cfg.accordion.panelSelector).not(panelElem).each((idx, elem) => {
 				close(jQuery(elem).attr('id'));
@@ -187,7 +227,10 @@ export const accordion = (() => { // Change the accordion name
 		// The elements
 		const panelElem = jQuery('#' + panelId);
 		const headerElem = jQuery('#' + panelId.replace('-panel-', '-header-'));
-		// TODO Handle missing elements
+		if (!panelElem.length || !headerElem.length) {
+			warn('Accordion elements not found', panelId);
+			return;
+		}
 
 		// Add closed class
 		panelElem.addClass('closed');

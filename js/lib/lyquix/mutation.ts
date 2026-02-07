@@ -20,7 +20,7 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-import { vars, cfg, log } from './core';
+import { vars, cfg, log, warn } from './core';
 
 /**
  * This module provides a mutation observer and handler for a web page.
@@ -79,7 +79,14 @@ export const mutation = (() => {
 	};
 
 	const addHandler = (type, selector, callback) => {
-		// TODO Data validation
+		if (!(type in vars.mutation) || !Array.isArray(vars.mutation[type])) {
+			warn('Invalid mutation handler type', type);
+			return;
+		}
+		if (typeof selector !== 'string' || typeof callback !== 'function') {
+			warn('Invalid mutation handler selector or callback', selector);
+			return;
+		}
 		vars.mutation[type].push({ 'selector': selector, 'callback': callback });
 		log('Adding handler for mutation ' + type + ' for ' + selector);
 	};

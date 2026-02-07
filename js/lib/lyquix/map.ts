@@ -20,7 +20,7 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-import { vars, cfg, log } from './core';
+import { vars, cfg, log, warn } from './core';
 import { mutation } from './mutation';
 
 declare const google, jQuery;
@@ -80,8 +80,34 @@ export const map = (() => {
 		if (elems.length) {
 			elems.each(function(block){
 				log('Setting up ' + elems.length + ' maps', elems);
-				const settings = JSON.parse(jQuery(elems[block]).attr('data-settings'));
-				const styles = JSON.parse(settings.google_maps_display_settings.snazzy_maps_styles);
+
+				let settings, styles, items;
+				try {
+					settings = JSON.parse(jQuery(elems[block]).attr('data-settings'));
+				} catch (e) {
+					warn('Map element has invalid JSON settings', elems[block]);
+					return;
+				}
+
+				if (!settings?.google_maps_display_settings) {
+					warn('Map element is missing google_maps_display_settings', elems[block]);
+					return;
+				}
+
+				try {
+					styles = JSON.parse(settings.google_maps_display_settings.snazzy_maps_styles);
+				} catch (e) {
+					styles = [];
+				}
+
+				try {
+					items = JSON.parse(jQuery(elems[block]).attr('data-items'));
+					if (!Array.isArray(items)) items = [];
+				} catch (e) {
+					warn('Map element has invalid JSON items', elems[block]);
+					return;
+				}
+
 				const lqxMap = {
 					map: null,
 					options: {
@@ -98,7 +124,7 @@ export const map = (() => {
 					},
 					center: new google.maps.LatLng(0,0),
 					bounds: new google.maps.LatLngBounds(),
-					items: JSON.parse(jQuery(elems[block]).attr('data-items')),
+					items: items,
 					infoWindows: {},
 					markers: {},
 					groupedItems: [],
@@ -106,7 +132,6 @@ export const map = (() => {
 				//initialize options based off of the json settings
 				lqxMap.options.mapTypeId = google.maps.MapTypeId[lqxMap.options.mapTypeId];
 				const mapSelector = jQuery(elems[block]).find('.map').attr('id');
-				console.log(mapSelector);
 				lqxMap.map = new google.maps.Map(document.getElementById(mapSelector), lqxMap.options, lqxMap.options);
 				for (let i = 0; i < lqxMap.items.length; i++) {
 					const itemLatLon = new google.maps.LatLng(lqxMap.items[i].lat, lqxMap.items[i].lon);

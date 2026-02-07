@@ -20,7 +20,7 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-import { vars, cfg, log, error } from './core';
+import { vars, cfg, log, warn, error } from './core';
 import { mutation } from './mutation';
 import { util } from './util';
 
@@ -246,7 +246,10 @@ export const analytics = (() => {
 		if (vars.analytics.status == 'ready') {
 			log('Sending page view to GA', pageInfo);
 
-			// TODO Data validation
+			if (!pageInfo || typeof pageInfo !== 'object') {
+				warn('Invalid pageInfo object', pageInfo);
+				return;
+			}
 
 			if (pageInfo.url && pageInfo.title) {
 				const url = new URL(pageInfo.url, window.location.href);
@@ -301,7 +304,10 @@ export const analytics = (() => {
 				if (prop in eventInfo && eventInfo[prop]) eventParams[ga4PropMap[prop]] = eventInfo[prop];
 			});
 
-			// TODO Data validation
+			if (!eventInfo.eventAction && !eventInfo.eventName) {
+				warn('eventAction or eventName is required', eventInfo);
+				return;
+			}
 
 			const eventName = ('eventName' in eventInfo && eventInfo.eventName) ? eventInfo.eventName : eventInfo.eventAction;
 

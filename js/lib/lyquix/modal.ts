@@ -20,7 +20,7 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-import { vars, cfg, log, error } from './core';
+import { vars, cfg, log, warn, error } from './core';
 import { util } from './util';
 import { analytics } from './analytics';
 
@@ -103,8 +103,61 @@ export const modal = (() => {
 					const now = new Date().getTime();
 
 					// Loop through the modal
-					data.forEach((modal) => {
-						// TODO Data validation
+					data.forEach((rawModal) => {
+						// Validate modal data
+						const m = util.validateData(rawModal, {
+							type: 'object',
+							keys: {
+								id: util.schemaStrReqNotEmp,
+								heading: util.schemaStrReqEmp,
+								body: util.schemaStrReqEmp,
+								expiration: util.schemaStrReqEmp,
+								display_logic: { type: 'string', required: true, default: 'show', allowed: ['show', 'hide'] },
+								display_exceptions: {
+									type: 'array',
+									required: true,
+									default: [],
+									elems: {
+										type: 'object',
+										keys: {
+											url_pattern: util.schemaStrReqEmp
+										}
+									}
+								},
+								css_classes: util.schemaStrReqEmp,
+								heading_style: { type: 'string', required: true, default: 'h3', allowed: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'] },
+								show_delay: util.schemaStrReqEmp,
+								hide_delay: util.schemaStrReqEmp,
+								dismiss_duration: util.schemaStrReqEmp,
+								links: {
+									type: 'array',
+									required: true,
+									default: [],
+									elems: {
+										type: 'object',
+										keys: {
+											type: { type: 'string', required: true, default: 'readmore', allowed: ['button', 'readmore'] },
+											link: {
+												type: 'object',
+												required: true,
+												default: {},
+												keys: {
+													url: util.schemaStrReqEmp,
+													target: util.schemaStrReqEmp,
+													title: util.schemaStrReqEmp
+												}
+											}
+										}
+									}
+								}
+							}
+						} as any);
+
+						if (!m || !m.isValid) {
+							warn('Invalid modal data, skipping', rawModal);
+							return;
+						}
+						const modal = m.data;
 
 						// Skip if modal has been dismissed
 						if (util.cookie(modal.id) !== null) return;
@@ -112,7 +165,8 @@ export const modal = (() => {
 						// Skip if modal has expired
 						if (modal.expiration != '' && now > dayjs(modal.expiration).valueOf()) return;
 
-						// TODO Skip if there's no content
+						// Skip if there's no content
+						if (!modal.heading && !modal.body) return;
 
 						// Skip if display logic and exceptions are not met
 						let display = true;
@@ -203,7 +257,10 @@ export const modal = (() => {
 
 	const open = (modalId) => {
 		const modalElem = jQuery('#' + modalId);
-		// TODO Handle element not found
+		if (!modalElem.length) {
+			warn('Modal element not found', modalId);
+			return;
+		}
 
 		// Modal opened
 		modalElem.get(0).showModal();
@@ -221,8 +278,7 @@ export const modal = (() => {
 		// Send event for modal open
 		if (cfg.modal.analytics.enabled && cfg.modal.analytics.onOpen) {
 			// Get the heading
-			const headingStyle = modalElem.attr('data-heading-style');
-			// TODO Data validation
+			const headingStyle = modalElem.attr('data-heading-style') || 'h3';
 			const heading = modalElem.find(headingStyle == 'p' ? 'p.title strong' : headingStyle).text();
 
 			// Send event
@@ -237,7 +293,10 @@ export const modal = (() => {
 
 	const close = (modalId) => {
 		const modalElem = jQuery('#' + modalId);
-		// TODO Handle element not found
+		if (!modalElem.length) {
+			warn('Modal element not found', modalId);
+			return;
+		}
 
 		// Skip if it is already closed
 		if (modalElem.attr('open') === undefined) return;
@@ -258,8 +317,7 @@ export const modal = (() => {
 		// Send event for modal closed
 		if (cfg.modal.analytics.enabled && cfg.modal.analytics.onClose) {
 			// Get the heading
-			const headingStyle = modalElem.attr('data-heading-style');
-			// TODO Data validation
+			const headingStyle = modalElem.attr('data-heading-style') || 'h3';
 			const heading = modalElem.find(headingStyle == 'p' ? 'p.title strong' : headingStyle).text();
 
 			// Send event

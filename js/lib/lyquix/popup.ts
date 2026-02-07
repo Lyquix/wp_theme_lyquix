@@ -20,7 +20,7 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-import { vars, cfg, log, error } from './core';
+import { vars, cfg, log, warn, error } from './core';
 import { util } from './util';
 import { analytics } from './analytics';
 
@@ -105,20 +105,74 @@ export const popup = (() => {
 			},
 			success: (data) => {
 				if (data.length > 0) {
-					// TODO Data validation
-
 					// Get now
 					const now = new Date().getTime();
 
 					// Loop through the popup
-					data.forEach((popup) => {
+					data.forEach((rawPopup) => {
+						// Validate popup data
+						const p = util.validateData(rawPopup, {
+							type: 'object',
+							keys: {
+								id: util.schemaStrReqNotEmp,
+								heading: util.schemaStrReqEmp,
+								body: util.schemaStrReqEmp,
+								expiration: util.schemaStrReqEmp,
+								display_logic: { type: 'string', required: true, default: 'show', allowed: ['show', 'hide'] },
+								display_exceptions: {
+									type: 'array',
+									required: true,
+									default: [],
+									elems: {
+										type: 'object',
+										keys: {
+											url_pattern: util.schemaStrReqEmp
+										}
+									}
+								},
+								css_classes: util.schemaStrReqEmp,
+								heading_style: { type: 'string', required: true, default: 'h3', allowed: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'] },
+								show_delay: util.schemaStrReqEmp,
+								hide_delay: util.schemaStrReqEmp,
+								dismiss_duration: util.schemaStrReqEmp,
+								links: {
+									type: 'array',
+									required: true,
+									default: [],
+									elems: {
+										type: 'object',
+										keys: {
+											type: { type: 'string', required: true, default: 'readmore', allowed: ['button', 'readmore'] },
+											link: {
+												type: 'object',
+												required: true,
+												default: {},
+												keys: {
+													url: util.schemaStrReqEmp,
+													target: util.schemaStrReqEmp,
+													title: util.schemaStrReqEmp
+												}
+											}
+										}
+									}
+								}
+							}
+						} as any);
+
+						if (!p || !p.isValid) {
+							warn('Invalid popup data, skipping', rawPopup);
+							return;
+						}
+						const popup = p.data;
+
 						// Skip if popup has been dismissed
 						if (util.cookie(popup.id) !== null) return;
 
 						// Skip if popup has expired
 						if (popup.expiration != '' && now > dayjs(popup.expiration).valueOf()) return;
 
-						// TODO Skip if there's no content
+						// Skip if there's no content
+						if (!popup.heading && !popup.body) return;
 
 						// Skip if display logic and exceptions are not met
 						let display = true;
@@ -204,7 +258,10 @@ export const popup = (() => {
 
 	const open = (popupId) => {
 		const popupElem = jQuery('#' + popupId);
-		// TODO Handle element not found
+		if (!popupElem.length) {
+			warn('Popup element not found', popupId);
+			return;
+		}
 
 		// Popup opened
 		popupElem.removeClass('closed');
@@ -221,7 +278,7 @@ export const popup = (() => {
 		// Send event for popup open
 		if (cfg.popup.analytics.enabled && cfg.popup.analytics.onOpen) {
 			// Get the heading
-			const headingStyle = popupElem.attr('data-heading-style');
+			const headingStyle = popupElem.attr('data-heading-style') || 'h3';
 			const heading = popupElem.find(headingStyle == 'p' ? 'p.title strong' : headingStyle).text();
 
 			// Send event
@@ -236,7 +293,10 @@ export const popup = (() => {
 
 	const close = (popupId) => {
 		const popupElem = jQuery('#' + popupId);
-		// TODO Handle element not found
+		if (!popupElem.length) {
+			warn('Popup element not found', popupId);
+			return;
+		}
 
 		// Skip if it is already closed
 		if (popupElem.hasClass('closed')) return;
@@ -256,7 +316,7 @@ export const popup = (() => {
 		// Send event for popup closed
 		if (cfg.popup.analytics.enabled && cfg.popup.analytics.onClose) {
 			// Get the heading
-			const headingStyle = popupElem.attr('data-heading-style');
+			const headingStyle = popupElem.attr('data-heading-style') || 'h3';
 			const heading = popupElem.find(headingStyle == 'p' ? 'p.title strong' : headingStyle).text();
 
 			// Send event

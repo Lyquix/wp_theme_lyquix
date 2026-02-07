@@ -71,7 +71,13 @@ export const store = (() => {
 			let lqxStore: any = window.localStorage.getItem(cfg.store.itemName);
 			if (lqxStore === null) window.localStorage.setItem(cfg.store.itemName, '{}');
 			else {
-				lqxStore = JSON.parse(lqxStore);
+				try {
+					lqxStore = JSON.parse(lqxStore);
+				} catch (e) {
+					warn('Invalid JSON in localStorage, resetting store');
+					lqxStore = {};
+					window.localStorage.setItem(cfg.store.itemName, '{}');
+				}
 				// Regenerate vars.store.tracked
 				Object.keys(lqxStore).forEach((objName) => {
 					vars.store.tracked[objName] = {};
@@ -99,8 +105,12 @@ export const store = (() => {
 		// Get data from localStorage
 		let lqxStore: any = window.localStorage.getItem(cfg.store.itemName);
 		if (lqxStore) {
-			lqxStore = JSON.parse(lqxStore);
-			// TODO Handle invalid JSON
+			try {
+				lqxStore = JSON.parse(lqxStore);
+			} catch (e) {
+				warn('Invalid JSON in localStorage');
+				lqxStore = {};
+			}
 		}
 		else lqxStore = {};
 
@@ -141,8 +151,12 @@ export const store = (() => {
 		// Get data from localStorage
 		let lqxStore: any = window.localStorage.getItem(cfg.store.itemName);
 		if (lqxStore) {
-			lqxStore = JSON.parse(lqxStore);
-			// TODO Handle invalid JSON
+			try {
+				lqxStore = JSON.parse(lqxStore);
+			} catch (e) {
+				warn('Invalid JSON in localStorage');
+				lqxStore = {};
+			}
 		}
 		else lqxStore = {};
 
@@ -172,8 +186,12 @@ export const store = (() => {
 		// Get data from localStorage
 		let lqxStore: any = window.localStorage.getItem(cfg.store.itemName);
 		if (lqxStore) {
-			lqxStore = JSON.parse(lqxStore);
-			// TODO Handle invalid JSON
+			try {
+				lqxStore = JSON.parse(lqxStore);
+			} catch (e) {
+				warn('Invalid JSON in localStorage');
+				lqxStore = {};
+			}
 		}
 		else lqxStore = {};
 

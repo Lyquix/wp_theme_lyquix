@@ -96,6 +96,38 @@ export const alerts = (() => {
 
 		log('Setting up alerts', alertsModuleElem);
 
+		// Validate settings from data attributes
+		const s = util.validateData({
+			autoplay: alertsModuleElem.attr('data-autoplay') ?? '',
+			autoplayDelay: alertsModuleElem.attr('data-autoplay-delay') ?? '',
+			swiperOptionsOverride: alertsModuleElem.attr('data-swiper-options-override') ?? '',
+			headingStyle: alertsModuleElem.attr('data-heading-style') ?? ''
+		}, {
+			type: 'object',
+			keys: {
+				autoplay: util.schemaStrReqY,
+				autoplayDelay: {
+					type: 'integer',
+					required: true,
+					default: 15,
+					range: [0, 60]
+				},
+				swiperOptionsOverride: util.schemaStrReqEmp,
+				headingStyle: {
+					type: 'string',
+					required: true,
+					default: 'h3',
+					allowed: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+				}
+			}
+		} as any);
+
+		if (!s || !s.isValid) {
+			error('Invalid alerts settings', alertsModuleElem);
+			return;
+		}
+		alertsModuleElem.data('settings', s.data);
+
 		// Get the alerts content
 		jQuery.ajax({
 			cache: false,
@@ -106,18 +138,43 @@ export const alerts = (() => {
 			},
 			success: (data) => {
 				if (data.length > 0) {
-					// Get settings
-					const autoplay = alertsModuleElem.attr('data-autoplay') === 'y';
-					const autoplayDelay = parseInt(alertsModuleElem.attr('data-autoplay-delay'));
-					const headingStyle = alertsModuleElem.attr('data-heading-style');
-					// TODO Handle invalid autoplayDelay and headingStyle
+					// Get validated settings
+					const settings = alertsModuleElem.data('settings');
+					const autoplay = settings.autoplay === 'y';
+					const autoplayDelay = settings.autoplayDelay;
+					const headingStyle = settings.headingStyle;
 
 					// Get now
 					const now = new Date().getTime();
 
 					// Loop through the alerts
-					data.forEach((alert) => {
-						// TODO Data validation
+					data.forEach((rawAlert) => {
+						// Validate alert data
+						const a = util.validateData(rawAlert, {
+							type: 'object',
+							keys: {
+								id: util.schemaStrReqNotEmp,
+								heading: util.schemaStrReqEmp,
+								body: util.schemaStrReqEmp,
+								expiration: util.schemaStrReqEmp,
+								link: {
+									type: 'object',
+									required: true,
+									default: {},
+									keys: {
+										url: util.schemaStrReqEmp,
+										target: util.schemaStrReqEmp,
+										title: util.schemaStrReqEmp
+									}
+								}
+							}
+						} as any);
+
+						if (!a || !a.isValid) {
+							warn('Invalid alert data, skipping', rawAlert);
+							return;
+						}
+						const alert = a.data;
 
 						// Skip if alert has been closed
 						if (util.cookie(alert.id) !== null) return;
@@ -185,10 +242,9 @@ export const alerts = (() => {
 							}
 
 							// Swiper options override
-							const swiperOptionsOverride = alertsModuleElem.attr('data-swiper-options-override');
-							if(swiperOptionsOverride) {
+							if (settings.swiperOptionsOverride) {
 								try {
-									swiperOptions = jQuery.extend(true, swiperOptions, JSON.parse(swiperOptionsOverride));
+									swiperOptions = jQuery.extend(true, swiperOptions, JSON.parse(settings.swiperOptionsOverride));
 								} catch (e) {
 									warn('Swiper options override is not valid JSON');
 								}
