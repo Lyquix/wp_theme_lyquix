@@ -30,9 +30,9 @@
 			$share_link = \lqx\modules\share\get_share_link($p['platform_name']['value']);
 			if ($share_link) : ?>
 			<li>
-				<a class="link-<?= $p['platform_name']['value'] ?>"
-					href="<?= $share_link ?>"
-					<?php if ($p['platform_name']['value'] !== 'email' && $p['platform_name']['value'] !== 'print') : ?>target="_blank"<?php endif;?>
+				<a class="link-<?= $p['platform_name']['value'] ?>" href="#"
+					data-platform="<?= $p['platform_name']['value'] ?>"
+					data-link="<?= $share_link ?>"
 					rel="noopener noreferrer"
 					aria-label="Share on <?= $p['platform_name']['label'] ?>">
 					<svg aria-hidden="true" class="icon" width="48" height="48">
@@ -43,4 +43,18 @@
 			<?php endif; ?>
 		<?php endforeach; ?>
 	</ul>
+	<script>
+		(function () {
+			let shareButtons = document.querySelectorAll('.lqx-module-share a');
+			shareButtons.forEach(function(button) {
+				button.addEventListener('click', function(e) {
+					e.preventDefault();
+					let platform = button.getAttribute('data-platform');
+					let shareURL = button.getAttribute('data-link');
+					if (platform === 'print') window.print();
+					else window.open(shareURL, '_blank', 'noopener, noreferrer, width=600, height=400');
+				});
+			});
+		})();
+	</script>
 </div>
