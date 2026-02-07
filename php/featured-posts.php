@@ -66,7 +66,7 @@ add_action('add_meta_boxes', function(){
 add_action('enqueue_block_editor_assets', function() {
 	wp_enqueue_script(
 		'custom-meta-field',
-		get_template_directory_uri() . '/js/featured-posts.js', // Update with your file path
+		get_template_directory_uri() . '/js/featured-posts.js',
 		['wp-plugins', 'wp-edit-post', 'wp-components', 'wp-data', 'wp-element'],
 		filemtime(get_template_directory() . '/js/featured-posts.js'), // Cache-busting
 		true

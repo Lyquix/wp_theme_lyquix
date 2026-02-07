@@ -66,7 +66,7 @@ if (get_theme_mod('feat_tailwind', '1') === '1') {
 			);
 			wp_enqueue_script(
 				'tailwind-editor',
-                get_stylesheet_directory_uri() . '/css/tailwind/editor.js',
+                get_template_directory_uri() . '/css/tailwind/editor.js',
 				['wp-blocks', 'wp-data', 'wp-edit-post', 'acf-input', 'jquery']
 			);
 		}

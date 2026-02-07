@@ -34,33 +34,49 @@ namespace lqx\favicon;
  *
  * @return void
  */
+function favicon_path($filename) {
+	if (file_exists(get_stylesheet_directory() . '/images/favicon/' . $filename)) {
+		return get_stylesheet_directory_uri() . '/images/favicon/' . $filename;
+	}
+	if (file_exists(get_template_directory() . '/images/favicon/' . $filename)) {
+		return get_template_directory_uri() . '/images/favicon/' . $filename;
+	}
+	return false;
+}
+
 function render() {
 	$favicons_sizes = [57, 60, 72, 76, 114, 120, 144, 152, 180];
 
 	foreach ($favicons_sizes as $favicon_size) {
 		$favicon_size = $favicon_size . 'x' . $favicon_size;
-		if (file_exists(get_template_directory() . '/images/favicon/apple-icon-' . $favicon_size . '.png')) {
-			echo '<link rel="apple-touch-icon" sizes="' . $favicon_size . '" href="' . get_template_directory_uri() . '/images/favicon/apple-icon-' . $favicon_size . '.png">' . "\n";
+		$url = favicon_path('apple-icon-' . $favicon_size . '.png');
+		if ($url) {
+			echo '<link rel="apple-touch-icon" sizes="' . $favicon_size . '" href="' . $url . '">' . "\n";
 		}
 	}
 
-	if (file_exists(get_template_directory() . '/images/favicon/android-icon-192x192.png')) : ?>
-		<link rel="icon" type="image/png" sizes="192x192" href="<?php echo get_template_directory_uri(); ?>/images/favicon/android-icon-192x192.png">
+	$url = favicon_path('android-icon-192x192.png');
+	if ($url) : ?>
+		<link rel="icon" type="image/png" sizes="192x192" href="<?php echo $url; ?>">
 	<?php endif;
 
-	if (file_exists(get_template_directory() . '/images/favicon/favicon.ico')) : ?>
-		<link rel="shortcut icon" type="image/vnd.microsoft.icon" href="<?php echo get_template_directory_uri(); ?>/images/favicon/favicon.ico">
+	$url = favicon_path('favicon.ico');
+	if ($url) : ?>
+		<link rel="shortcut icon" type="image/vnd.microsoft.icon" href="<?php echo $url; ?>">
 	<?php endif;
 
-	if (file_exists(get_template_directory() . '/images/favicon/favicon-32x32.png')) : ?>
-		<link rel="icon" type="image/png" sizes="32x32" href="<?php echo get_template_directory_uri(); ?>/images/favicon/favicon-32x32.png">
+	$url = favicon_path('favicon-32x32.png');
+	if ($url) : ?>
+		<link rel="icon" type="image/png" sizes="32x32" href="<?php echo $url; ?>">
 	<?php endif;
 
-	if (file_exists(get_template_directory() . '/images/favicon/favicon-96x96.png')) : ?>
-		<link rel="icon" type="image/png" sizes="96x96" href="<?php echo get_template_directory_uri(); ?>/images/favicon/favicon-96x96.png">
+	$url = favicon_path('favicon-96x96.png');
+	if ($url) : ?>
+		<link rel="icon" type="image/png" sizes="96x96" href="<?php echo $url; ?>">
 	<?php endif;
 
-	if (file_exists(get_template_directory() . '/images/favicon/favicon-16x16.png')) : ?>
-		<link rel="icon" type="image/png" sizes="16x16" href="<?php echo get_template_directory_uri(); ?>/images/favicon/favicon-16x16.png">
+	$url = favicon_path('favicon-16x16.png');
+	if ($url) : ?>
+		<link rel="icon" type="image/png" sizes="16x16" href="<?php echo $url; ?>">
 <?php endif;
 }

@@ -9,8 +9,8 @@
  * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
 
-import { vars, cfg } from './lib/scripts/core';
-import { module } from './custom/scripts/module.dist'; // Remove the sample module
+import { vars, cfg } from '../../lyquix/js/lib/scripts/core';
+import { module } from './custom/scripts/module'; // Remove the sample module
 // Import all the custom modules from js/custom/scripts
 
 declare const $lqx;
