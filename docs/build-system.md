@@ -8,6 +8,7 @@ From the child theme directory:
 
 ```bash
 # Install dependencies and bootstrap child theme
+nvm use 18
 bun install
 
 # Start development watchers

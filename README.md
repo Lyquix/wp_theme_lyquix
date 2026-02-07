@@ -35,6 +35,7 @@ cp -r lyquix_child wp-content/themes/
 
 # 2. Install dependencies (from child theme directory)
 cd wp-content/themes/lyquix_child
+nvm use 18
 bun install
 
 # 3. Activate the child theme in WordPress admin

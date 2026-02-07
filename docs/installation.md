@@ -6,6 +6,8 @@ Before installing the Lyquix theme, ensure you have the following:
 
 - **WordPress** 6.0 or later
 - **PHP** 7.4 or later
+- **NVM** (Node Version Manager) for managing Node.js versions
+- **Node.js 18** via NVM (`nvm use 18`) — required for compatibility during installation
 - **Bun** runtime (used for dependency management, TypeScript compilation, and running build scripts)
 
 ## Required Plugins
@@ -57,10 +59,11 @@ wp-content/themes/lyquix_child/
 
 ### 3. Install Dependencies
 
-Navigate to the **child theme** directory and run:
+Navigate to the **child theme** directory. Before running `bun install`, ensure you are using Node.js 18 via NVM:
 
 ```bash
 cd wp-content/themes/lyquix_child
+nvm use 18
 bun install
 ```
 
