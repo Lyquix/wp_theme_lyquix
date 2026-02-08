@@ -9,7 +9,7 @@
  * @link        https://github.com/Lyquix/wp_theme_lyquix
  */
 
-import { vars, cfg } from '../../lib/scripts/core';
+import { vars, cfg } from '../../../../lyquix/js/lib/scripts/core';
 //Import other modules as needed
 
 declare const lqx;
