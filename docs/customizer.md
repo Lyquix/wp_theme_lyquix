@@ -133,13 +133,12 @@ These toggles control various theme behaviors:
 | Enable Tailwind | Yes | Process CSS through Tailwind. |
 | Enable Theme Update | Yes | Check for parent theme updates. |
 | Enable LiveReload | Yes | Inject LiveReload script for development. |
-| Disable Image srcset | Yes | Remove responsive `srcset` attributes from images. |
 | Hide PHP Version Alert | Yes | Hide the PHP upgrade nag on the dashboard. |
 | Hide Yoast Metabox | Yes | Hide the Yoast SEO meta box in the editor. |
 | Allow SVG Upload | Yes | Allow SVG files in the media library. |
 | Hide WP Generator Tag | Yes | Remove the WordPress version meta tag. |
 | Hide Weak Password Confirmation | Yes | Remove the "confirm weak password" checkbox. |
-| Enable Image Sizes | Yes | Use custom image sizes (thumbnail:150, small:640, medium:1280, large:3840). |
+| Enable Image Sizes | Yes | Use custom image sizes (thumbnail:150, xsmall: 320, small:640, medium:1280, large:2560, xlarge:3840). |
 | Enable Required Plugins Alert | Yes | Show admin alerts for missing required plugins. |
 | Enable User Management for Editor Role | Yes | Give editors the ability to manage users. |
 | Hide ACF Extension Menu Items | Yes | Hide less-used ACF Extended admin menu items. |

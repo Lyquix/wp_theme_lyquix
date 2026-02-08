@@ -226,7 +226,6 @@ To add selectable page templates in the Gutenberg editor:
 | `acf/blocks/wrap_frontend_innerblocks` | `layouts.php` | Disable inner block wrapping |
 | `block_categories_all` | `blocks.php`, `layouts.php` | Add block categories |
 | `run_wptexturize` | `setup.php` | Disable smart quotes |
-| `wp_calculate_image_srcset` | `setup.php` | Disable srcset |
 | `upload_mimes` | `setup.php` | Allow SVG uploads |
 | `intermediate_image_sizes_advanced` | `setup.php` | Custom image sizes |
 | `intermediate_image_sizes` | `setup.php` | Available sizes list |
@@ -270,13 +269,13 @@ When **Enable Image Sizes** is on (default), the theme configures:
 | Size | Dimensions | Crop |
 |------|-----------|------|
 | thumbnail | 150x150 | Yes |
+| xsmall | 320x320 | No |
 | small | 640x640 | No |
 | medium | 1280x1280 | No |
-| large | 3840x3840 | No |
+| large | 2560x2560 | No |
+| xlarge | 3840x3840 | No |
 
 The standard `medium_large`, `1536x1536`, and `2048x2048` sizes are removed.
-
-Image `srcset` is disabled by default to keep HTML lighter. Enable it in Theme Customizer > Theme Features if needed.
 
 ## Code Quality Tools
 

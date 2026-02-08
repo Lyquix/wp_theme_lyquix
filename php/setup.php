@@ -29,7 +29,6 @@ namespace lqx\setup;
  * 		- Add theme support
  * 		- Load theme styles into editor
  * 		- Remove unnecessary wptexturize filter
- * 		- Disable srcset on images
  * 		- Hide PHP upgrade alert from dashboard
  * 		- Hide Yoast SEO meta box
  * 		- Allow SVGs in WP Uploads
@@ -58,13 +57,6 @@ function theme_setup() {
 
 	// Remove unnecessary wptexturize filter
 	add_filter('run_wptexturize', '__return_false');
-
-	// Disable srcset on images
-	if (get_theme_mod('feat_disable_srcset', '1') === '1') {
-		add_filter('wp_calculate_image_srcset', function ($sources) {
-			return false;
-		});
-	}
 
 	// Hide PHP upgrade alert from dashboard
 	if (get_theme_mod('feat_hide_php_version_alert', '1') === '1') {
