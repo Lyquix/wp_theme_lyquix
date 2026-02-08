@@ -97,11 +97,7 @@ function rest_route()
 		json_decode(
 			get_theme_mod(
 				'viewports_critical_path_css',
-				'{"xs":{"width":320,"height":720},
-				"sm":{"width":480,"height":1080},
-				"md":{"width":720,"height":1080},
-				"lg":{"width":1080,"height":1080},
-				"xl":{"width":1620,"height":1080}}'
+				json_encode(\lqx\util\get_breakpoints())
 			),
 			true
 		) as $viewport

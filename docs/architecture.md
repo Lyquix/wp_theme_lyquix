@@ -65,6 +65,7 @@ All customization is channeled through well-defined extension points in the chil
 | Module overrides | `php/custom/modules/` | Module rendering overrides |
 | Custom styles | `css/custom/` | SCSS files organized by SMACSS |
 | Custom scripts | `js/scripts.ts` | TypeScript entry point |
+| Breakpoints | `css/tailwind/breakpoints.json` | Screen breakpoints (shared by CSS, JS, PHP) |
 | Tailwind theme | `css/tailwind/theme.js` | Colors, fonts, spacing |
 
 ## The Dist File Pattern
@@ -75,6 +76,7 @@ The parent theme uses `.dist` files as templates for child theme customization:
 .htaccess                        → .htaccess
 custom.dist.php                  → custom.php
 css/custom/custom.dist.scss      → css/custom/custom.scss
+css/tailwind/breakpoints.dist.json → css/tailwind/breakpoints.json
 css/tailwind/presets.dist.js     → css/tailwind/presets.js
 css/tailwind/theme.dist.js       → css/tailwind/theme.js
 js/scripts.dist.ts               → js/scripts.ts

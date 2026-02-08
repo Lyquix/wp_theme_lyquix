@@ -81,7 +81,8 @@ The post-install script copies template files from the parent theme into the chi
 | `.htaccess` | `.htaccess` | Apache rewrite rules |
 | `custom.dist.php` | `custom.php` | Main HTML template |
 | `css/custom/custom.dist.scss` | `css/custom/custom.scss` | Main SCSS entry point |
-| `css/tailwind/presets.dist.js` | `css/tailwind/presets.js` | Tailwind presets (breakpoints, spacing) |
+| `css/tailwind/breakpoints.dist.json` | `css/tailwind/breakpoints.json` | Breakpoint definitions (shared by CSS, JS, and PHP) |
+| `css/tailwind/presets.dist.js` | `css/tailwind/presets.js` | Tailwind presets (reads breakpoints, layout spacing) |
 | `css/tailwind/theme.dist.js` | `css/tailwind/theme.js` | Tailwind theme configuration |
 | `js/scripts.dist.ts` | `js/scripts.ts` | TypeScript entry point for custom scripts |
 | `js/custom/scripts/module.dist.ts` | `js/custom/scripts/module.ts` | Sample TypeScript module |

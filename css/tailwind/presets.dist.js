@@ -20,22 +20,18 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
+const breakpoints = require('./breakpoints.json');
+
 export default {
 	theme: {
 		extend: {
 			container: {
 				center: true,
 			},
-			screens: {
-				xs: '0px',
-				sm: '480px',
-				md: '720px',
-				lg: '1080px',
-				xl: '1620px'
-			},
+			screens: Object.fromEntries(Object.entries(breakpoints).map(([screen, dimensions]) => [screen, (screen === 'xs' ? 0 : dimensions.width) + 'px'])),
 			layouts: {
-				baseSpacing: '0'
-			}
+				baseSpacing: '0',
+			},
 		},
 	},
 };

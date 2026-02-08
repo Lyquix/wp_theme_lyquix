@@ -679,6 +679,40 @@ function get_thumbnail_image_object($post_id) {
 }
 
 /**
+ * Get the breakpoints for the theme
+ *
+ * @return array The breakpoints for the theme
+ */
+function get_breakpoints() {
+	$breakpoints = json_decode(file_get_contents(get_stylesheet_directory() . '/css/tailwind/breakpoints.json'), true);
+	if ($breakpoints === null) {
+		$breakpoints = [
+			'xs' => [
+				'width' => 320,
+				'height' => 720
+			],
+			'sm' => [
+				'width' => 480,
+				'height' => 1080
+			],
+			'md' => [
+				'width' => 720,
+				'height' => 1080
+			],
+			'lg' => [
+				'width' => 1080,
+				'height' => 1080
+			],
+			'xl' => [
+				'width' => 1620,
+				'height' => 1080
+			]
+		];
+	}
+	return $breakpoints;
+}
+
+/**
  * Create a slug from a string
  *
  * @param string $string The string to convert to a slug

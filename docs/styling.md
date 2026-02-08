@@ -102,7 +102,25 @@ The theme uses custom breakpoints that differ from Tailwind's defaults:
 | `lg` | 1080px | Laptops/desktops |
 | `xl` | 1620px | Large screens |
 
-Defined in `css/tailwind/presets.js`.
+Breakpoints are defined in a single shared file: `css/tailwind/breakpoints.json` (copied from the parent theme's `breakpoints.dist.json` during `postinstall`). This JSON file is the single source of truth consumed by:
+
+- **Tailwind CSS** via `css/tailwind/presets.js` (for responsive utility classes)
+- **TypeScript** via `js/lib/lyquix/responsive.ts` (for runtime screen detection)
+- **PHP** via `php/customizer.php` and `php/critical.php` (for critical CSS viewports)
+
+To customize the breakpoints for your project, edit `css/tailwind/breakpoints.json` in the child theme. Each entry defines a `width` and `height`:
+
+```json
+{
+  "xs": { "width": 320, "height": 720 },
+  "sm": { "width": 480, "height": 1080 },
+  "md": { "width": 720, "height": 1080 },
+  "lg": { "width": 1080, "height": 1080 },
+  "xl": { "width": 1620, "height": 1080 }
+}
+```
+
+The `width` values are used as CSS media query breakpoints. The `height` values are used for critical path CSS viewport dimensions.
 
 ### Theme Customization
 

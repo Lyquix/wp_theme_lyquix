@@ -33,6 +33,7 @@ namespace lqx\customizer;
  */
 function customizer_add($wp_customize)
 {
+
 	$add_settings = [
 		'Branding' => [
 			'login_logo_image_id' => [
@@ -98,28 +99,7 @@ function customizer_add($wp_customize)
 			'viewports_critical_path_css' => [
 				'type' => 'viewports',
 				'label' => 'Viewports for Critical Path CSS',
-				'default' => json_encode([
-					'xs' => [
-						'width' => 320,
-						'height' => 720
-					],
-					'sm' => [
-						'width' => 480,
-						'height' => 1080
-					],
-					'md' => [
-						'width' => 720,
-						'height' => 1080
-					],
-					'lg' => [
-						'width' => 1080,
-						'height' => 1080
-					],
-					'xl' => [
-						'width' => 1620,
-						'height' => 1080
-					]
-				])
+				'default' => \lqx\util\get_breakpoints()
 			],
 			'exclude_types_critical_path_css' => [
 				'type' => 'checkbox-group',
@@ -653,28 +633,7 @@ if (class_exists('\WP_Customize_Control')) {
 
 			$values = $this->value();
 			if (is_string($values)) $values = json_decode($this->value(), true);
-			if (!is_array($values)) $values = [
-				'xs' => [
-					'width' => 320,
-					'height' => 720
-				],
-				'sm' => [
-					'width' => 480,
-					'height' => 1080
-				],
-				'md' => [
-					'width' => 720,
-					'height' => 1080
-				],
-				'lg' => [
-					'width' => 1080,
-					'height' => 1080
-				],
-				'xl' => [
-					'width' => 1620,
-					'height' => 1080
-				]
-			];
+			if (!is_array($values)) $values = \lqx\util\get_breakpoints();
 		?>
 			<div class="customize-control-viewports">
 				<?php foreach ($values as $label => $viewport) : ?>

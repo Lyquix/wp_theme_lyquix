@@ -21,6 +21,7 @@
 //  DO NOT MODIFY THIS FILE!
 
 import { vars, cfg, log } from './core';
+import breakpoints from '../../../../lyquix_child/css/tailwind/breakpoints.json';
 
 /**
  * This module provides functionality for screen responsiveness in a web page.
@@ -53,8 +54,8 @@ export const responsive = (() => {
 		// Configuration
 		cfg.responsive = {
 			enabled: true,
-			sizes: ['xs', 'sm', 'md', 'lg', 'xl'],
-			breakPoints: [320, 480, 720, 1080, 1620]
+			sizes: Object.keys(breakpoints),
+			breakPoints: Object.values(breakpoints).map(v => v.width)
 		};
 
 		if (customCfg) cfg.responsive = jQuery.extend(true, cfg.responsive, customCfg);
