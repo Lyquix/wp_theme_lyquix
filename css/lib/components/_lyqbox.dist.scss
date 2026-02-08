@@ -5,7 +5,7 @@
 	box-shadow: 4px 4px 20px 4px #00000014;
 
 	.close {
-		@apply absolute top-[30px] right-[30px] w-[18px] h-[18px] outline-0 outline-transparent m-0 border-0 p-0 bg-[url(../images/icons/menu-close.svg)] bg-no-repeat bg-center bg-contain block cursor-pointer;
+		@apply absolute top-[30px] right-[30px] w-[18px] h-[18px] outline-0 outline-transparent m-0 border-0 p-0 bg-[url(../images/menu-close.svg)] bg-no-repeat bg-center bg-contain block cursor-pointer;
 		background-color: transparent;
 		outline: none;
 		&:after {

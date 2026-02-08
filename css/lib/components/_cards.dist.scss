@@ -176,7 +176,7 @@ $cards-image-icon-positions: left center right;
       @apply flex static;
 
       .swiper-button-prev, .swiper-button-next {
-        @apply w-[40px] h-[40px] static bg-[url(../images/icons/arrow-button.svg)] bg-no-repeat bg-center bg-contain mt-0;
+        @apply w-[40px] h-[40px] static bg-[url(../images/arrow-button.svg)] bg-no-repeat bg-center bg-contain mt-0;
       }
     }
   }

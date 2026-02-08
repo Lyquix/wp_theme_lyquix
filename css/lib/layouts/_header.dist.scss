@@ -254,7 +254,7 @@ header {
                 @apply hidden bg-transparent text-color-base text-[16px] leading-[26px] font-medium max-w-fit p-0 m-0 text-left;
 
                 &:before {
-                  @apply content-[""] block bg-[url(../images/icons/prev.svg)] bg-center bg-no-repeat bg-[length:5px_12px] block w-[5px] h-[12px] m-0;
+                  @apply content-[""] block bg-[url(../images/prev.svg)] bg-center bg-no-repeat bg-[length:5px_12px] block w-[5px] h-[12px] m-0;
                 }
 
                 &:after {

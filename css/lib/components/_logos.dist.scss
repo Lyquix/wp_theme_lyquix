@@ -57,7 +57,7 @@
 	}
 
 	&.community-logos {
-		@apply bg-transparent py-0 mb-[14px] md:mb-[35px] lg-three-quarters;
+		@apply bg-transparent py-0 mb-[14px] md:mb-[35px];
 
 		.logos {
 			@apply col-span-full max-w-[1034px] flex flex-wrap justify-start max-md:gap-y-[25px];

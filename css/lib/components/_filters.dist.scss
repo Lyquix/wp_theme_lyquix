@@ -56,7 +56,7 @@
 
     .control-wrapper {
       label .label:before {
-        @apply content-[''] absolute block xs:max-md:w-[10px] xs:max-md:h-[5px] xs:max-md:top-[8px] xs:max-md:right-0 xs:max-md:bg-[url(../images/icons/arrow-up.svg)] xs:max-md:bg-center xs:max-md:bg-[length:10px_5px] xs:max-md:rotate-0;
+        @apply content-[''] absolute block xs:max-md:w-[10px] xs:max-md:h-[5px] xs:max-md:top-[8px] xs:max-md:right-0 xs:max-md:bg-[url(../images/arrow-up.svg)] xs:max-md:bg-center xs:max-md:bg-[length:10px_5px] xs:max-md:rotate-0;
       }
 
       &:not(.open) label .label:before {
@@ -628,18 +628,18 @@
       }
 
       &.page-prev, &.prev {
-        @apply bg-[url(../images/icons/prev.svg)] bg-center bg-[length:8px_15px] block w-[8px] h-[15px] mr-[5px] text-[0];
+        @apply bg-[url(../images/prev.svg)] bg-center bg-[length:8px_15px] block w-[8px] h-[15px] mr-[5px] text-[0];
 
         &:hover {
-          @apply bg-[url(../images/icons/prev-hover.svg)];
+          @apply bg-[url(../images/prev-hover.svg)];
         }
       }
 
       &.page-next, &.next {
-        @apply bg-[url(../images/icons/next.svg)] bg-center bg-[length:8px_15px] block w-[8px] h-[15px] ml-[5px] text-[0];
+        @apply bg-[url(../images/next.svg)] bg-center bg-[length:8px_15px] block w-[8px] h-[15px] ml-[5px] text-[0];
 
         &:hover {
-          @apply bg-[url(../images/icons/next-hover.svg)];
+          @apply bg-[url(../images/next-hover.svg)];
         }
       }
     }

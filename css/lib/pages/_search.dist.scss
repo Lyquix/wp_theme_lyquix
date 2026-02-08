@@ -57,18 +57,18 @@ body.search {
         }
 
         &.prev {
-          @apply bg-[url(../images/icons/prev.svg)] bg-center bg-[length:8px_15px] block w-[8px] h-[15px] mr-[5px];
+          @apply bg-[url(../images/prev.svg)] bg-center bg-[length:8px_15px] block w-[8px] h-[15px] mr-[5px];
 
           &:hover {
-            @apply bg-[url(../images/icons/prev-hover.svg)];
+            @apply bg-[url(../images/prev-hover.svg)];
           }
         }
 
         &.next {
-          @apply bg-[url(../images/icons/next.svg)] bg-center bg-[length:8px_15px] block w-[8px] h-[15px] ml-[5px];
+          @apply bg-[url(../images/next.svg)] bg-center bg-[length:8px_15px] block w-[8px] h-[15px] ml-[5px];
 
           &:hover {
-            @apply bg-[url(../images/icons/next-hover.svg)];
+            @apply bg-[url(../images/next-hover.svg)];
           }
         }
       }

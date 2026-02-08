@@ -155,7 +155,7 @@ body.home {
 
     .arrow {
       transition: all .3s;
-      mask: url(../images/icons/nav-arrow.svg) no-repeat center/contain;
+      mask: url(../images/nav-arrow.svg) no-repeat center/contain;
       @apply flex h-[3rem] w-[3rem] md:h-[4rem] md:w-[4rem] cursor-pointer bg-white;
     }
   }

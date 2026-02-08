@@ -47,7 +47,7 @@ button,
     @apply bg-[#E8E8E8];
   }
   &:before {
-    @apply content-[''] bg-[url(../images/icons/menu-close.svg)] w-[8px] h-[8px] bg-no-repeat bg-center bg-contain block absolute right-[12px] top-[50%] transform translate-y-[-50%];
+    @apply content-[''] bg-[url(../images/menu-close.svg)] w-[8px] h-[8px] bg-no-repeat bg-center bg-contain block absolute right-[12px] top-[50%] transform translate-y-[-50%];
   }
 }
 

@@ -52,7 +52,7 @@
 
           &:after {
             transition: transform 0.3s ease;
-            @apply w-[24px] h-[24px] bg-center bg-no-repeat bg-[url('../images/icons/green-plus.svg')];
+            @apply w-[24px] h-[24px] bg-center bg-no-repeat bg-[url('../images/green-plus.svg')];
           }
 
           &[aria-expanded="true"] {
