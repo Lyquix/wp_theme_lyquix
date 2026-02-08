@@ -58,8 +58,6 @@ css/custom/
 ├── pages/
 │   ├── _index.scss       # Imports all page partials
 │   ├── _404.scss         # 404 page styles
-│   ├── _contact.scss     # Contact page styles
-│   ├── _home.scss        # Home page styles
 │   └── _search.scss      # Search page styles
 ├── themes/
 │   ├── _index.scss       # Imports all theme partials
@@ -69,6 +67,22 @@ css/custom/
 │   └── _swiper.scss      # Swiper carousel overrides
 └── custom.scss           # Main entry point (imports all _index files)
 ```
+
+### Adding New SCSS Files
+
+You can add new `.scss` partials to any SMACSS category to keep styles organized. Follow the existing naming convention (prefix with `_`) and import the new file in the corresponding `_index.scss`.
+
+For example, to add styles for a custom post type called "projects":
+
+1. Create `css/custom/pages/_projects.scss`
+2. Add `@import 'projects';` to `css/custom/pages/_index.scss`
+
+Recommended uses for new files:
+
+- **pages/**: Distinct pages or custom post type archives (e.g., `_blog.scss`, `_events.scss`)
+- **components/**: Custom components or block variations (e.g., `_testimonials.scss`, `_pricing.scss`)
+- **layouts/**: Structural sections (e.g., `_sidebar.scss`)
+- **vendors/**: Overrides for third-party plugin styles
 
 ### The Entry Point: custom.scss
 
@@ -170,13 +184,9 @@ Tailwind scans these paths for utility classes:
 
 ### Whitelist
 
-The `css/tailwind/whitelist.html` file lets you ensure specific Tailwind classes are always included in the build, even if they're not found in any source files. Add HTML elements using the classes you need:
+The `css/tailwind/whitelist.html` file is **auto-generated** by the theme. You should not edit it directly. The `tailwind.php` module detects any Tailwind utility classes used in post and page content and exports them to `whitelist.html` whenever a post or page is saved or updated. This ensures that classes applied directly in the WordPress editor are included in the Tailwind build.
 
-```html
-<div class="bg-primary text-white p-4 rounded-lg">
-    Classes that must always be available
-</div>
-```
+However, this mechanism is intended as a development convenience, not a production-ready solution. Classes detected this way may not survive the full build pipeline (e.g., purging in production). Any Tailwind classes used in the editor should eventually be moved into the appropriate SCSS files to ensure they are reliably included.
 
 ## Adding Custom Styles
 

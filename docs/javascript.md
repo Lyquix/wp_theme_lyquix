@@ -16,58 +16,147 @@ The project-specific scripts library for custom JavaScript. Source: `js/scripts.
 
 **This is where you add custom functionality.**
 
-## Initialization
+## Initialization & Lifecycle
 
-Both libraries initialize via inline scripts rendered in the page footer by `\lqx\js\render_lyquix_options()`:
+Both libraries follow the same lifecycle:
+
+1. **Script loads** — the library file is parsed, all modules are defined (but not yet initialized)
+2. **`lqxload` / `$lqxload` event** — dispatched immediately after the library is assigned to `window.lqx` / `window.$lqx`
+3. **`init(options)` called** — PHP renders an inline script in the footer that calls `lqx.init(options)` with Theme Customizer settings (base64-encoded JSON)
+4. **Modules initialize in order** — each module's `init()` is called with its portion of the options object
+5. **`lqxready` / `$lqxready` event** — dispatched after all modules have initialized
 
 ```javascript
-// Lyquix library
-lqx.init(options);  // or waits for 'lqxload' event
+// Wait for lqx to be ready, then run custom code
+lqx.ready(function() {
+    console.log('Screen size:', lqx.responsive.screen);
+    console.log('Is mobile:', lqx.detect.mobile);
+});
 
-// Scripts library
-$lqx.init(options); // or waits for '$lqxload' event
+// Or listen for the event directly
+jQuery(document).on('lqxready', function() {
+    // lqx is fully initialized
+});
 ```
 
-Options are passed as base64-encoded JSON for security. The initialization options come from the Theme Customizer settings (**Lyquix Library Options** and **Scripts Options**).
+### Module Initialization Order
+
+Modules initialize in a specific order because some depend on others:
+
+1. `mutation` — DOM observer (needed by nearly everything)
+2. `store` — persistent storage
+3. `util` — utility functions
+4. `detect` — device/browser detection
+5. `responsive` — breakpoint detection
+6. `analytics` — event tracking
+7. `geolocate` — geolocation
+8. `swipe` — gesture detection
+9. `lyqbox` — lightbox
+10. `theme` — dark/light mode
+11. `menu` — navigation
+12. `video` — video helpers
+13. Block modules: `accordion`, `alerts`, `cards`, `filters`, `gallery`, `map`, `modal`, `popup`, `tabs`, `slider`, `testimonial`
+
+### Configuration via Theme Customizer
+
+Options are passed from PHP via the Theme Customizer settings (**Lyquix Library Options** and **Scripts Options**). Each module receives its own configuration key:
+
+```json
+{
+    "debug": 2,
+    "siteURL": "https://example.com",
+    "responsive": { "enabled": true },
+    "analytics": { "enabled": true, "gaId": "G-XXXXXXX" },
+    "detect": { "mobile": true, "browser": true }
+}
+```
+
+### Module Pattern
+
+Every module in the library follows the same IIFE (Immediately Invoked Function Expression) pattern:
+
+```typescript
+export const myModule = (() => {
+    const init = (customCfg?: object) => {
+        // Prevent double initialization
+        if (vars.myModule?.init) return;
+
+        // Runtime variables
+        vars.myModule = { init: false };
+
+        // Default configuration
+        cfg.myModule = { enabled: true };
+
+        // Merge custom config
+        if (customCfg) cfg.myModule = jQuery.extend(true, cfg.myModule, customCfg);
+
+        // Module logic...
+        if (cfg.myModule.enabled) {
+            log('Initializing myModule');
+            // setup...
+        }
+
+        vars.myModule.init = true;
+    };
+
+    return { init };
+})();
+```
+
+Key conventions:
+- **`cfg.moduleName`** — configuration object, set once during init, merged with custom options
+- **`vars.moduleName`** — runtime state, mutable during the page lifecycle
+- **`vars.moduleName.init`** — boolean flag preventing double initialization
+- Read-only properties are exposed via `Object.defineProperties()` with no-op setters
 
 ## TypeScript Modules
 
-The Lyquix library consists of 28 TypeScript modules:
+The Lyquix library consists of 24 TypeScript modules organized in three categories. Each module follows the same IIFE pattern with `init()`, `cfg`, and `vars`. See the detailed reference pages for full API documentation.
 
 ### Core Infrastructure
 
 | Module | Purpose |
 |--------|---------|
-| `core.ts` | Main initialization, configuration management, debug levels |
-| `util.ts` | Utility functions (hashing, DOM manipulation) |
-| `detect.ts` | Device and browser detection using MobileDetect |
-| `store.ts` | Client-side state management |
-| `mutation.ts` | DOM mutation observation |
+| `core.ts` | Global `cfg`/`vars`, logging (`log`, `warn`, `error`), debug levels |
+| `util.ts` | Cookies, URL parsing, hashing, data validation, string manipulation |
+| `detect.ts` | Browser, OS, and mobile detection — adds CSS classes to `<body>` |
+| `store.ts` | Persistent client-side storage via `localStorage` with auto-save |
+| `mutation.ts` | DOM mutation observer — register callbacks for added/removed/changed nodes |
+| `responsive.ts` | Breakpoint detection, orientation, aspect ratio — sets `<body>` attributes |
+
+([Detailed reference](js-core-modules.md))
 
 ### UI Components
 
 | Module | Purpose |
 |--------|---------|
-| `menu.ts` | Mobile menu toggle and responsive navigation |
-| `tabs.ts` | Tabbed content interface |
-| `accordion.ts` | Collapsible accordion sections |
-| `modal.ts` | Modal dialog management |
-| `alerts.ts` | Dismissible alert notifications |
-| `slider.ts` | Carousel/slider powered by Swiper |
-| `cards.ts` | Card component interactions |
+| `menu.ts` | Mobile menu toggle with `aria-expanded` |
+| `tabs.ts` | Tabbed interface with responsive accordion conversion |
+| `accordion.ts` | Collapsible panels with URL hash support and multi-open option |
+| `modal.ts` | Modal dialogs via HTML5 `<dialog>` with AJAX loading, cookies, display logic |
+| `alerts.ts` | Alert notification slider (Swiper) with AJAX loading and dismissal cookies |
+| `slider.ts` | Image/content carousel (Swiper) with pagination thumbnails |
+| `cards.ts` | Responsive card grid (Swiper) with breakpoint-based column rules |
+| `popup.ts` | Popup notifications with CSS-based visibility, cookies, display logic |
+
+([Detailed reference](js-ui-components.md))
 
 ### Advanced Features
 
 | Module | Purpose |
 |--------|---------|
-| `gallery.ts` | Image/video gallery with LyqBox lightbox |
-| `lyqbox.ts` | Custom lightbox implementation |
-| `map.ts` | Google Maps integration with markers and info windows |
-| `filters.ts` | AJAX-powered post filtering |
-| `testimonial.ts` | Testimonial carousel |
-| `theme.ts` | Light/dark mode detection from OS preferences |
-| `analytics.ts` | GA4/GTM event tracking for user interactions |
-| `swipe.ts` | Touch swipe gesture detection |
+| `gallery.ts` | Image/video gallery with LyqBox lightbox integration |
+| `lyqbox.ts` | Custom lightbox supporting images, videos, iframes, and inline HTML |
+| `map.ts` | Google Maps with markers, info windows, and style customization |
+| `filters.ts` | AJAX-powered post filtering with URL state management |
+| `testimonial.ts` | Testimonial carousel (Swiper) |
+| `theme.ts` | Light/dark mode detection from OS `prefers-color-scheme` |
+| `analytics.ts` | GA4/GTM pageview and event tracking |
+| `swipe.ts` | Touch swipe gesture detection with configurable thresholds |
+| `geolocate.ts` | IP and GPS geolocation with region-based element visibility |
+| `video.ts` | Video lazy loading, hover-play, and viewport-play via IntersectionObserver |
+
+([Detailed reference](js-advanced-modules.md))
 
 ## Adding Custom Scripts
 
