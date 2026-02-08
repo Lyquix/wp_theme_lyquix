@@ -110,6 +110,9 @@ function theme_setup() {
 
 	// Change the default image sizes
 	if (get_theme_mod('feat_image_sizes', '1') === '1') {
+		// Set full image scaling to 5120x5120
+		add_filter('big_image_size_threshold', function ($threshold) { return 5120; });
+
 		add_action('admin_init', function () {
 			// Update WordPress default image sizes
 			update_option('thumbnail_size_w', 150);
@@ -119,13 +122,15 @@ function theme_setup() {
 			update_option('medium_size_w', 1280);
 			update_option('medium_size_h', 1280);
 
-			update_option('large_size_w', 3840);
-			update_option('large_size_h', 3840);
+			update_option('large_size_w', 2560);
+			update_option('large_size_h', 2560);
 		});
 
 		add_action('after_setup_theme', function () {
 			// Add custom image size
+			add_image_size('xsmall', 320, 320);
 			add_image_size('small', 640, 640);
+			add_image_size('xlarge', 3840, 3840);
 
 			// Remove unwanted image sizes
 			remove_image_size('medium_large');
@@ -136,10 +141,12 @@ function theme_setup() {
 		// Filter intermediate image sizes
 		add_filter('intermediate_image_sizes_advanced', function ($sizes) {
 			return [
-				'thumbnail' => $sizes['thumbnail'],
+				'thumbnail' => ['width' => 150, 'height' => 150, 'crop' => true],
+				'xsmall' => ['width' => 320, 'height' => 320, 'crop' => false],
 				'small' => ['width' => 640, 'height' => 640, 'crop' => false],
-				'medium' => $sizes['medium'],
-				'large' => $sizes['large']
+				'medium' => ['width' => 1280, 'height' => 1280, 'crop' => false],
+				'large' => ['width' => 2560, 'height' => 2560, 'crop' => false],
+				'xlarge' => ['width' => 3840, 'height' => 3840, 'crop' => false],
 			];
 		}, 10, 1);
 
@@ -147,11 +154,47 @@ function theme_setup() {
 		add_filter('intermediate_image_sizes', function ($sizes) {
 			return [
 				'thumbnail',
+				'xsmall',
 				'small',
 				'medium',
-				'large'
+				'large',
+				'xlarge'
 			];
 		}, 10, 1);
+
+
+		add_action('admin_enqueue_scripts', function ($hook) {
+			if ($hook !== 'options-media.php') {
+				return;
+			}
+
+			$js = <<<JS
+			document.addEventListener('DOMContentLoaded', function () {
+				const fields = [
+					'thumbnail_size_w', 'thumbnail_size_h', 'thumbnail_crop',
+					'medium_size_w', 'medium_size_h', 'large_size_w', 'large_size_h'
+				];
+
+				fields.forEach(function (id) {
+					const el = document.getElementById(id);
+					if (el) el.disabled = true;
+				});
+
+				const table = document.querySelector('.wrap table');
+				if (table) {
+					const note = document.createElement('p');
+					note.innerHTML = '<strong>Note:</strong> Image sizes are enforced by the theme and cannot be edited here.';
+					table.insertAdjacentElement('afterend', note);
+				}
+			});
+			JS;
+
+			// Ensure a script handle exists to attach inline JS to
+			wp_enqueue_script('jquery-core');
+			wp_add_inline_script('jquery-core', $js);
+		});
+
+
 	}
 
 	// Disable automatic updates of plugins and themes
