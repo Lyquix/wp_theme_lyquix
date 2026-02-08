@@ -34,6 +34,7 @@
 			target="<?= esc_attr($item['link']['target']) ?>">
 	<?php endif; ?>
 		<img
+			<?= \lqx\util\get_src_srcset_sizes_attribs($item['image']) ?>
 			src="<?= esc_url($item['image']['url']) ?>"
 			alt="<?= esc_attr($item['image']['alt']) ?>"
 			class="<?= esc_attr($padding) ?>" />

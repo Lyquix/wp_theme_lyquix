@@ -32,13 +32,13 @@
 		'name' => $c['lightbox_slug'],
 		'slug' => $item['item_id'],
 		'type' => isset($video) ? 'video' : 'image',
-		'url' => isset($video['url']) ? $video['url'] : $item['image']['sizes']['large'],
+		'url' => isset($video['url']) ? $video['url'] : $item['image']['sizes']['xlarge'],
 		'title' => $item['title'],
 		'caption' => $item['caption'],
 		'thumb' => $item['thumbnail']['sizes']['large'],
 	])) ?>">
 	<img
-		src="<?= esc_attr($item['thumbnail']['sizes']['large']) ?>"
+		<?= \lqx\util\get_src_srcset_sizes_attribs($item['thumbnail']) ?>
 		alt="<?= esc_attr($item['image']['alt']) ?>">
 	<<?= $s['heading_style'] == 'p' ? 'p class="title"><strong' : $s['heading_style'] ?>>
 		<?= $item['title'] ?>

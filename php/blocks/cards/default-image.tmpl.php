@@ -50,7 +50,7 @@
 	<?php else: ?>
 		<?= $s['image_clickable'] == 'y' && $item['link']['url'] ? sprintf('<a href="%s" target ="%s">', esc_attr($item['link']['url']), $item['link']['target']) : '' ?>
 		<img
-			src="<?= esc_attr($item['image']['sizes']['large']) ?>"
+			<?= \lqx\util\get_src_srcset_sizes_attribs($item['image']) ?>
 			alt="<?= esc_attr($item['image']['alt']) ?>">
 		<?= $s['image_clickable'] == 'y' && $item['link']['url'] ? '</a>' : '' ?>
 	<?php endif; ?>

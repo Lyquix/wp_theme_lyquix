@@ -49,12 +49,12 @@
 		</video>
 	<?php else: ?>
 		<img
-			src="<?= esc_attr($c['image']['url']) ?>"
+			<?= \lqx\util\get_src_srcset_sizes_attribs($c['image']) ?>
 			alt="<?= esc_attr($c['image']['alt']) ?>"
 			class="<?= array_key_exists('url', $c['image_mobile']) ? 'xs:hidden md:block' : '' ?>" />
 		<?php if (array_key_exists('url', $c['image_mobile'])) : ?>
 			<img
-				src="<?= esc_attr($c['image_mobile']['url']) ?>"
+				<?= \lqx\util\get_src_srcset_sizes_attribs($c['image_mobile'], 'small') ?>
 				alt="<?= esc_attr($c['image_mobile']['alt']) ?>"
 				class="xs:block md:hidden" />
 		<?php endif; ?>

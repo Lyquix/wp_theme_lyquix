@@ -69,13 +69,13 @@ if ($item['video']['type'] == 'url' && $item['video']['url']) {
 		<?php else: ?>
 			<?php if (array_key_exists('url', $item['image'])) : ?>
 				<img
-					src="<?= esc_attr($item['image']['url']) ?>"
+					<?= \lqx\util\get_src_srcset_sizes_attribs($item['image'], 'medium') ?>
 					alt="<?= esc_attr($item['image']['alt']) ?>"
 					class="<?= array_key_exists('url', $item['image_mobile']) ? 'xs:hidden md:block' : '' ?>" />
 			<?php endif;
 			if (array_key_exists('url', $item['image_mobile'])) : ?>
 				<img
-					src="<?= esc_attr($item['image_mobile']['url']) ?>"
+					<?= \lqx\util\get_src_srcset_sizes_attribs($item['image_mobile']) ?>
 					alt="<?= esc_attr($item['image_mobile']['alt']) ?>"
 					class="xs:block md:hidden" />
 			<?php endif; ?>

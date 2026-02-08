@@ -713,6 +713,122 @@ function get_breakpoints() {
 }
 
 /**
+ * Get src, srcset, and sizes HTML attributes for responsive images
+ *
+ * Generates a string of HTML attributes for responsive image rendering.
+ * The browser uses the sizes attribute to determine the expected display
+ * width at each viewport, then picks the best srcset entry based on that
+ * and the device pixel ratio.
+ *
+ * Available image crop sizes: xsmall (320), small (640), medium (1280),
+ * large (2560), xlarge (3840), full (original).
+ *
+ * Usage:
+ *   <img <?= \lqx\util\get_src_srcset_sizes_attribs($image, 'medium') ?> alt="...">
+ *
+ * @param array       $image        ACF image field array
+ * @param string      $src_size     Image crop size name for the src attribute
+ *   (e.g., 'xsmall', 'small', 'medium', 'large', 'xlarge', 'full').
+ *   If the requested size is not available, falls back to progressively
+ *   larger sizes before using the full original.
+ * @param array|null  $size_map     Optional breakpoint => display size mapping.
+ *   Values can be numbers (treated as vw, e.g., 50 becomes '50vw') or strings
+ *   with units (e.g., '50vw', '800px'). Breakpoints not in the map default to
+ *   '85vw', except the largest breakpoint which defaults to
+ *   ceil(breakpoint_width x 1.5) in px.
+ *
+ * @return string HTML attributes string, or empty string on invalid input
+ */
+function get_src_srcset_sizes_attribs($image, $src_size = 'medium', $size_map = null) {
+	if (!is_array($image) || empty($image['url'])) return '';
+
+	$breakpoints = get_breakpoints();
+	$bp_names = array_keys($breakpoints);
+	$crop_sizes = ['xsmall', 'small', 'medium', 'large', 'xlarge'];
+
+	// Resolve display size for each breakpoint
+	// Default: 85vw, except xl = ceil(xl_width × 1.5)px
+	$bp_sizes = [];
+	foreach ($bp_names as $bp) {
+		if ($size_map !== null && isset($size_map[$bp])) {
+			$bp_sizes[$bp] = is_numeric($size_map[$bp]) ? $size_map[$bp] . 'vw' : (string) $size_map[$bp];
+		} else {
+			$bp_sizes[$bp] = ($bp === 'xl') ? ceil($breakpoints['xl']['width'] * 1.5) . 'px' : '85vw';
+		}
+	}
+
+	// Build sizes attribute — consolidate consecutive breakpoints with the same value
+	// Iterates largest-to-smallest; the smallest group becomes the unconditional default
+	$groups = [];
+	$group_value = null;
+	$group_bp = null;
+
+	foreach (array_reverse($bp_names) as $bp) {
+		if ($group_value === null || $bp_sizes[$bp] !== $group_value) {
+			if ($group_value !== null) {
+				$groups[] = ['bp' => $group_bp, 'value' => $group_value];
+			}
+			$group_value = $bp_sizes[$bp];
+		}
+		$group_bp = $bp;
+	}
+	$groups[] = ['bp' => $group_bp, 'value' => $group_value];
+
+	$sizes_parts = [];
+	foreach ($groups as $group) {
+		if ($group['bp'] === 'xs') {
+			$sizes_parts[] = $group['value'];
+		} else {
+			$sizes_parts[] = '(min-width: ' . $breakpoints[$group['bp']]['width'] . 'px) ' . $group['value'];
+		}
+	}
+
+	// Build srcset — deduplicate by URL (WordPress serves the original when
+	// the image is smaller than the target crop size, producing duplicate URLs)
+	$srcset_parts = [];
+	$seen_urls = [];
+
+	foreach ($crop_sizes as $name) {
+		if (!empty($image['sizes'][$name]) && !empty($image['sizes'][$name . '-width'])) {
+			$url = $image['sizes'][$name];
+			$width = (int) $image['sizes'][$name . '-width'];
+			if ($width > 0 && !isset($seen_urls[$url])) {
+				$srcset_parts[] = $url . ' ' . $width . 'w';
+				$seen_urls[$url] = true;
+			}
+		}
+	}
+
+	if (!empty($image['url']) && !empty($image['width'])) {
+		$width = (int) $image['width'];
+		if ($width > 0 && !isset($seen_urls[$image['url']])) {
+			$srcset_parts[] = $image['url'] . ' ' . $width . 'w';
+		}
+	}
+
+	if (empty($srcset_parts)) return '';
+
+	// Resolve src — try the requested size, then progressively larger, then full
+	$src = '';
+	if ($src_size === 'full') {
+		$src = $image['url'];
+	} else {
+		$start = array_search($src_size, $crop_sizes);
+		if ($start !== false) {
+			for ($i = $start; $i < count($crop_sizes); $i++) {
+				if (!empty($image['sizes'][$crop_sizes[$i]])) {
+					$src = $image['sizes'][$crop_sizes[$i]];
+					break;
+				}
+			}
+		}
+		if (empty($src)) $src = $image['url'];
+	}
+
+	return 'src="' . $src . '" srcset="' . implode(', ', $srcset_parts) . '" sizes="' . implode(', ', $sizes_parts) . '"';
+}
+
+/**
  * Create a slug from a string
  *
  * @param string $string The string to convert to a slug

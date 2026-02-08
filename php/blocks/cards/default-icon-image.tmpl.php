@@ -27,6 +27,6 @@
 ?>
 <div class="icon">
 	<img
-		src="<?= esc_attr($item['icon_image']['sizes']['large']) ?>"
+		<?= \lqx\util\get_src_srcset_sizes_attribs($item['icon_image']) ?>
 		alt="<?= esc_attr($item['icon_image']['alt']) ?>">
 </div>
