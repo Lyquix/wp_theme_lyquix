@@ -89,6 +89,9 @@ require_once get_template_directory() . '/php/ip2geo.php';
 // Outdated browser alert
 require_once get_template_directory() . '/php/browsers.php';
 
+// Typesense
+require_once get_template_directory() . '/php/typesense.php';
+
 // Filters
 require_once get_template_directory() . '/php/filters.php';
 
@@ -97,6 +100,9 @@ require_once get_template_directory() . '/php/livereload.php';
 
 // Featured Posts
 require_once get_template_directory() . '/php/featured-posts.php';
+
+// Regions
+require_once get_template_directory() . '/php/regions.php';
 
 // Fields
 require_once get_template_directory() . '/php/fields.php';

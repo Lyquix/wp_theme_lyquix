@@ -64,7 +64,13 @@ function rest_route() {
 
 	// Filter out popup that are not enabled or have expired
 	$content = array_filter($content, function ($popup) {
-		return $popup['enabled'] == 'y' && ($popup['expiration'] == '' || time() <= strtotime($popup['expiration']));
+		// Skip items that aren't enabled
+		if ($popup['enabled'] !== 'y') return false;
+		// Skip items that have expired
+		if ($popup['expiration'] !== '' && time() > strtotime($popup['expiration'])) return false;
+		// Skip items that don't match user's region
+		if (!\lqx\regions\is_region_match($popup['related_regions'])) return false;
+		return true;
 	});
 
 	return $content;

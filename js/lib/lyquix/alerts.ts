@@ -58,6 +58,7 @@ export const alerts = (() => {
 			swiperSlideClass: 'swiper-slide',
 			swiperNextSelector: '.swiper-button-next',
 			swiperPrevSelector: '.swiper-button-prev',
+			paginationSelector: '.swiper-pagination',
 			analytics: {
 				enabled: true,
 				nonInteraction: true,
@@ -100,6 +101,7 @@ export const alerts = (() => {
 		const s = util.validateData({
 			autoplay: alertsModuleElem.attr('data-autoplay') ?? '',
 			autoplayDelay: alertsModuleElem.attr('data-autoplay-delay') ?? '',
+			pagination: alertsModuleElem.attr('data-show-pagination') ?? '',
 			swiperOptionsOverride: alertsModuleElem.attr('data-swiper-options-override') ?? '',
 			headingStyle: alertsModuleElem.attr('data-heading-style') ?? ''
 		}, {
@@ -112,6 +114,7 @@ export const alerts = (() => {
 					default: 15,
 					range: [0, 60]
 				},
+				pagination: util.schemaStrReqY,
 				swiperOptionsOverride: util.schemaStrReqEmp,
 				headingStyle: {
 					type: 'string',
@@ -142,6 +145,7 @@ export const alerts = (() => {
 					const settings = alertsModuleElem.data('settings');
 					const autoplay = settings.autoplay === 'y';
 					const autoplayDelay = settings.autoplayDelay;
+					const pagination = settings.pagination === 'y';
 					const headingStyle = settings.headingStyle;
 
 					// Get now
@@ -230,6 +234,17 @@ export const alerts = (() => {
 								navigation: {
 									prevEl: cfg.alerts.swiperPrevSelector,
 									nextEl: cfg.alerts.swiperNextSelector
+								}
+							};
+
+							// setup pagination if enabled
+							if (pagination == true) {
+								swiperOptions['pagination'] = {
+									el: cfg.alerts.paginationSelector,
+									clickable: true,
+									renderBullet: function (index, className) {
+										return '<span class="' + className + '">' + (index + 1) + '</span>';
+									}
 								}
 							};
 

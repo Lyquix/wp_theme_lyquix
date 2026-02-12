@@ -27,7 +27,7 @@
 ?>
 <section
 	id="<?= esc_attr($s['anchor']) ?>"
-	class="lqx-block-tabs  <?= esc_attr($s['class']) ?>"
+	class="lqx-block-tabs <?= esc_attr($s['class']) ?>"
 	<?php if ($s['preset']): ?>data-preset="<?= esc_attr($s['preset']) ?>"<?php endif; ?>>
 
 	<div

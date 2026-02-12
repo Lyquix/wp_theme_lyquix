@@ -294,9 +294,7 @@
                             "hide_instructions": "",
                             "hide_required": "",
                             "uploader": "",
-                            "return_format": "array",
-                            "library": "all",
-                            "preview_style": "default",
+                            "return_format": "url",
                             "upload_folder": "",
                             "button_label": "Add File",
                             "file_count": 0,
@@ -307,7 +305,8 @@
                             "min_size": "",
                             "max_size": "",
                             "mime_types": "",
-                            "allow_in_bindings": 1,
+                            "library": "all",
+                            "preview_style": "default",
                             "placeholder": "Select",
                             "stylised_button": 0,
                             "min": ""
@@ -328,10 +327,18 @@
                         "class": "",
                         "id": ""
                     },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "acfe_repeater_stylised_button": 0,
                     "layout": "table",
                     "pagination": 0,
+                    "acfe_settings": "",
                     "min": 0,
                     "max": 0,
+                    "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
                     "collapsed": "",
                     "button_label": "Add Row",
                     "rows_per_page": 20,
@@ -418,7 +425,7 @@
                     "tabs": "all",
                     "toolbar": "basic",
                     "media_upload": 1,
-                    "delay": 1,
+                    "delay": 0,
                     "acfe_wysiwyg_auto_init": 0,
                     "acfe_wysiwyg_min_height": 300,
                     "acfe_wysiwyg_toolbar_buttons": []
@@ -444,5 +451,13 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1757503341
+    "acfe_autosync": [
+        "json"
+    ],
+    "acfe_form": 1,
+    "acfe_display_title": "",
+    "acfe_permissions": "",
+    "acfe_meta": "",
+    "acfe_note": "",
+    "modified": 1760711510
 }

@@ -26,11 +26,11 @@
             "rows_per_page": 20,
             "sub_fields": [
                 {
-                    "key": "field_673cf2b1365b4",
-                    "label": "Day Group Type",
-                    "name": "day_group_type",
+                    "key": "field_68b9eafef23ad",
+                    "label": "Hours Label",
+                    "name": "hours_label",
                     "aria-label": "",
-                    "type": "radio",
+                    "type": "text",
                     "instructions": "",
                     "required": 0,
                     "conditional_logic": 0,
@@ -38,237 +38,44 @@
                         "width": "",
                         "class": "",
                         "id": ""
-                    },
-                    "choices": {
-                        "single": "Single day",
-                        "multiple": "Multiple days",
-                        "range": "Range of days"
                     },
                     "default_value": "",
-                    "return_format": "value",
-                    "allow_null": 0,
-                    "other_choice": 0,
-                    "layout": "vertical",
-                    "save_other_choice": 0,
-                    "parent_repeater": "field_673cf215365b3"
-                },
-                {
-                    "key": "field_673cf2c4365b5",
-                    "label": "Select a Day",
-                    "name": "select_a_day",
-                    "aria-label": "",
-                    "type": "select",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": [
-                        [
-                            {
-                                "field": "field_673cf2b1365b4",
-                                "operator": "==",
-                                "value": "single"
-                            }
-                        ]
-                    ],
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "choices": {
-                        "Monday": "Monday",
-                        "Tuesday": "Tuesday",
-                        "Wednesday": "Wednesday",
-                        "Thursday": "Thursday",
-                        "Friday": "Friday",
-                        "Saturday": "Saturday",
-                        "Sunday": "Sunday"
-                    },
-                    "default_value": false,
-                    "return_format": "value",
-                    "multiple": 0,
-                    "max": "",
-                    "allow_custom": 0,
-                    "search_placeholder": "",
+                    "maxlength": "",
+                    "allow_in_bindings": 0,
+                    "placeholder": "",
                     "prepend": "",
                     "append": "",
-                    "allow_null": 0,
-                    "ui": 0,
-                    "ajax": 0,
-                    "placeholder": "",
-                    "min": "",
                     "parent_repeater": "field_673cf215365b3"
                 },
                 {
-                    "key": "field_673cf2db365b6",
-                    "label": "Select Multiple Days",
-                    "name": "select_multiple_days",
+                    "key": "field_68b9ebaf3bfe8",
+                    "label": "",
+                    "name": "hour_group",
                     "aria-label": "",
-                    "type": "checkbox",
+                    "type": "repeater",
                     "instructions": "",
-                    "required": 0,
-                    "conditional_logic": [
-                        [
-                            {
-                                "field": "field_673cf2b1365b4",
-                                "operator": "==",
-                                "value": "multiple"
-                            }
-                        ]
-                    ],
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "choices": {
-                        "Monday": "Monday",
-                        "Tuesday": "Tuesday",
-                        "Wednesday": "Wednesday",
-                        "Thursday": "Thursday",
-                        "Friday": "Friday",
-                        "Saturday": "Saturday",
-                        "Sunday": "Sunday"
-                    },
-                    "default_value": [],
-                    "return_format": "value",
-                    "min": "",
-                    "max": "",
-                    "allow_custom": 0,
-                    "layout": "vertical",
-                    "toggle": 0,
-                    "save_custom": 0,
-                    "custom_choice_button_text": "Add new choice",
-                    "parent_repeater": "field_673cf215365b3"
-                },
-                {
-                    "key": "field_673cf2fa365b7",
-                    "label": "Select start and end day",
-                    "name": "range",
-                    "aria-label": "",
-                    "type": "group",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": [
-                        [
-                            {
-                                "field": "field_673cf2b1365b4",
-                                "operator": "==",
-                                "value": "range"
-                            }
-                        ]
-                    ],
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "layout": "block",
-                    "acfe_seamless_style": 1,
-                    "sub_fields": [
-                        {
-                            "key": "field_673cf31a365b8",
-                            "label": "Start",
-                            "name": "start",
-                            "aria-label": "",
-                            "type": "select",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "choices": {
-                                "Monday": "Monday",
-                                "Tuesday": "Tuesday",
-                                "Wednesday": "Wednesday",
-                                "Thursday": "Thursday",
-                                "Friday": "Friday",
-                                "Saturday": "Saturday",
-                                "Sunday": "Sunday"
-                            },
-                            "default_value": false,
-                            "return_format": "value",
-                            "multiple": 0,
-                            "prepend": "",
-                            "append": "",
-                            "max": "",
-                            "allow_null": 0,
-                            "ui": 0,
-                            "ajax": 0,
-                            "placeholder": "",
-                            "allow_custom": 0,
-                            "search_placeholder": "",
-                            "min": ""
-                        },
-                        {
-                            "key": "field_673cf32b365b9",
-                            "label": "End",
-                            "name": "end",
-                            "aria-label": "",
-                            "type": "select",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "choices": {
-                                "Monday": "Monday",
-                                "Tuesday": "Tuesday",
-                                "Wednesday": "Wednesday",
-                                "Thursday": "Thursday",
-                                "Friday": "Friday",
-                                "Saturday": "Saturday",
-                                "Sunday": "Sunday"
-                            },
-                            "default_value": false,
-                            "return_format": "value",
-                            "multiple": 0,
-                            "prepend": "",
-                            "append": "",
-                            "max": "",
-                            "allow_null": 0,
-                            "ui": 0,
-                            "ajax": 0,
-                            "placeholder": "",
-                            "allow_custom": 0,
-                            "search_placeholder": "",
-                            "min": ""
-                        }
-                    ],
-                    "acfe_group_modal": 0,
-                    "acfe_group_modal_close": 0,
-                    "acfe_group_modal_button": "",
-                    "acfe_group_modal_size": "large",
-                    "parent_repeater": "field_673cf215365b3"
-                },
-                {
-                    "key": "field_673cf345365ba",
-                    "label": "Hours",
-                    "name": "hours",
-                    "aria-label": "",
-                    "type": "group",
-                    "instructions": "",
-                    "required": 0,
+                    "required": false,
                     "conditional_logic": 0,
                     "wrapper": {
                         "width": "",
                         "class": "",
                         "id": ""
                     },
+                    "acfe_repeater_stylised_button": 0,
                     "layout": "block",
-                    "acfe_seamless_style": 1,
+                    "pagination": 0,
+                    "min": 0,
+                    "max": 0,
+                    "rows_per_page": 20,
+                    "button_label": "Add Row",
+                    "collapsed": "",
                     "sub_fields": [
                         {
-                            "key": "field_673cf354365bb",
-                            "label": "Open",
-                            "name": "open",
+                            "key": "field_673cf2b1365b4",
+                            "label": "Day Group Type",
+                            "name": "day_group_type",
                             "aria-label": "",
-                            "type": "time_picker",
+                            "type": "radio",
                             "instructions": "",
                             "required": 0,
                             "conditional_logic": 0,
@@ -277,24 +84,225 @@
                                 "class": "",
                                 "id": ""
                             },
-                            "display_format": "g:i a",
-                            "return_format": "g:i a",
-                            "placeholder": "",
-                            "min_time": "",
-                            "max_time": "",
-                            "min_hour": "",
-                            "max_hour": "",
-                            "min_min": "",
-                            "max_min": "",
-                            "min_sec": "",
-                            "max_sec": ""
+                            "choices": {
+                                "single": "Single day",
+                                "multiple": "Multiple days",
+                                "range": "Range of days"
+                            },
+                            "default_value": "",
+                            "return_format": "value",
+                            "allow_null": 0,
+                            "other_choice": 0,
+                            "layout": "vertical",
+                            "save_other_choice": 0,
+                            "parent_repeater": "field_68b9ebaf3bfe8"
                         },
                         {
-                            "key": "field_673cf362365bc",
-                            "label": "Close",
-                            "name": "close",
+                            "key": "field_673cf2c4365b5",
+                            "label": "Select a Day",
+                            "name": "select_a_day",
                             "aria-label": "",
-                            "type": "time_picker",
+                            "type": "select",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_673cf2b1365b4",
+                                        "operator": "==",
+                                        "value": "single"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "Monday": "Monday",
+                                "Tuesday": "Tuesday",
+                                "Wednesday": "Wednesday",
+                                "Thursday": "Thursday",
+                                "Friday": "Friday",
+                                "Saturday": "Saturday",
+                                "Sunday": "Sunday"
+                            },
+                            "default_value": false,
+                            "return_format": "value",
+                            "multiple": 0,
+                            "max": "",
+                            "allow_custom": 0,
+                            "search_placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "allow_null": 0,
+                            "ui": 0,
+                            "ajax": 0,
+                            "placeholder": "",
+                            "min": "",
+                            "parent_repeater": "field_68b9ebaf3bfe8",
+                            "create_options": 0,
+                            "save_options": 0
+                        },
+                        {
+                            "key": "field_673cf2db365b6",
+                            "label": "Select Multiple Days",
+                            "name": "select_multiple_days",
+                            "aria-label": "",
+                            "type": "checkbox",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_673cf2b1365b4",
+                                        "operator": "==",
+                                        "value": "multiple"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "Monday": "Monday",
+                                "Tuesday": "Tuesday",
+                                "Wednesday": "Wednesday",
+                                "Thursday": "Thursday",
+                                "Friday": "Friday",
+                                "Saturday": "Saturday",
+                                "Sunday": "Sunday"
+                            },
+                            "default_value": [],
+                            "return_format": "value",
+                            "min": "",
+                            "max": "",
+                            "allow_custom": 0,
+                            "layout": "vertical",
+                            "toggle": 0,
+                            "save_custom": 0,
+                            "custom_choice_button_text": "Add new choice",
+                            "parent_repeater": "field_68b9ebaf3bfe8"
+                        },
+                        {
+                            "key": "field_673cf2fa365b7",
+                            "label": "Select start and end day",
+                            "name": "range",
+                            "aria-label": "",
+                            "type": "group",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_673cf2b1365b4",
+                                        "operator": "==",
+                                        "value": "range"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "layout": "block",
+                            "acfe_seamless_style": 1,
+                            "acfe_group_modal": 0,
+                            "acfe_group_modal_close": 0,
+                            "acfe_group_modal_button": "",
+                            "acfe_group_modal_size": "large",
+                            "parent_repeater": "field_68b9ebaf3bfe8",
+                            "sub_fields": [
+                                {
+                                    "key": "field_673cf31a365b8",
+                                    "label": "Start",
+                                    "name": "start",
+                                    "aria-label": "",
+                                    "type": "select",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "choices": {
+                                        "Monday": "Monday",
+                                        "Tuesday": "Tuesday",
+                                        "Wednesday": "Wednesday",
+                                        "Thursday": "Thursday",
+                                        "Friday": "Friday",
+                                        "Saturday": "Saturday",
+                                        "Sunday": "Sunday"
+                                    },
+                                    "default_value": false,
+                                    "return_format": "value",
+                                    "multiple": 0,
+                                    "prepend": "",
+                                    "append": "",
+                                    "max": "",
+                                    "allow_null": 0,
+                                    "ui": 0,
+                                    "ajax": 0,
+                                    "placeholder": "",
+                                    "allow_custom": 0,
+                                    "search_placeholder": "",
+                                    "min": "",
+                                    "create_options": 0,
+                                    "save_options": 0
+                                },
+                                {
+                                    "key": "field_673cf32b365b9",
+                                    "label": "End",
+                                    "name": "end",
+                                    "aria-label": "",
+                                    "type": "select",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "choices": {
+                                        "Monday": "Monday",
+                                        "Tuesday": "Tuesday",
+                                        "Wednesday": "Wednesday",
+                                        "Thursday": "Thursday",
+                                        "Friday": "Friday",
+                                        "Saturday": "Saturday",
+                                        "Sunday": "Sunday"
+                                    },
+                                    "default_value": false,
+                                    "return_format": "value",
+                                    "multiple": 0,
+                                    "prepend": "",
+                                    "append": "",
+                                    "max": "",
+                                    "allow_null": 0,
+                                    "ui": 0,
+                                    "ajax": 0,
+                                    "placeholder": "",
+                                    "allow_custom": 0,
+                                    "search_placeholder": "",
+                                    "min": "",
+                                    "create_options": 0,
+                                    "save_options": 0
+                                }
+                            ]
+                        },
+                        {
+                            "key": "field_687fb9a88aa72",
+                            "label": "Hours",
+                            "name": "hours",
+                            "aria-label": "",
+                            "type": "repeater",
                             "instructions": "",
                             "required": 0,
                             "conditional_logic": 0,
@@ -303,23 +311,74 @@
                                 "class": "",
                                 "id": ""
                             },
-                            "display_format": "g:i a",
-                            "return_format": "g:i a",
-                            "placeholder": "",
-                            "min_time": "",
-                            "max_time": "",
-                            "min_hour": "",
-                            "max_hour": "",
-                            "min_min": "",
-                            "max_min": "",
-                            "min_sec": "",
-                            "max_sec": ""
+                            "acfe_repeater_stylised_button": 0,
+                            "layout": "block",
+                            "min": 0,
+                            "max": 0,
+                            "collapsed": "",
+                            "button_label": "Add Row",
+                            "rows_per_page": 20,
+                            "sub_fields": [
+                                {
+                                    "key": "field_68b9ebd73bfe9",
+                                    "label": "Start",
+                                    "name": "start",
+                                    "aria-label": "",
+                                    "type": "time_picker",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "display_format": "g:iA",
+                                    "return_format": "g:iA",
+                                    "placeholder": "",
+                                    "min_time": "",
+                                    "max_time": "",
+                                    "min_hour": "",
+                                    "max_hour": "",
+                                    "min_min": "",
+                                    "max_min": "",
+                                    "min_sec": "",
+                                    "max_sec": "",
+                                    "allow_in_bindings": 0,
+                                    "parent_repeater": "field_687fb9a88aa72"
+                                },
+                                {
+                                    "key": "field_68b9ebe53bfea",
+                                    "label": "End",
+                                    "name": "end",
+                                    "aria-label": "",
+                                    "type": "time_picker",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "display_format": "g:iA",
+                                    "return_format": "g:iA",
+                                    "placeholder": "",
+                                    "min_time": "",
+                                    "max_time": "",
+                                    "min_hour": "",
+                                    "max_hour": "",
+                                    "min_min": "",
+                                    "max_min": "",
+                                    "min_sec": "",
+                                    "max_sec": "",
+                                    "allow_in_bindings": 0,
+                                    "parent_repeater": "field_687fb9a88aa72"
+                                }
+                            ],
+                            "parent_repeater": "field_68b9ebaf3bfe8"
                         }
                     ],
-                    "acfe_group_modal": 0,
-                    "acfe_group_modal_close": 0,
-                    "acfe_group_modal_button": "",
-                    "acfe_group_modal_size": "large",
                     "parent_repeater": "field_673cf215365b3"
                 }
             ]
@@ -350,5 +409,5 @@
     "acfe_display_title": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1746718663
+    "modified": 1759942423
 }

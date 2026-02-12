@@ -1,0 +1,241 @@
+{
+    "key": "group_67f04d581c286",
+    "title": "Options: Regions",
+    "fields": [
+        {
+            "key": "field_67f04d595b107",
+            "label": "Regions",
+            "name": "regions",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "acfe_repeater_stylised_button": 0,
+            "layout": "block",
+            "pagination": 0,
+            "min": 0,
+            "max": 0,
+            "collapsed": "",
+            "button_label": "Add Row",
+            "rows_per_page": 20,
+            "sub_fields": [
+                {
+                    "key": "field_67f4192058807",
+                    "label": "Name",
+                    "name": "name",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": "",
+                    "allow_in_bindings": 0,
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "parent_repeater": "field_67f04d595b107"
+                },
+                {
+                    "key": "field_68a77fa35f55d",
+                    "label": "Mobile Label",
+                    "name": "mobile_label",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": "",
+                    "allow_in_bindings": 0,
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "parent_repeater": "field_67f04d595b107"
+                },
+                {
+                    "key": "field_67f536ccd14e7",
+                    "label": "Alias",
+                    "name": "alias",
+                    "aria-label": "",
+                    "type": "acfe_slug",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": "",
+                    "allow_in_bindings": 0,
+                    "parent_repeater": "field_67f04d595b107"
+                },
+                {
+                    "key": "field_68b9e9fe4932b",
+                    "label": "Phone Number",
+                    "name": "phone_number",
+                    "aria-label": "",
+                    "type": "acfe_phone_number",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "countries": "",
+                    "preferred_countries": "",
+                    "default_country": "us",
+                    "geolocation": 0,
+                    "native": 0,
+                    "national": 0,
+                    "dropdown": 0,
+                    "dial_code": 0,
+                    "default_value": "",
+                    "placeholder": "",
+                    "return_format": "number",
+                    "allow_in_bindings": 0,
+                    "geolocation_token": "",
+                    "parent_repeater": "field_67f04d595b107"
+                },
+                {
+                    "key": "field_68b9ea1e4932c",
+                    "label": "Address",
+                    "name": "address",
+                    "aria-label": "",
+                    "type": "acfe_address",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "placeholder": "Search for address...",
+                    "countries": "",
+                    "search_type": "",
+                    "geolocation": 1,
+                    "custom_address": 0,
+                    "prepend": "",
+                    "append": "",
+                    "api_key": "",
+                    "fields": {
+                        "row-0": {
+                            "field": "address",
+                            "name": "address"
+                        },
+                        "row-1": {
+                            "field": "state",
+                            "name": "state"
+                        },
+                        "row-2": {
+                            "field": "country_short",
+                            "name": "country"
+                        }
+                    },
+                    "allow_in_bindings": 0,
+                    "default_value": "",
+                    "parent_repeater": "field_67f04d595b107"
+                },
+                {
+                    "key": "field_68a769e51178b",
+                    "label": "Description",
+                    "name": "description",
+                    "aria-label": "",
+                    "type": "textarea",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "acfe_textarea_code": 0,
+                    "maxlength": "",
+                    "allow_in_bindings": 0,
+                    "rows": "",
+                    "placeholder": "",
+                    "new_lines": "",
+                    "parent_repeater": "field_67f04d595b107"
+                },
+                {
+                    "key": "field_67f536d8d14e8",
+                    "label": "GeoJSON",
+                    "name": "geojson",
+                    "aria-label": "",
+                    "type": "acfe_code_editor",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "placeholder": "",
+                    "mode": "text\/html",
+                    "lines": 1,
+                    "indent_unit": 4,
+                    "maxlength": "",
+                    "rows": 4,
+                    "max_rows": "",
+                    "return_format": [],
+                    "allow_in_bindings": 0,
+                    "parent_repeater": "field_67f04d595b107"
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "options_page",
+                "operator": "==",
+                "value": "regions"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "acfe_autosync": [
+        "json"
+    ],
+    "acfe_form": 0,
+    "acfe_display_title": "",
+    "acfe_meta": "",
+    "acfe_note": "",
+    "modified": 1757528684
+}

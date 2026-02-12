@@ -624,6 +624,26 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 				'choice' => 'field_658491eadec12'
 			],
 
+			// Accordion Item
+			[ // style and style_name fields
+				'user' => 'field_67a1eb9db5d6b',
+				'choice' => 'field_67a1eaf6ca964'
+			],
+			[ // preset and preset_name fields
+				'user' => 'field_67a1eb9db5dc8',
+				'choice' => 'field_67a1eaf6e1eff'
+			],
+
+			// Accordion Plus
+			[ // style and style_name fields
+				'user' => 'field_67a1e6dd1bbc1',
+				'choice' => 'field_67a1e76b296a2'
+			],
+			[ // preset and preset_name fields
+				'user' => 'field_67a1e6dd1bc0b',
+				'choice' => 'field_67a1e76b49bab'
+			],
+
 			// Banner
 			[ // style and style_name fields
 				'user' => 'field_657727e6739ff',
@@ -714,6 +734,26 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 				'choice' => 'field_656f87fcef854'
 			],
 
+			//Tab Item
+			[ //  style and style_name fields
+				'user' => 'field_67a4907787b75',
+				'choice' => 'field_67a4903082e89'
+			],
+			[ // preset and preset_name fields
+				'user' => 'field_67a4907787bc0',
+				'choice' => 'field_67a4903097890'
+			],
+
+			//Tabs Plus
+			[ //  style and style_name fields
+				'user' => 'field_67a48f283f249',
+				'choice' => 'field_67a48e39516c5'
+			],
+			[ // preset and preset_name fields
+				'user' => 'field_67a48f283f29a',
+				'choice' => 'field_67a48e39662df'
+			],
+
 			// Testimonial
 			[ //  style and style_name fields
 				'user' => 'field_6751a226ccc6f',
@@ -723,6 +763,14 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 				'user' => 'field_6751a24bccc70',
 				'choice' => 'field_6751a11da1925'
 			],
+			[ //related regions
+				'user' => 'field_67f5347cb7a9d',
+				'choice' => 'field_67f536ccd14e7'
+			],
+			[ // block regions
+				'user' => 'field_681397476c965',
+				'choice' => 'field_67f536ccd14e7'
+			]
 		];
 
 		foreach ($field_keys as $k) {
@@ -1419,6 +1467,18 @@ add_action('rest_api_init', function () {
     ));
 });
 
+// Filter for rendering blocks within regions they're connected to
+add_filter('render_block', function ($block_content, $block) {
+	if ($block['attrs']) {
+		if (isset($block['attrs']['data']['regions'])) {
+			if (!\lqx\regions\is_region_match($block['attrs']['data']['regions'])) return false;
+				$block_content = '';
+			}
+		}
+	}
+	return $block_content;
+}, 10, 2);
+
 add_filter( 'acf/load_field/key=field_6729f97d9e5be', function($field) {
 	$field['choices'] = lqx_get_block_choices();
 	return $field;
@@ -1456,4 +1516,155 @@ function lqx_get_block_choices() {
 	asort( $choices, SORT_NATURAL | SORT_FLAG_CASE );
 
 	return $choices;
+}
+
+add_filter('render_block_data', function($parsed_block, $source_block, $parent_block) {
+	if ($parsed_block['blockName'] === 'lqx/tabs-plus') {
+		// Generate hash once for parent
+		if (!isset($parsed_block['attrs']['generatedHash'])) {
+			$hash = 'id-' . substr(md5(json_encode($parsed_block) . random_int(1000, 9999)), 0, 24);
+			$parsed_block['attrs']['generatedHash'] = $hash;
+		}
+		$parsed_block['attrs']['childCounter'] = 0;
+	}
+
+	// Pass parent hash to children
+	if ($parsed_block['blockName'] === 'lqx/tab-item' &&
+		$parent_block &&
+		$parent_block->name === 'lqx/tabs-plus') {
+		$parsed_block['attrs']['parentHash'] = $parent_block->parsed_block['attrs']['generatedHash'];
+
+		$current_index = $parent_block->attributes['childCounter'] ?? 0;
+		$parsed_block['attrs']['itemIndex'] = $current_index;
+
+		// Increment counter for next child
+		$parent_block->attributes['childCounter'] = $current_index + 1;
+	}
+
+	return $parsed_block;
+}, 10, 3);
+
+function get_post_array($post, $s) {
+	// List of field names that represent WP_Post fields, not ACF fields
+	$wp_post_keys = ['post_content', 'post_title', 'post_excerpt', 'post_name'];
+
+	// Set the defaults
+	$p = [
+		'id' => $post->ID,
+		'date' => $post->post_date_gmt,
+		'heading' => null,
+		'subheading' => null,
+		'slug' => $post->post_name,
+		'modified' => $post->post_modified_gmt,
+		'link' => [
+			'url' => get_permalink($post->ID),
+			'title' => $s['render_php']['link_title'],
+			'target' => $s['render_php']['link_target']
+		],
+		'link_style' => $s['render_php']['link_style'] ?? 'button',
+		'body' => null,
+		'labels' => [],
+		'image' => null,
+		'icon_image' => null,
+		'video' => [
+			'type' => $s['render_php']['video_type'] ?? 'url'
+		]
+	];
+	if ($s['render_mode'] == 'maps-php') {
+		$p['lat'] = get_field('latitude', $p['id']);
+		$p['lon'] = get_field('longitude', $p['id']);
+		$p['address'] = get_field('address', $p['id']);
+		$p['type'] = get_field('location_type', $p['id']);
+	}
+
+	// Handle heading, subheading and body
+	foreach (['heading', 'subheading', 'body'] as $key) {
+		if ($s['render_php'][$key]) {
+			if (in_array($s['render_php'][$key], $wp_post_keys)) {
+				if ($s['render_php'][$key] == 'post_excerpt') {
+					$p[$key] = '<p>'.$post->{$s['render_php'][$key]}.'</p>';
+				} else {
+					$p[$key] = $post->{$s['render_php'][$key]};
+				}
+			} else {
+				$p[$key] = get_field($s['render_php'][$key], $post->ID);
+			}
+		}
+	}
+
+	// Handle image and icon_image
+	foreach (['image', 'icon_image'] as $key) {
+		if ($s['render_php'][$key]) {
+			if ($s['render_php'][$key] == 'thumbnail') {
+				$p[$key] = \lqx\util\get_thumbnail_image_object($post->ID);
+			} else {
+				$p[$key] = get_field($s['render_php'][$key], $post->ID);
+			}
+		}
+	}
+
+	// Handle the URL
+	if ($s['render_php']['use_post_url'] == 'n'){
+		if ($s['render_php']['link']) $p['link'] = get_field($s['render_php']['link'], $post->ID);
+		else $p['link'] = null;
+	}
+
+	// Handle video
+	$video_url = get_field($s['render_php']['video_url'], $post->ID);
+	$video_upload = get_field($s['render_php']['video_upload'], $post->ID);
+	if ($s['render_php']['video_type'] == 'url' && $video_url) {
+		$p['video'] = [
+			'type' => 'url',
+			'url' => $video_url
+		];
+	}
+	elseif ($s['render_php']['video_type'] == 'upload' && $video_upload) {
+		$p['video'] = [
+			'type' => 'upload',
+			'upload' => $video_upload
+		];
+	}
+
+	// Handle labels
+	switch ($s['render_php']['label_type']) {
+		case 'taxonomy':
+			foreach ($s['render_php']['label_taxonomies'] ?? [] as $tax) {
+				$terms = get_the_terms($post->ID, $tax);
+				if ($terms !== false) {
+					foreach ($terms as $term) {
+						$p['labels'][] = [
+							'label' => $term->name,
+							'value' => $tax . ':' . $term->slug
+						];
+					}
+				}
+			}
+			break;
+
+		case 'field':
+			if(isset($s['render_php']['label_fields']) && is_array($s['render_php']['label_fields'])) {
+				foreach($s['render_php']['label_fields'] as $field) {
+					$label_field_object = get_field_object($field['label_field'], $post->ID);
+					if ($label_field_object != false) {
+						if (is_array($label_field_object['value'])) {
+							foreach ($label_field_object['value'] as $value) {
+								$p['labels'][] = [
+									'label' => $value,
+									'value' => \lqx\util\slugify($value)
+								];
+							}
+						}
+						else {
+							$p['labels'][] = [
+								'label' => $label_field_object['value'],
+								'value' => \lqx\util\slugify($label_field_object['value'])
+							];
+						}
+					}
+				}
+			}
+			break;
+	}
+
+	return $p;
 }

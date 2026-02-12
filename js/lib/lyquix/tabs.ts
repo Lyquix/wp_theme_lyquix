@@ -125,16 +125,36 @@ export const tabs = (() => {
 						if(accordionScreens.includes(responsive.screen)) {
 							// Convert to accordion
 							// Toggle aria-hidden
+							tabsElem.find(cfg.tabs.tabPanelSelector).each((idx, panelElem) => {
+								if (jQuery(panelElem).attr('aria-hidden') !== 'false') {
+									jQuery(panelElem).find(cfg.tabs.tabContentSelector).attr('aria-hidden', 'true');
+								} else {
+									jQuery(panelElem).find(cfg.tabs.tabContentSelector).attr('aria-hidden', 'false');
+								}
+							});
 							tabsElem.find(cfg.tabs.tabsListSelector).attr('aria-hidden', 'true');
 							tabsElem.find(cfg.tabs.headerSelector).attr('aria-hidden', 'false');
 							tabsElem.find(cfg.tabs.subheadingSelector).attr('aria-hidden', 'false');
-						}
-						else {
+						}	else {
 							// Convert to tabs
 							// Toggle aria-hidden
 							tabsElem.find(cfg.tabs.tabsListSelector).attr('aria-hidden', 'false');
 							tabsElem.find(cfg.tabs.headerSelector).attr('aria-hidden', 'true');
 							tabsElem.find(cfg.tabs.subheadingSelector).attr('aria-hidden', 'true');
+							tabsElem.find(cfg.tabs.tabPanelSelector).each((idx, panelElem) => {
+								if (jQuery(panelElem).find(cfg.tabs.tabContentSelector).attr('aria-hidden') == undefined || jQuery(panelElem).find(cfg.tabs.tabContentSelector).attr('aria-hidden') == ''){
+									if (idx == 0) {
+										jQuery(panelElem).find(cfg.tabs.tabContentSelector).attr('aria-hidden', 'false');
+									} else {
+										jQuery(panelElem).find(cfg.tabs.tabContentSelector).attr('aria-hidden', 'true');
+									}
+								}
+								if (jQuery(panelElem).find(cfg.tabs.tabContentSelector).attr('aria-hidden') !== 'false') {
+									jQuery(panelElem).attr('aria-hidden', 'true');
+								} else {
+									jQuery(panelElem).attr('aria-hidden', 'false');
+								}
+							});
 						}
 					};
 

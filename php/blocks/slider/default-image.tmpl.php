@@ -27,6 +27,7 @@
 
 // Video attributes
 $video_attrs = '';
+
 if ($item['video']['type'] == 'url' && $item['video']['url']) {
 	$video = \lqx\util\get_video_urls($item['video']['url']);
 	if ($video['url']) $video_attrs = sprintf('data-lyqbox="%s"', htmlentities(json_encode([
@@ -35,6 +36,8 @@ if ($item['video']['type'] == 'url' && $item['video']['url']) {
 		'url' => $video['url'],
 		'useHash' => false
 	])));
+} else {
+	$item['video']['type'] = null;
 }
 
 ?>
@@ -81,8 +84,8 @@ if ($item['video']['type'] == 'url' && $item['video']['url']) {
 			<?php endif; ?>
 		<?php endif; ?>
 
-	<?php if ($item['image_link'] && $item['image_link']['url'] && $item['video']['type'] != 'url') : ?>
-		</a>
-	<?php endif; ?>
+		<?php if ($item['image_link'] && $item['image_link']['url'] && $item['video']['type'] != 'url') : ?>
+	</a>
+<?php endif; ?>
 
 </div>

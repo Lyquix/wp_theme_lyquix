@@ -25,7 +25,7 @@
 
 ?>
 <section class="content">
-	<h1>Sorry, we can't find that page</h2>
+	<h1>Sorry, we can't find that page</h1>
 	<p>You requested <?php
 		$request_protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
 		$request_port = ($_SERVER['SERVER_PORT'] != '80' && $_SERVER['SERVER_PORT'] != '443') ? ':' . $_SERVER['SERVER_PORT'] : '';

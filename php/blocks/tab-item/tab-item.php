@@ -26,7 +26,20 @@
 $settings = \lqx\blocks\get_settings($block);
 $content = \lqx\blocks\get_content($block);
 
-$settings['processed']['convert_to_accordion'] = $context['acf/fields']['tabs-plus_block_admin_convert_to_accordion_override_group_convert_to_accordion_override'];
+// TODO - parse and merge parent settings
+$preset = $context['acf/fields']['tabs-plus_block_user_preset'] ?? null;
+if($preset) {
+	$presets = get_field('tabs-plus_block_presets', 'option');
+	foreach ($presets as $item) {
+		if($item['preset_name'] == $preset) {
+			$settings['processed']['convert_to_accordion'] = $item['tabs-plus_block_admin']['convert_to_accordion_override_group']['convert_to_accordion_override'];
+		}
+	}
+}
+
+$settings['processed']['convert_to_accordion'] = $settings['processed']['convert_to_accordion'] ?? $context['acf/fields']['tabs-plus_block_admin_convert_to_accordion_override_group_convert_to_accordion_override'] ?? null;
+$settings['processed']['hash'] = $block['parentHash'];
+$settings['processed']['idx'] = $block['itemIndex'];
 
 // Render the block
 \lqx\blocks\render_block($settings, $content);

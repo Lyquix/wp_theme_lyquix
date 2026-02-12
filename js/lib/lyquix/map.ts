@@ -20,7 +20,7 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-import { vars, cfg, log, warn } from './core';
+import { vars, cfg, log } from './core';
 import { mutation } from './mutation';
 
 declare const google, jQuery;
@@ -49,7 +49,7 @@ export const map = (() => {
 			analytics: {
 				enabled: true,
 				nonInteraction: true,
-			}
+			},
 		};
 
 		if (customCfg) cfg.map = jQuery.extend(true, cfg.map, customCfg);
@@ -127,7 +127,9 @@ export const map = (() => {
 					items: items,
 					infoWindows: {},
 					markers: {},
+					openInfoWindow: null,
 					groupedItems: [],
+					settings: JSON.parse(jQuery(elems[block]).attr('data-settings'))
 				};
 				//initialize options based off of the json settings
 				lqxMap.options.mapTypeId = google.maps.MapTypeId[lqxMap.options.mapTypeId];
@@ -136,8 +138,8 @@ export const map = (() => {
 				for (let i = 0; i < lqxMap.items.length; i++) {
 					const itemLatLon = new google.maps.LatLng(lqxMap.items[i].lat, lqxMap.items[i].lon);
 					lqxMap.bounds.extend(itemLatLon);
-					const itemid = lqxMap.items[i].id;
-					if (lqxMap.items[i].infoWindow == 'true') lqxMap.infoWindows[itemid] = new google.maps.InfoWindow({ content: lqxMap.items[i].html });
+					const itemid = lqxMap.items[i].item_id;
+					if (lqxMap.items[i].infoWindow == "true") lqxMap.infoWindows[itemid] = new google.maps.InfoWindow({ content: lqxMap.items[i].html });
 					//const labelString = lqxMap.items[i].title;
 					const infoWindowHTML = lqxMap.items[i].html;
 
@@ -155,10 +157,12 @@ export const map = (() => {
 						//scaledSize: new google.maps.Size(lqxMap.markerSize.scaledWidth,lqxMap.markerSize.scaledHeight)
 					};
 					lqxMap.markers[itemid] = new google.maps.Marker(markerParams);
-
-					if (lqxMap.items[i].infoWindow == 'true') {
-
+					if (lqxMap.items[i].infoWindow == "true") {
 						google.maps.event.addListener(lqxMap.markers[itemid], 'click', function() {
+							if (lqxMap.openInfoWindow !== null) {
+								lqxMap.openInfoWindow.close();
+							}
+							lqxMap.openInfoWindow = lqxMap.infoWindows[itemid];
 							lqxMap.infoWindows[itemid].setContent(this.html);
 							lqxMap.infoWindows[itemid].open(lqxMap.map,this);
 						});
@@ -176,10 +180,136 @@ export const map = (() => {
 			});
 		}
 	};
+	const getLocation = function(currentLocation = false){
+		if (currentLocation == false) {
+			const geocoder = new google.maps.Geocoder();
+			geocoder.geocode({'address': vars.regions.searchQuery, 'region': 'us'}, function(results, status) {
+				if (status == google.maps.GeocoderStatus.OK) {
+					searchLocations(results[0].geometry.location.lat(), results[0].geometry.location.lng());
+				}
+			});
+		} else {
+			navigator.geolocation.getCurrentPosition(function(loc) {
+				lqx.log('navigator.done ', loc.coords.latitude, loc.coords.longitude);
+				const searchQueryEl = jQuery(cfg.regions.searchSelector);
+				searchQueryEl.attr('data-lat', loc.coords.latitude);
+				searchQueryEl.attr('data-lon', loc.coords.longitude);
+				searchLocations(loc.coords.latitude, loc.coords.longitude);
+			});
+		}
+	};
+	const searchLocations = function(lat1, lon1) {
+		var locdis = [];
+		const filterMiles = parseInt(jQuery(cfg.regions.milesSelector).val());
+		vars.regions.map.bounds = new google.maps.LatLngBounds();
+		const itemLatLon = new google.maps.LatLng(lat1, lon1);
+		const deg2rad = function(deg) { return deg * (Math.PI / 180); };
+		vars.regions.map.bounds.extend(itemLatLon);
+		jQuery(cfg.regions.searchSelector).attr('data-lat', lat1);
+		jQuery(cfg.regions.searchSelector).attr('data-lon', lon1);
+		jQuery(vars.regions.mapItems).each(function(index) {
+			var lat2 = jQuery(this).attr('data-lat');
+			var lon2 = jQuery(this).attr('data-lon');
+			var R = 3963.1676;
+			var dLat = deg2rad(lat2 - lat1);
+			var dLon = deg2rad(lon2 - lon1);
+			var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+			var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+			var d = R * c;
+			jQuery(this).attr('data-distance', d);
+			//lqx.log(d, parseFloat(filterMiles));
+			jQuery(this).find('.distance').html(' (' + d.toFixed(1) + ' miles)');
+			var type = jQuery('.menu-shared li.active').attr('data-key');
+			// create newHref
+			var newHref = 'http://maps.google.com/maps?saddr=' + lat1 + ',' + lon1 + '&daddr=' + lat2 + ',' + lon2;
+			jQuery(this).find('a.get-direction').attr('href', newHref);
+			if (d > parseFloat(filterMiles)) {
+				jQuery(this).hide();
+				vars.regions.map.markers[jQuery(this).attr('data-marker-index')].setVisible(false);
+			} else {
+					jQuery(this).show();
+					var itemLatLon = new google.maps.LatLng(lat2, lon2);
+					vars.regions.map.bounds.extend(itemLatLon);
+					vars.regions.map.markers[jQuery(this).attr('data-marker-index')].setVisible(true);
+				}
+		});
+		// sort array by distance
+		// debugger;
+		// lqx.log('starting the sort function for locdis');
+		var list = jQuery('.regions .office-list');              // parent UL
+		var items = list.children('li');     // child LIs
 
+		items.sort(function(a, b) {
+			return jQuery(a).data("distance") - jQuery(b).data("distance");
+		});
+		list.append(items);
+
+		vars.regions.map.fitBounds(vars.regions.map.bounds);
+		vars.regions.map.setCenter(new google.maps.LatLng(lat1, lon1));
+		// place search marker
+		if (vars.searchMarker) {
+			vars.searchMarker.setMap(null);
+		}
+		vars.regions.searchMarker = new google.maps.Marker({
+			position: new google.maps.LatLng(lat1, lon1),
+			map: vars.regions.map,
+			icon: {
+				// gold star
+				path: 'M 125,5 155,90 245,90 175,145 200,230 125,180 50,230 75,145 5,90 95,90 z',
+				fillColor: 'gold',
+				fillOpacity: 1,
+				scale: 0.1,
+				strokeColor: 'goldenrod',
+				strokeWeight: 2
+			}
+		});
+	};
+	let updateItems = function(items) {
+		let target = vars.map.maps[0];
+		Object.keys(target.markers).forEach(function(marker) {
+			target.markers[marker].setMap(null);
+		});
+		target.markers = {};
+		target.bounds = new google.maps.LatLngBounds();
+		target.items = items;
+		target.infoWindows = {};
+		target.items.forEach(function(item) {
+			const itemLatLon = new google.maps.LatLng(item.lat, item.lon);
+			target.bounds.extend(itemLatLon);
+			const itemid = item.id;
+			if (item.infoWindow == "true") target.infoWindows[itemid] = new google.maps.InfoWindow({ content: item.html });
+			//const labelString = item.find('.title').text();
+			const infoWindowHTML = item.html;
+			const markerParams = {
+				position: itemLatLon,
+				map: target.map,
+				title: item.title,
+				html: infoWindowHTML,
+				icon: target.settings['google_maps_display_settings']['pin_override'].url,
+				//for future work: the code below and commented out above pertains to labels on top of pins, which I don't believe we've used yet but could be useful going forward
+				//label: (labelString == '' ? '' : { text: labelString.toString(), color: 'white' })
+			};
+			target.markers[itemid] = new google.maps.Marker(markerParams);
+
+			if (item.infoWindow == "true") {
+				google.maps.event.addListener(target.markers[itemid], 'click', function() {
+					if (target.openInfowWindow !== null) {
+						target.openInfowWindow.close();
+					}
+					target.openInfowWindow = target.infoWindows[itemid];
+					target.infoWindows[itemid].setContent(item.html);
+					target.infoWindows[itemid].open(target.map,target.markers[itemid]);
+				});
+			}
+		});
+		target.map.fitBounds(target.bounds);
+		target.map.panToBounds(target.bounds);
+	};
 	return {
 		init,
-		setup
+		setup,
+		getLocation,
+		updateItems
 	};
 
 })();

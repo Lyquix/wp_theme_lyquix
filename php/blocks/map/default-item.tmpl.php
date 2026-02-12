@@ -36,7 +36,7 @@ if ($item['image'] && $s['items_display_settings']['show_image'] == 'y'): ?>
 <div class="text">
 	<?php if ($s['items_display_settings']['show_heading'] == 'y'):?>
 		<<?= $s['items_display_settings']['heading_style'] ?>>
-			<?= ($s['items_display_settings']['heading_clickable'] == 'y' && $item['link'] !== '' ? '<a href="' . $item['link']['url'] . '">' : '')?><?= $item['title'] ?><?= ($s['items_display_settings']['heading_clickable'] == 'y' && $item['link'] !== '' ? '</a>' : '')?>
+			<?= ($s['items_display_settings']['heading_clickable'] == 'y' && $item['link'] !== '' ? '<a href="' . (is_array($item['link']) ? $item['link']['url'] : $item['link']) . '">' : '')?><?= $item['title'] ?><?= ($s['items_display_settings']['heading_clickable'] == 'y' && $item['link'] !== '' ? '</a>' : '')?>
 		</<?= $s['items_display_settings']['heading_style'] ?>>
 	<?php endif; ?>
 	<?php if ($item['subtitle'] != '' && $s['items_display_settings']['show_subheading'] == 'y'): ?><<?= $s['items_display_settings']['subtitle_style'] == 'p' ? 'p class="subheading"><strong' : $s['items_display_settings']['subtitle_style'] ?>>

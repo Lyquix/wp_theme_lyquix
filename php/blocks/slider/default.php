@@ -101,7 +101,12 @@ $c = array_filter(array_map(function($item) {
 					]
 				]
 			],
-			'image_link' => \lqx\util\schema_str_req_emp,
+			'image_link' => [
+				'type' => 'object',
+				'required' => false,
+				'default' => [],
+				'keys' => \lqx\util\schema_data_link
+			],
 			'links' => [
 				'type' =>	'array',
 				'default' => [],

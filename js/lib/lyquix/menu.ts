@@ -22,7 +22,12 @@ export const menu = (() => {
 
 		cfg.menu = {
 			enabled: true,
+			headerSelector: 'header',
 			mobileToggleSelector: '#menu-toggle',
+			searchToggleSelector: '#search-toggle',
+			megaMenuSelector: '.open-side-menu',
+			accordionMenuSelector: '.accordion-menu',
+			subMenuCloseSelector: '#sub-menu-close',
 		};
 
 		// Copy default opts and vars
@@ -35,19 +40,46 @@ export const menu = (() => {
 			// Initialize on document ready
 			vars.document.ready(() => {
 				// Setup listeners for the menu
-				setup(jQuery(cfg.menu.mobileToggleSelector));
+				setup(jQuery(cfg.menu.mobileToggleSelector), jQuery(cfg.menu.searchToggleSelector), jQuery(cfg.menu.megaMenuSelector), jQuery(cfg.menu.accordionMenuSelector), jQuery(cfg.menu.subMenuCloseSelector));
 			});
 
+			vars.window.on('scroll', function() {
+				if (jQuery(this).scrollTop() > 1) {
+					jQuery(cfg.menu.headerSelector).addClass('scrolled');
+				} else {
+					jQuery(cfg.menu.headerSelector).removeClass('scrolled');
+					if (jQuery('body').attr('screen') == 'lg' || jQuery('body').attr('screen') == 'xl') {
+						jQuery('header').removeClass('mobile-menu-open');
+					}
+				}
+			});
+			vars.window.on('screensizechange',function(){
+				if (jQuery('body').attr('screen') == 'lg' || jQuery('body').attr('screen') == 'xl') {
+					jQuery('header').removeClass('mobile-menu-open');
+					jQuery('#search-container').removeClass('open');
+					jQuery('header .menu li').removeClass('open');
+					jQuery('header .menu li').removeClass('accordion-open');
+				}
+			});
 			vars.menu.init = true;
 		}
 	};
 
-	const setup = (elems) => {
-		jQuery(elems).click(() => {
-			const $toggle = jQuery('#menu-toggle');
-			const expanded = $toggle.attr('aria-expanded') === 'true';
-			$toggle.attr('aria-expanded', !expanded);
+	const setup = (menuElems) => {
+		jQuery(menuElems).click(() => {
 			jQuery('header').toggleClass('mobile-menu-open');
+		});
+		jQuery('#search-container button').click(function(){
+			jQuery('#search-container').toggleClass('open');
+		});
+		jQuery('.open-submenu').click(function(){
+			jQuery(this).closest('li').addClass('open');
+		});
+		jQuery('.return-link').click(function(){
+			jQuery(this).closest('li').removeClass('open');
+		});
+		jQuery('.open-accordion-submenu').click(function(){
+			jQuery(this).closest('li').toggleClass('accordion-open');
 		});
 	};
 	return {

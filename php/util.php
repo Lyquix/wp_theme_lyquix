@@ -877,3 +877,32 @@ function minify_html($html) {
 
 	return $html;
 }
+
+function calculate_distance($lat, $lng, $address) {
+	if ($address !== null) {
+		$loc_lat = $address['lat'];
+		$loc_lng = $address['lng'];
+
+		//perform comparison
+		$earthRadius = 3958.8; // Radius of the Earth in miles
+
+		// Convert degrees to radians
+		$lat1 = deg2rad($lat);
+		$lng1 = deg2rad($lng);
+		$lat2 = deg2rad($loc_lat);
+		$lng2 = deg2rad($loc_lng);
+
+		// Haversine formula
+		$latDelta = $lat2 - $lat1;
+		$lonDelta = $lng2 - $lng1;
+
+		$a = sin($latDelta / 2) ** 2 +
+				cos($lat1) * cos($lat2) *
+				sin($lonDelta / 2) ** 2;
+
+		$c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+		$distance = $earthRadius * $c;
+		return $distance;
+	}
+}

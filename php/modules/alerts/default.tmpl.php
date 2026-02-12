@@ -29,6 +29,7 @@
 		class="alerts hidden"
 		data-autoplay="<?= $s['autoplay'] ?>"
 		data-autoplay-delay="<?= $s['autoplay_delay'] ?>"
+		data-show-pagination="<?= $s['show_pagination'] ?>"
 		data-swiper-options-override="<?= esc_attr($s['swiper_options_override']) ?>"
 		data-heading-style="<?= $s['heading_style'] ?>">
 		<button class="close">Close</button>

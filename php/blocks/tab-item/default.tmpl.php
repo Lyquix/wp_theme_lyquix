@@ -23,22 +23,21 @@
 //  DO NOT MODIFY THIS FILE!
 //  Instead, copy it to /php/custom/blocks/tab-item/default.tmpl.php to override it
 //  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/tab-item/{preset}.tmpl.php
-$s['uid'] = uniqid();
 ?>
 <section
 	class="tab-panel  <?= $c['additional_classes'] ? esc_attr($c['additional_classes']) : '' ?>"
-	id="<?= $c['item_id'] ? esc_attr($c['item_id']) . '-panel' : $s['hash'] . '-panel-' . $s['uid'] ?>"
-	aria-labelledby="<?= $s['hash'] . '-tab-' . $s['uid'] ?>"
-	aria-hidden="<?= '' // $idx == 0 ? 'false' : 'true' ?>"
+	id="<?= $c['item_id'] ? esc_attr($c['item_id']) . '-panel' : $s['hash'] . '-panel-' . $s['idx'] ?>"
+	aria-labelledby="<?= $s['hash'] . '-tab-' . $s['idx'] ?>"
+	aria-hidden="<?= $s['idx'] == 0 ? 'false' : 'true' ?>"
 	role="tabpanel"
 	tabindex="0">
 
 	<?php if ($s['convert_to_accordion']) : ?>
 		<button
 			class="accordion-header"
-			id="<?= $s['hash'] . '-header-' . $s['uid'] ?>"
-			aria-expanded="<?= '' // $idx == 0 ? 'true' : 'false' ?>"
-			aria-controls="<?= $s['hash'] . '-panel-' . $s['uid'] ?>"
+			id="<?= $s['hash'] . '-header-' . $s['idx'] ?>"
+			aria-expanded="<?=  $s['idx'] == 0 ? 'true' : 'false' ?>"
+			aria-controls="<?= $s['hash'] . '-panel-' . $s['idx'] ?>"
 			aria-hidden="true">
 			<?= $c['label'] ?>
 		</button>
@@ -46,7 +45,7 @@ $s['uid'] = uniqid();
 
 	<div
 		class="tab-content"
-		id="<?= $s['hash'] . '-content-' . $s['uid'] ?>">
+		id="<?= $s['hash'] . '-content-' . $s['idx'] ?>">
 	<?= $c['heading'] ? sprintf('<%s>%s</%s>', $s['heading_style'], $c['heading'], $s['heading_style']) : '' ?>
 	<InnerBlocks />
 	</div>

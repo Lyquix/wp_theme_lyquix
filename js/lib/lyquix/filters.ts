@@ -25,6 +25,7 @@ import { mutation } from './mutation';
 import { analytics } from './analytics';
 import { util } from './util';
 
+declare const google;
 /**
  * The below filters module provides functionality for managing filters on a web page, enabling users to refine content
  * based on various criteria such as categories, tags, search queries, and pagination. It includes methods
@@ -58,14 +59,15 @@ export const filters = (() => {
 			filtersSelector: '.lqx-block-filters > .filters',
 			// Controls
 			controlsSelector: '.controls',
-			openButtonSelector: '.controls > .open-close-wrapper > .open',
-			closeButtonSelector: '.controls > .open-close-wrapper > .close',
-			controlTabsSelector: '.controls .control-tabs',
-			controlWrapperSelector: '.controls .control-wrapper',
-			searchWrapperSelector: '.controls > .search-wrapper',
+			openButtonSelector: '.open-close-wrapper > .open',
+			closeButtonSelector: '.open-close-wrapper > .close',
+			controlTabsSelector: '.control-tabs',
+			controlWrapperSelector: '.control-wrapper',
+			searchWrapperSelector: '.search-wrapper',
 			searchInputSelector: '.search',
 			searchButtonSelector: '.search-button',
 			clearWrapperSelector: '.clear-wrapper',
+			orderWrapperSelector: '.order-wrapper',
 			clearButtonSelector: '.clear',
 			// Posts
 			postsSelector: '.posts',
@@ -78,6 +80,7 @@ export const filters = (() => {
 			pageNumberSelector: '.page-number',
 			postsPerPageWrapperSelector: '.pagination > .posts-per-page-wrapper',
 			postsPerPageSelector: '.posts-per-page',
+			mapSelector: '.lqx-block-map',
 			analytics: {
 				enabled: true,
 				nonInteraction: false
@@ -187,9 +190,16 @@ export const filters = (() => {
 		renderControls(id);
 		renderPosts(id);
 		renderPagination(id);
+		renderPills(id);
 
 		// Remove loading class from the filter element
 		vars.filters.filters[id].elem.removeClass('loading');
+		if (typeof vars.filters.filters[id].callback === 'string' && vars.filters.filters[id].callback !==''){
+			vars.filters.filters[id].callback
+			.split('.')
+			.reduce((o, k) => o?.[k], window)
+			?.();
+		}
 	};
 
 	const renderControls = (id) => {
@@ -239,7 +249,18 @@ export const filters = (() => {
 				if (posts.length) posts.replaceWith(filterObj.render.posts);
 				else filterObj.elem.append(filterObj.render.posts);
 				break;
+
+			case 'maps-php':
+				posts = filterObj.elem.find(cfg.filters.mapSelector);
+				if (posts.length) posts.replaceWith(filterObj.render.posts);
+				else filterObj.elem.append(filterObj.render.posts);
+				let controls = filterObj.elem.find(cfg.filters.controlsSelector);
+				if (controls.length) controls.replaceWith(filterObj.render.controls);
+				else filterObj.elem.append(filterObj.render.controls);
+				break;
 		}
+
+
 	};
 
 	const renderPagination = (id) => {
@@ -267,6 +288,38 @@ export const filters = (() => {
 		}
 	};
 
+	const renderPills = (id) => {
+		const filterObj = vars.filters.filters[id];
+		if (!filterObj) return;
+
+		const pillsWrapper = filterObj.elem.find(`#${id}-pills`);
+		if (!pillsWrapper.length) return;
+
+		pillsWrapper.empty();
+
+		const selectedControls = filterObj.controls.filter((control) => control.selected !== '');
+		if (!selectedControls.length) return;
+
+		pillsWrapper.append(`<div class="clear-wrapper"><button class="pill clear">${filterObj.clear_label ?? 'Clear'}</button></div>`);
+
+		selectedControls.forEach((control) => {
+			const option = control.options.find((opt) => opt.value == control.selected);
+			const label = option ? option.text : control.selected;
+			pillsWrapper.append(`<button class="pill" data-control="${control.slug}" data-active-value="${control.selected}">${label}</button>`);
+		});
+	};
+
+	// Locate filter-related elements even when they are rendered outside the controls container.
+	const findFilterElems = (filterObj, selector: string) => {
+		const insideFilter = filterObj.elem.find(selector);
+		const idPrefix = filterObj.id + '-';
+		const outsideFilter = jQuery(selector).filter((idx, el) => {
+			const elemId = jQuery(el).attr('id');
+			return typeof elemId === 'string' && elemId.startsWith(idPrefix);
+		});
+		return insideFilter.add(outsideFilter);
+	};
+
 	const addListeners = (id) => {
 		log('Filters addListeners');
 
@@ -278,21 +331,21 @@ export const filters = (() => {
 		const filterObj = vars.filters.filters[id];
 
 		// Open and close filter controls
-		filterObj.elem.find(cfg.filters.openButtonSelector).on('click', (e) => {
+		findFilterElems(filterObj, cfg.filters.openButtonSelector).off('click.lqxfilters').on('click.lqxfilters', (e) => {
 			e.preventDefault();
 			filterObj.elem.find(cfg.filters.controlsSelector).addClass('open');
 		});
 
-		filterObj.elem.find(cfg.filters.closeButtonSelector).on('click', (e) => {
+		findFilterElems(filterObj, cfg.filters.closeButtonSelector).off('click.lqxfilters').on('click.lqxfilters', (e) => {
 			e.preventDefault();
 			filterObj.elem.find(cfg.filters.controlsSelector).removeClass('open');
 		});
 
 		// Control tabs
-		filterObj.elem.find(cfg.filters.controlTabsSelector).each((idx, controlTabs) => {
+		findFilterElems(filterObj, cfg.filters.controlTabsSelector).each((idx, controlTabs) => {
 			controlTabs = jQuery(controlTabs);
 
-			controlTabs.find('button').on('click', (e) => {
+			controlTabs.find('button').off('click.lqxfilters').on('click.lqxfilters', (e) => {
 				e.preventDefault();
 				// The button element
 				const button = jQuery(e.target);
@@ -302,7 +355,7 @@ export const filters = (() => {
 				button.parent().addClass('active');
 
 				const controlName = button.attr('data-control');
-				filterObj.elem.find(cfg.filters.controlWrapperSelector).each((idx, controlWrapper) => {
+				findFilterElems(filterObj, cfg.filters.controlWrapperSelector).each((idx, controlWrapper) => {
 					controlWrapper = jQuery(controlWrapper);
 					if (controlWrapper.attr('data-control') == controlName) controlWrapper.addClass('active');
 					else controlWrapper.removeClass('active');
@@ -311,27 +364,39 @@ export const filters = (() => {
 		});
 
 		// Controls
-		filterObj.elem.find(cfg.filters.controlWrapperSelector).each((idx, controlWrapper) => {
+		findFilterElems(filterObj, cfg.filters.controlWrapperSelector).each((idx, controlWrapper) => {
 			controlWrapper = jQuery(controlWrapper);
-
-			controlWrapper.find('select, input[type="radio"], input[type="checkbox"], ul').each((idx, control) => {
+			controlWrapper.find('select, input[type="radio"], input[type="checkbox"], ul, button').each((idx, control) => {
 				control = jQuery(control);
-
 				// Get the control name
 				const controlName = controlWrapper.attr('data-control');
 
 				// Handle the different control element types
 				switch (control.prop('tagName').toLowerCase()) {
 					case 'select':
-						control.on('change', () => {
-							controlChange(id, controlName, control.val());
+						control.off('change.lqxfilters').on('change.lqxfilters', () => {
+							if (controlWrapper.attr('data-control-type') == 'distance'){
+								const searchQueryEl = filterObj.elem.find('[data-control="distance"] .search');
+								var geocoder = new google.maps.Geocoder();
+								const address =  searchQueryEl.val();
+								geocoder.geocode({'address': address, 'region': 'us'}, function(results, status) {
+									if (status == google.maps.GeocoderStatus.OK) {
+										const miles = controlWrapper.find('select[name=distance]').val();
+										//build a value with the lat/lon, miles, and address searched for display in the summary and/or pills to clear
+										const val = {'lat': results[0].geometry.location.lat(), 'lng': results[0].geometry.location.lng(), 'miles': miles, 'address': address};
+										setDistance(id, controlName, val);
+									}
+								});
+							} else {
+								controlChange(id, controlName, control.val());
+							}
 						});
 						break;
 
 					case 'input':
 						switch (control.attr('type')) {
 							case 'radio':
-								control.on('click', () => {
+								control.off('click.lqxfilters').on('click.lqxfilters', () => {
 									// Check if this radio button is already checked
 									const foundControl = filterObj.controls.find((curr) => curr.slug == controlName);
 									const reduced = foundControl ? foundControl.selected : undefined;
@@ -344,7 +409,7 @@ export const filters = (() => {
 								break;
 
 							case 'checkbox':
-								control.on('change', () => {
+								control.off('change.lqxfilters').on('change.lqxfilters', () => {
 									// If this checkbox is now checked, uncheck all the others
 									if (control.prop('checked')) {
 										controlWrapper.find('input[type="checkbox"]').each((idx, checkbox) => {
@@ -364,7 +429,7 @@ export const filters = (() => {
 					case 'ul':
 						control.find('li').each((idx, li) => {
 							li = jQuery(li);
-							li.on('click', () => {
+							li.off('click.lqxfilters').on('click.lqxfilters', () => {
 								if (li.hasClass('selected')) {
 									controlChange(id, controlName, '');
 									control.find('li').removeClass('selected');
@@ -376,8 +441,8 @@ export const filters = (() => {
 							});
 						});
 						// Open and close list
-						controlWrapper.find('label').on('click', () => {
-							let controlsSelector = filterObj.elem.find(cfg.filters.controlsSelector);
+						controlWrapper.find('label').off('click.lqxfilters').on('click.lqxfilters', () => {
+							let controlsSelector = findFilterElems(filterObj, cfg.filters.controlsSelector);
 							controlsSelector = jQuery(controlsSelector);
 							controlWrapper.siblings().removeClass('open');
 							controlWrapper.toggleClass('open');
@@ -388,46 +453,88 @@ export const filters = (() => {
 							}
 						});
 						break;
+					case 'button':
+						//we need listeners for both the search and locations buttons
+						if (controlWrapper.attr('data-control-type') == 'distance'){
+							control.off('click.lqxfilters').on('click.lqxfilters', (e) => {
+								if (control.hasClass('search-button')){
+									const searchQueryEl = filterObj.elem.find('[data-control="distance"] .search');
+									var geocoder = new google.maps.Geocoder();
+									const address =  searchQueryEl.val();
+									geocoder.geocode({'address': address, 'region': 'us'}, function(results, status) {
+										if (status == google.maps.GeocoderStatus.OK) {
+											const miles = controlWrapper.find('select[name=distance]').val();
+											//build a value with the lat/lon, miles, and address searched for display in the summary and/or pills to clear
+											const val = {'lat': results[0].geometry.location.lat(), 'lng': results[0].geometry.location.lng(), 'miles': miles, 'address': address};
+											setDistance(id, controlName, val);
+										}
+									});
+								} else if (control.hasClass('location-button')) {
+									navigator.geolocation.getCurrentPosition(function(loc) {
+										const miles = controlWrapper.find('select[name=distance]').val();
+										const val = {'lat': loc.coords['latitude'], 'lng': loc.coords['longitude'], 'miles': miles, 'address': 'Current Location'};
+										setDistance(id, controlName, val);
+									});
+								}
+							});
+						}
+						break;
 				}
-
 			});
 
 		});
 
 		// Search
-		filterObj.elem.find(cfg.filters.searchWrapperSelector).each((idx, searchWrapper) => {
+		findFilterElems(filterObj, cfg.filters.searchWrapperSelector).each((idx, searchWrapper) => {
 			searchWrapper = jQuery(searchWrapper);
+
+			// Skip search inputs that belong to the distance control; they have their own handlers.
+			const parentControl = searchWrapper.closest(cfg.filters.controlWrapperSelector);
+			if (parentControl.length && parentControl.attr('data-control-type') === 'distance') return;
 
 			const searchInput = searchWrapper.find(cfg.filters.searchInputSelector);
 
-			searchInput.on('keyup', (e) => {
+			searchInput.off('keyup.lqxfilters').on('keyup.lqxfilters', (e) => {
 				if (e.keyCode == 13) {
 					e.preventDefault();
 					searchChange(id, searchInput.val());
 				}
 			});
 
-			searchInput.on('focusout', () => {
+			searchInput.off('focusout.lqxfilters').on('focusout.lqxfilters', () => {
 				searchChange(id, searchInput.val());
 			});
 
 			const searchButton = searchWrapper.find(cfg.filters.searchButtonSelector);
 
-			searchButton.on('click', (e) => {
+			searchButton.off('click.lqxfilters').on('click.lqxfilters', (e) => {
 				e.preventDefault();
 				searchChange(id, searchInput.val());
 			});
 		});
 
 		// Clear
-		filterObj.elem.find(cfg.filters.clearWrapperSelector).each((idx, clearWrapper) => {
+		findFilterElems(filterObj, cfg.filters.clearWrapperSelector).each((idx, clearWrapper) => {
 			clearWrapper = jQuery(clearWrapper);
 
 			const clearButton = clearWrapper.find(cfg.filters.clearButtonSelector);
 
-			clearButton.on('click', (e) => {
+			clearButton.off('click.lqxfilters').on('click.lqxfilters', (e) => {
 				e.preventDefault();
 				reset(id);
+			});
+		});
+
+		//reorder
+		findFilterElems(filterObj, cfg.filters.orderWrapperSelector).each((idx, orderWrapper) => {
+			orderWrapper = jQuery(orderWrapper);
+			orderWrapper.find('.option').each((idx, option) => {
+				option = jQuery(option);
+				option.off('click.lqxfilters').on('click.lqxfilters', (e) => {
+					e.preventDefault();
+					vars.filters.filters[id].posts_order[0] = {'order_by': option.attr('data-value'), 'order': option.attr('data-order') };
+					callAPI(id);
+				});
 			});
 		});
 
@@ -467,29 +574,42 @@ export const filters = (() => {
 
 			const postsPerPage = postsPerPageWrapper.find(cfg.filters.postsPerPageSelector);
 
-			postsPerPage.on('change', () => {
+			postsPerPage.off('change.lqxfilters').on('change.lqxfilters', () => {
 				postsPerPageChange(id, postsPerPage.val());
 			});
 		});
 
 		// Close controls when clicking outside
-		jQuery('body').on('click', (e) => {
-			if (!jQuery(e.target.closest(cfg.filters.controlWrapperSelector)).length) {
-				filterObj.elem.find(cfg.filters.controlWrapperSelector).each((idx, controlWrapper) => {
+		jQuery('body').off('click.lqxfilters-' + id).on('click.lqxfilters-' + id, (e) => {
+			const clickedControl = jQuery(e.target).closest(cfg.filters.controlWrapperSelector).filter((idx, el) => {
+				const elemId = jQuery(el).attr('id');
+				return typeof elemId === 'string' && elemId.startsWith(filterObj.id + '-');
+			});
+
+			if (!clickedControl.length) {
+				findFilterElems(filterObj, cfg.filters.controlWrapperSelector).each((idx, controlWrapper) => {
 					jQuery(controlWrapper).removeClass('open').removeClass('active');
-					jQuery(cfg.filters.controlsSelector).removeClass('open-list');
+					findFilterElems(filterObj, cfg.filters.controlsSelector).removeClass('open-list');
 				});
 			}
 		});
 
 		//pills
 
-		jQuery('.pills .pill').each((idx, pill) => {
+		filterObj.elem.find('.pills .pill').each((idx, pill) => {
 			pill = jQuery(pill);
-			pill.on('click', (e) => {
-				const controlName = jQuery(e.target).attr('data-control');
+			pill.off('click.lqxfilters').on('click.lqxfilters', (e) => {
+				const pillEl = jQuery(e.currentTarget);
+				if (pillEl.hasClass('clear')) {
+					reset(id);
+					return;
+				}
+				const controlName = pillEl.attr('data-control');
+				const controlWrappers = findFilterElems(filterObj, `${cfg.filters.controlWrapperSelector}[data-control="${controlName}"]`);
+				controlWrappers.find('select').val('');
+				controlWrappers.find('input[type="radio"], input[type="checkbox"]').prop('checked', false);
+				controlWrappers.find('ul li').removeClass('selected');
 				controlChange(id, controlName, '');
-				jQuery('.control-wrapper[data-control="'+controlName+'"]').find('li').removeClass('selected');
 			});
 		});
 	};
@@ -548,6 +668,43 @@ export const filters = (() => {
 			});
 		}
 	};
+
+	const setDistance = (id, controlName, controlValue) => {
+		if (!(id in vars.filters.filters)) {
+			warn('Filter ID not found', id);
+			return;
+		}
+
+		const filterObj = vars.filters.filters[id];
+
+		// Find the control
+		const control = filterObj.controls.find((control) => control.slug == controlName);
+
+		// Update the control selected value
+		control.miles = controlValue.miles;
+		control.lat = controlValue.lat;
+		control.lng = controlValue.lng;
+		control.address = controlValue.address;
+
+		// Return to page 1
+		filterObj.pagination.page = 1;
+
+		// Update the hash
+		if (id == vars.filters.useHashFilterId) updateHash();
+
+		// Call the API
+		callAPI(id);
+
+		// Send analytics event
+		if (cfg.filters.analytics.enabled) {
+			analytics.sendGAEvent({
+				'eventCategory': 'Filters',
+				'eventAction': 'Control',
+				'eventLabel': `${controlName}:${controlValue}`,
+				'nonInteraction': cfg.filters.analytics.nonInteraction
+			});
+		}
+	}
 
 	const searchChange = (id, query) => {
 		log('Filters searchChange', id, query);
@@ -702,10 +859,16 @@ export const filters = (() => {
 		// Reset the controls
 		filterObj.controls.forEach((control) => {
 			control.selected = '';
+			if (control.type == 'distance') {
+				control.miles = '';
+				control.address = '';
+				control.lat = '';
+				control.lon = '';
+			}
 		});
 
 		// Update the control
-		filterObj.elem.find(cfg.filters.controlWrapperSelector).each((idx, controlWrapper) => {
+		findFilterElems(filterObj, cfg.filters.controlWrapperSelector).each((idx, controlWrapper) => {
 			controlWrapper = jQuery(controlWrapper);
 
 			controlWrapper.find('select, input[type="radio"], input[type="checkbox"], ul').each((idx, control) => {
@@ -731,7 +894,7 @@ export const filters = (() => {
 		filterObj.search = '';
 
 		// Clear search input
-		filterObj.elem.find(cfg.filters.searchWrapperSelector + ' ' + cfg.filters.searchInputSelector).val('');
+		findFilterElems(filterObj, cfg.filters.searchWrapperSelector).find(cfg.filters.searchInputSelector).val('');
 
 		// Reset the page
 		filterObj.pagination.page = 1;
@@ -803,7 +966,7 @@ export const filters = (() => {
 		filterObj.search = search;
 
 		// Add the query term to the search input
-		filterObj.elem.find(cfg.filters.searchWrapperSelector + ' ' + cfg.filters.searchInputSelector).val(search);
+		findFilterElems(filterObj, cfg.filters.searchWrapperSelector).find(cfg.filters.searchInputSelector).val(search);
 
 		// Parse controls
 		if (segments.length) {
@@ -847,7 +1010,7 @@ export const filters = (() => {
 									log('Control value from hash', controlStr, controlName, option.value);
 
 									// Update the control
-									filterObj.elem.find(cfg.filters.controlWrapperSelector + '[data-control="' + controlName + '"]').find('select, input[type="radio"], input[type="checkbox"], ul').each((idx, control) => {
+									findFilterElems(filterObj, cfg.filters.controlWrapperSelector + '[data-control="' + controlName + '"]').find('select, input[type="radio"], input[type="checkbox"], ul').each((idx, control) => {
 										control = jQuery(control);
 
 										switch (control.prop('tagName').toLowerCase()) {
@@ -929,7 +1092,7 @@ export const filters = (() => {
 		['pagination', 'pagination_details', 'show_all',
 			'show_posts_per_page', 'total_pages', 'total_posts'].forEach(key => delete payload.pagination[key]);
 		payload.controls = payload.controls.map(control => {
-			['custom_order', 'options', 'order', 'order_by', 'presentation', 'visible'].forEach(key => delete control[key]);
+			['custom_order', 'options', 'presentation', 'visible'].forEach(key => delete control[key]);
 			return control;
 		});
 

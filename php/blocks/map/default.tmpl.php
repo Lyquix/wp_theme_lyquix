@@ -54,6 +54,7 @@ foreach($c as $item) {
 	$custom_class = $location_fields['additional_classes'];
 	$custom_id = $location_fields['item_id'];
 	$processed_item = [
+		'item_id' => $id,
 		'title' => $heading,
 		'subtitle' => $subheading,
 		'link' => $link,
@@ -73,7 +74,7 @@ foreach($c as $item) {
 		'infoWindow' => $s['show_infowindows'] == 'y' ? 'true' : 'false',
 		'html' => ($s['show_infowindows'] == 'y' ? require \lqx\blocks\get_template('map', $s['preset'], 'infowindow'): ''),
 		'additional_classes' => $custom_class,
-		'item_id' => $custom_id
+		'custom_id' => $custom_id
 	];
 	array_push($processed_items, $processed_item);
 }

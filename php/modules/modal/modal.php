@@ -59,7 +59,13 @@ function rest_route() {
 
 	// Filter out modal that are not enabled or have expired
 	$content = array_filter($content, function ($modal) {
-		return $modal['enabled'] == 'y' && ($modal['expiration'] == '' || time() <= strtotime($modal['expiration']));
+		// Skip items that aren't enabled
+		if ($modal['enabled'] != 'y') return false;
+		// Skip items that have expired
+		if ($modal['expiration'] != '' && time() > strtotime($modal['expiration'])) return false;
+		// Skip items that don't match user's region
+		if (!\lqx\regions\is_region_match($modal['related_regions'])) return false;
+		return true;
 	});
 
 	return $content;

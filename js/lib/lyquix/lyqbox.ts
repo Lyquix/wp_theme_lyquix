@@ -150,6 +150,11 @@ export const lyqbox = (() => {
 					return;
 				}
 
+				if (opts.encoding === 'base64' && opts.html) {
+					opts.html = atob(opts.html);
+					delete opts.encoding;
+				}
+
 				// Check if the name is present
 				if (!('name' in opts) || !opts.name) {
 					warn('`name` is a required option in data-lyquix', slide);
@@ -439,7 +444,7 @@ export const lyqbox = (() => {
 
 			case 'html':
 			case 'dom':
-				content = slide.html;
+				content = decodeURI(slide.html);
 				break;
 
 			default:

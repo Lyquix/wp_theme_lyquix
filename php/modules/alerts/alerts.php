@@ -49,16 +49,17 @@ function rest_route() {
 	}, $content);
 
 	// Filter out alerts that are not enabled or have expired
-	$content = array_filter($content, function ($alert) {
+	$content = array_values(array_filter($content, function ($alert) {
 		// Skip items that aren't enabled
 		if ($alert['enabled'] != 'y') return false;
 		// Skip items with no content
 		if (!$alert['heading'] && !$alert['body']) return false;
 		// Skip items that have expired
 		if ($alert['expiration'] != '' && time() > strtotime($alert['expiration'])) return false;
+		// Skip items that don't match user's region
+		if (!\lqx\regions\is_region_match($alert['related_regions'])) return false;
 		return true;
-	});
-
+	}));
 	return $content;
 }
 

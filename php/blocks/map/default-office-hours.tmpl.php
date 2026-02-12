@@ -23,19 +23,26 @@
 //  If you need a custom renderer, copy this file to php/custom/blocks/cards/default-office-hours.tmpl.php and modify it there
 //  You may also create custom renderer for specific presets, by copying this file to /php/custom/blocks/map/{preset}.php
 ?>
-<div class="hours">
-<?php foreach($item['business_hours'] as $hours):
-	switch($hours['day_group_type']) {
+<div class="office-hours">
+<?php foreach($item['business_hours'] as $hours):?>
+	<div class="days">
+	<?php switch($hours['day_group_type']) {
 		case 'single':
-			echo $hours['single'] . ': ' . $hours['hours']['open'] . ' - ' . $hours['hours']['close'];
+			echo $hours['single'] . ': ';
 			break;
 		case 'multiple':
-			echo implode(', ', $hours['multiple']) . ': ' . $hours['hours']['open'] . ' - ' . $hours['hours']['close'];
+			echo implode(', ', $hours['multiple']) . ': ';
 			break;
 		case 'range':
-			echo $hours['range']['start'] . ' - ' . $hours['range']['end'] . ': ' . $hours['hours']['open'] . ' - ' . $hours['hours']['close'];
+			echo $hours['range']['start'] . ' - ' . $hours['range']['end'] . ': ';
 			break;
-	}
-endforeach;
+	} ?>
+	</div>
+	<div class="hours">
+		<?php foreach($hours['hours'] as $hour):
+			echo $hour['open'] . ' - ' . $hour['close'] . '<br>';
+		endforeach; ?>
+	</div>
+<?php endforeach;
 ?>
 </div>

@@ -23,7 +23,10 @@
 //  DO NOT MODIFY THIS FILE!
 
 // Get block settings and content
+$innerBlocks = $wp_block->parsed_block['innerBlocks'];
 $settings = \lqx\blocks\get_settings($block);
+$settings['innerBlocks'] = $innerBlocks;
+$settings['hash'] = $block['generatedHash'];
 
 // Render the block
 \lqx\blocks\render_block($settings, null);

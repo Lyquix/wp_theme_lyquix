@@ -31,7 +31,8 @@
 
 	<?php if (!empty($item['labels'])  && $s['show_labels'] == 'y') require \lqx\blocks\get_template('cards', $s['preset'], 'labels'); ?>
 
-	<?php if ($item['image'] && $s['show_image'] == 'y') require \lqx\blocks\get_template('cards', $s['preset'], 'image'); ?>
+	<?php // TODO what is image_html?
+	if (($item['image'] || $item['image_html']) && $s['show_image'] == 'y') require \lqx\blocks\get_template('cards', $s['preset'], 'image'); ?>
 
 	<?php if ($item['icon_image'] && $s['show_icon_image'] == 'y') require \lqx\blocks\get_template('cards', $s['preset'], 'icon-image'); ?>
 

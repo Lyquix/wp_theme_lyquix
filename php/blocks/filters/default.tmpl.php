@@ -24,6 +24,11 @@
 //  Instead, copy it to /php/custom/blocks/filters/default.tmpl.php to override it
 //  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/filters/{preset}.tmpl.php
 
+// Load Google Maps Places API
+// TODO: Only load this if the block is using a map preset and the API key is set
+$google_maps_api_key = acf_get_setting('google_api_key');
+wp_enqueue_script('google-maps-api', 'https://maps.googleapis.com/maps/api/js?key=' . $google_maps_api_key . '&libraries=places');
+
 ?>
 <section
 	id="<?= esc_attr($s['anchor']) ?>"

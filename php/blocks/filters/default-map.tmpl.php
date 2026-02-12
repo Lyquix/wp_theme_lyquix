@@ -23,7 +23,7 @@
 //  Instead, copy it to /php/custom/blocks/filters/default-map.tmpl.php to override it
 //  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/filters/{preset}-map.tmpl.php
 
-if ($s['show_map'] == 'y') {
+if ($s['render_map_php']['show_map'] == 'y') {
 	// For settings we need to get the preset settings from cards.
 	$map_settings = \lqx\blocks\get_settings('map', null, $s['render_map_php']['map_preset'], $s['render_map_php']['map_style']);
 

@@ -39,6 +39,7 @@ $s = \lqx\util\validate_data($settings, [
 			'range' => [0, 60]
 		],
 		'swiper_options_override' => \lqx\util\schema_str_req_emp,
+		'show_pagination' => \lqx\util\schema_str_req_y,
 		'heading_style' => [
 			'type' => 'string',
 			'required' => true,

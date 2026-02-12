@@ -78,8 +78,9 @@ export const geolocate = (() => {
 
 		// Configuration
 		cfg.geolocate = {
+			enabled: false,
 			gps: false, // Set to true to enable GPS geolocation
-			useCookies: false, // Set to true to use cookies to store geolocation data
+			useCookies: true, // Set to true to use cookies to store geolocation data
 			cookieExpirationIP: 900, // In seconds
 			cookieExpirationGPS: 900, // In seconds
 			handleNoRegionMatch: true, // Set to true to actively force show/display of unmatched elements, false to do nothing
@@ -97,6 +98,11 @@ export const geolocate = (() => {
 
 			// Add a mutation handler for accordions added to the DOM
 			mutation.addHandler('addNode', '[data-region-display], [class*="region-name-"]', regionDisplay);
+
+			// Add a listener for the custom geolocateready event to run regionDisplay() on page elements
+			vars.document.on('geolocateready', () => {
+				regionDisplay(jQuery('[data-region-display], [class*="region-name-"]'));
+			});
 		}
 
 		// Run only once
@@ -137,6 +143,7 @@ export const geolocate = (() => {
 		else {
 			getIP();
 			if (cfg.geolocate.gps && 'geolocation' in window.navigator) getGPS();
+			else vars.geolocate.status.gps = 'n/a';
 		}
 	};
 
@@ -183,6 +190,7 @@ export const geolocate = (() => {
 			vars.geolocate.status.gps = 'wait';
 
 			window.navigator.geolocation.getCurrentPosition((position) => {
+				// TODO Data validation
 				vars.geolocate.location.lat = position.coords.latitude;
 				vars.geolocate.location.lon = position.coords.longitude;
 				vars.geolocate.location.radius = position.coords.accuracy / 1000; // in km
@@ -231,11 +239,19 @@ export const geolocate = (() => {
 
 	// Check if a point is inside a circle
 	const inCircle = (test, center, radius) => {
+		// TODO Data validation
 		/** Accepts:
 		 * test: location to test, object with keys lat and lon
 		 * center: circle center point, object with keys lat and lon
 		 * radius: circle radius in kilometers
 		 */
+		test.lat = Number(test.lat);
+		test.lon = Number(test.lon);
+		center.lat = Number(center.lat);
+		center.lon = Number(center.lon);
+		radius = Number(radius);
+		if (![test.lat, test.lon, center.lat, center.lon, radius].every(Number.isFinite)) return false;
+
 		if (typeof test?.lat !== 'number' || typeof test?.lon !== 'number' ||
 			typeof center?.lat !== 'number' || typeof center?.lon !== 'number' ||
 			typeof radius !== 'number') return false;
@@ -251,15 +267,21 @@ export const geolocate = (() => {
 
 	// Check if a point is inside a square
 	const inSquare = (test, corner1, corner2) => {
+		// TODO Data validation
 		/** Accepts:
 		 * test: location to test, object with keys lat and lon
 		 * corner1: a corner of the square, object with keys lat and lon
 		 * corner2: opposite corner of the square, object with keys lat and lon
 		 * Known limitation: doesn't handle squares that cross the poles or the international date line
 		 */
-		if (typeof test?.lat !== 'number' || typeof test?.lon !== 'number' ||
-			typeof corner1?.lat !== 'number' || typeof corner1?.lon !== 'number' ||
-			typeof corner2?.lat !== 'number' || typeof corner2?.lon !== 'number') return false;
+		test.lat = Number(test.lat);
+		test.lon = Number(test.lon);
+		corner1.lat = Number(corner1.lat);
+		corner1.lon = Number(corner1.lon);
+		corner2.lat = Number(corner2.lat);
+		corner2.lon = Number(corner2.lon);
+		if (![test.lat, test.lon, corner1.lat, corner1.lon, corner2.lat, corner2.lon].every(Number.isFinite)) return false;
+
 		return test.lat <= Math.max(corner1.lat, corner2.lat) &&
 			test.lat >= Math.min(corner1.lat, corner2.lat) &&
 			test.lon <= Math.max(corner1.lon, corner2.lon) &&
@@ -268,13 +290,17 @@ export const geolocate = (() => {
 
 	// Check if a point is inside a polygon
 	const inPolygon = (test, poly) => {
+		// TODO Data validation
 		/** Accepts:
 		 * test: location to test, object with keys lat and lon
 		 * poly: defines the polygon, array of objects, each with keys lat and lon
 		 * Based on http://alienryderflex.com/polygon/
 		 * Known limitation: doesn't handle polygons that cross the poles or the international date line
 		 */
-		if (typeof test?.lat !== 'number' || typeof test?.lon !== 'number' || !Array.isArray(poly) || poly.length < 3) return false;
+		test.lat = Number(test.lat);
+		test.lon = Number(test.lon);
+		if (![test.lat, test.lon].every(Number.isFinite) || !Array.isArray(poly) || poly.length < 3) return false;
+
 		let i, j = poly.length - 1, oddNodes = false;
 
 		for (i = 0; i < poly.length; i++) {
@@ -473,6 +499,9 @@ export const geolocate = (() => {
 		 */
 
 		// If no elements are passed, then get the default list of elements
+		if (typeof(vars.geolocate.regions[0]) == 'undefined') {
+			vars.geolocate.regions = [jQuery('body').attr('data-region')];
+		}
 		if (elems == undefined) {
 			elems = jQuery('[data-region-display], [class*="region-name-"]');
 		}
@@ -490,8 +519,11 @@ export const geolocate = (() => {
 			elems.forEach((elem) => {
 				elem = jQuery(elem);
 
-				let elemOpts;
-				elemOpts.region = [];
+				let elemOpts = {
+					regions: [],
+					action: 'show',
+					display: 'block'
+				};
 				let elemRegionMatch = false;
 
 				// Get attribute options first

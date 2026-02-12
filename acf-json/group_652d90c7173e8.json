@@ -286,29 +286,20 @@
                                 "class": "",
                                 "id": ""
                             },
-                            "acfe_permissions": "",
-                            "instruction_placement": "",
-                            "hide_field": "",
-                            "hide_label": "",
-                            "hide_instructions": "",
-                            "hide_required": "",
                             "uploader": "",
-                            "return_format": "array",
-                            "library": "all",
-                            "preview_style": "default",
+                            "return_format": "url",
                             "upload_folder": "",
-                            "button_label": "Add File",
-                            "file_count": 0,
                             "multiple": 0,
                             "max": "",
-                            "acfe_settings": "",
-                            "acfe_validate": "",
                             "min_size": "",
                             "max_size": "",
                             "mime_types": "mp4",
-                            "allow_in_bindings": 1,
+                            "library": "all",
+                            "preview_style": "default",
                             "placeholder": "Select",
+                            "button_label": "Add File",
                             "stylised_button": 0,
+                            "file_count": 0,
                             "min": ""
                         }
                     ]
@@ -336,7 +327,7 @@
                     "pagination": 0,
                     "acfe_settings": "",
                     "min": 0,
-                    "max": 3,
+                    "max": 5,
                     "instruction_placement": "tooltip",
                     "acfe_permissions": "",
                     "collapsed": "",
@@ -421,11 +412,10 @@
                     "acfe_validate": "",
                     "instruction_placement": "tooltip",
                     "acfe_permissions": "",
-                    "allow_in_bindings": 1,
                     "tabs": "all",
                     "toolbar": "basic",
                     "media_upload": 1,
-                    "delay": 1,
+                    "delay": 0,
                     "acfe_wysiwyg_auto_init": 0,
                     "acfe_wysiwyg_min_height": 300,
                     "acfe_wysiwyg_toolbar_buttons": []
@@ -459,5 +449,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1743432166
+    "modified": 1763670413
 }

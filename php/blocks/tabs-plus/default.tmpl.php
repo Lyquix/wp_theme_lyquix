@@ -24,6 +24,7 @@
 //  Instead, copy it to /php/custom/blocks/tabs-plus/default.tmpl.php to override it
 //  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/tabs-plus/{preset}.tmpl.php
 $allowed_blocks = [ 'lqx/tab-item' ];
+$innerBlocks = $settings['innerBlocks'];
 ?>
 <section
 	id="<?= esc_attr($s['anchor']) ?>"
@@ -32,7 +33,7 @@ $allowed_blocks = [ 'lqx/tab-item' ];
 
 	<div
 		class="tabs"
-		id="<?= esc_attr($s['hash']) ?>"
+		id="<?= esc_attr($settings['hash']) ?>"
 		data-browser-history="<?= $s['browser_history'] ?>"
 		data-convert-to-accordion="<?= implode(',', $s['convert_to_accordion']) ?>"
 		data-auto-scroll="<?= implode(',', $s['auto_scroll']) ?>">
@@ -42,9 +43,15 @@ $allowed_blocks = [ 'lqx/tab-item' ];
 			role="tablist"
 			aria-hidden="false">
 			<?php
-//			foreach ($c as $idx => $item) {
-//				require \lqx\blocks\get_template('tabs', $s['preset'], 'tab');
-//			}
+			foreach ($innerBlocks as $idx => $item) {
+				$block = [
+					'name' => $item['blockName'],
+					'anchor' => $item['attrs']['anchor'] ?? '',
+					'className' => $item['attrs']['className'] ?? '',
+				];
+				$itemSettings = \lqx\blocks\get_settings($block);
+				require \lqx\blocks\get_template('tabs-plus', $itemSettings['processed']['preset'], 'tab');
+			}
 			?>
 		</ul>
 

@@ -1,0 +1,68 @@
+{
+    "key": "group_67f534790c510",
+    "title": "Related Regions",
+    "fields": [
+        {
+            "key": "field_67f5347cb7a9d",
+            "label": "Related Regions",
+            "name": "related_regions",
+            "aria-label": "",
+            "type": "select",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "": "Select",
+                "Greater Philadelphia": "Greater Philadelphia",
+                "Florida": "Florida"
+            },
+            "default_value": [],
+            "return_format": "value",
+            "multiple": 1,
+            "min": "",
+            "max": "",
+            "allow_custom": 0,
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "allow_null": 0,
+            "allow_in_bindings": 1,
+            "ui": 1,
+            "ajax": 0,
+            "search_placeholder": "",
+            "create_options": 0,
+            "save_options": 0
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "!=",
+                "value": "all"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "left",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "acfe_autosync": [
+        "json"
+    ],
+    "acfe_form": 0,
+    "acfe_display_title": "",
+    "acfe_meta": "",
+    "acfe_note": "",
+    "modified": 1757612028
+}

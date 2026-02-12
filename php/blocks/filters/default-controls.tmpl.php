@@ -222,6 +222,63 @@ if (
 					</ul>
 
 					<?php break;
+				//for distance we need to add the select alongside the "use my current location" and the search field
+				case 'distance':?>
+					<label for="<?= $s['hash'] ?>-control-<?= $j ?>">
+						<span class="label"><?= $control['label'] ?></span>
+						<input name="<?= $s['hash'] ?>-control-<?= $j ?>-search" type="text" class="search" id="<?= $s['hash'] ?>-control-<?= $j ?>-search" placeholder="<?= esc_attr($s['search_placeholder']) ?>" value="<?= (isset($control['address']) ? esc_attr($control['address']) : '') ?>">
+						<button class="search-button" id="<?= $s['hash'] ?>-control-<?= $j ?>-search-button">Go</button>
+						<select name="<?= $control['slug'] ?>" id="<?= $s['hash'] ?>-control-<?= $j ?>">
+							<?php if ($control['show_view_all'] == 'y') : ?>
+							<option
+								value=""
+								<?= $control['selected'] == '' ? ' selected' : '' ?>><?= $control['view_all_label'] ?></option>
+							<?php endif; ?>
+
+							<?php foreach ($options as $option) : ?>
+							<option
+								value="<?= esc_attr($option['value']) ?>"
+								<?= $control['selected'] == $option['value'] ? ' selected' : '' ?>><?= $option['text'] ?></option>
+							<?php endforeach; ?>
+
+						</select>
+						<button class="location-button" id="<?= $s['hash'] ?>-control-<?= $j ?>-location-button">Use my current location</button>
+					</label>
+					<?php break;
+
+				case 'region':?>
+					<fieldset>
+
+						<legend>
+							<span class="label">Region</span>
+							<span class="selected"><?= \lqx\filters\get_selected_option_label($control) ?></span>
+						</legend>
+
+						<label for="<?= $s['hash'] ?>-control-<?= $j ?>-<?= $i ?>">
+							<input
+								type="radio"
+								id="<?= $s['hash'] ?>-control-<?= $j ?>-<?= $i ?>"
+								name="<?= $control['slug'] ?>"
+								value="this-region"
+								<?= $control['selected'] !== '' ? ' checked' : '' ?> />
+							<span>This Region</span>
+						</label>
+						<label for="<?= $s['hash'] ?>-control-<?= $j ?>-all">
+							<input
+								type="radio"
+								id="<?= $s['hash'] ?>-control-<?= $j ?>-all"
+								name="<?= $control['slug'] ?>"
+								value=""
+								<?= $control['selected'] == '' ? ' checked' : '' ?> />
+							<span>All Regions</span>
+						</label>
+
+						<?php foreach ($options as $i => $option) : ?>
+
+						<?php endforeach; ?>
+
+					</fieldset>
+					<?php break;
 			}
 			?>
 
@@ -241,6 +298,17 @@ if (
 	<div class="clear-wrapper">
 		<button id="<?= $s['hash'] ?>-clear" class="clear"><?= $s['clear_label']?></button>
 	</div>
+<?php endif; ?>
+
+<?php //change the ordering of posts if enabled
+
+if ($s['change_order'] == 'y') : ?>
+	<div class="order-wrapper">
+	<?php foreach ($s['order_options'] as $option) : ?>
+		<div class="option" data-value="<?= esc_attr($option['order_by']['value']) ?>" data-order="<?= esc_attr($option['order']) ?>"><?= $option['order_by']['label'] ?></div>
+	<?php endforeach; ?>
+	</div>
+
 <?php endif; ?>
 
 </div>

@@ -36,6 +36,8 @@ define('lqx\cards\schema', [
 			'default' => [],
 			'keys' => \lqx\util\schema_data_image
 		],
+		// TODO what is image_html?
+		'image_html' => \lqx\util\schema_str_req_emp,
 		'icon_image' => [
 			'type' => 'object',
 			'default' => [],
@@ -185,7 +187,7 @@ function process_wp_post($post, $fields_map, $fields_values) {
 	if (!is_a($post, 'WP_Post') && is_int($post)) get_post($post);
 
 	$card = [
-		'id' => $post->ID,
+		'ID' => $post->ID,
 		'date' => $post->post_date_gmt,
 		'heading' => $post->post_title,
 		'subheading' => null,
@@ -196,7 +198,7 @@ function process_wp_post($post, $fields_map, $fields_values) {
 			'title' => 'Read More',
 			'target' => ''
 		],
-		'link_style' => 'button',
+		'link_style' => 'readmore',
 		'body' => $post-> post_excerpt,
 		'labels' => null,
 		'image' => \lqx\util\get_thumbnail_image_object($post->ID),

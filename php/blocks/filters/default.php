@@ -26,8 +26,9 @@
 
 if ($settings['processed']['preset']) { // only proceed if a preset has been selected
 	// Get the processed settings and posts with data
+	// TODO we should add some validation to $s
 	$s = \lqx\filters\get_settings_and_posts($settings);
-	if ($s === null) return;
+
 	$c =\lqx\util\validate_data($content, [
 		'type' => 'object',
 		'keys' => [
@@ -36,7 +37,8 @@ if ($settings['processed']['preset']) { // only proceed if a preset has been sel
 	]);
 	if ($c['isValid']) $c = $c['data'];
 
+	// TODO if settings or content aren't valid, we should return here
 	require \lqx\blocks\get_template('filters', $s['preset']);
 }
 
-// TODO: maybe we should raise a warning here
+// TODO: this whole thing needs some refactoring

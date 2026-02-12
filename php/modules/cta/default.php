@@ -144,7 +144,8 @@ $c = array_filter(array_map(function($item) use($s) {
 		}
 	}
 
-	if (!$display) return null;
+	// Skip items that don't match user's region
+	if (!\lqx\regions\is_region_match($v['data']['related_regions'])) return false;
 
 	return $v['data'];
 }, $content));
