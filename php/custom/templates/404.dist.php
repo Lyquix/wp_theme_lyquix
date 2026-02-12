@@ -35,4 +35,4 @@
 	<p>This error can happen when there is a typo in the address (whether you clicked on a link, or typed it yourself, or copy-pasted it), or when the address is no longer up to date because the page was moved or unpublished.</p>
 	<p>You can <a href="<?= get_home_url(); ?>">go to the Homepage</a>, or use the search bar below to find the content you are looking for.</p>
 	<?php get_search_form(); ?>
-</div>
+</section>
