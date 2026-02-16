@@ -304,6 +304,35 @@ function theme_setup() {
 		});
 	}
 
+	// Add or remove Manager role (Editor + User Management)
+	if (get_theme_mod('feat_manager_role', '0') === '1') {
+		add_action('admin_init', function () {
+			$editor = get_role('editor');
+			$manager = get_role('manager');
+
+			if (!$manager) {
+				// Create Manager role cloning Editor capabilities
+				add_role('manager', 'Manager', $editor->capabilities);
+				$manager = get_role('manager');
+			}
+
+			// Add user management capabilities
+			$manager->add_cap('create_users');
+			$manager->add_cap('edit_users');
+			$manager->add_cap('delete_users');
+			$manager->add_cap('promote_users');
+			$manager->add_cap('list_users');
+			$manager->add_cap('remove_users');
+		});
+	} else {
+		// Remove Manager role if the option is disabled
+		add_action('admin_init', function () {
+			if (get_role('manager')) {
+				remove_role('manager');
+			}
+		});
+	}
+
 	// Remove additional ACF extended menu items
 	if (get_theme_mod('feat_hide_acf_ext_menu_items', '1') === '1') {
 		add_action('admin_head', function () {

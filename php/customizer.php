@@ -72,7 +72,10 @@ function customizer_add($wp_customize)
 					'center' => 'Center',
 					'right'  => 'Right corner',
 				],
-				'default' => 'center'
+				'default' => 'center',
+				'active_callback' => function () {
+					return get_theme_mod('admin_bar_collapse', '0') == '1';
+				}
 			],
 		],
 		'CSS' => [
@@ -99,7 +102,10 @@ function customizer_add($wp_customize)
 			'viewports_critical_path_css' => [
 				'type' => 'viewports',
 				'label' => 'Viewports for Critical Path CSS',
-				'default' => \lqx\util\get_breakpoints()
+				'default' => \lqx\util\get_breakpoints(),
+				'active_callback' => function () {
+					return get_theme_mod('load_critical_path_css', '1') == '1';
+				}
 			],
 			'exclude_types_critical_path_css' => [
 				'type' => 'checkbox-group',
@@ -115,7 +121,10 @@ function customizer_add($wp_customize)
 					ksort($post_types);
 					return $post_types;
 				})(),
-				'default' => '[]'
+				'default' => '[]',
+				'active_callback' => function () {
+					return get_theme_mod('load_critical_path_css', '1') == '1';
+				}
 			],
 			'exclude_pages_critical_path_css' => [
 				'type' => 'checkbox-group',
@@ -129,7 +138,10 @@ function customizer_add($wp_customize)
 					ksort($pages);
 					return $pages;
 				})(),
-				'default' => '[]'
+				'default' => '[]',
+				'active_callback' => function () {
+					return get_theme_mod('load_critical_path_css', '1') == '1';
+				}
 			]
 		],
 		'JS' => [
@@ -305,7 +317,10 @@ function customizer_add($wp_customize)
 				'type' => 'radio',
 				'label' => 'Acceptable Browser Versions',
 				'choices' => ['1' => 'Only Lastest', '2' => 'Last 2', '3' => 'Last 3', '4' => 'Last 4', '5' => 'Last 5'],
-				'default' => '3'
+				'default' => '3',
+				'active_callback' => function () {
+					return get_theme_mod('browser_alert', '1') == '1';
+				}
 			]
 		],
 		'Feature Flags' => [],
@@ -424,6 +439,12 @@ function customizer_add($wp_customize)
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
 			],
+			'feat_manager_role' => [
+				'type' => 'radio',
+				'label' => 'Enable Manager Role (Editor + User Management)',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '0'
+			],
 			'feat_hide_acf_ext_menu_items' => [
 				'type' => 'radio',
 				'label' => 'Hide ACF Extension Menu Items',
@@ -441,6 +462,53 @@ function customizer_add($wp_customize)
 				'label' => 'Move Excerpt to after Content form',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
+			],
+			'feat_qr_generator' => [
+				'type' => 'radio',
+				'label' => 'Enable QR Code Generator',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			]
+		],
+		'URL Shortener' => [
+			'feat_url_shortener' => [
+				'type' => 'radio',
+				'label' => 'Enable URL Shortener',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '0'
+			],
+			'url_shortener_provider' => [
+				'type' => 'radio',
+				'label' => 'URL Shortener Provider',
+				'choices' => ['tinyurl' => 'TinyURL', 'yourls' => 'YOURLS'],
+				'default' => 'tinyurl',
+				'active_callback' => function () {
+					return get_theme_mod('feat_url_shortener', '0') == '1';
+				}
+			],
+			'url_shortener_tinyurl_api_key' => [
+				'type' => 'text',
+				'label' => 'TinyURL API Token',
+				'default' => '',
+				'active_callback' => function () {
+					return get_theme_mod('feat_url_shortener', '0') == '1' && get_theme_mod('url_shortener_provider', 'yourls') == 'tinyurl';
+				}
+			],
+			'url_shortener_yourls_url' => [
+				'type' => 'text',
+				'label' => 'YOURLS Base URL',
+				'default' => '',
+				'active_callback' => function () {
+					return get_theme_mod('feat_url_shortener', '0') == '1' && get_theme_mod('url_shortener_provider', 'yourls') == 'yourls';
+				}
+			],
+			'url_shortener_yourls_api_key' => [
+				'type' => 'text',
+				'label' => 'YOURLS Signature Token',
+				'default' => '',
+				'active_callback' => function () {
+					return get_theme_mod('feat_url_shortener', '0') == '1' && get_theme_mod('url_shortener_provider', 'yourls') == 'yourls';
+				}
 			]
 		]
 	];
@@ -495,6 +563,7 @@ function customizer_add($wp_customize)
 			];
 
 			if (array_key_exists('choices', $options)) $control_opts['choices'] = $options['choices'];
+			if (array_key_exists('active_callback', $options)) $control_opts['active_callback'] = $options['active_callback'];
 
 			switch ($options['type']) {
 				case 'checkbox-group':
@@ -527,6 +596,63 @@ function customizer_add($wp_customize)
 }
 
 add_action('customize_register', '\lqx\customizer\customizer_add');
+
+// Conditionally show/hide customizer controls based on related settings
+add_action('customize_controls_print_footer_scripts', function () {
+	?>
+	<script>
+	(function($) {
+		/**
+		 * Simple toggle: show control when a setting equals a value
+		 */
+		function bindToggle(settingId, controlId, value) {
+			wp.customize.control(controlId, function(control) {
+				function toggle() {
+					control.active.set(wp.customize(settingId).get() === value);
+				}
+				wp.customize(settingId).bind(toggle);
+				toggle();
+			});
+		}
+
+		// Admin Bar: notch position depends on collapse enabled
+		bindToggle('admin_bar_collapse', 'admin_bar_notch_position', '1');
+
+		// Critical Path CSS: sub-settings depend on load enabled
+		bindToggle('load_critical_path_css', 'viewports_critical_path_css', '1');
+		bindToggle('load_critical_path_css', 'exclude_types_critical_path_css', '1');
+		bindToggle('load_critical_path_css', 'exclude_pages_critical_path_css', '1');
+
+		// Browser Alert: versions depends on alert enabled
+		bindToggle('browser_alert', 'accepted_browser_versions', '1');
+
+		// URL Shortener: provider radio depends on feature enabled
+		bindToggle('feat_url_shortener', 'url_shortener_provider', '1');
+
+		// URL Shortener: provider-specific fields depend on feature + provider
+		var providerControls = {
+			yourls: ['url_shortener_yourls_url', 'url_shortener_yourls_api_key'],
+			tinyurl: ['url_shortener_tinyurl_api_key']
+		};
+
+		$.each(providerControls, function(provider, controlIds) {
+			$.each(controlIds, function(i, controlId) {
+				wp.customize.control(controlId, function(control) {
+					function toggle() {
+						var enabled = wp.customize('feat_url_shortener').get() === '1';
+						var selected = wp.customize('url_shortener_provider').get();
+						control.active.set(enabled && selected === provider);
+					}
+					wp.customize('feat_url_shortener').bind(toggle);
+					wp.customize('url_shortener_provider').bind(toggle);
+					toggle();
+				});
+			});
+		});
+	})(jQuery);
+	</script>
+	<?php
+});
 
 if (class_exists('\WP_Customize_Control')) {
 	class checkbox_group_custom_control extends \WP_Customize_Control
