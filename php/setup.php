@@ -326,6 +326,13 @@ function theme_setup() {
 		}, 999);
 	}
 
+    // Hide Tools menu from non administrator users
+    if (!current_user_can('administrator')) {
+        add_action('admin_menu', function () {
+            remove_menu_page('tools.php');
+        }, 999);
+    }
+
 	// Hide Alerts module from non administrator users
 	if (get_theme_mod('feat_hide_module_alerts', '0') === '1' && !current_user_can('administrator')) {
 		add_action('admin_head', function () {

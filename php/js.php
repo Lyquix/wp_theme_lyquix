@@ -186,6 +186,28 @@ function render_lyquix_options() {
 	if (get_theme_mod('ga4_account', '')) $lqx_options['analytics'] = ['measurementId' => get_theme_mod('ga4_account')];
 	if (!get_theme_mod('ga_pageview', '1')) $lqx_options['analytics']['sendPageview'] = false;
 	if (get_theme_mod('ga_via_gtm', '0')) $lqx_options['analytics']['usingGTM'] = true;
+	// Get regions information
+	$regions = get_field('regions', 'option');
+	if (is_array($regions) && count($regions)) {
+		$lqx_options['geolocate'] = ['regions' => []];
+		foreach ($regions as $region) {
+			$region_data = [
+				'name' => $region['name'] ?? null,
+				'mobile_label' => $region['mobile_label'] ?? null,
+				'alias' => $region['alias'] ?? null,
+				'phone_number' => $region['phone_number'] ?? null,
+				'address' => $region['address'] ?? null,
+				'description' => $region['description'] ?? null,
+				'geojson' => null
+			];
+			$geojson_str = $region['geojson'] ?? '';
+			if (is_string($geojson_str) && trim($geojson_str) !== '') {
+				$decoded = json_decode($geojson_str, true);
+				if (is_array($decoded)) $region_data['geojson'] = $decoded;
+			}
+			$lqx_options['geolocate']['regions'][] = $region_data;
+		}
+	}
 
 
 	// Merge with options from template settings

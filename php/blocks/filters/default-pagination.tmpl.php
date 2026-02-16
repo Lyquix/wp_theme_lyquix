@@ -31,8 +31,8 @@ if ($p['total_pages'] > 1 && $p['pagination'] == 'y') : ?>
 
 	<ul class="pageslinks">
 
-		<li class="page-first" data-page="1" aria-label="First Page">First</li>
-		<li class="page-prev" data-page="<?= $p['page'] > 1 ? $p['page'] - 1 : 1 ?>" aria-label="Previous Page">Prev</li>
+		<li class="page-first<?= ($p['page'] == 1 ? ' inactive' : '') ?>" data-page="1" aria-label="First Page">First</li>
+		<li class="page-prev<?= ($p['page'] == 1 ? ' inactive' : '') ?>" data-page="<?= $p['page'] > 1 ? $p['page'] - 1 : 1 ?>" aria-label="Previous Page">Prev</li>
 
 		<?php if ($p['page_numbers'] == 1) : ?>
 
@@ -85,8 +85,8 @@ if ($p['total_pages'] > 1 && $p['pagination'] == 'y') : ?>
 		<?php endif; ?>
 
 
-		<li class="page-next" data-page="<?= $p['page'] < $p['total_pages'] ? $p['page'] + 1 : $p['total_pages'] ?>" aria-label="Next Page">Next</li>
-		<li class="page-last" data-page="<?= $i ?>" aria-label="Last Page">Last</li>
+		<li class="page-next<?= ($p['page'] == $p['total_pages'] ? ' inactive' : '') ?>" data-page="<?= $p['page'] < $p['total_pages'] ? $p['page'] + 1 : $p['total_pages'] ?>" aria-label="Next Page">Next</li>
+		<li class="page-last<?= ($p['page'] == $p['total_pages'] ? ' inactive' : '') ?>" data-page="<?= $i ?>" aria-label="Last Page">Last</li>
 
 	</ul>
 

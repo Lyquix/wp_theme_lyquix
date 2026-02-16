@@ -61,6 +61,7 @@ $c = array_filter(array_map(function($item) use($s) {
 		'type' => 'object',
 		'required' => true,
 		'keys' => [
+            'breadcrumb' => \lqx\util\schema_str_req_emp,
 			'heading' => \lqx\util\schema_str_req_emp,
 			'image' => [
 				'type' => 'object',

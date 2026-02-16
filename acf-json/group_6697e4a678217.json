@@ -353,7 +353,7 @@
                             "prepend": "",
                             "append": "",
                             "max": "",
-                            "allow_null": 0,
+                            "allow_null": 1,
                             "allow_in_bindings": 1,
                             "ui": 0,
                             "ajax": 0,
@@ -381,7 +381,7 @@
                                 "satellite": "Satellite",
                                 "terrain": "Terrain"
                             },
-                            "default_value": "road",
+                            "default_value": "",
                             "return_format": "value",
                             "allow_null": 1,
                             "other_choice": 0,
@@ -456,12 +456,12 @@
                                 "class": "",
                                 "id": ""
                             },
-                            "default_value": "[{}]",
+                            "default_value": "",
                             "acfe_textarea_code": 0,
                             "maxlength": "",
                             "allow_in_bindings": 1,
                             "rows": "",
-                            "placeholder": "",
+                            "placeholder": "[{}]",
                             "new_lines": ""
                         }
                     ],

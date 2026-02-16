@@ -1118,7 +1118,7 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 						],
 						[
 							"field" => "link",
-							"controller" => "show_link",
+							"controller" => "show_get_directions_link",
 							"operator" => "==",
 							"value" => "y"
 						],

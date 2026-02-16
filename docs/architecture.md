@@ -17,7 +17,7 @@ The theme uses a strict parent/child architecture:
 
 ```
 lyquix/          (Parent Theme - DO NOT MODIFY)
-lyquix_child/    (Child Theme - All customizations go here)
+lyquix-child/    (Child Theme - All customizations go here)
 ```
 
 **The parent theme is the framework.** It provides:

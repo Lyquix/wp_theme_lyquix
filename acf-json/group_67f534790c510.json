@@ -16,11 +16,7 @@
                 "class": "",
                 "id": ""
             },
-            "choices": {
-                "": "Select",
-                "Greater Philadelphia": "Greater Philadelphia",
-                "Florida": "Florida"
-            },
+            "choices": {},
             "default_value": [],
             "return_format": "value",
             "multiple": 1,

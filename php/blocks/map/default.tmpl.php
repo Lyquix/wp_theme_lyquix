@@ -82,7 +82,8 @@ if ($s['show_map'] == 'y'):
 ?>
 <section
 	id="<?= esc_attr($s['hash']) ?>"
-	class="lqx-block-map <?= esc_attr($s['class']) ?>" data-settings="<?= esc_attr(json_encode($map_settings)) ?>" data-items="<?= esc_attr(json_encode($processed_items)) ?>">
+	class="lqx-block-map <?= esc_attr($s['class']) ?>" data-settings="<?= esc_attr(json_encode($map_settings)) ?>" data-items="<?= esc_attr(json_encode($processed_items)) ?>"
+    <?php if ($s['preset']): ?>data-preset="<?= esc_attr($s['preset']) ?>"<?php endif; ?>>
 <div class="map-wrapper">
 	<?php require \lqx\blocks\get_template('map', $s['preset'], 'map'); ?>
 </div>

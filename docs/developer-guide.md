@@ -7,7 +7,7 @@ This guide covers the development workflow, creating custom components, and the 
 ### Starting Development
 
 ```bash
-cd wp-content/themes/lyquix_child
+cd wp-content/themes/lyquix-child
 bun run watch
 ```
 

@@ -140,10 +140,7 @@
                 "class": "",
                 "id": ""
             },
-            "choices": {
-                "specialties": "Specialty",
-                "services": "Services"
-            },
+            "choices": {},
             "default_value": false,
             "return_format": "value",
             "multiple": 0,

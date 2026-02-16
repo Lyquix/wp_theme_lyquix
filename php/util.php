@@ -460,16 +460,16 @@ define('lqx\util\schema_data_image', [
 	'sizes' => [
 		'type'	=> 'object',
 		'keys' => [
-			'small' => \lqx\util\schema_str_req_emp,
+			'small' => \lqx\util\schema_str,
 			'small-width' => \lqx\util\schema_int,
 			'small-height' => \lqx\util\schema_int,
-			'medium' => \lqx\util\schema_str_req_emp,
+			'medium' => \lqx\util\schema_str,
 			'medium-width' => \lqx\util\schema_int,
 			'medium-height' => \lqx\util\schema_int,
-			'large' => \lqx\util\schema_str_req_emp,
+			'large' => \lqx\util\schema_str,
 			'large-width' => \lqx\util\schema_int,
 			'large-height' => \lqx\util\schema_int,
-			'thumbnail' => \lqx\util\schema_str_req_emp,
+			'thumbnail' => \lqx\util\schema_str,
 			'thumbnail-width' => \lqx\util\schema_int,
 			'thumbnail-height' => \lqx\util\schema_int
 		]
@@ -640,12 +640,25 @@ function get_thumbnail_image_object($post_id) {
 	// Get the WP Post object for the thumbnail
 	$post = get_post($post_thumbnail_id);
 
+    // Validate post object exists
+    if (!$post) {
+        return null;
+    }
+
+    // Get file path and validate physical file exists
+    $file_path = get_attached_file($post_thumbnail_id);
+    $file_exists = $file_path && file_exists($file_path);
+
+    // Get mime type once and validate
+    $mime_type = get_post_mime_type($post_thumbnail_id);
+    $mime_parts = $mime_type ? explode('/', $mime_type) : ['', ''];
+
 	$image = [
 		'ID' => $post_thumbnail_id,
 		'id' => $post_thumbnail_id,
 		'title' => $post->post_title,
-		'filename' => basename(get_attached_file($post_thumbnail_id)),
-		'filesize' => filesize(get_attached_file($post_thumbnail_id)),
+        'filename' => $file_exists ? basename($file_path) : '',
+        'filesize' => $file_exists ? filesize($file_path) : 0,
 		'url' => wp_get_attachment_url($post_thumbnail_id),
 		'link' => get_attachment_link($post_thumbnail_id),
 		'alt' => get_post_meta($post_thumbnail_id, '_wp_attachment_image_alt', true),
@@ -658,22 +671,32 @@ function get_thumbnail_image_object($post_id) {
 		'date' => $post->post_date,
 		'modified' => $post->post_modified,
 		'menu_order' => $post->menu_order,
-		'mime_type' => get_post_mime_type($post_thumbnail_id),
-		'type' => explode('/', get_post_mime_type($post_thumbnail_id))[0],
-		'subtype' => explode('/', get_post_mime_type($post_thumbnail_id))[1],
-		'icon' => wp_mime_type_icon('mime_type'),
-		'width' => wp_get_attachment_image_src($post_thumbnail_id, 'full')[1],
-		'height' => wp_get_attachment_image_src($post_thumbnail_id, 'full')[2],
+        'mime_type' => $mime_type,
+        'type' => $mime_parts[0],
+        'subtype' => $mime_parts[1],
+        'icon' => wp_mime_type_icon($mime_type),
+        'width' => 0,
+        'height' => 0,
 		'sizes' => []
 	];
 
-	// Set the sizes
-	foreach (get_intermediate_image_sizes() as $size) {
-		$s = wp_get_attachment_image_src( $post_thumbnail_id, $size);
-		$image['sizes'][$size] = $s[0];
-		$image['sizes'][$size . '-width'] = $s[1];
-		$image['sizes'][$size . '-height'] = $s[2];
-	}
+    // Get dimensions from full size image
+    $full_image = wp_get_attachment_image_src($post_thumbnail_id, 'full');
+    if ($full_image && is_array($full_image)) {
+        $image['width'] = $full_image[1] ?? 0;
+        $image['height'] = $full_image[2] ?? 0;
+    }
+
+    // Set the sizes - only if image source is available
+    foreach (get_intermediate_image_sizes() as $size) {
+        $size_data = wp_get_attachment_image_src($post_thumbnail_id, $size);
+
+        if ($size_data && is_array($size_data)) {
+            $image['sizes'][$size] = $size_data[0];
+            $image['sizes'][$size . '-width'] = $size_data[1] ?? 0;
+            $image['sizes'][$size . '-height'] = $size_data[2] ?? 0;
+        }
+    }
 
 	return $image;
 }

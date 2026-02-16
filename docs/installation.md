@@ -51,10 +51,10 @@ wp-content/themes/lyquix/
 
 ### 2. Install the Child Theme
 
-Copy or clone the `lyquix_child` directory into the same themes directory:
+Copy or clone the `lyquix-child` directory into the same themes directory:
 
 ```
-wp-content/themes/lyquix_child/
+wp-content/themes/lyquix-child/
 ```
 
 ### 3. Install Dependencies
@@ -62,7 +62,7 @@ wp-content/themes/lyquix_child/
 Navigate to the **child theme** directory. Before running `bun install`, ensure you are using Node.js 18 via NVM:
 
 ```bash
-cd wp-content/themes/lyquix_child
+cd wp-content/themes/lyquix-child
 nvm use 18
 bun install
 ```
@@ -131,7 +131,7 @@ After installation, verify everything is working:
 After `bun install`, your child theme should look like this:
 
 ```
-lyquix_child/
+lyquix-child/
 ├── css/
 │   ├── custom/            # Your custom SCSS files
 │   │   ├── abstracts/     # Variables, mixins

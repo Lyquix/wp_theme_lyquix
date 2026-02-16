@@ -143,7 +143,7 @@ export const map = (() => {
 					//const labelString = lqxMap.items[i].title;
 					const infoWindowHTML = lqxMap.items[i].html;
 
-					const markerParams = {
+                    const markerParams: google.maps.MarkerOptions & { html?: string } = {
 						position: itemLatLon,
 						map: lqxMap.map,
 						title: lqxMap.items[i].title,
@@ -152,10 +152,12 @@ export const map = (() => {
 						//for future work: the code below and commented out above pertains to labels on top of pins, which I don't believe we've used yet but could be useful going forward
 						//label: (labelString == '' ? '' : { text: labelString.toString(), color: 'white' })
 					};
-					if(lqxMap.items[i].icon != '') markerParams.icon = {
-						url: lqxMap.items[i].icon,
-						//scaledSize: new google.maps.Size(lqxMap.markerSize.scaledWidth,lqxMap.markerSize.scaledHeight)
-					};
+                    if (lqxMap.items[i].icon) {
+                        markerParams.icon = {
+                            url: lqxMap.items[i].icon,
+                            //scaledSize: new google.maps.Size(lqxMap.markerSize.scaledWidth,lqxMap.markerSize.scaledHeight)
+                        };
+                    }
 					lqxMap.markers[itemid] = new google.maps.Marker(markerParams);
 					if (lqxMap.items[i].infoWindow == "true") {
 						google.maps.event.addListener(lqxMap.markers[itemid], 'click', function() {

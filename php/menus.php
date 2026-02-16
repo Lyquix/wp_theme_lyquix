@@ -159,10 +159,10 @@ class Mega_Menu_Walker extends \Walker_Nav_Menu {
 			$posts = [];
 			switch (get_field('items_type', $menu_item->ID)) {
 				case 'post-type':
-					$posts = get_posts(array('post_type'=> get_field('custom_post_type', $menu_item->ID), 'orderby'=>'menu_order', 'order'=>'ASC', 'posts_per_page'=>-1, 'post_status'=>'publish'));
+					$posts = get_posts(array('post_type'=> get_field('custom_post_type', $menu_item->ID), 'orderby'=>'menu_order', 'order'=>'ASC', 'posts_per_page'=>-1, 'post_status'=>'publish', 'post_parent'=>0));
 					break;
 				case 'dynamic-post-children':
-					$posts = get_posts(array('post_type'=> get_post_Type($menu_item->object_id), 'post_parent'=>$menu_item->object_id, 'orderby'=>'menu_order', 'order'=>'ASC', 'posts_per_page'=>-1, 'post_status'=>'publish'));
+                    $posts = get_posts(array('post_type'=> get_post_type($menu_item->object_id), 'post_parent'=>$menu_item->object_id, 'orderby'=>'menu_order', 'order'=>'ASC', 'posts_per_page'=>-1, 'post_status'=>'publish'));
 					break;
 				default:
 					break;
@@ -180,7 +180,18 @@ class Mega_Menu_Walker extends \Walker_Nav_Menu {
 							continue;
 						}
 					}
-					$item_output .= '<li><a href="'.get_permalink($post->ID).'">'.get_the_title($post->ID).'</a></li>';
+                    $item_output .= '<li><a href="'.get_permalink($post->ID).'">'.get_the_title($post->ID).'</a>';
+                    if (get_field('items_type', $menu_item->ID) == 'post-type'):
+                        $children = get_children(array('post_parent' => $post->ID));
+                        if (count($children) > 0):
+                            $item_output .= '<ul class="sub-menu-children">';
+                            foreach ($children as $child):
+                                $item_output .= '<li><a href="'.get_permalink($child->ID).'">'.get_the_title($child->ID).'</a></li>';
+                            endforeach;
+                            $item_output .= '</ul>';
+                        endif;
+                    endif;
+                    $item_output .= '</li>';
 				endforeach;
 				wp_reset_postdata();
 				$item_output .= '</ul></div>';

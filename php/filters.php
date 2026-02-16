@@ -281,7 +281,7 @@ function validate_settings($settings)
                         'type' => [
                             'type' => 'string',
                             'required' => true,
-                            'allowed' => ['author', 'date', 'field', 'parentless', 'post_parent', 'taxonomy', 'venue', 'dynamic', 'meta_key', 'region']
+                            'allowed' => ['author', 'date', 'field', 'parentless', 'post_parent', 'taxonomy', 'venue', 'dynamic', 'meta_key', 'region', 'manual']
                         ],
                         // TODO add validation for taxonomy_term
                         /*
@@ -334,7 +334,12 @@ function validate_settings($settings)
                             'type' => 'integer',
                             'required' => true,
                             'range' => [-30, 30],
-                            'default' => 1
+                            'default' => 0
+                        ],
+                        'manual' => [
+                            'type' => 'array',
+                            'required' => false,
+                            'default' => [],
                         ]
                     ]
                 ]
@@ -637,6 +642,7 @@ function init_settings($s)
             case 'field':
             case 'venue':
             case 'dynamic':
+            case 'manual':
             case 'meta_key':
                 foreach ([
                              'operator_simple',
@@ -984,42 +990,73 @@ function get_options($s)
 
             case 'field':
                 // Prepare the SQL query to get field values and post counts
-                //we need to get the name of the field for the query
-                //($control['narrow_options'] == 'y' ? " .
-                // TODO: are we handling sub-fields within groups and repeaters correctly? We may need a LIKE operator here
                 $field = get_field_object($control['acf_field'], null, true, false, false);
                 $id_statement = ($control['narrow_options'] == 'y' ? "AND `post_id` IN (" . implode(',', array_map('intval', $posts)) . ") " : "");
-                $sql = $wpdb->prepare(
-                    "SELECT `meta_value`, COUNT(`post_id`) as `count`
-					FROM {$wpdb->postmeta}
-					WHERE `meta_key` = %s
-					$id_statement
-					GROUP BY `meta_value`",
-                    [$field['name']]
-                );
+
+                // Check if this is a sub-field within a group or repeater
+                // ACF sub-fields have a parent that starts with 'field_' (parent field key),
+                // while top-level fields have a parent that is a field group post ID
+                $is_sub_field = isset($field['parent']) && strpos($field['parent'], 'field_') === 0;
+
+                if ($is_sub_field) {
+                    // Sub-fields in repeaters are stored as parentname_0_fieldname, parentname_1_fieldname, etc.
+                    // Sub-fields in groups are stored as parentname_fieldname
+                    // Use LIKE with a wildcard prefix to match all variations
+                    // Exclude keys starting with '_' to avoid ACF's internal reference entries
+                    // (e.g., _authors_0_related_staff which stores the field key, not the value)
+                    $escaped_name = $wpdb->esc_like('_' . $field['name']);
+                    $like_key = '%' . $escaped_name;
+                    $not_like_key = $wpdb->esc_like('_') . '%' . $escaped_name;
+                    $sql = $wpdb->prepare(
+                        "SELECT `meta_value`, COUNT(`post_id`) as `count`
+						FROM {$wpdb->postmeta}
+						WHERE `meta_key` LIKE %s
+						AND `meta_key` NOT LIKE %s
+						AND `meta_value` != ''
+						$id_statement
+						GROUP BY `meta_value`",
+                        [$like_key, $not_like_key]
+                    );
+                } else {
+                    $sql = $wpdb->prepare(
+                        "SELECT `meta_value`, COUNT(`post_id`) as `count`
+						FROM {$wpdb->postmeta}
+						WHERE `meta_key` = %s
+						AND `meta_value` != ''
+						$id_statement
+						GROUP BY `meta_value`",
+                        [$field['name']]
+                    );
+                }
                 // Execute the query
                 $field_values = $wpdb->get_results($sql);
 
                 if (is_array($field_values)) {
                     if ($control['field_type'] == 'relationship') {
                         foreach ($field_values as $field_value) {
-                            // Relation fields returns ids and so we need to get the slug and name for the posts
-                            $relation_values = unserialize($field_value->meta_value);
-                            if (is_array($relation_values)) {
-                                foreach ($relation_values as $relation_value) {
-                                    if (!array_key_exists($relation_value, $options)) {
-                                        if (!in_array(get_post_type($relation_value), $field['post_type'])) continue;
-                                        $title = get_the_title($relation_value);
-                                        $options[$relation_value] = [
-                                            'value' => $relation_value,
-                                            'slug' => get_post_field('post_name', $relation_value),
-                                            'text' => $title,
-                                            'disabled' => false,
-                                            'selected' => false,
-                                            'count' => $field_value->count
-                                        ];
-                                    } else $options[$relation_value]['count'] += $field_value->count;
-                                }
+                            // Relation fields return IDs - top-level fields store a serialized array,
+                            // while sub-fields in repeaters store plain post IDs per row
+                            $relation_values = @unserialize($field_value->meta_value);
+                            if (!is_array($relation_values)) {
+                                // Sub-field in a repeater: meta_value is a plain post ID
+                                $relation_values = [$field_value->meta_value];
+                            }
+                            foreach ($relation_values as $relation_value) {
+                                // Skip empty values
+                                if (empty($relation_value)) continue;
+
+                                if (!array_key_exists($relation_value, $options)) {
+                                    $title = get_the_title($relation_value);
+                                    if (empty($title)) continue;
+                                    $options[$relation_value] = [
+                                        'value' => $relation_value,
+                                        'slug' => get_post_field('post_name', $relation_value),
+                                        'text' => $title,
+                                        'disabled' => false,
+                                        'selected' => false,
+                                        'count' => $field_value->count
+                                    ];
+                                } else $options[$relation_value]['count'] += $field_value->count;
                             }
                         }
                     } else {
@@ -1428,7 +1465,11 @@ function prepare_query($query, $s)
                     }
                 }
                 break;
-
+            case 'manual':
+                if (isset($pre_filter['manual'])) {
+                    $query['post__in'] = $pre_filter['manual'];
+                }
+                break;
             default:
                 break;
         }
@@ -1460,15 +1501,23 @@ function prepare_query($query, $s)
                         $query['tax_query'][] = $tax_query;
                     }
                     break;
-                // TODO: we might need to edit this to try and figure out how to deal with subfields and dates.
-                // TODO: We may need to rework how the comparison is done here
-
                 case 'field':
+                    $field = get_field_object($control['acf_field'], null, true, false, false);
+                    $is_sub_field = isset($field['parent']) && str_starts_with($field['parent'], 'field_');
+
                     $acf_meta_query = [
-                        'key' => get_field_object($control['acf_field'])['name'],
+                        'value' => $control['selected'],
                         'compare' => 'LIKE',
-                        'value' => $control['selected']
                     ];
+
+                    if ($is_sub_field) {
+                        // Sub-fields in repeaters/groups: match meta keys like parentname_0_fieldname
+                        // WP_Query wraps the key in %...% and escapes with esc_like() when compare_key is LIKE
+                        $acf_meta_query['key'] = '_' . $field['name'];
+                        $acf_meta_query['compare_key'] = 'LIKE';
+                    } else {
+                        $acf_meta_query['key'] = $field['name'];
+                    }
 
                     if (isset($query['meta_query'])) {
                         $query['meta_query']['relation'] = 'AND';

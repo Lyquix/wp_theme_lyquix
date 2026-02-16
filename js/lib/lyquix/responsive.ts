@@ -21,7 +21,7 @@
 //  DO NOT MODIFY THIS FILE!
 
 import { vars, cfg, log } from './core';
-import breakpoints from '../../../../lyquix_child/css/tailwind/breakpoints.json';
+import breakpoints from '../../../../lyquix-child/css/tailwind/breakpoints.json';
 
 /**
  * This module provides functionality for screen responsiveness in a web page.

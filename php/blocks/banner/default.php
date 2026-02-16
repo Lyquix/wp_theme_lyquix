@@ -126,7 +126,7 @@ if ($c['video']['type'] == 'url' && $c['video']['url']) {
 	if ($video['url']) $video_attrs = sprintf('data-lyqbox="%s"', htmlentities(json_encode([
 		'name' => str_replace('id-', 'banner-video-', $s['hash']),
 		'type' => 'video',
-		'url' => $c['video']['url'],
+		'url' => $video['url'],
 		'useHash' => false
 	])));
 }

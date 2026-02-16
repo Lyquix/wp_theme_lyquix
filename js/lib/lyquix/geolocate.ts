@@ -20,29 +20,26 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-import { vars, cfg, log, warn } from './core';
+import { vars, cfg, log } from './core';
 import { mutation } from './mutation';
 import { util } from './util';
 declare const jQuery;
 
 /**
  * This module provides functionality for geolocation and regionalization in a web page.
- * It exports an object with methods to initialize, geolocate, and set regions.
+ * It exports an object with methods to initialize and geolocate.
  *
  * @module geolocate
  *
  * @param {object} customCfg - Optional custom configuration for the geolocate module.
  *
- * The ready function is a utility function that works like jQuery(document).ready(). It calls the callback
- * function when the geolocation is ready.
+ * Region definitions are loaded automatically from cfg.geolocate.regions (populated from ACF via PHP).
+ * After geolocation completes, matchRegions() tests the user's coordinates against each region's GeoJSON
+ * and populates vars.geolocate.regions with matching aliases before firing the geolocateready event.
  *
- * The setRegions function processes the regions definition data and finds the region of the current location.
+ * The regionDisplay function shows or hides elements based on the matched regions.
  *
- * The regionDisplay function shows or hides elements based on the region of the current location.
- *
- * The geoJSONtoRegions function parses a geoJSON string and returns an object with regions definition.
- *
- * @returns {object} An object with methods to initialize, geolocate, and set regions.
+ * @returns {object} An object with methods to initialize and geolocate.
  */
 export const geolocate = (() => {
 
@@ -78,13 +75,15 @@ export const geolocate = (() => {
 
 		// Configuration
 		cfg.geolocate = {
-			enabled: false,
+			enabled: true,
 			gps: false, // Set to true to enable GPS geolocation
 			useCookies: true, // Set to true to use cookies to store geolocation data
 			cookieExpirationIP: 900, // In seconds
 			cookieExpirationGPS: 900, // In seconds
 			handleNoRegionMatch: true, // Set to true to actively force show/display of unmatched elements, false to do nothing
-			removeNoRegionMatch: true // Set to true to remove from the DOM unmatched elements, set to false to hide them (display: none)
+			removeNoRegionMatch: true, // Set to true to remove from the DOM unmatched elements, set to false to hide them (display: none)
+			regionDisplaySelector: '[data-region-display], [class*="region-name-"]', // CSS selector for elements to show/hide based on region
+			regions: [] // Region definitions from ACF, populated via PHP
 		};
 
 		if (customCfg) cfg.geolocate = jQuery.extend(true, cfg.geolocate, customCfg);
@@ -97,12 +96,10 @@ export const geolocate = (() => {
 			geoLocate();
 
 			// Add a mutation handler for accordions added to the DOM
-			mutation.addHandler('addNode', '[data-region-display], [class*="region-name-"]', regionDisplay);
+			mutation.addHandler('addNode', cfg.geolocate.regionDisplaySelector, regionDisplay);
 
-			// Add a listener for the custom geolocateready event to run regionDisplay() on page elements
-			vars.document.on('geolocateready', () => {
-				regionDisplay(jQuery('[data-region-display], [class*="region-name-"]'));
-			});
+			// Add a handler for geolocateready event to run regionDisplay on page elements
+			vars.document.on('geolocateready', regionDisplay);
 		}
 
 		// Run only once
@@ -142,8 +139,7 @@ export const geolocate = (() => {
 		}
 		else {
 			getIP();
-			if (cfg.geolocate.gps && 'geolocation' in window.navigator) getGPS();
-			else vars.geolocate.status.gps = 'n/a';
+			getGPS();
 		}
 	};
 
@@ -160,16 +156,13 @@ export const geolocate = (() => {
 			success: (data) => {
 				// Do not overwrite existing GPS location
 				if (vars.geolocate.location.source !== 'gps' && vars.geolocate.location.source !== 'gps-cookie') {
-					if (!data || typeof data !== 'object') {
-						warn('Invalid IP geolocation response', data);
-						return;
-					}
 					vars.geolocate.location = data;
+					// TODO Data validation
 					vars.geolocate.location.source = 'ip2geo';
 				}
 
 				vars.geolocate.status.ip = 'ready';
-
+				console.log('succesful ipgeo');
 				log('IP geolocation result', vars.geolocate.location);
 
 				// Save cookie
@@ -185,7 +178,7 @@ export const geolocate = (() => {
 
 	// Geolocation from GPS
 	const getGPS = () => {
-		if ('geolocation' in window.navigator) {
+		if (cfg.geolocate.gps && 'geolocation' in window.navigator) {
 			log('Attempting GPS geolocation');
 			vars.geolocate.status.gps = 'wait';
 
@@ -221,6 +214,9 @@ export const geolocate = (() => {
 				}
 			}
 
+			// Match regions before triggering event
+			matchRegions();
+
 			// Trigger custom event 'geolocateready'
 			log('geolocateready event');
 			vars.geolocate.ready = true;
@@ -237,75 +233,19 @@ export const geolocate = (() => {
 		}
 	};
 
-	// Check if a point is inside a circle
-	const inCircle = (test, center, radius) => {
-		// TODO Data validation
-		/** Accepts:
-		 * test: location to test, object with keys lat and lon
-		 * center: circle center point, object with keys lat and lon
-		 * radius: circle radius in kilometers
-		 */
-		test.lat = Number(test.lat);
-		test.lon = Number(test.lon);
-		center.lat = Number(center.lat);
-		center.lon = Number(center.lon);
-		radius = Number(radius);
-		if (![test.lat, test.lon, center.lat, center.lon, radius].every(Number.isFinite)) return false;
+	// Check if a point is inside a polygon ring (ray casting)
+	// ring is a GeoJSON coordinate array: [[lon, lat], [lon, lat], ...]
+	const inPolygon = (testLon: number, testLat: number, ring: number[][]): boolean => {
+		if (ring.length < 3) return false;
 
-		if (typeof test?.lat !== 'number' || typeof test?.lon !== 'number' ||
-			typeof center?.lat !== 'number' || typeof center?.lon !== 'number' ||
-			typeof radius !== 'number') return false;
-		const deg2rad = (deg) => { return deg * Math.PI / 180; };
-		const dLat = deg2rad(test.lat - center.lat);
-		const dLon = deg2rad(test.lon - center.lon);
-		const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-			Math.cos(deg2rad(center.lat)) * Math.cos(deg2rad(test.lat)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-		const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-		const d = 6371 * c; // Distance in km
-		return (d <= radius && true) || false;
-	};
+		let j = ring.length - 1, oddNodes = false;
 
-	// Check if a point is inside a square
-	const inSquare = (test, corner1, corner2) => {
-		// TODO Data validation
-		/** Accepts:
-		 * test: location to test, object with keys lat and lon
-		 * corner1: a corner of the square, object with keys lat and lon
-		 * corner2: opposite corner of the square, object with keys lat and lon
-		 * Known limitation: doesn't handle squares that cross the poles or the international date line
-		 */
-		test.lat = Number(test.lat);
-		test.lon = Number(test.lon);
-		corner1.lat = Number(corner1.lat);
-		corner1.lon = Number(corner1.lon);
-		corner2.lat = Number(corner2.lat);
-		corner2.lon = Number(corner2.lon);
-		if (![test.lat, test.lon, corner1.lat, corner1.lon, corner2.lat, corner2.lon].every(Number.isFinite)) return false;
+		for (let i = 0; i < ring.length; i++) {
+			const iLon = ring[i][0], iLat = ring[i][1];
+			const jLon = ring[j][0], jLat = ring[j][1];
 
-		return test.lat <= Math.max(corner1.lat, corner2.lat) &&
-			test.lat >= Math.min(corner1.lat, corner2.lat) &&
-			test.lon <= Math.max(corner1.lon, corner2.lon) &&
-			test.lon >= Math.min(corner1.lon, corner2.lon);
-	};
-
-	// Check if a point is inside a polygon
-	const inPolygon = (test, poly) => {
-		// TODO Data validation
-		/** Accepts:
-		 * test: location to test, object with keys lat and lon
-		 * poly: defines the polygon, array of objects, each with keys lat and lon
-		 * Based on http://alienryderflex.com/polygon/
-		 * Known limitation: doesn't handle polygons that cross the poles or the international date line
-		 */
-		test.lat = Number(test.lat);
-		test.lon = Number(test.lon);
-		if (![test.lat, test.lon].every(Number.isFinite) || !Array.isArray(poly) || poly.length < 3) return false;
-
-		let i, j = poly.length - 1, oddNodes = false;
-
-		for (i = 0; i < poly.length; i++) {
-			if (poly[i].lat < test.lat && poly[j].lat >= test.lat || poly[j].lat < test.lat && poly[i].lat >= test.lat) {
-				if (poly[i].lon + (test.lat - poly[i].lat) / (poly[j].lat - poly[i].lat) * (poly[j].lon - poly[i].lon) < test.lon) {
+			if ((iLat < testLat && jLat >= testLat) || (jLat < testLat && iLat >= testLat)) {
+				if (iLon + (testLat - iLat) / (jLat - iLat) * (jLon - iLon) < testLon) {
 					oddNodes = !oddNodes;
 				}
 			}
@@ -314,161 +254,71 @@ export const geolocate = (() => {
 		return oddNodes;
 	};
 
-	const geoJSONtoRegions = (geoJSON) => {
-		// Parse a geoJSON string and return an object with regions definition
-		// geoJSON is a string in the format below
-		// {
-		// 	"type": "FeatureCollection",
-		// 	"features": [
-		// 		{
-		// 			"type": "Feature",
-		// 			"properties": {
-		// 				"region": "nyc"
-		// 			},
-		// 			"geometry": {
-		// 				"type": "Polygon",
-		// 				"coordinates": [
-		// 					[
-		// 						[-74.259, 40.477],
-		// 						[-73.700, 40.477],
-		// 						[-73.700, 40.917],
-		// 						[-74.259, 40.917],
-		// 						[-74.259, 40.477]
-		// 					]
-		// 				]
-		// 			}
-		// 		},
-		// 		{
-		// 			"type": "Feature",
-		// 			"properties": {
-		// 				"region": "philly"
-		// 			},
-		// 			"geometry": {
-		// 				"type": "Polygon",
-		// 				"coordinates": [
-		// 					[
-		// 						[-75.280, 39.867],
-		// 						[-74.959, 39.867],
-		// 						[-74.959, 40.137],
-		// 						[-75.280, 40.137],
-		// 						[-75.280, 39.867]
-		// 					]
-		// 				]
-		// 			}
-		// 		}
-		// 	]
-		// }
+	// Check if a point is inside a GeoJSON Polygon coordinates array (with hole support)
+	// coords format: [outerRing, hole1, hole2, ...] where each ring is [[lon, lat], ...]
+	const inPolygonCoords = (testLon: number, testLat: number, coords: number[][][]): boolean => {
+		if (!coords[0] || coords[0].length < 3) return false;
 
-		// Initialize regions object
-		const regions = {};
+		// Must be inside outer ring
+		if (!inPolygon(testLon, testLat, coords[0])) return false;
 
-		// Parse geoJSON
-		try {
-			geoJSON = JSON.parse(geoJSON);
-		} catch (e) {
-			warn('Invalid geoJSON string');
-			return regions;
+		// Must NOT be inside any hole
+		for (let i = 1; i < coords.length; i++) {
+			if (coords[i] && inPolygon(testLon, testLat, coords[i])) return false;
 		}
 
-		if (!geoJSON?.features || !Array.isArray(geoJSON.features)) {
-			warn('Invalid geoJSON structure');
-			return regions;
-		}
-
-		// Loop through features
-		geoJSON.features.forEach((feature) => {
-			// Get region name
-			const region = feature.properties.region;
-
-			// Initialize region if needed
-			if (!(region in regions)) regions[region] = { polygons: [] };
-
-			// Loop through coordinates
-			feature.geometry.coordinates.forEach((polygon) => {
-				const polygonPoints: { lat: number; lon: number }[] = [];
-				polygon.forEach((point) => {
-					polygonPoints.push({ lat: point[1], lon: point[0] });
-				});
-
-				// Remove the last point, as geoJSON makes it the same as the first point
-				polygonPoints.pop();
-
-				// Add polygon to region
-				regions[region].polygons.push(polygonPoints);
-			});
-		});
-
-		return regions;
+		return true;
 	};
 
-	// Process regions definition data and find the region of current location
-	const setRegions = (regions) => {
-		/**
-		 * Receives the regions definition as an object in the format below
-		 * and then calls regionDisplay()
-		 * Should be called after geolocateready event
-		 *
-		 * {
-		 *		region1: {
-		 * 	 		circles: [
-		 * 				{lat: centerLat, lon: centerLon, radius: circleTadius},
-		 * 				...
-		 * 				{lat: centerLat, lon: centerLon, radius: circleTadius}
-		 * 			],
-		 * 			squares: [
-		 * 				{corner1: {lat: corner1Lat, lon: corner1Lon}, corner2: {lat: corner2Lat, lon: corner2Lon}},
-		 * 				...
-		 * 				{corner1: {lat: corner1Lat, lon: corner1Lon}, corner2: {lat: corner2Lat, lon: corner2Lon}}
-		 * 			],
-		 * 			polygons: [
-		 * 				[{lat: point1Lat, lon: point1Lon},..., {lat: pointNLat, lon: pointNLon}].
-		 * 				...
-		 * 				[{lat: point1Lat, lon: point1Lon},..., {lat: pointNLat, lon: pointNLon}]
-		 * 			]
-		 * 		}
-		 * }
-		 */
+	// Check if a point is inside a GeoJSON object
+	// Supports FeatureCollection, Feature, Polygon, MultiPolygon
+	const pointInGeoJSON = (testLon: number, testLat: number, geojson: any): boolean => {
+		const type = geojson?.type;
 
-		if (!regions || typeof regions !== 'object') {
-			warn('Invalid regions definition', regions);
-			return vars.geolocate.regions;
+		// FeatureCollection: any feature matches
+		if (type === 'FeatureCollection' && Array.isArray(geojson.features)) {
+			for (const feature of geojson.features) {
+				if (feature && pointInGeoJSON(testLon, testLat, feature)) return true;
+			}
+			return false;
 		}
 
-		// Get current lat / lon
-		const here = {
-			lat: vars.geolocate.location.lat,
-			lon: vars.geolocate.location.lon
-		};
+		// Feature: check geometry
+		if (type === 'Feature') {
+			if (!geojson.geometry) return false;
+			return pointInGeoJSON(testLon, testLat, geojson.geometry);
+		}
 
-		// Check what regions match
-		Object.keys(regions).forEach((region) => {
-			// Check circles
-			if ('circles' in regions[region]) {
-				regions[region].circles.forEach((x) => {
-					if (inCircle(here, { lat: x.lat, lon: x.lon }, x.radius) && !vars.geolocate.regions.includes(region)) vars.geolocate.regions.push(region);
-				});
+		// Polygon
+		if (type === 'Polygon' && Array.isArray(geojson.coordinates)) {
+			return inPolygonCoords(testLon, testLat, geojson.coordinates);
+		}
+
+		// MultiPolygon: any polygon matches
+		if (type === 'MultiPolygon' && Array.isArray(geojson.coordinates)) {
+			for (const polyCoords of geojson.coordinates) {
+				if (Array.isArray(polyCoords) && inPolygonCoords(testLon, testLat, polyCoords)) return true;
 			}
+			return false;
+		}
 
-			// Check squares
-			if ('squares' in regions[region]) {
-				regions[region].squares.forEach((x) => {
-					if (inSquare(here, { lat: x.corner1.lat, lon: x.corner1.lon }, { lat: x.corner2.lat, lon: x.corner2.lon }) && !vars.geolocate.regions.includes(region)) vars.geolocate.regions.push(region);
-				});
-			}
+		return false;
+	};
 
-			// Check polygons
-			if ('polygons' in regions[region]) {
-				regions[region].polygons.forEach((x) => {
-					if (inPolygon(here, x) && !vars.geolocate.regions.includes(region)) vars.geolocate.regions.push(region);
-				});
+	// Match the user's location against configured regions
+	const matchRegions = () => {
+		const lat = vars.geolocate.location.lat;
+		const lon = vars.geolocate.location.lon;
+
+		cfg.geolocate.regions.forEach((region) => {
+			if (!region.alias || !region.geojson) return;
+			if (pointInGeoJSON(lon, lat, region.geojson) && !vars.geolocate.regions.includes(region.alias)) {
+				vars.geolocate.regions.push(region.alias);
 			}
 		});
 
 		// Set body tag attribute
 		vars.body.attr('regions', vars.geolocate.regions.join(','));
-
-		// Return the array of regions of the current location
-		return vars.geolocate.regions;
 	};
 
 	// Show/hide elements based on region
@@ -484,7 +334,7 @@ export const geolocate = (() => {
 		 * [data-region-display] attribute includes a JSON string with the following structure:
 		 *
 		 * {
-		 * 	regions: [			//  a string or an array of region ids (names or numbers) as provided via setRegions function
+		 * 	regions: [			//  a string or an array of region aliases
 		 * 		'nyc',
 		 * 		'philly'
 		 * 	],
@@ -498,12 +348,8 @@ export const geolocate = (() => {
 		 *
 		 */
 
-		// If no elements are passed, then get the default list of elements
-		if (typeof(vars.geolocate.regions[0]) == 'undefined') {
-			vars.geolocate.regions = [jQuery('body').attr('data-region')];
-		}
 		if (elems == undefined) {
-			elems = jQuery('[data-region-display], [class*="region-name-"]');
+			elems = jQuery(cfg.geolocate.regionDisplaySelector);
 		}
 
 		if (elems instanceof Node) {
@@ -573,10 +419,7 @@ export const geolocate = (() => {
 
 	return Object.defineProperties({
 		init,
-		ready,
-		setRegions,
-		regionDisplay,
-		geoJSONtoRegions
+		ready
 	}, {
 		// Set the cfg and vars properties as read-only
 		location: {
@@ -606,9 +449,6 @@ export const geolocate = (() => {
 	}) as {
 		init: (customCfg?: object) => void,
 		ready: (callback: () => void) => void,
-		setRegions: (regions: object) => string[],
-		regionDisplay: (elems?: any) => void,
-		geoJSONtoRegions: (geoJSON: string) => object,
 		location: object,
 		regions: string[],
 		status: object

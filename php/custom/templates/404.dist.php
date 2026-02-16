@@ -24,7 +24,7 @@
 //  Instead, copy it to /php/custom/templates/404.php to override it
 
 ?>
-<section class="content">
+<section class="content grid-container">
 	<h1>Sorry, we can't find that page</h1>
 	<p>You requested <?php
 		$request_protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";

@@ -544,21 +544,25 @@ export const filters = (() => {
 
 			pagination.find(cfg.filters.firstPageSelector).on('click', (e) => {
 				e.preventDefault();
+                if (jQuery(e.target).hasClass('inactive')) return;
 				pageChange(id, 'first');
 			});
 
 			pagination.find(cfg.filters.prevPageSelector).on('click', (e) => {
 				e.preventDefault();
+                if (jQuery(e.target).hasClass('inactive')) return;
 				pageChange(id, 'prev');
 			});
 
 			pagination.find(cfg.filters.nextPageSelector).on('click', (e) => {
 				e.preventDefault();
+                if (jQuery(e.target).hasClass('inactive')) return;
 				pageChange(id, 'next');
 			});
 
 			pagination.find(cfg.filters.lastPageSelector).on('click', (e) => {
 				e.preventDefault();
+                if (jQuery(e.target).hasClass('inactive')) return;
 				pageChange(id, 'last');
 			});
 

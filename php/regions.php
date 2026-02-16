@@ -50,7 +50,6 @@ function get_region_from_ip() {
 			$decoded = json_decode($region_geojson, true);
 			if (is_array($decoded)) {
 				$geo_data[] = [
-					'name'   => $_region['name']  ?? null,
 					'alias'  => $_region['alias'] ?? null,
 					'geojson'=> $decoded,
 				];
@@ -66,190 +65,13 @@ function get_region_from_ip() {
 
 	if ($lat === null || $lon === null || !is_finite($lat) || !is_finite($lon)) return null;
 
-	$test = ['lat' => $lat, 'lon' => $lon];
-
-	/**
-	 * Convert a GeoJSON coordinate pair [lon, lat] to ['lat'=>..., 'lon'=>...]
-	 */
-	$coord_to_point = static function($coord) {
-		if (!is_array($coord) || count($coord) < 2) return null;
-		$lon = (float)$coord[0];
-		$lat = (float)$coord[1];
-		if (!is_finite($lat) || !is_finite($lon)) return null;
-		return ['lat' => $lat, 'lon' => $lon];
-	};
-
-	/**
-	 * Check a point in a GeoJSON Polygon coordinates array:
-	 * Polygon coords: [ [ [lon,lat], ... ] , [hole...], ... ]
-	 * We only test the outer ring (index 0) for now (common and usually intended).
-	 */
-	$in_polygon_coords = static function(array $polygonCoords) use ($test, $coord_to_point) {
-		if (!isset($polygonCoords[0]) || !is_array($polygonCoords[0])) return false;
-
-		$ring = $polygonCoords[0];
-		$poly = [];
-		foreach ($ring as $c) {
-			$p = $coord_to_point($c);
-			if ($p) $poly[] = $p;
-		}
-		if (count($poly) < 3) return false;
-
-		return is_in_polygon($test, $poly);
-	};
-
-	/**
-	 * Evaluate a GeoJSON geometry (or a Feature/FeatureCollection) against the test point.
-	 * Supports:
-	 * - Polygon, MultiPolygon
-	 * - Optional circle / rectangle via properties (non-standard patterns)
-	 */
-	$point_in_geojson = static function(array $geojson) use ($test, $in_polygon_coords) {
-		$type = $geojson['type'] ?? null;
-
-		// FeatureCollection
-		if ($type === 'FeatureCollection' && isset($geojson['features']) && is_array($geojson['features'])) {
-			foreach ($geojson['features'] as $feature) {
-				if (is_array($feature) && $point_in_geojson = null) {} // placeholder to avoid PHP notice in some linters
-			}
-			// We'll handle recursion below by calling ourselves properly (without tricks):
-			foreach ($geojson['features'] as $feature) {
-				if (!is_array($feature)) continue;
-				// Recurse per feature
-				if (($feature['type'] ?? null) === 'Feature' || isset($feature['geometry'])) {
-					if ((static function(array $f) use (&$geojson, $test, $in_polygon_coords) {
-						$properties = (isset($f['properties']) && is_array($f['properties'])) ? $f['properties'] : [];
-						$geometry   = (isset($f['geometry']) && is_array($f['geometry'])) ? $f['geometry'] : null;
-
-						// Optional non-standard circle support via properties
-						// Example:
-						// properties: { shape: "circle", center: [lon,lat] OR {lat,lon}, radius_km: 25 }
-						if (isset($properties['shape']) && $properties['shape'] === 'circle') {
-							$radius = $properties['radius_km'] ?? $properties['radius'] ?? null;
-							$center = $properties['center'] ?? null;
-
-							if (is_array($center) && isset($center['lat'], $center['lon'])) {
-								$centerPt = ['lat' => (float)$center['lat'], 'lon' => (float)$center['lon']];
-								if ($radius !== null && inCircle($test, $centerPt, $radius)) return true;
-							} elseif (is_array($center) && count($center) >= 2) {
-								$centerPt = ['lon' => (float)$center[0], 'lat' => (float)$center[1]];
-								if ($radius !== null && inCircle($test, $centerPt, $radius)) return true;
-							}
-						}
-
-						// Optional non-standard rectangle support via properties
-						// Example:
-						// properties: { shape: "square", corner1: {lat,lon}, corner2: {lat,lon} }
-						if (isset($properties['shape']) && ($properties['shape'] === 'square' || $properties['shape'] === 'rectangle')) {
-							$c1 = $properties['corner1'] ?? null;
-							$c2 = $properties['corner2'] ?? null;
-							if (is_array($c1) && is_array($c2) && isset($c1['lat'],$c1['lon'],$c2['lat'],$c2['lon'])) {
-								if (inSquare($test, ['lat'=>(float)$c1['lat'],'lon'=>(float)$c1['lon']], ['lat'=>(float)$c2['lat'],'lon'=>(float)$c2['lon']])) {
-									return true;
-								}
-							}
-						}
-
-						if (!$geometry) return false;
-
-						$gType = $geometry['type'] ?? null;
-
-						// Polygon
-						if ($gType === 'Polygon' && isset($geometry['coordinates']) && is_array($geometry['coordinates'])) {
-							return $in_polygon_coords($geometry['coordinates']);
-						}
-
-						// MultiPolygon
-						if ($gType === 'MultiPolygon' && isset($geometry['coordinates']) && is_array($geometry['coordinates'])) {
-							foreach ($geometry['coordinates'] as $polyCoords) {
-								if (is_array($polyCoords) && $in_polygon_coords($polyCoords)) return true;
-							}
-							return false;
-						}
-
-						// If someone stored raw "Polygon coordinates" (no wrapper object)
-						if (isset($f['coordinates']) && is_array($f['coordinates']) && $gType === null) {
-							// Try interpret as Polygon coords
-							return $in_polygon_coords($f['coordinates']);
-						}
-
-						return false;
-					})($feature)) {
-						return true;
-					}
-				}
-			}
-			return false;
-		}
-
-		// Feature
-		if ($type === 'Feature') {
-			$geometry = (isset($geojson['geometry']) && is_array($geojson['geometry'])) ? $geojson['geometry'] : null;
-			$properties = (isset($geojson['properties']) && is_array($geojson['properties'])) ? $geojson['properties'] : [];
-
-			// Non-standard shapes via properties (same logic as above)
-			if (isset($properties['shape']) && $properties['shape'] === 'circle') {
-				$radius = $properties['radius_km'] ?? $properties['radius'] ?? null;
-				$center = $properties['center'] ?? null;
-
-				if (is_array($center) && isset($center['lat'], $center['lon'])) {
-					$centerPt = ['lat' => (float)$center['lat'], 'lon' => (float)$center['lon']];
-					if ($radius !== null && inCircle($test, $centerPt, $radius)) return true;
-				} elseif (is_array($center) && count($center) >= 2) {
-					$centerPt = ['lon' => (float)$center[0], 'lat' => (float)$center[1]];
-					if ($radius !== null && inCircle($test, $centerPt, $radius)) return true;
-				}
-			}
-
-			if (isset($properties['shape']) && ($properties['shape'] === 'square' || $properties['shape'] === 'rectangle')) {
-				$c1 = $properties['corner1'] ?? null;
-				$c2 = $properties['corner2'] ?? null;
-				if (is_array($c1) && is_array($c2) && isset($c1['lat'],$c1['lon'],$c2['lat'],$c2['lon'])) {
-					if (inSquare($test, ['lat'=>(float)$c1['lat'],'lon'=>(float)$c1['lon']], ['lat'=>(float)$c2['lat'],'lon'=>(float)$c2['lon']])) {
-						return true;
-					}
-				}
-			}
-
-			if (!$geometry) return false;
-
-			$gType = $geometry['type'] ?? null;
-
-			if ($gType === 'Polygon' && isset($geometry['coordinates']) && is_array($geometry['coordinates'])) {
-				return $in_polygon_coords($geometry['coordinates']);
-			}
-
-			if ($gType === 'MultiPolygon' && isset($geometry['coordinates']) && is_array($geometry['coordinates'])) {
-				foreach ($geometry['coordinates'] as $polyCoords) {
-					if (is_array($polyCoords) && $in_polygon_coords($polyCoords)) return true;
-				}
-				return false;
-			}
-
-			return false;
-		}
-
-		// Bare Geometry
-		if ($type === 'Polygon' && isset($geojson['coordinates']) && is_array($geojson['coordinates'])) {
-			return $in_polygon_coords($geojson['coordinates']);
-		}
-		if ($type === 'MultiPolygon' && isset($geojson['coordinates']) && is_array($geojson['coordinates'])) {
-			foreach ($geojson['coordinates'] as $polyCoords) {
-				if (is_array($polyCoords) && $in_polygon_coords($polyCoords)) return true;
-			}
-			return false;
-		}
-
-		return false;
-	};
-
 	// Check each region
 	foreach ($geo_data as $region) {
 		$alias = $region['alias'] ?? null;
 		$g     = $region['geojson'] ?? null;
 		if (!$alias || !is_array($g)) continue;
 
-		if ($point_in_geojson($g)) {
+		if (point_in_geojson($lon, $lat, $g)) {
 			return $alias;
 		}
 	}
@@ -265,7 +87,7 @@ function get_region_from_ip() {
  */
 function get_region_from_post_type() {
 	$post_type = get_post_type();
-	$forced_region_post_types = get_field('forced_region_post_types', 'option'); // TODO we need to create this option field
+	$forced_region_post_types = get_field('forced_region_post_types', 'option');
 	if (is_array($forced_region_post_types) && in_array($post_type, $forced_region_post_types)) {
 		$related_region = get_field('related_regions');
 		if (is_array($related_region) && $related_region[0] !== '') {
@@ -283,9 +105,9 @@ function get_region_from_post_type() {
 function get_region_from_post() {
 	$post_id = get_the_ID();
 	if ($post_id) {
-		$forced_region = get_field('forced_region', $post_id); // TODO do we have this field? For example in Landing pages?
-		if (is_array($related_region) && $related_region[0] !== '') {
-			return $related_region[0];
+		$forced_region = get_field('forced_region', $post_id);
+		if (is_array($forced_region) && $forced_region[0] !== '') {
+			return $forced_region[0];
 		}
 	}
 	return null;
@@ -346,35 +168,26 @@ function is_region_match($content_regions, $user_region = null, $no_content_regi
 }
 
 /**
- * Check if a point is inside a polygon (ray casting).
- * poly is an array of vertices: [['lat'=>..., 'lon'=>...], ...]
+ * Check if a point is inside a polygon ring using ray casting.
+ * Ring is a GeoJSON coordinate array: [[lon, lat], [lon, lat], ...]
  * Known limitation: doesn't handle polygons crossing poles or the international date line.
  *
- * @param array $test ['lat'=>..., 'lon'=>...]
- * @param array $poly array of vertices (each vertex array has 'lat' and 'lon')
+ * @param float $testLon Longitude of the test point
+ * @param float $testLat Latitude of the test point
+ * @param array $ring Array of GeoJSON coordinate pairs [lon, lat]
+ * @return bool
  */
-function is_in_polygon(array $test, array $poly) {
-	$testLat = (float)($test['lat'] ?? NAN);
-	$testLon = (float)($test['lon'] ?? NAN);
-
-	if (!is_finite($testLat) || !is_finite($testLon) || count($poly) < 3) {
-		return false;
-	}
+function is_in_polygon(float $testLon, float $testLat, array $ring): bool {
+	if (count($ring) < 3) return false;
 
 	$oddNodes = false;
-	$j = count($poly) - 1;
+	$j = count($ring) - 1;
 
-	for ($i = 0; $i < count($poly); $i++) {
-		$iLat = (float)($poly[$i]['lat'] ?? NAN);
-		$iLon = (float)($poly[$i]['lon'] ?? NAN);
-		$jLat = (float)($poly[$j]['lat'] ?? NAN);
-		$jLon = (float)($poly[$j]['lon'] ?? NAN);
-
-		// If any vertex is invalid, mirror TS behavior? TS would likely produce NaN math => false-ish.
-		// Here we fail fast.
-		if (!is_finite($iLat) || !is_finite($iLon) || !is_finite($jLat) || !is_finite($jLon)) {
-			return false;
-		}
+	for ($i = 0; $i < count($ring); $i++) {
+		$iLon = (float)$ring[$i][0];
+		$iLat = (float)$ring[$i][1];
+		$jLon = (float)$ring[$j][0];
+		$jLat = (float)$ring[$j][1];
 
 		if (($iLat < $testLat && $jLat >= $testLat) || ($jLat < $testLat && $iLat >= $testLat)) {
 			$xIntersect = $iLon + ($testLat - $iLat) / ($jLat - $iLat) * ($jLon - $iLon);
@@ -387,4 +200,71 @@ function is_in_polygon(array $test, array $poly) {
 	}
 
 	return $oddNodes;
+}
+
+/**
+ * Check if a point is inside a GeoJSON Polygon coordinates array (with hole support).
+ * Coordinates format: [ outerRing, hole1, hole2, ... ] where each ring is [[lon, lat], ...]
+ * Point must be inside the outer ring and NOT inside any hole.
+ *
+ * @param float $testLon Longitude of the test point
+ * @param float $testLat Latitude of the test point
+ * @param array $coords GeoJSON Polygon coordinates array
+ * @return bool
+ */
+function is_in_polygon_coords(float $testLon, float $testLat, array $coords): bool {
+	if (!isset($coords[0]) || !is_array($coords[0]) || count($coords[0]) < 3) return false;
+
+	// Must be inside outer ring
+	if (!is_in_polygon($testLon, $testLat, $coords[0])) return false;
+
+	// Must NOT be inside any hole
+	for ($i = 1; $i < count($coords); $i++) {
+		if (is_array($coords[$i]) && is_in_polygon($testLon, $testLat, $coords[$i])) return false;
+	}
+
+	return true;
+}
+
+/**
+ * Check if a point is inside a GeoJSON object.
+ * Supports FeatureCollection, Feature, Polygon, and MultiPolygon.
+ *
+ * @param float $testLon Longitude of the test point
+ * @param float $testLat Latitude of the test point
+ * @param array $geojson Parsed GeoJSON object
+ * @return bool
+ */
+function point_in_geojson(float $testLon, float $testLat, array $geojson): bool {
+	$type = $geojson['type'] ?? null;
+
+	// FeatureCollection: any feature matches
+	if ($type === 'FeatureCollection' && isset($geojson['features']) && is_array($geojson['features'])) {
+		foreach ($geojson['features'] as $feature) {
+			if (is_array($feature) && point_in_geojson($testLon, $testLat, $feature)) return true;
+		}
+		return false;
+	}
+
+	// Feature: check geometry
+	if ($type === 'Feature') {
+		$geometry = (isset($geojson['geometry']) && is_array($geojson['geometry'])) ? $geojson['geometry'] : null;
+		if (!$geometry) return false;
+		return point_in_geojson($testLon, $testLat, $geometry);
+	}
+
+	// Polygon
+	if ($type === 'Polygon' && isset($geojson['coordinates']) && is_array($geojson['coordinates'])) {
+		return is_in_polygon_coords($testLon, $testLat, $geojson['coordinates']);
+	}
+
+	// MultiPolygon: any polygon matches
+	if ($type === 'MultiPolygon' && isset($geojson['coordinates']) && is_array($geojson['coordinates'])) {
+		foreach ($geojson['coordinates'] as $polyCoords) {
+			if (is_array($polyCoords) && is_in_polygon_coords($testLon, $testLat, $polyCoords)) return true;
+		}
+		return false;
+	}
+
+	return false;
 }

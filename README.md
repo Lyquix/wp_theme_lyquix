@@ -31,10 +31,10 @@ Lyquix started releasing its own starter theme in 2016 with the goals of:
 ```bash
 # 1. Copy both themes to wp-content/themes/
 cp -r lyquix wp-content/themes/
-cp -r lyquix_child wp-content/themes/
+cp -r lyquix-child wp-content/themes/
 
 # 2. Install dependencies (from child theme directory)
-cd wp-content/themes/lyquix_child
+cd wp-content/themes/lyquix-child
 nvm use 18
 bun install
 
