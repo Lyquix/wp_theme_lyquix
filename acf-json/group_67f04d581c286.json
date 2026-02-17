@@ -3,6 +3,87 @@
     "title": "Options: Regions",
     "fields": [
         {
+            "key": "field_6993794fe1582",
+            "label": "Forced Region Post Types",
+            "name": "forced_region_post_types",
+            "aria-label": "",
+            "type": "acfe_post_types",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "40",
+                "class": "",
+                "id": ""
+            },
+            "post_type": "",
+            "field_type": "select",
+            "min": "",
+            "max": "",
+            "default_value": [],
+            "return_format": "name",
+            "allow_null": 1,
+            "multiple": 1,
+            "ui": 1,
+            "ajax": 0,
+            "placeholder": "",
+            "allow_custom": 0,
+            "allow_in_bindings": 0,
+            "choices": [],
+            "search_placeholder": "",
+            "layout": "",
+            "toggle": 0,
+            "other_choice": 0
+        },
+        {
+            "key": "field_699378e4e1580",
+            "label": "No User Region Meaning",
+            "name": "no_user_region_meaning",
+            "aria-label": "",
+            "type": "button_group",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "30",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "outside-region": "Outside Region",
+                "everywhere": "Everywhere"
+            },
+            "default_value": "outside-region",
+            "return_format": "value",
+            "allow_null": 1,
+            "allow_in_bindings": 0,
+            "layout": "horizontal"
+        },
+        {
+            "key": "field_69937924e1581",
+            "label": "No Content Region Meaning",
+            "name": "no_content_region_meaning",
+            "aria-label": "",
+            "type": "button_group",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "30",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "everywhere": "Everywhere",
+                "none": "None"
+            },
+            "default_value": "everywhere",
+            "return_format": "value",
+            "allow_null": 1,
+            "allow_in_bindings": 0,
+            "layout": "horizontal"
+        },
+        {
             "key": "field_67f04d595b107",
             "label": "Regions",
             "name": "regions",
@@ -35,7 +116,7 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "",
+                        "width": "33",
                         "class": "",
                         "id": ""
                     },
@@ -57,7 +138,7 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "",
+                        "width": "33",
                         "class": "",
                         "id": ""
                     },
@@ -79,7 +160,7 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "",
+                        "width": "33",
                         "class": "",
                         "id": ""
                     },
@@ -92,6 +173,46 @@
                     "parent_repeater": "field_67f04d595b107"
                 },
                 {
+                    "key": "field_68b9ea1e4932c",
+                    "label": "Address",
+                    "name": "address",
+                    "aria-label": "",
+                    "type": "acfe_address",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "50",
+                        "class": "",
+                        "id": ""
+                    },
+                    "placeholder": "Search for address...",
+                    "countries": "",
+                    "search_type": "",
+                    "geolocation": 1,
+                    "custom_address": 0,
+                    "prepend": "",
+                    "append": "",
+                    "api_key": "",
+                    "fields": {
+                        "row-row-0": {
+                            "field": "address",
+                            "name": "address"
+                        },
+                        "row-row-1": {
+                            "field": "state",
+                            "name": "state"
+                        },
+                        "row-row-2": {
+                            "field": "country_short",
+                            "name": "country"
+                        }
+                    },
+                    "allow_in_bindings": 0,
+                    "default_value": "",
+                    "parent_repeater": "field_67f04d595b107"
+                },
+                {
                     "key": "field_68b9e9fe4932b",
                     "label": "Phone Number",
                     "name": "phone_number",
@@ -101,7 +222,7 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "",
+                        "width": "50",
                         "class": "",
                         "id": ""
                     },
@@ -121,46 +242,6 @@
                     "parent_repeater": "field_67f04d595b107"
                 },
                 {
-                    "key": "field_68b9ea1e4932c",
-                    "label": "Address",
-                    "name": "address",
-                    "aria-label": "",
-                    "type": "acfe_address",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "placeholder": "Search for address...",
-                    "countries": "",
-                    "search_type": "",
-                    "geolocation": 1,
-                    "custom_address": 0,
-                    "prepend": "",
-                    "append": "",
-                    "api_key": "",
-                    "fields": {
-                        "row-0": {
-                            "field": "address",
-                            "name": "address"
-                        },
-                        "row-1": {
-                            "field": "state",
-                            "name": "state"
-                        },
-                        "row-2": {
-                            "field": "country_short",
-                            "name": "country"
-                        }
-                    },
-                    "allow_in_bindings": 0,
-                    "default_value": "",
-                    "parent_repeater": "field_67f04d595b107"
-                },
-                {
                     "key": "field_68a769e51178b",
                     "label": "Description",
                     "name": "description",
@@ -170,7 +251,7 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "",
+                        "width": "50",
                         "class": "",
                         "id": ""
                     },
@@ -193,7 +274,7 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "",
+                        "width": "50",
                         "class": "",
                         "id": ""
                     },
@@ -204,7 +285,7 @@
                     "indent_unit": 4,
                     "maxlength": "",
                     "rows": 4,
-                    "max_rows": "",
+                    "max_rows": 8,
                     "return_format": [],
                     "allow_in_bindings": 0,
                     "parent_repeater": "field_67f04d595b107"
@@ -230,12 +311,12 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
+    "display_title": "",
     "acfe_autosync": [
         "json"
     ],
     "acfe_form": 0,
-    "acfe_display_title": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1757528684
+    "modified": 1771289931
 }
