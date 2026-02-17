@@ -58,14 +58,15 @@ add_action('add_meta_boxes', function(){
 					},
 					$post_type,
 					'side',
-					'core'
+					'core',
+					['__back_compat_meta_box' => true]
 			);
 	}
 });
 
 add_action('enqueue_block_editor_assets', function() {
 	wp_enqueue_script(
-		'custom-meta-field',
+		'featured-posts-editor',
 		get_template_directory_uri() . '/js/featured-posts.js',
 		['wp-plugins', 'wp-edit-post', 'wp-components', 'wp-data', 'wp-element'],
 		filemtime(get_template_directory() . '/js/featured-posts.js'), // Cache-busting
@@ -74,7 +75,7 @@ add_action('enqueue_block_editor_assets', function() {
 
 	// Add type="module" to the script
 	add_filter('script_loader_tag', function($tag, $handle, $src) {
-		if ('custom-meta-field' === $handle) {
+		if ('featured-posts-editor' === $handle) {
 				$tag = str_replace(' src', ' type="module" src', $tag);
 		}
 		return $tag;
@@ -106,7 +107,6 @@ add_action('save_post', function($post_id){
 add_action('init', function(){
 	$post_types = get_post_types(['public' => true], 'names'); // Get all public post types
 	foreach ($post_types as $post_type) {
-		//var_dump($post_type);
 		/*Code to add featured as a custom column in the post view*/
 		add_filter('manage_'.$post_type.'_posts_columns', function($columns) {
 			$columns['featured'] = __('Featured', 'textdomain');
@@ -123,10 +123,11 @@ add_action('init', function(){
 		}, 10, 2);
 	}
 });
+
 // Enqueue JavaScript to handle checkbox interaction
 add_action('admin_enqueue_scripts', function() {
-	wp_enqueue_script('featured-checkbox-handler', get_template_directory_uri() . '/js/custom-meta-checkbox.js?v=' . filemtime(get_template_directory() . '/js/custom-meta-checkbox.js'), ['jquery'], null, true);
-	wp_localize_script('featured-checkbox-handler', 'CustomMetaAjax', [
+	wp_enqueue_script('featured-posts-list', get_template_directory_uri() . '/js/featured-posts-list.js', ['jquery'], filemtime(get_template_directory() . '/js/featured-posts-list.js'), true);
+	wp_localize_script('featured-posts-list', 'FeaturedPostsAjax', [
 			'ajax_url' => admin_url('admin-ajax.php'),
 			'nonce' => wp_create_nonce('featured_nonce')
 	]);
