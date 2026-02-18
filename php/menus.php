@@ -183,7 +183,7 @@ class Mega_Menu_Walker extends \Walker_Nav_Menu {
                     $item_output .= '<li><a href="'.get_permalink($post->ID).'">'.get_the_title($post->ID).'</a>';
                     if (get_field('items_type', $menu_item->ID) == 'post-type'):
                         $children = get_children(array('post_parent' => $post->ID));
-                        if (count($children) > 0):
+                        if (count($children) > 0 && get_field('depth', $menu_item->ID) > 1):
                             $item_output .= '<ul class="sub-menu-children">';
                             foreach ($children as $child):
                                 $item_output .= '<li><a href="'.get_permalink($child->ID).'">'.get_the_title($child->ID).'</a></li>';
