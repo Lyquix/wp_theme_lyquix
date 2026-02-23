@@ -77,7 +77,7 @@ add_filter('acf/load_field', function ($field) {
 function get_acf_fields_as_options($field_details, &$choices, $depth = 0)
 {
     $key = $field_details['key'];
-    $choices[$key] = str_repeat('- ', $depth) . ($field_details['label'] ? $field_details['label'] : $field_details['name']) . ' [' . $field_details['key'] . ']';
+    $choices[$key] = str_repeat('- ', $depth) . ($field_details['label'] ?: $field_details['name']) . ' [' . $field_details['key'] . ']';
 
     if ($field_details['sub_fields'] ?? false) {
         foreach ($field_details['sub_fields'] as $sub_field_details) {
@@ -137,6 +137,17 @@ add_filter('acf/load_field', function ($field) {
         if (str_contains($group['title'], 'Custom Post Type: ') || $group['title'] == 'Posts') return true;
     });
 
+    if(in_array($field['key'], ['field_65f471bf7d99b', 'field_65f475117fcd5', 'field_65f475457fcda'])) {
+        $field['choices']['post_title'] = 'Title';
+        $field['choices']['post_name'] = 'Slug';
+        $field['choices']['post_excerpt'] = 'Excerpt';
+        $field['choices']['post_content'] = 'Content';
+    }
+
+    if(in_array($field['key'], ['field_65f4752a7fcd6', 'field_65f4752f7fcd7'])) {
+        $field['choices']['thumbnail'] = 'Thumbnail';
+    }
+
     if ($field['key'] == 'field_6707cced1dfc9') {
         $field['choices']['current'] = 'Current Post';
     }
@@ -150,15 +161,14 @@ add_filter('acf/load_field', function ($field) {
 
     // Loop through field groups
     foreach ($field_groups as $group) {
-        // Create group option
-        $field['choices'][$group['title']] = [];
-
         // Get the field group fields
         $group['fields'] = acf_get_fields($group['key']);
 
         // Loop through fields in group and filter out by field type
         foreach ($group['fields'] as $field_details) {
             if ($field_keys[$field['key']] == null || in_array($field_details['type'], $field_types[$field_keys[$field['key']]])) {
+                // Create group option
+                if(!isset($field['choices'][$group['title']])) $field['choices'][$group['title']] = [];
                 \lqx\filters\get_acf_fields_as_options($field_details, $field['choices'][$group['title']]);
             }
         }
@@ -1436,7 +1446,7 @@ function prepare_query($query, $s)
                 break;
 
             case 'region' :
-                if (isset($_COOKIE['selectedRegion']) == true) {
+                if (isset($_COOKIE['selectedRegion']) || isset($_COOKIE['ipDetectedRegion'])) {
                     $region = \lqx\regions\get_region();
                     // we should probably do a mysql query to get all posts within the related region
                     // this is a repeater field that can have multiple values, and thus we need to check each one unless we want to rework this system
@@ -1828,8 +1838,9 @@ function prepare_typesense_query($s)
                     $ts_args['sort'] = "locations_geopoints($user_lat, $user_lng):asc";
                 }
             case 'region':
-                if (isset($_COOKIE['selectedRegion'])) {
-                    $region = json_decode(stripslashes($_COOKIE['selectedRegion']));
+                $region_cookie = $_COOKIE['selectedRegion'] ?? $_COOKIE['ipDetectedRegion'] ?? null;
+                if ($region_cookie) {
+                    $region = json_decode(stripslashes($region_cookie));
                     if ($region && !empty($region->title)) {
                         $ts_args['s'] .= ' ' . $region->title;
                         $additional_query_by_fields[] = 'related_regions';

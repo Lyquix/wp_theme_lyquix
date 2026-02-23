@@ -30,7 +30,7 @@ namespace lqx\regions;
  * @return string|null - The user's region from cookie or null if not set
  */
 function get_region_from_cookie() {
-	return $_COOKIE['selectedRegion'] ?? null;
+    return $_COOKIE['selectedRegion'] ?? $_COOKIE['ipDetectedRegion'] ?? null;
 }
 
 /**
@@ -152,6 +152,7 @@ function get_region($no_user_region_meaning = null) {
  * @return bool True if user's region matches content regions or if content has no regions and $
  */
 function is_region_match($content_regions, $user_region = null, $no_content_region_meaning = null) {
+    $content_regions = is_array($content_regions) ? array_filter($content_regions) : $content_regions;
 	if ($no_content_region_meaning === null || !in_array($no_content_region_meaning, ['everywhere', 'none'])) {
 		$no_content_region_meaning = get_field('no_content_region_meaning', 'option') ?? 'everywhere'; // TODO we need to create this option field
 	}
@@ -268,3 +269,35 @@ function point_in_geojson(float $testLon, float $testLat, array $geojson): bool 
 
 	return false;
 }
+
+add_action('acf/save_post', function($post_id) {
+    if ($post_id !== 'options') return;
+
+    $regions = get_field('regions', 'option');
+    if (!is_array($regions) || !count($regions)) return;
+
+    $export = [];
+    foreach ($regions as $region) {
+        $alias   = $region['alias'] ?? null;
+        $geojson = $region['geojson'] ?? '';
+        if (!$alias || !is_string($geojson) || trim($geojson) === '') continue;
+        $decoded = json_decode($geojson, true);
+        if (!is_array($decoded)) continue;
+        $export[] = ['alias' => $alias, 'geojson' => $decoded];
+    }
+
+    // Also export the settings needed at early cache time
+    $config = [
+        'regions'               => $export,
+        'no_user_region_meaning'=> get_field('no_user_region_meaning', 'option') ?? 'outside-region',
+        'ip_header'             => get_theme_mod('ip2geo_ip_address_header', 'REMOTE_ADDR'),
+        'test_ip'               => get_theme_mod('ip2geo_test_ip_address', ''),
+        'mmdb_path'             => wp_get_upload_dir()['basedir'] . '/GeoLite2-City.mmdb',
+        'reader_path'           => get_template_directory() . '/php/ip2geo/', // adjust to your theme path
+    ];
+
+    file_put_contents(
+        WP_CONTENT_DIR . '/regions-cache.json',
+        json_encode($config, JSON_PRETTY_PRINT)
+    );
+}, 20);

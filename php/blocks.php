@@ -1469,13 +1469,10 @@ add_action('rest_api_init', function () {
 
 // Filter for rendering blocks within regions they're connected to
 add_filter('render_block', function ($block_content, $block) {
-    if ($block['attrs']) {
-        if (isset($block['attrs']['data']['regions'])) {
-            if (!\lqx\regions\is_region_match($block['attrs']['data']['regions'])) return false;
-            $block_content = '';
-        }
+    if (isset($block['attrs']['data']['regions']) && is_array($block['attrs']['data']['regions'])) {
+        $block['attrs']['data']['regions'] = array_filter($block['attrs']['data']['regions']);
+        if (!\lqx\regions\is_region_match($block['attrs']['data']['regions'])) $block_content = '';
     }
-
     return $block_content;
 }, 10, 2);
 
