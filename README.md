@@ -16,8 +16,10 @@ Lyquix started releasing its own starter theme in 2016 with the goals of:
 ## Key Features
 
 - **14 Content Blocks** - Accordion, Banner, Cards, Filters, Gallery, Hero, Logos, Map, Slider, Tabs, Testimonial, and more
+- **2 Social Embed Blocks** - Facebook and Instagram post/reel/video embeds with live editor preview
 - **13 Layout Blocks** - CSS layout primitives (Box, Center, Cluster, Container, Cover, Frame, Grid, Icon, Imposter, Reel, Sidebar, Stack, Switcher)
 - **6 Modules** - Alerts, CTAs, Modal, Popup, Social Sharing, Social Icons
+- **Regionalization** - GeoJSON-based geographic content targeting with cookie override and per-post forcing
 - **Three-Level Block Settings** - Global defaults, saved presets, per-instance user/admin overrides
 - **Tailwind CSS + SMACSS** - Hybrid styling with utility-first and component-based approaches
 - **TypeScript Library** - 28 modules for detection, analytics, UI components, and utilities
@@ -59,9 +61,11 @@ bun run watch
 
 ### Core Systems
 - **[Template System](docs/template-system.md)** - Custom router, template resolution, creating page templates
-- **[Content Blocks](docs/blocks.md)** - All 14 blocks, three-level settings, presets, styles, overrides
+- **[Content Blocks](docs/blocks.md)** - All 14 blocks + social embeds, three-level settings, presets, styles, overrides
 - **[Layout Blocks](docs/layout-blocks.md)** - 13 CSS layout primitives, Tailwind integration, ACF-to-class conversion
 - **[Modules](docs/modules.md)** - Alerts, CTAs, Modal, Popup, Share, Social - configuration and overrides
+- **[Regionalization](docs/regionalization.md)** - GeoJSON-based region detection, per-block/per-post region filtering, client-side element show/hide
+- **[Editor Tools](docs/editor-tools.md)** - QR code generator, URL shortener, per-post custom CSS/JS, featured posts, excerpt repositioning, SVG uploads
 
 ### Styling and Scripts
 - **[Styling](docs/styling.md)** - SMACSS + Tailwind hybrid, SCSS structure, breakpoints, critical CSS

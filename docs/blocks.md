@@ -1,8 +1,6 @@
-# Content Blocks
+# Blocks
 
-The Lyquix theme provides 14 custom Gutenberg content blocks powered by Advanced Custom Fields PRO. Each block features a three-level settings system, configurable presets and styles, and child theme override capability.
-
-## Available Blocks
+The Lyquix theme provides 14 custom Gutenberg content blocks powered by Advanced Custom Fields PRO. Content blocks feature a three-level settings system, configurable presets and styles, and child theme override capability.
 
 | Block | Description |
 |-------|-------------|
@@ -20,7 +18,16 @@ The Lyquix theme provides 14 custom Gutenberg content blocks powered by Advanced
 | **Tabs Plus** | Enhanced tabs with additional features |
 | **Testimonial** | Testimonial carousel with images and custom colors |
 
-All blocks are registered under the **Lyquix Content Blocks** category in the Gutenberg editor.
+All content blocks are registered under the **Lyquix Content Blocks** category in the Gutenberg editor.
+
+Additionally, two blocks are registered under the standard **Embed** category for embedding social media content:
+
+| Block | Description |
+|-------|-------------|
+| **Facebook Embed** (`lqx/facebook`) | Embeds a Facebook post, reel, or video with live editor preview |
+| **Instagram Embed** (`lqx/instagram`) | Embeds an Instagram post, reel, or video with live editor preview |
+
+Both blocks validate and normalize the pasted URL, display an inline error for invalid links, support alignment and anchor attributes, and load their respective SDKs only on pages where they are used.
 
 ## Three-Level Settings System
 

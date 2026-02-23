@@ -116,6 +116,22 @@ $feature_flags = [
 
 Each flag becomes a customizer toggle under **Feature Flags** with the setting name `feature-{code}`.
 
+## QR Code Generator
+
+| Setting | Type | Default | Description |
+|---------|------|---------|-------------|
+| Enable QR Code Generator | Radio | Yes | Show the QR Code sidebar panel and Classic Editor meta box on all public post types. |
+
+## URL Shortener
+
+| Setting | Type | Default | Description |
+|---------|------|---------|-------------|
+| Enable URL Shortener | Radio | No | Enable automatic short URL creation for published posts. |
+| URL Shortener Provider | Radio | TinyURL | Select the provider: TinyURL or YOURLS. Only visible when the URL Shortener is enabled. |
+| TinyURL API Token | Text | (empty) | Bearer token for the TinyURL API. Only visible when TinyURL is the selected provider. |
+| YOURLS Base URL | Text | (empty) | Base URL of your YOURLS installation. Only visible when YOURLS is the selected provider. |
+| YOURLS Signature Token | Text | (empty) | YOURLS API signature token. Only visible when YOURLS is the selected provider. |
+
 ## Theme Features
 
 These toggles control various theme behaviors:
@@ -141,6 +157,7 @@ These toggles control various theme behaviors:
 | Enable Image Sizes | Yes | Use custom image sizes (thumbnail:150, xsmall: 320, small:640, medium:1280, large:2560, xlarge:3840). |
 | Enable Required Plugins Alert | Yes | Show admin alerts for missing required plugins. |
 | Enable User Management for Editor Role | Yes | Give editors the ability to manage users. |
+| Enable Manager Role | No | Adds a custom Manager role that has the same permissions as Editors but with user management capabilities |
 | Hide ACF Extension Menu Items | Yes | Hide less-used ACF Extended admin menu items. |
 | Hide Activity Log for Non Admins | Yes | Hide the Activity Log menu from non-admin users. |
 | Move Excerpt to after Content | Yes | Move the excerpt field to a more prominent position in the editor. |
