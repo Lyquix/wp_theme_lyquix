@@ -60,4 +60,5 @@
 		// Append alert to body
 		jQuery('body').append(elem);
 	}
-})(JSON.parse(atob('BROWSERS_DATA')));
+})(JSON.parse(new TextDecoder().decode(Uint8Array.from(atob('BROWSERS_DATA'), c => c.charCodeAt(0)))));
+

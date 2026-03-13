@@ -151,7 +151,7 @@ export const lyqbox = (() => {
 				}
 
 				if (opts.encoding === 'base64' && opts.html) {
-					opts.html = atob(opts.html);
+					opts.html = new TextDecoder().decode(Uint8Array.from(atob(opts.html), c => c.charCodeAt(0)));
 					delete opts.encoding;
 				}
 

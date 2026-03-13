@@ -29,7 +29,7 @@
 	// Render filters
 	((settings) => {
 		lqx.ready(() => {
-			lqx.filters.render(JSON.parse(atob(settings)));
+			lqx.filters.render(JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(settings), c => c.charCodeAt(0)))));
 		});
 	})('<?= base64_encode(json_encode(\lqx\filters\prepare_json_data($s))) ?>');
 </script>
