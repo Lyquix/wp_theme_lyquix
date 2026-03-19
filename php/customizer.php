@@ -480,10 +480,18 @@ function customizer_add($wp_customize)
 			'url_shortener_provider' => [
 				'type' => 'radio',
 				'label' => 'URL Shortener Provider',
-				'choices' => ['tinyurl' => 'TinyURL', 'yourls' => 'YOURLS'],
+				'choices' => ['bitly' => 'Bitly', 'tinyurl' => 'TinyURL', 'yourls' => 'YOURLS'],
 				'default' => 'tinyurl',
 				'active_callback' => function () {
 					return get_theme_mod('feat_url_shortener', '0') == '1';
+				}
+			],
+			'url_shortener_bitly_api_key' => [
+				'type' => 'text',
+				'label' => 'Bitly Access Token',
+				'default' => '',
+				'active_callback' => function () {
+					return get_theme_mod('feat_url_shortener', '0') == '1' && get_theme_mod('url_shortener_provider', 'tinyurl') == 'bitly';
 				}
 			],
 			'url_shortener_tinyurl_api_key' => [
@@ -631,6 +639,7 @@ add_action('customize_controls_print_footer_scripts', function () {
 
 		// URL Shortener: provider-specific fields depend on feature + provider
 		var providerControls = {
+			bitly: ['url_shortener_bitly_api_key'],
 			yourls: ['url_shortener_yourls_url', 'url_shortener_yourls_api_key'],
 			tinyurl: ['url_shortener_tinyurl_api_key']
 		};

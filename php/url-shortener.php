@@ -68,6 +68,8 @@ if (get_theme_mod('feat_url_shortener', '0') == '1') {
 			return create_yourls_url($long_url);
 		} elseif ($provider === 'tinyurl') {
 			return create_tinyurl_url($long_url);
+		} elseif ($provider === 'bitly') {
+			return create_bitly_url($long_url);
 		}
 
 		return null;
@@ -87,6 +89,8 @@ if (get_theme_mod('feat_url_shortener', '0') == '1') {
 			return update_yourls_url($alias, $new_long_url);
 		} elseif ($provider === 'tinyurl') {
 			return update_tinyurl_url($alias, $new_long_url);
+		} elseif ($provider === 'bitly') {
+			return update_bitly_url($alias, $new_long_url);
 		}
 
 		return false;
@@ -236,6 +240,78 @@ if (get_theme_mod('feat_url_shortener', '0') == '1') {
 		}
 
 		error_log('URL Shortener: TinyURL update unexpected response - ' . wp_remote_retrieve_body($response));
+		return false;
+	}
+
+	/**
+	 * Create a short URL via Bitly
+	 */
+	function create_bitly_url($long_url) {
+		$api_key = get_theme_mod('url_shortener_bitly_api_key', '');
+
+		if (empty($api_key)) return null;
+
+		$response = wp_remote_post('https://api-ssl.bitly.com/v4/shorten', [
+			'headers' => [
+				'Authorization' => 'Bearer ' . $api_key,
+				'Content-Type' => 'application/json'
+			],
+			'body' => wp_json_encode([
+				'long_url' => $long_url
+			]),
+			'timeout' => 15
+		]);
+
+		if (is_wp_error($response)) {
+			error_log('URL Shortener: Bitly create error - ' . $response->get_error_message());
+			return null;
+		}
+
+		$body = json_decode(wp_remote_retrieve_body($response), true);
+
+		if (!empty($body['link']) && !empty($body['id'])) {
+			return [
+				'short_url' => $body['link'],
+				'alias' => $body['id']
+			];
+		}
+
+		error_log('URL Shortener: Bitly create unexpected response - ' . wp_remote_retrieve_body($response));
+		return null;
+	}
+
+	/**
+	 * Update a Bitly short URL redirect target
+	 */
+	function update_bitly_url($alias, $new_long_url) {
+		$api_key = get_theme_mod('url_shortener_bitly_api_key', '');
+
+		if (empty($api_key)) return false;
+
+		$response = wp_remote_request('https://api-ssl.bitly.com/v4/bitlinks/' . $alias, [
+			'method' => 'PATCH',
+			'headers' => [
+				'Authorization' => 'Bearer ' . $api_key,
+				'Content-Type' => 'application/json'
+			],
+			'body' => wp_json_encode([
+				'long_url' => $new_long_url
+			]),
+			'timeout' => 15
+		]);
+
+		if (is_wp_error($response)) {
+			error_log('URL Shortener: Bitly update error - ' . $response->get_error_message());
+			return false;
+		}
+
+		$code = wp_remote_retrieve_response_code($response);
+
+		if ($code >= 200 && $code < 300) {
+			return true;
+		}
+
+		error_log('URL Shortener: Bitly update unexpected response - ' . wp_remote_retrieve_body($response));
 		return false;
 	}
 
