@@ -150,7 +150,7 @@ function UtmSection(props) {
 	const sectionStyle = { borderTop: '1px solid #ddd', marginTop: '12px', paddingTop: '12px' };
 
 	return createElement('div', { style: sectionStyle },
-		createElement('p', { style: { margin: '0 0 8px', fontWeight: 600 } }, 'UTM Campaign QR Code'),
+		createElement('p', { style: { margin: '0 0 8px', fontWeight: 600 } }, 'UTM Campaign URL'),
 
 		// Mandatory fields
 		createElement('input', { type: 'text', value: utm.campaign, placeholder: 'Campaign Name *', onChange: (e) => setField('campaign')(e.target.value), style: inputStyle, className: 'components-text-control__input' }),
@@ -186,6 +186,35 @@ function UtmSection(props) {
 
 		// QR code
 		utmUrl && createElement(QRRow, { url: utmUrl, filenameSuffix: '-utm' })
+	);
+}
+
+/**
+ * Custom URL QR code section
+ */
+function CustomUrlSection() {
+	const [customUrl, setCustomUrl] = useState('');
+	const sectionStyle = { borderTop: '1px solid #ddd', marginTop: '12px', paddingTop: '12px' };
+
+	let isValid = false;
+	try {
+		if (customUrl.trim()) new URL(customUrl.trim());
+		isValid = customUrl.trim().length > 0;
+	} catch (e) {
+		isValid = false;
+	}
+
+	return createElement('div', { style: sectionStyle },
+		createElement('p', { style: { margin: '0 0 8px', fontWeight: 600 } }, 'Custom URL'),
+		createElement('input', {
+			type: 'text',
+			value: customUrl,
+			placeholder: 'https://example.com',
+			onChange: (e) => setCustomUrl(e.target.value),
+			style: { width: '100%', marginBottom: '8px' },
+			className: 'components-text-control__input'
+		}),
+		isValid && createElement(QRRow, { url: customUrl.trim(), filenameSuffix: '-custom' })
 	);
 }
 
@@ -230,6 +259,7 @@ const QRCodePanel = () => {
 
 	const panelContent = hasUrl
 		? createElement('div', { className: 'lqx-qr-code-panel' },
+			createElement('p', { style: { margin: '0 0 8px', fontWeight: 600 } }, 'Permalink URL'),
 			createElement('div', { style: { display: 'flex', alignItems: 'center', gap: '12px' } },
 				createElement('div', {
 					ref: containerRef,
@@ -250,7 +280,8 @@ const QRCodePanel = () => {
 					}, 'Download SVG')
 				)
 			),
-			createElement(UtmSection, { permalink })
+			createElement(UtmSection, { permalink }),
+			createElement(CustomUrlSection, {})
 		)
 		: createElement('p', {},
 			'Please save the post as a draft to generate its QR code.'

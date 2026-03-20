@@ -11,9 +11,10 @@
 
 const { PluginDocumentSettingPanel } = wp.editPost;
 const { Button } = wp.components;
-const { useSelect } = wp.data;
+const { useSelect, useDispatch } = wp.data;
 const { registerPlugin } = wp.plugins;
 const { createElement, useState, useEffect, useRef, useCallback } = wp.element;
+const apiFetch = wp.apiFetch;
 
 /**
  * Generate QR code SVG string from a URL
@@ -78,15 +79,20 @@ function downloadFile(dataUrl, filename) {
 const UrlShortenerPanel = () => {
 	const [copyLabel, setCopyLabel] = useState('Copy');
 	const [svgMarkup, setSvgMarkup] = useState('');
+	const [generating, setGenerating] = useState(false);
+	const [generateError, setGenerateError] = useState('');
 
-	const { shortUrl, postStatus } = useSelect((select) => {
+	const { shortUrl, postStatus, postId } = useSelect((select) => {
 		const editor = select('core/editor');
 		const meta = editor.getEditedPostAttribute('meta') || {};
 		return {
 			shortUrl: meta['_short_url'] || '',
-			postStatus: editor.getEditedPostAttribute('status')
+			postStatus: editor.getEditedPostAttribute('status'),
+			postId: editor.getCurrentPostId()
 		};
 	});
+
+	const { editPost } = useDispatch('core/editor');
 
 	const qrEnabled = typeof lqxUrlShortener !== 'undefined' && lqxUrlShortener.qrEnabled;
 	const qrAvailable = qrEnabled && typeof qrcode !== 'undefined';
@@ -109,6 +115,22 @@ const UrlShortenerPanel = () => {
 		});
 	}, [shortUrl]);
 
+	const handleGenerate = useCallback(() => {
+		setGenerating(true);
+		setGenerateError('');
+		apiFetch({
+			path: '/lqx/v1/shorten',
+			method: 'POST',
+			data: { post_id: postId }
+		}).then((response) => {
+			editPost({ meta: { _short_url: response.short_url } });
+		}).catch((error) => {
+			setGenerateError(error.message || 'Failed to generate short URL.');
+		}).finally(() => {
+			setGenerating(false);
+		});
+	}, [postId, editPost]);
+
 	const handleDownloadPng = useCallback(() => {
 		if (!shortUrl) return;
 		const dataUrl = generateQRPng(shortUrl, 1024);
@@ -130,7 +152,24 @@ const UrlShortenerPanel = () => {
 	if (isAutoDraft || !isPublished) {
 		panelContent = createElement('p', {}, 'Publish the post to generate a short URL.');
 	} else if (!shortUrl) {
-		panelContent = createElement('p', {}, 'Short URL will be generated on save.');
+		const generateElements = [
+			createElement(Button, {
+				key: 'generate-btn',
+				variant: 'primary',
+				onClick: handleGenerate,
+				isBusy: generating,
+				disabled: generating
+			}, generating ? 'Generating…' : 'Generate Short URL')
+		];
+		if (generateError) {
+			generateElements.push(
+				createElement('p', {
+					key: 'error-msg',
+					style: { color: '#cc1818', marginTop: '8px', fontSize: '12px' }
+				}, generateError)
+			);
+		}
+		panelContent = createElement('div', { className: 'lqx-url-shortener-panel' }, ...generateElements);
 	} else {
 		const elements = [
 			createElement('div', {

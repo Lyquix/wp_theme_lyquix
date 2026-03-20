@@ -315,7 +315,7 @@ if (get_theme_mod('feat_url_shortener', '0') == '1') {
 		return false;
 	}
 
-	// Generate or update short URL on post save
+	// Update short URL redirect target when permalink changes (only if short URL already exists)
 	add_action('save_post', function ($post_id, $post) {
 		// Skip autosaves and revisions
 		if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
@@ -328,27 +328,70 @@ if (get_theme_mod('feat_url_shortener', '0') == '1') {
 		$public_post_types = get_post_types(['public' => true], 'names');
 		if (!in_array($post->post_type, $public_post_types)) return;
 
-		$permalink = get_permalink($post_id);
 		$short_url = get_post_meta($post_id, '_short_url', true);
 		$alias = get_post_meta($post_id, '_short_url_alias', true);
-		$stored_target = get_post_meta($post_id, '_short_url_target', true);
 
-		if (empty($short_url)) {
-			// Create a new short URL
-			$result = create_short_url($permalink);
-			if ($result) {
-				update_post_meta($post_id, '_short_url', $result['short_url']);
-				update_post_meta($post_id, '_short_url_alias', $result['alias']);
-				update_post_meta($post_id, '_short_url_target', $permalink);
-			}
-		} elseif ($stored_target !== $permalink) {
-			// Permalink changed, update the short URL target
-			$success = update_short_url($alias, $permalink);
-			if ($success) {
-				update_post_meta($post_id, '_short_url_target', $permalink);
+		// Only update if a short URL already exists and the permalink has changed
+		if (!empty($short_url) && !empty($alias)) {
+			$permalink = get_permalink($post_id);
+			$stored_target = get_post_meta($post_id, '_short_url_target', true);
+			if ($stored_target !== $permalink) {
+				$success = update_short_url($alias, $permalink);
+				if ($success) {
+					update_post_meta($post_id, '_short_url_target', $permalink);
+				}
 			}
 		}
 	}, 10, 2);
+
+	// REST API endpoint for manual short URL creation
+	add_action('rest_api_init', function () {
+		register_rest_route('lqx/v1', '/shorten', [
+			'methods' => 'POST',
+			'callback' => function ($request) {
+				$post_id = intval($request->get_param('post_id'));
+
+				$post = get_post($post_id);
+				if (!$post) {
+					return new \WP_Error('post_not_found', 'Post not found', ['status' => 404]);
+				}
+
+				if ($post->post_status !== 'publish') {
+					return new \WP_Error('not_published', 'Post must be published before generating a short URL', ['status' => 400]);
+				}
+
+				$permalink = get_permalink($post_id);
+				$existing = get_post_meta($post_id, '_short_url', true);
+
+				// Return existing short URL if already created
+				if (!empty($existing)) {
+					return rest_ensure_response(['short_url' => $existing]);
+				}
+
+				$result = create_short_url($permalink);
+				if (!$result) {
+					return new \WP_Error('creation_failed', 'Failed to create short URL. Check provider settings.', ['status' => 500]);
+				}
+
+				update_post_meta($post_id, '_short_url', $result['short_url']);
+				update_post_meta($post_id, '_short_url_alias', $result['alias']);
+				update_post_meta($post_id, '_short_url_target', $permalink);
+
+				return rest_ensure_response(['short_url' => $result['short_url']]);
+			},
+			'permission_callback' => function ($request) {
+				$post_id = intval($request->get_param('post_id'));
+				return $post_id && current_user_can('edit_post', $post_id);
+			},
+			'args' => [
+				'post_id' => [
+					'required' => true,
+					'type' => 'integer',
+					'sanitize_callback' => 'absint'
+				]
+			]
+		]);
+	});
 
 	// Classic Editor: Add meta box for all public post types
 	add_action('add_meta_boxes', function ($post_type, $post) {
@@ -400,11 +443,19 @@ if (get_theme_mod('feat_url_shortener', '0') == '1') {
 			filemtime(get_template_directory() . '/js/url-shortener-metabox.js'),
 			true
 		);
+
+		global $post;
+		wp_localize_script('lqx-url-shortener-metabox', 'lqxUrlShortener', [
+			'nonce' => wp_create_nonce('wp_rest'),
+			'postId' => $post ? $post->ID : 0,
+			'restUrl' => rest_url('lqx/v1/shorten'),
+			'qrEnabled' => get_theme_mod('feat_qr_generator', '1') == '1'
+		]);
 	});
 
 	// Gutenberg: Enqueue block editor assets
 	add_action('enqueue_block_editor_assets', function () {
-		$deps = ['wp-plugins', 'wp-edit-post', 'wp-components', 'wp-data', 'wp-element'];
+		$deps = ['wp-plugins', 'wp-edit-post', 'wp-components', 'wp-data', 'wp-element', 'wp-api-fetch'];
 		if (get_theme_mod('feat_qr_generator', '1') == '1') {
 			$deps[] = 'qr-code-generator';
 		}

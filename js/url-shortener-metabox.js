@@ -19,11 +19,71 @@
 		var shortUrl = container.getAttribute('data-short-url');
 		var qrEnabled = container.getAttribute('data-qr-enabled') === '1';
 
-		if (!shortUrl) return;
+		if (shortUrl) {
+			renderShortUrl(container, shortUrl, qrEnabled);
+		} else {
+			renderGenerateButton(container, qrEnabled);
+		}
+	});
 
-		// Clear placeholder message
+	function renderGenerateButton(container, qrEnabled) {
 		container.innerHTML = '';
 
+		var generateBtn = document.createElement('button');
+		generateBtn.type = 'button';
+		generateBtn.className = 'button button-primary';
+		generateBtn.textContent = 'Generate Short URL';
+		generateBtn.addEventListener('click', function () {
+			generateBtn.disabled = true;
+			generateBtn.textContent = 'Generating…';
+
+			var nonce = (typeof lqxUrlShortener !== 'undefined') ? lqxUrlShortener.nonce : '';
+			var postId = (typeof lqxUrlShortener !== 'undefined') ? lqxUrlShortener.postId : 0;
+			var restUrl = (typeof lqxUrlShortener !== 'undefined') ? lqxUrlShortener.restUrl : '';
+
+			fetch(restUrl, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-WP-Nonce': nonce
+				},
+				body: JSON.stringify({ post_id: postId })
+			})
+				.then(function (response) { return response.json(); })
+				.then(function (data) {
+					if (data && data.short_url) {
+						container.innerHTML = '';
+						renderShortUrl(container, data.short_url, qrEnabled);
+					} else {
+						var msg = (data && data.message) ? data.message : 'Failed to generate short URL.';
+						showError(container, generateBtn, msg);
+					}
+				})
+				.catch(function () {
+					showError(container, generateBtn, 'Request failed. Check provider settings.');
+				});
+		});
+
+		container.appendChild(generateBtn);
+	}
+
+	function showError(container, btn, message) {
+		btn.disabled = false;
+		btn.textContent = 'Generate Short URL';
+
+		var existing = container.querySelector('.lqx-url-shortener-error');
+		if (existing) existing.remove();
+
+		var errorMsg = document.createElement('p');
+		errorMsg.className = 'lqx-url-shortener-error';
+		errorMsg.style.color = '#cc1818';
+		errorMsg.style.marginTop = '8px';
+		errorMsg.style.fontSize = '12px';
+		errorMsg.textContent = message;
+		container.appendChild(errorMsg);
+	}
+
+	function renderShortUrl(container, shortUrl, qrEnabled) {
 		// Short URL display with copy button
 		var urlContainer = document.createElement('div');
 		urlContainer.style.display = 'flex';
@@ -111,7 +171,7 @@
 			qrLayout.appendChild(btnContainer);
 			container.appendChild(qrLayout);
 		}
-	});
+	}
 
 	function generatePng(url, size) {
 		var qr = qrcode(0, 'M');

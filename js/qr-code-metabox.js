@@ -23,7 +23,13 @@
 		// Clear placeholder message
 		container.innerHTML = '';
 
-		// --- Base QR code ---
+		// --- Permalink URL heading + QR code ---
+
+		var permalinkHeading = document.createElement('p');
+		permalinkHeading.style.margin = '0 0 8px';
+		permalinkHeading.style.fontWeight = '600';
+		permalinkHeading.textContent = 'Permalink URL';
+		container.appendChild(permalinkHeading);
 
 		var qr = qrcode(0, 'M');
 		qr.addData(url);
@@ -39,6 +45,10 @@
 		// --- UTM section ---
 
 		container.appendChild(buildUtmSection(url));
+
+		// --- Custom URL section ---
+
+		container.appendChild(buildCustomUrlSection());
 	});
 
 	// Build a QR row: image left, stacked download buttons right
@@ -99,7 +109,7 @@
 		var heading = document.createElement('p');
 		heading.style.margin = '0 0 8px';
 		heading.style.fontWeight = '600';
-		heading.textContent = 'UTM Campaign QR Code';
+		heading.textContent = 'UTM Campaign URL';
 		section.appendChild(heading);
 
 		// Field builder
@@ -225,6 +235,52 @@
 
 		[fCampaign, fSource, fMedium, fId, fTerm, fContent].forEach(function (inp) {
 			inp.addEventListener('input', update);
+		});
+
+		return section;
+	}
+
+	// Build the Custom URL section with a text input and live QR code
+	function buildCustomUrlSection() {
+		var section = document.createElement('div');
+		section.style.borderTop = '1px solid #ddd';
+		section.style.marginTop = '12px';
+		section.style.paddingTop = '12px';
+
+		var heading = document.createElement('p');
+		heading.style.margin = '0 0 8px';
+		heading.style.fontWeight = '600';
+		heading.textContent = 'Custom URL';
+		section.appendChild(heading);
+
+		var urlInput = document.createElement('input');
+		urlInput.type = 'text';
+		urlInput.placeholder = 'https://example.com';
+		urlInput.setAttribute('style', 'width:100%;margin-bottom:8px;box-sizing:border-box;');
+		urlInput.className = 'widefat';
+		section.appendChild(urlInput);
+
+		var qrWrap = document.createElement('div');
+		section.appendChild(qrWrap);
+
+		urlInput.addEventListener('input', function () {
+			var val = urlInput.value.trim();
+			qrWrap.innerHTML = '';
+
+			if (!val) return;
+
+			try { new URL(val); } catch (e) { return; }
+
+			var customQr = qrcode(0, 'M');
+			customQr.addData(val);
+			customQr.make();
+			var customSvg = customQr.createSvgTag({ cellSize: 4, margin: 4, scalable: true });
+
+			qrWrap.appendChild(buildQRRow(customSvg, function () {
+				return generatePng(val, 1024);
+			}, function () {
+				return customQr.createSvgTag({ cellSize: 4, margin: 4, scalable: true });
+			}, '-custom'));
 		});
 
 		return section;
