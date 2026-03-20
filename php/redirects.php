@@ -254,11 +254,11 @@ if (get_theme_mod('feat_redirects', '1') == '1') {
 	 * Build chains from a flat list of redirect items.
 	 *
 	 * Each chain is an array of items ordered from the most-remote source
-	 * to the item that directly redirects to the post. A chain is emitted
-	 * at every depth level, so both direct and chained redirects appear.
+	 * to the item that directly redirects to the post. Only full chains are
+	 * emitted (starting at the root with no further predecessors), so each
+	 * unique chain appears exactly once.
 	 *
-	 * Example: /oldest → /old → /post produces two chains:
-	 *   [/old → /post]
+	 * Example: /oldest → /old → /post produces one chain:
 	 *   [/oldest → /old → /post]
 	 */
 	function build_chains($items, $post_path) {
@@ -293,8 +293,9 @@ if (get_theme_mod('feat_redirects', '1') == '1') {
 
 	/**
 	 * Recursive traversal to collect chains ending at $target.
-	 * Chains are emitted at every level (not only at leaves) so that
-	 * direct redirects are shown alongside longer chains.
+	 * A chain is only emitted when no further predecessors exist (i.e., at the
+	 * root of the chain), so each unique chain is represented exactly once at
+	 * its full length.
 	 */
 	function traverse_chains($target, $by_dest, $current_chain, &$chains, &$visited, $depth) {
 		if ($depth >= 10 || !isset($by_dest[$target])) return;
@@ -308,13 +309,19 @@ if (get_theme_mod('feat_redirects', '1') == '1') {
 			$new_chain = array_merge([$item], $current_chain);
 
 			$key = implode(',', array_column($new_chain, 'id'));
-			if (!in_array($key, $visited)) {
-				$visited[] = $key;
-				$chains[]  = $new_chain;
-			}
+			if (in_array($key, $visited)) continue;
+			$visited[] = $key;
+
+			$count_before = count($chains);
 
 			// Continue looking for even deeper sources
 			traverse_chains($item['_src'], $by_dest, $new_chain, $chains, $visited, $depth + 1);
+
+			// Only emit this chain if the recursion found no deeper chains,
+			// meaning this item is the root (no predecessors) or depth limit was hit.
+			if (count($chains) === $count_before) {
+				$chains[] = $new_chain;
+			}
 		}
 	}
 
