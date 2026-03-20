@@ -578,13 +578,26 @@ function theme_setup() {
 	// Switch dashboard fonts to Inter
 	if (get_theme_mod('feat_switch_dashboard_fonts', '1') === '1') {
 		add_action( 'admin_enqueue_scripts', function() {
-			wp_enqueue_style( 'inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' );
-			wp_add_inline_style( 'inter-font', '
-				body, #wpadminbar * {
+			wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+			wp_add_inline_style('inter-font', '
+				body,
+				#wpadminbar,
+				#wpadminbar * {
 						font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 				}
 			');
-		} );
+		});
+		add_action('wp_enqueue_scripts', function() {
+			if (is_user_logged_in()) {
+				wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+				wp_add_inline_style('inter-font', '
+					#wpadminbar,
+					#wpadminbar * {
+							font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+					}
+				');
+			}
+		});
 	}
 }
 
