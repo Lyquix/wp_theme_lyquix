@@ -10,18 +10,18 @@ Generates a QR code for the current post or page URL directly inside the editor.
 
 Controlled by the Customizer toggle **Theme Features > QR Code Generator** (`feat_qr_generator`, default: enabled).
 
-### Base QR Code
+### Permalink URL
 
-Once a post has been saved (i.e. has a permalink), the QR code is automatically generated and displayed. It shows the plain permalink with no tracking parameters.
+Once a post has been saved (i.e. has a permalink), the QR code is automatically generated and displayed under a **Permalink URL** heading. It shows the plain permalink with no tracking parameters.
 
 - **Download PNG** — exports a 1024×1024 px rasterized image (`qr-code.png`)
 - **Download SVG** — exports a scalable vector file (`qr-code.svg`)
 
-### UTM Campaign QR Code
+### UTM Campaign URL
 
-Below the base QR code, a form lets editors generate a second QR code with UTM tracking parameters appended to the URL.
+Below the permalink QR code, a form lets editors generate a second QR code with UTM tracking parameters appended to the URL.
 
-**Required fields** (marked `*`) — the QR code only appears when all three are filled:
+**Required fields** — the QR code only appears when all three are filled:
 
 | Field | UTM parameter |
 |-------|--------------|
@@ -38,6 +38,10 @@ Below the base QR code, a form lets editors generate a second QR code with UTM t
 | Campaign Content | `utm_content` |
 
 The QR code and resulting URL update **live** as you type — no submit button needed. The resulting URL is displayed in a read-only, monospace input field with a **Copy** button. Downloads are named `qr-code-utm.png` / `qr-code-utm.svg`.
+
+### Custom URL
+
+A third section lets editors generate a QR code for any arbitrary URL — not necessarily the post permalink. Enter any valid URL in the text field and the QR code appears instantly below it. Downloads are named `qr-code-custom.png` / `qr-code-custom.svg`. The field accepts any well-formed URL (validated client-side; no code is generated for invalid input).
 
 ### Implementation
 
@@ -83,15 +87,25 @@ A hosted service. Required settings:
 
 API calls use `POST https://api.tinyurl.com/create` to create and `PATCH https://api.tinyurl.com/change` to update.
 
+#### Bitly
+
+A hosted service. Required settings:
+
+| Customizer field | Description |
+|-----------------|-------------|
+| `url_shortener_bitly_api_key` | Bitly OAuth access token |
+
+API calls use `POST https://api-ssl.bitly.com/v4/shorten` to create and `PATCH https://api-ssl.bitly.com/v4/bitlinks/{id}` to update. The `id` stored as the alias is Bitly's composite `{domain}/{hash}` identifier.
+
 ### How It Works
 
-1. When a post is **first published**, the permalink is sent to the configured provider and the returned short URL and alias are stored as post meta (`_short_url`, `_short_url_alias`, `_short_url_target`).
-2. If the **permalink changes** (slug or domain update), the existing alias is automatically updated to point to the new URL.
+1. After a post is **published**, the sidebar panel shows a **Generate Short URL** button. Clicking it calls the REST endpoint, which sends the permalink to the configured provider and stores the returned short URL and alias as post meta (`_short_url`, `_short_url_alias`, `_short_url_target`). If a short URL already exists, the existing value is returned without creating a new one.
+2. If the **permalink changes** after a short URL has been generated, the existing alias is automatically updated to point to the new URL on `save_post`.
 3. Autosaves and revisions are skipped.
 
 ### Editor Display
 
-The short URL appears in the sidebar panel / meta box immediately after the post is published. It is shown in a read-only monospace input field with a **Copy** button.
+Once a short URL exists, the sidebar panel / meta box shows it in a read-only monospace input field with a **Copy** button. Before a short URL exists, a **Generate Short URL** button is shown instead (only available on published posts).
 
 If the QR Code Generator feature is also enabled, a QR code of the short URL is displayed below it with **Download PNG** and **Download SVG** buttons.
 
@@ -110,6 +124,53 @@ If the QR Code Generator feature is also enabled, a QR code of the short URL is 
 | `php/url-shortener.php` | Feature flag, post meta registration, provider API functions, `save_post` hook, script enqueueing, meta box registration |
 | `js/url-shortener-sidebar.js` | Gutenberg React panel |
 | `js/url-shortener-metabox.js` | Classic Editor jQuery meta box |
+
+---
+
+## Redirects Manager
+
+Displays all redirects pointing to the current post and lets editors create new ones without leaving the editor. Available as a **Gutenberg sidebar panel** ("Redirects") and a **Classic Editor meta box** on all public post types.
+
+Requires the [Redirection plugin](https://wordpress.org/plugins/redirection/) to be installed and active. The feature reads from and writes to the Redirection plugin's database tables directly, so all redirects created here are fully managed within Redirection.
+
+### Enabling
+
+Controlled by the Customizer toggle **Theme Features > Redirects** (`feat_redirects`, default: enabled). If the Redirection plugin is not active the feature silently does nothing even when enabled.
+
+### Redirect Display
+
+The panel loads all redirect rules whose destination matches the current post's permalink path, following chains recursively (up to 10 hops deep). Results are split into two groups:
+
+**Redirects** — single-hop rules that point directly to this post. Each row shows:
+- A status dot (green = enabled, gray = disabled)
+- The source URL as a clickable link
+- The HTTP response code badge (e.g. `301`)
+- The hit count, if greater than zero
+
+**Redirect Chains** — multi-hop chains where a source redirects to an intermediate URL which ultimately resolves to this post. Only the **complete** chain is shown (starting from the root source with no further predecessors), so each unique path appears exactly once. Each chain shows all hops in order, followed by a terminal row (`↳ /post-path  This Post`) indicating the final destination.
+
+### Adding a Redirect
+
+An **Add Redirect** form at the bottom of the panel lets editors type a source path (e.g. `/old-url`) and click **Add** (or press Enter) to immediately create a 301 redirect pointing to the current post. The redirect list refreshes automatically after creation.
+
+A **Refresh** button is always available to reload the redirect data on demand.
+
+### REST API
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/lqx/v1/redirects?post_id=N` | Returns all chains for the given post |
+| `POST` | `/lqx/v1/redirects` | Creates a new redirect; body: `{ post_id, source_url }` |
+
+Both endpoints require the current user to have `edit_post` capability on the target post.
+
+### Implementation
+
+| File | Purpose |
+|------|---------|
+| `php/redirects.php` | Feature flag, redirect chain collection/building, REST endpoints, meta box registration, script enqueueing |
+| `js/redirects-sidebar.js` | Gutenberg React panel |
+| `js/redirects-metabox.js` | Classic Editor jQuery meta box |
 
 ---
 
