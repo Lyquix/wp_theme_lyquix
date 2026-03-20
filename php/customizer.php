@@ -468,6 +468,12 @@ function customizer_add($wp_customize)
 				'label' => 'Enable QR Code Generator',
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
+			],
+			'feat_redirects' => [
+				'type' => 'radio',
+				'label' => 'Enable Redirects Manager (requires Redirection plugin)',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
 			]
 		],
 		'URL Shortener' => [

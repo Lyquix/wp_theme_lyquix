@@ -113,6 +113,9 @@ require_once get_template_directory() . '/php/qr-code.php';
 // URL Shortener
 require_once get_template_directory() . '/php/url-shortener.php';
 
+// Redirects Manager
+require_once get_template_directory() . '/php/redirects.php';
+
 // Fields
 require_once get_template_directory() . '/php/fields.php';
 
