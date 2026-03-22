@@ -578,7 +578,7 @@ function theme_setup() {
 	// Switch system fonts to Inter
 	function enqueue_inter($is_frontend = null) {
 		wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-		wp_add_inline_style('inter-font', ($is_frontend ?? 'body, #login, #loginform, .login,') . '
+		wp_add_inline_style('inter-font', ($is_frontend === true ? '' : 'body, #login, #loginform, .login,') . '
 			#wpadminbar, #wpadminbar * {
 					font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 			}
