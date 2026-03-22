@@ -575,28 +575,20 @@ function theme_setup() {
 		wp_add_inline_script('lqx-adminbar-notch', $js);
 	}, 20);
 
-	// Switch dashboard fonts to Inter
-	if (get_theme_mod('feat_switch_dashboard_fonts', '1') === '1') {
-		add_action( 'admin_enqueue_scripts', function() {
-			wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-			wp_add_inline_style('inter-font', '
-				body,
-				#wpadminbar,
-				#wpadminbar * {
-						font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-				}
-			');
-		});
-		add_action('wp_enqueue_scripts', function() {
-			if (is_user_logged_in()) {
-				wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-				wp_add_inline_style('inter-font', '
-					#wpadminbar,
-					#wpadminbar * {
-							font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-					}
-				');
+	// Switch system fonts to Inter
+	function enqueue_inter($is_frontend = null) {
+		wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+		wp_add_inline_style('inter-font', ($is_frontend ?? 'body, #login, #loginform, .login,') . '
+			#wpadminbar, #wpadminbar * {
+					font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 			}
+		');
+	};
+	if (get_theme_mod('feat_switch_dashboard_fonts', '1') === '1') {
+		add_action('admin_enqueue_scripts', '\lqx\setup\enqueue_inter');
+		add_action('login_enqueue_scripts', '\lqx\setup\enqueue_inter');
+		add_action('wp_enqueue_scripts', function() {
+			if (is_user_logged_in()) \lqx\setup\enqueue_inter(true);
 		});
 	}
 }
