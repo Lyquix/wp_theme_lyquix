@@ -48,7 +48,7 @@
 				type="<?= esc_attr($item['video']['upload']['mime_type']) ?>"/>
 		</video>
 	<?php else: ?>
-		<?= $s['image_clickable'] == 'y' && $item['link']['url'] ? sprintf('<a href="%s" target ="%s">', esc_attr($item['link']['url']), $item['link']['target']) : '' ?>
+		<?= $s['image_clickable'] == 'y' && isset($item['link']) && $item['link']['url'] ? sprintf('<a href="%s" target ="%s">', esc_attr($item['link']['url']), $item['link']['target']) : '' ?>
 	<?php if($item['image_html']):
 		// TODO what is image_html?
 		echo $item['image_html'];
@@ -58,6 +58,6 @@
 			<?= \lqx\util\get_src_srcset_sizes_attribs($item['image']) ?>
 			alt="<?= esc_attr($item['image']['alt']) ?>">
 	<?php endif; ?>
-		<?= $s['image_clickable'] == 'y' && $item['link']['url'] ? '</a>' : '' ?>
+		<?= $s['image_clickable'] == 'y' && isset($item['link']) && $item['link']['url'] ? '</a>' : '' ?>
 	<?php endif; ?>
 </div>

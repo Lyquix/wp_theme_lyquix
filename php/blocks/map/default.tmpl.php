@@ -53,6 +53,12 @@ foreach($c as $item) {
 	$display_address_override =$location_fields['display_address_override'];
 	$custom_class = $location_fields['additional_classes'];
 	$custom_id = $location_fields['item_id'];
+	$item_regions = ($id ? get_field('related_regions', $id) : null) ?: [];
+	if (empty($item_regions) && $id) {
+		$_rel_region = get_field('related_region', $id);
+		if (!empty($_rel_region['related_regions'])) $item_regions = $_rel_region['related_regions'];
+	}
+	if (!is_array($item_regions)) $item_regions = [];
 	$processed_item = [
 		'item_id' => $id,
 		'title' => $heading,
@@ -74,7 +80,8 @@ foreach($c as $item) {
 		'infoWindow' => $s['show_infowindows'] == 'y' ? 'true' : 'false',
 		'html' => ($s['show_infowindows'] == 'y' ? require \lqx\blocks\get_template('map', $s['preset'], 'infowindow'): ''),
 		'additional_classes' => $custom_class,
-		'custom_id' => $custom_id
+		'custom_id' => $custom_id,
+		'regions' => $item_regions
 	];
 	array_push($processed_items, $processed_item);
 }

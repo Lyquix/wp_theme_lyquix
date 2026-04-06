@@ -291,7 +291,7 @@ function validate_settings($settings)
                         'type' => [
                             'type' => 'string',
                             'required' => true,
-                            'allowed' => ['author', 'date', 'field', 'parentless', 'post_parent', 'taxonomy', 'venue', 'dynamic', 'meta_key', 'region', 'manual']
+                            'allowed' => ['author', 'date', 'field', 'parentless', 'post_parent', 'taxonomy', 'venue', 'dynamic', 'meta_key', 'region', 'manual', 'custom']
                         ],
                         // TODO add validation for taxonomy_term
                         /*
@@ -324,6 +324,7 @@ function validate_settings($settings)
                             'default' => '='
                         ],
                         'value' => \lqx\util\schema_str_req_emp,
+                        'custom_function' => \lqx\util\schema_str_req_emp,
                         'anchor' => [
                             'type' => 'string',
                             'allowed' => ['d', 'w', 'm', 'y'],
@@ -380,7 +381,7 @@ function validate_settings($settings)
                         'type' => [
                             'type' => 'string',
                             'required' => true,
-                            'allowed' => ['taxonomy', 'field', 'distance', 'region']
+                            'allowed' => ['taxonomy', 'field', 'distance', 'region', 'custom']
                         ],
                         'taxonomy' => \lqx\util\schema_str_req_emp,
                         'acf_field' => \lqx\util\schema_str_req_emp,
@@ -416,6 +417,8 @@ function validate_settings($settings)
                             ]
                         ],
                         'narrow_options' => \lqx\util\schema_str_req_y,
+                        'custom_options_function' => \lqx\util\schema_str_req_emp,
+                        'custom_filter_function' => \lqx\util\schema_str_req_emp,
                         'show_view_all' => \lqx\util\schema_str_req_y,
                         'view_all_label' => [
                             'type' => 'string',
@@ -732,6 +735,25 @@ function init_settings($s)
                 }
                 break;
 
+            case 'custom':
+                foreach (
+                    [
+                        'operator_simple',
+                        'operator_advanced',
+                        'date_source',
+                        'taxonomy_term',
+                        'post_parent',
+                        'acf_field',
+                        'value',
+                        'anchor',
+                        'unit',
+                        'start',
+                        'end'
+                    ] as $k
+                ) {
+                    unset($pre_filter[$k]);
+                }
+                break;
         }
 
         $s['pre_filters'][$i] = $pre_filter;
@@ -815,6 +837,15 @@ function init_settings($s)
                 if ($region !== 'outside-region') {
                     $control['selected'] = 'this-region';
                 }
+                break;
+
+            case 'custom':
+                // Set the label from ACF or default
+                if (!isset($control['label'])) $control['label'] = 'Custom Filter';
+
+                // Remove non-custom fields
+                unset($control['taxonomy']);
+                unset($control['acf_field']);
                 break;
         }
 
@@ -1090,7 +1121,11 @@ function get_options($s)
                             // All other field types
                             // Loop through the field values
                             foreach ($field_values as $field_value) {
-                                $array = unserialize($field_value->meta_value);
+                                $raw   = $field_value->meta_value;
+                                $array = ($raw !== '' && $raw !== null) ? @unserialize($raw) : false;
+                                if ($array === false && $raw !== 'b:0;') {
+                                    $array = json_decode($raw, true);
+                                }
 
                                 if ($array) {
                                     foreach ($array as $value) {
@@ -1126,6 +1161,12 @@ function get_options($s)
                 $options = $s['controls'][$i]['options'];
                 break;
 
+            case 'custom':
+                if (!empty($control['custom_options_function']) && is_callable($control['custom_options_function'])) {
+                    $options = call_user_func($control['custom_options_function'], $control, $posts, $s);
+                    if (!is_array($options)) $options = [];
+                }
+                break;
         }
 
         // Outside the cases because this will always be utilized regardless of the order
@@ -1480,6 +1521,11 @@ function prepare_query($query, $s)
                     $query['post__in'] = $pre_filter['manual'];
                 }
                 break;
+            case 'custom':
+                if (!empty($pre_filter['custom_function']) && is_callable($pre_filter['custom_function'])) {
+                    $query = call_user_func($pre_filter['custom_function'], $query, $pre_filter, $s);
+                }
+                break;
             default:
                 break;
         }
@@ -1685,6 +1731,11 @@ function prepare_query($query, $s)
                         }
                         break;
                     }
+                case 'custom':
+                    if (!empty($control['custom_filter_function']) && is_callable($control['custom_filter_function'])) {
+                        $query = call_user_func($control['custom_filter_function'], $query, $control, $s);
+                    }
+                    break;
             }
         }
     }
@@ -2526,7 +2577,12 @@ function merge_settings($s, $p)
                 // Traverse the list
                 foreach ($value as $i => $v) {
                     // If the setting is being overriden, traverse list arrays
-                    $s[$key][$i] = merge_settings($s[$key][$i], $v);
+                    // Guard: $s[$key] may be null/shorter if preset changed since last request
+                    if (isset($s[$key]) && is_array($s[$key]) && array_key_exists($i, $s[$key])) {
+                        $s[$key][$i] = merge_settings($s[$key][$i], $v);
+                    } else {
+                        $s[$key][$i] = $v;
+                    }
                 }
             } // Associative arrays
             else {
@@ -2599,7 +2655,7 @@ function handle_api_call($request)
     $s = apply_filters('lyquix_filters_option_map', $s);
 
     // Get the posts
-    $post_info = $s['typesense_search'] == 'y' ? \lqx\filters\get_posts_with_typesense_data($s) : \lqx\filters\get_posts_with_data($s);
+    $post_info = ($s['typesense_search'] ?? 'n') == 'y' ? \lqx\filters\get_posts_with_typesense_data($s) : \lqx\filters\get_posts_with_data($s);
     $s['posts'] = $post_info['posts'];
     $s['pagination']['total_posts'] = $post_info['total_posts'];
     $s['pagination']['total_pages'] = $post_info['total_pages'];

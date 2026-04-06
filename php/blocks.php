@@ -186,11 +186,39 @@ function get_settings($block, $post_id = null, $forced_preset = null, $forced_st
 	// Get the block name by removing the lqx/ prefix
 	$block_name = str_replace('lqx/', '', $block['name']);
 
+	// Load block settings file cache once per request (built on admin save via options.php)
+	static $file_cache = null;
+	static $file_cache_loaded = false;
+	if (!$file_cache_loaded) {
+		$cache_file = WP_CONTENT_DIR . '/block-settings-cache.php';
+		if (file_exists($cache_file)) {
+			$file_cache = include $cache_file;
+		}
+		$file_cache_loaded = true;
+	}
+
+	// Cache global/styles/presets per block type — these are site-wide and identical
+	// for all instances of the same block type, so only fetch once per request
+	static $type_cache = [];
+	if (!isset($type_cache[$block_name])) {
+		if (is_array($file_cache) && array_key_exists($block_name, $file_cache)) {
+			// Use pre-built file cache — zero DB queries
+			$type_cache[$block_name] = $file_cache[$block_name];
+		} else {
+			// File cache miss: fall back to ACF (new block or cache not yet built)
+			$type_cache[$block_name] = [
+				'global'  => get_field($block_name . '_block_global', 'option'),
+				'styles'  => get_field($block_name . '_block_styles', 'option'),
+				'presets' => get_field($block_name . '_block_presets', 'option'),
+			];
+		}
+	}
+
 	// Initialize the settings array
 	$settings = [
-		'global' => get_field($block_name . '_block_global', 'option'),
-		'styles' => get_field($block_name . '_block_styles', 'option'),
-		'presets' => get_field($block_name . '_block_presets', 'option'),
+		'global' => $type_cache[$block_name]['global'],
+		'styles' => $type_cache[$block_name]['styles'],
+		'presets' => $type_cache[$block_name]['presets'],
 		'local' => [
 			'user' => get_field($block_name . '_block_user', $post_id),
 			'admin' => get_field($block_name . '_block_admin', $post_id)
@@ -198,7 +226,7 @@ function get_settings($block, $post_id = null, $forced_preset = null, $forced_st
 		'processed' => [
 			'block' => $block_name,
 			'anchor' => isset($block['anchor']) ? esc_attr($block['anchor']) : '',
-			'class' => isset($block['className']) ? $block['className'] : '',
+			'class' => $block['className'] ?? '',
 			'hash' => 'id-' . substr(md5(json_encode([get_the_ID(), $block, random_int(1000, 9999)])), 24), // Generate a unique hash for the block
 			'post_id' => $post_id ?? get_the_ID(),
 			'preset' => '',
@@ -613,6 +641,11 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 
 	// Set the Style Preset values for the Lyquix blocks
 	add_filter('acf/load_field', function ($field) {
+		// Only needed in the block editor to populate style/preset dropdowns.
+		// On frontend requests this triggers have_rows() on the options-page repeater,
+		// causing ACF to query every sub-field value (including non-existent rows).
+		if (!is_admin() && !(defined('REST_REQUEST') && REST_REQUEST)) return $field;
+
 		$field_keys = [
 			// Accordion
 			[ // style and style_name fields
@@ -791,565 +824,583 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 	});
 
 	// Load field display logic
-	add_action('acf/init', function () {
-		if (is_admin()) {
-			wp_enqueue_script('custom-acf-js', get_template_directory_uri() . '/php/blocks/field-display.js', ['wp-data', 'acf-input', 'jquery'], date("YmdHis", filemtime(get_template_directory() . '/php/blocks/field-display.js')));
-			// Passing to js the url+nonce required for ajax call and the json containing the fields dependencies
-			$globalSettings = [];
-			$rules = [
-				[
-					"settings" => [
-						"block_name" => "lqx/accordion",
-						"content_field" => "field_65301b9bb6ce8",
-						"global_field" => "field_65312d3d168a6",
-						"presets_field" => "field_658491eadec10",
-						"user_field" => "field_656c9b194efb7",
-						"admin_field" => "field_656a4daebe47d"
-					],
-					"rules" => [
-						[
-							"field" => "image",
-							"controller" => "show_image",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "header_image",
-							"controller" => "show_header_image",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "subheading",
-							"controller" => "show_subheading",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "additional_classes",
-							"controller" => "custom_classesid",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "item_id",
-							"controller" => "custom_classesid",
-							"operator" => "==",
-							"value" => "y"
-						]
-					]
+	add_action('enqueue_block_editor_assets', function () {
+
+		wp_enqueue_script(
+			'custom-acf-js',
+			get_template_directory_uri() . '/php/blocks/field-display.js',
+			['wp-data', 'acf-input', 'jquery'],
+			date("YmdHis", filemtime(get_template_directory() . '/php/blocks/field-display.js'))
+		);
+		// Passing to js the url+nonce required for ajax call and the json containing the fields dependencies
+		$globalSettings = [];
+		$rules = [
+			[
+				"settings" => [
+					"block_name" => "lqx/accordion",
+					"content_field" => "field_65301b9bb6ce8",
+					"global_field" => "field_65312d3d168a6",
+					"presets_field" => "field_658491eadec10",
+					"user_field" => "field_656c9b194efb7",
+					"admin_field" => "field_656a4daebe47d"
 				],
-				[
-					"settings" => [
-						"block_name" => "lqx/banner",
-						"content_field" => "field_654bbd87bfd2f",
-						"global_field" => "field_6584920d2639c",
-						"presets_field" => "field_656cfd759ac31",
-						"user_field" => "field_657727e668c45",
-						"admin_field" => "field_657726ebd0590"
+				"rules" => [
+					[
+						"field" => "image",
+						"controller" => "show_image",
+						"operator" => "==",
+						"value" => "y"
 					],
-					"rules" => [
-						[
-							"field" => "breadcrumb",
-							"controller" => "show_breadcrumb",
-							"operator" => "==",
-							"value" => "y"
-						]
-					]
-				],
-				[
-					"settings" => [
-						"block_name" => "lqx/cards",
-						"content_field" => "field_658db3b2c1203",
-						"global_field" => "field_658db3c317b3c",
-						"presets_field" => "field_658db3c317b95",
-						"user_field" => "field_658db3cb6f46c",
-						"admin_field" => "field_658db3baec514"
+					[
+						"field" => "header_image",
+						"controller" => "show_header_image",
+						"operator" => "==",
+						"value" => "y"
 					],
-					"rules" => [
-						[
-							"field" => "subheading",
-							"controller" => "show_subheading",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "image",
-							"controller" => "show_image",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "icon_image",
-							"controller" => "show_icon_image",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "video",
-							"controller" => "show_video",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "labels",
-							"controller" => "show_labels",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "links",
-							"controller" => "show_links",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "additional_classes",
-							"controller" => "custom_classesid",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "item_id",
-							"controller" => "custom_classesid",
-							"operator" => "==",
-							"value" => "y"
-						]
-					]
-				],
-				[
-					"settings" => [
-						"block_name" => "lqx/filters",
-						"content_field" => "field_6751c8c470f53",
-						//filters has no global settings. How do we wish to reconcile this?
-						"global_field" => "",
-						"presets_field" => "field_65f20fbdb1bde",
-						"user_field" => "field_65f1dcf400025",
-						//we don't really have an admin tab on filters either because we don't want clients messing around here.
-						//presets are working for swapping settings and hiding/showing the override. We should consider how we want to handle the other cases.
-						"admin_field" => "field_65f20f764800f"
+					[
+						"field" => "subheading",
+						"controller" => "show_subheading",
+						"operator" => "==",
+						"value" => "y"
 					],
-					"rules" => [
-						[
-							"field" => "heading_override",
-							"controller" => "use_heading_override",
-							"operator" => "==",
-							"value" => "y"
-						],
-					]
+					[
+						"field" => "additional_classes",
+						"controller" => "custom_classesid",
+						"operator" => "==",
+						"value" => "y"
 					],
-				[
-					"settings" => [
-						"block_name" => "lqx/gallery",
-						"content_field" => "field_65c2b093fc2bb",
-						"global_field" => "field_65775ad9a7c3b",
-						"presets_field" => "field_658061b1e7ed1",
-						"user_field" => "field_6577582ae9049",
-						"admin_field" => "field_65775bdf959d5"
-					],
-					"rules" => [
-						[
-							"field" => "additional_classes",
-							"controller" => "custom_classesid",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "item_id",
-							"controller" => "custom_classesid",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "title",
-							"controller" => "show_title",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "image",
-							"controller" => "show_image",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "video",
-							"controller" => "show_video",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "caption",
-							"controller" => "show_caption",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "thumbnail",
-							"controller" => "show_thumbnail",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "teaser",
-							"controller" => "show_teaser",
-							"operator" => "==",
-							"value" => "y"
-						]
-					]
-				],
-				[
-					"settings" => [
-						"block_name" => "lqx/hero",
-						"content_field" => "field_6541322b28452",
-						"global_field" => "field_65413f3a9e679",
-						"presets_field" => "field_6577644a0a231",
-						"user_field" => "field_657217d28ca52",
-						"admin_field" => "field_657218d86ffd3"
-					],
-					"rules" => [
-						[
-							"field" => "image_override",
-							"controller" => "show_image",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "image_mobile",
-							"controller" => "show_image",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "video",
-							"controller" => "show_image",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "breadcrumbs_override",
-							"controller" => "show_breadcrumbs",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "heading_override",
-							"controller" => "show_heading_override",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "links",
-							"controller" => "show_links",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "intro_text",
-							"controller" => "show_intro_text",
-							"operator" => "==",
-							"value" => "y"
-						]
-					]
-				],
-				[
-					"settings" => [
-						"block_name" => "lqx/logos",
-						"content_field" => "field_65a053720a10e",
-						"global_field" => "field_67dc2d4243d67",
-						"presets_field" => "field_67dc2dbb43d6b",
-						"user_field" => "field_65a05775994f1",
-						"admin_field" => "field_67dc2b485fcae"
-					],
-					"rules" => [
-						[
-							"field" => "link",
-							"controller" => "show_link",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "tailwind_p-",
-							"controller" => "show_padding",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "title",
-							"controller" => "show_title",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "additional_classes",
-							"controller" => "custom_classesid",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "item_id",
-							"controller" => "custom_classesid",
-							"operator" => "==",
-							"value" => "y"
-						],
-					]
-				],
-				[
-					"settings" => [
-						"block_name" => "lqx/map",
-						"content_field" => "field_6697d93a623ba",
-						"global_field" => "field_6697e2efc4d4c",
-						"presets_field" => "field_6697e313c4d4d",
-						"user_field" => "field_6697e397d9418",
-						"admin_field" => "field_6697e4be61945"
-					],
-					"rules" => [
-						[
-							"field" => "heading",
-							"controller" => "show_heading",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "subheading",
-							"controller" => "show_subheading",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "link",
-							"controller" => "show_get_directions_link",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "image",
-							"controller" => "show_image",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "phone_numbers",
-							"controller" => "show_phone_numbers",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "business_hours",
-							"controller" => "show_business_hours",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "description",
-							"controller" => "show_description",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "labels",
-							"controller" => "show_labels",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "pin_color",
-							"controller" => "show_pin_color",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "additional_classes",
-							"controller" => "custom_classesid",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "item_id",
-							"controller" => "custom_classesid",
-							"operator" => "==",
-							"value" => "y"
-						],
-					]
-				],
-				[
-					"settings" => [
-						"block_name" => "lqx/slider",
-						"content_field" => "field_659d0ea6112e6",
-						"global_field" => "field_659d2fd7b3e35",
-						"presets_field" => "field_659d3012b3e36",
-						"user_field" => "field_659d2e57346b8",
-						"admin_field" => "field_659d17af1fdf2"
-					],
-					"rules" => [
-						[
-							"field" => "additional_classes",
-							"controller" => "custom_classesid",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "item_id",
-							"controller" => "custom_classesid",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "heading",
-							"controller" => "show_heading",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "body",
-							"controller" => "show_body",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "image_mobile",
-							"controller" => "show_image_mobile",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "video",
-							"controller" => "show_video",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "image_link",
-							"controller" => "show_image_link",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "links",
-							"controller" => "show_links",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "thumbnail",
-							"controller" => "show_thumbnail",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "teaser_text",
-							"controller" => "show_teaser_text",
-							"operator" => "==",
-							"value" => "y"
-						],
-					]
-				],
-				[
-					"settings" => [
-						"block_name" => "lqx/tabs",
-						"content_field" => "field_654a45cad8716",
-						"global_field" => "field_654959b6163da",
-						"presets_field" => "field_656f87e9ef853",
-						"user_field" => "field_656f866617342",
-						"admin_field" => "field_656f861459d96"
-					],
-					"rules" => [
-						[
-							"field" => "heading",
-							"controller" => "show_heading",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "subheading",
-							"controller" => "show_subheading",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "image",
-							"controller" => "show_image",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "header_image",
-							"controller" => "show_header_image",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "additional_classes",
-							"controller" => "custom_classesid",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
+					[
 						"field" => "item_id",
-							"controller" => "custom_classesid",
-							"operator" => "==",
-							"value" => "y"
-						]
-					]
-				],
-				[
-					"settings" => [
-						"block_name" => "lqx/testimonial",
-						"content_field" => "field_6751a710aeac7",
-						"global_field" => "field_6751a07aa1921",
-						"presets_field" => "field_6751a0fea1924",
-						"user_field" => "field_6751a208ccc6e",
-						"admin_field" => "field_67519f8cba478"
-					],
-					"rules" => [
-						[
-							"field" => "image",
-							"controller" => "show_image",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "background_color",
-							"controller" => "custom_colors",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "foreground_color",
-							"controller" => "custom_colors",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "additional_classes",
-							"controller" => "custom_classesid",
-							"operator" => "==",
-							"value" => "y"
-						],
-						[
-							"field" => "item_id",
-							"controller" => "custom_classesid",
-							"operator" => "==",
-							"value" => "y"
-						]
+						"controller" => "custom_classesid",
+						"operator" => "==",
+						"value" => "y"
 					]
 				]
-			];
-			foreach ($rules as $rule) {
-				$globalSettings[] = [
-					'key' => $rule['settings']['global_field'],
-					'value' => get_field($rule['settings']['global_field'], 'options')
-				];
-				$globalSettings[] = [
-					'key' => $rule['settings']['presets_field'],
-					'value' => get_field($rule['settings']['presets_field'], 'options')
-				];
-			}
-			wp_localize_script('custom-acf-js', 'acfObj', [
-				'json' => $rules,
-				'globalSettings' => $globalSettings
-			]);
-		}
+			],
+			[
+				"settings" => [
+					"block_name" => "lqx/banner",
+					"content_field" => "field_654bbd87bfd2f",
+					"global_field" => "field_6584920d2639c",
+					"presets_field" => "field_656cfd759ac31",
+					"user_field" => "field_657727e668c45",
+					"admin_field" => "field_657726ebd0590"
+				],
+				"rules" => [
+					[
+						"field" => "breadcrumb",
+						"controller" => "show_breadcrumb",
+						"operator" => "==",
+						"value" => "y"
+					]
+				]
+			],
+			[
+				"settings" => [
+					"block_name" => "lqx/cards",
+					"content_field" => "field_658db3b2c1203",
+					"global_field" => "field_658db3c317b3c",
+					"presets_field" => "field_658db3c317b95",
+					"user_field" => "field_658db3cb6f46c",
+					"admin_field" => "field_658db3baec514"
+				],
+				"rules" => [
+					[
+						"field" => "subheading",
+						"controller" => "show_subheading",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "image",
+						"controller" => "show_image",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "icon_image",
+						"controller" => "show_icon_image",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "video",
+						"controller" => "show_video",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "labels",
+						"controller" => "show_labels",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "links",
+						"controller" => "show_links",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "additional_classes",
+						"controller" => "custom_classesid",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "item_id",
+						"controller" => "custom_classesid",
+						"operator" => "==",
+						"value" => "y"
+					]
+				]
+			],
+			[
+				"settings" => [
+					"block_name" => "lqx/filters",
+					"content_field" => "field_6751c8c470f53",
+					//filters has no global settings. How do we wish to reconcile this?
+					"global_field" => "",
+					"presets_field" => "field_65f20fbdb1bde",
+					"user_field" => "field_65f1dcf400025",
+					//we don't really have an admin tab on filters either because we don't want clients messing around here.
+					//presets are working for swapping settings and hiding/showing the override. We should consider how we want to handle the other cases.
+					"admin_field" => "field_65f20f764800f"
+				],
+				"rules" => [
+					[
+						"field" => "heading_override",
+						"controller" => "use_heading_override",
+						"operator" => "==",
+						"value" => "y"
+					],
+				]
+				],
+			[
+				"settings" => [
+					"block_name" => "lqx/gallery",
+					"content_field" => "field_65c2b093fc2bb",
+					"global_field" => "field_65775ad9a7c3b",
+					"presets_field" => "field_658061b1e7ed1",
+					"user_field" => "field_6577582ae9049",
+					"admin_field" => "field_65775bdf959d5"
+				],
+				"rules" => [
+					[
+						"field" => "additional_classes",
+						"controller" => "custom_classesid",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "item_id",
+						"controller" => "custom_classesid",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "title",
+						"controller" => "show_title",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "image",
+						"controller" => "show_image",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "video",
+						"controller" => "show_video",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "caption",
+						"controller" => "show_caption",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "thumbnail",
+						"controller" => "show_thumbnail",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "teaser",
+						"controller" => "show_teaser",
+						"operator" => "==",
+						"value" => "y"
+					]
+				]
+			],
+			[
+				"settings" => [
+					"block_name" => "lqx/hero",
+					"content_field" => "field_6541322b28452",
+					"global_field" => "field_65413f3a9e679",
+					"presets_field" => "field_6577644a0a231",
+					"user_field" => "field_657217d28ca52",
+					"admin_field" => "field_657218d86ffd3"
+				],
+				"rules" => [
+					[
+						"field" => "image_override",
+						"controller" => "show_image",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "image_mobile",
+						"controller" => "show_image",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "video",
+						"controller" => "show_image",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "breadcrumbs_override",
+						"controller" => "show_breadcrumbs",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "heading_override",
+						"controller" => "show_heading_override",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "links",
+						"controller" => "show_links",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "intro_text",
+						"controller" => "show_intro_text",
+						"operator" => "==",
+						"value" => "y"
+					]
+				]
+			],
+			[
+				"settings" => [
+					"block_name" => "lqx/logos",
+					"content_field" => "field_65a053720a10e",
+					"global_field" => "field_67dc2d4243d67",
+					"presets_field" => "field_67dc2dbb43d6b",
+					"user_field" => "field_65a05775994f1",
+					"admin_field" => "field_67dc2b485fcae"
+				],
+				"rules" => [
+					[
+						"field" => "link",
+						"controller" => "show_link",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "tailwind_p-",
+						"controller" => "show_padding",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "title",
+						"controller" => "show_title",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "additional_classes",
+						"controller" => "custom_classesid",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "item_id",
+						"controller" => "custom_classesid",
+						"operator" => "==",
+						"value" => "y"
+					],
+				]
+			],
+			[
+				"settings" => [
+					"block_name" => "lqx/map",
+					"content_field" => "field_6697d93a623ba",
+					"global_field" => "field_6697e2efc4d4c",
+					"presets_field" => "field_6697e313c4d4d",
+					"user_field" => "field_6697e397d9418",
+					"admin_field" => "field_6697e4be61945"
+				],
+				"rules" => [
+					[
+						"field" => "heading",
+						"controller" => "show_heading",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "subheading",
+						"controller" => "show_subheading",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "link",
+						"controller" => "show_get_directions_link",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "image",
+						"controller" => "show_image",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "phone_numbers",
+						"controller" => "show_phone_numbers",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "business_hours",
+						"controller" => "show_business_hours",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "description",
+						"controller" => "show_description",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "labels",
+						"controller" => "show_labels",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "pin_color",
+						"controller" => "show_pin_color",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "additional_classes",
+						"controller" => "custom_classesid",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "item_id",
+						"controller" => "custom_classesid",
+						"operator" => "==",
+						"value" => "y"
+					],
+				]
+			],
+			[
+				"settings" => [
+					"block_name" => "lqx/slider",
+					"content_field" => "field_659d0ea6112e6",
+					"global_field" => "field_659d2fd7b3e35",
+					"presets_field" => "field_659d3012b3e36",
+					"user_field" => "field_659d2e57346b8",
+					"admin_field" => "field_659d17af1fdf2"
+				],
+				"rules" => [
+					[
+						"field" => "additional_classes",
+						"controller" => "custom_classesid",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "item_id",
+						"controller" => "custom_classesid",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "heading",
+						"controller" => "show_heading",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "body",
+						"controller" => "show_body",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "image_mobile",
+						"controller" => "show_image_mobile",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "video",
+						"controller" => "show_video",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "image_link",
+						"controller" => "show_image_link",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "links",
+						"controller" => "show_links",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "thumbnail",
+						"controller" => "show_thumbnail",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "teaser_text",
+						"controller" => "show_teaser_text",
+						"operator" => "==",
+						"value" => "y"
+					],
+				]
+			],
+			[
+				"settings" => [
+					"block_name" => "lqx/tabs",
+					"content_field" => "field_654a45cad8716",
+					"global_field" => "field_654959b6163da",
+					"presets_field" => "field_656f87e9ef853",
+					"user_field" => "field_656f866617342",
+					"admin_field" => "field_656f861459d96"
+				],
+				"rules" => [
+					[
+						"field" => "heading",
+						"controller" => "show_heading",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "subheading",
+						"controller" => "show_subheading",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "image",
+						"controller" => "show_image",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "header_image",
+						"controller" => "show_header_image",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "additional_classes",
+						"controller" => "custom_classesid",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+					"field" => "item_id",
+						"controller" => "custom_classesid",
+						"operator" => "==",
+						"value" => "y"
+					]
+				]
+			],
+			[
+				"settings" => [
+					"block_name" => "lqx/testimonial",
+					"content_field" => "field_6751a710aeac7",
+					"global_field" => "field_6751a07aa1921",
+					"presets_field" => "field_6751a0fea1924",
+					"user_field" => "field_6751a208ccc6e",
+					"admin_field" => "field_67519f8cba478"
+				],
+				"rules" => [
+					[
+						"field" => "image",
+						"controller" => "show_image",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "background_color",
+						"controller" => "custom_colors",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "foreground_color",
+						"controller" => "custom_colors",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "additional_classes",
+						"controller" => "custom_classesid",
+						"operator" => "==",
+						"value" => "y"
+					],
+					[
+						"field" => "item_id",
+						"controller" => "custom_classesid",
+						"operator" => "==",
+						"value" => "y"
+					]
+				]
+			]
+		];
+
+        // Collect unique field keys needed
+        $field_keys = [];
+        foreach ($rules as $rule) {
+            if (!empty($rule['settings']['global_field']))  $field_keys[] = $rule['settings']['global_field'];
+            if (!empty($rule['settings']['presets_field'])) $field_keys[] = $rule['settings']['presets_field'];
+        }
+        $field_keys = array_unique($field_keys);
+
+        // Single call to get ALL options page fields, properly formatted by ACF
+        $all_options = get_fields('options') ?: [];
+
+        // Build globalSettings by matching field_key => field_name => value
+        $globalSettings = [];
+        foreach ($field_keys as $field_key) {
+            $field_obj = acf_get_field($field_key);
+            $field_name = $field_obj['name'] ?? null;
+            $globalSettings[] = [
+                'key'   => $field_key,
+                'value' => ($field_name && isset($all_options[$field_name])) ? $all_options[$field_name] : null
+            ];
+        }
+
+		wp_localize_script('custom-acf-js', 'acfObj', [
+			'json' => $rules,
+			'globalSettings' => $globalSettings
+		]);
+
 	});
 
 	// Endpoint for getting ACF fields through AJAX
@@ -1542,126 +1593,124 @@ add_filter('render_block_data', function($parsed_block, $source_block, $parent_b
 }, 10, 3);
 
 function get_post_array($post, $s) {
-	// List of field names that represent WP_Post fields, not ACF fields
-	$wp_post_keys = ['post_content', 'post_title', 'post_excerpt', 'post_name'];
+    $wp_post_keys = ['post_content', 'post_title', 'post_excerpt', 'post_name'];
 
-	// Set the defaults
-	$p = [
-		'id' => $post->ID,
-		'date' => $post->post_date_gmt,
-		'heading' => null,
-		'subheading' => null,
-		'slug' => $post->post_name,
-		'modified' => $post->post_modified_gmt,
-		'link' => [
-			'url' => get_permalink($post->ID),
-			'title' => $s['render_php']['link_title'],
-			'target' => $s['render_php']['link_target']
-		],
-		'link_style' => $s['render_php']['link_style'] ?? 'button',
-		'body' => null,
-		'labels' => [],
-		'image' => null,
-		'icon_image' => null,
-		'video' => [
-			'type' => $s['render_php']['video_type'] ?? 'url'
-		]
-	];
-	if ($s['render_mode'] == 'maps-php') {
-		$p['lat'] = get_field('latitude', $p['id']);
-		$p['lon'] = get_field('longitude', $p['id']);
-		$p['address'] = get_field('address', $p['id']);
-		$p['type'] = get_field('location_type', $p['id']);
-	}
+    $render_php = $s['render_php'] ?? [];
 
-	// Handle heading, subheading and body
-	foreach (['heading', 'subheading', 'body'] as $key) {
-		if ($s['render_php'][$key]) {
-			if (in_array($s['render_php'][$key], $wp_post_keys)) {
-				if ($s['render_php'][$key] == 'post_excerpt') {
-					$p[$key] = '<p>'.$post->{$s['render_php'][$key]}.'</p>';
-				} else {
-					$p[$key] = $post->{$s['render_php'][$key]};
-				}
-			} else {
-				$p[$key] = get_field($s['render_php'][$key], $post->ID);
-			}
-		}
-	}
+    $p = [
+        'id' => $post->ID,
+        'date' => ($post->post_date_gmt !== '0000-00-00 00:00:00')
+            ? $post->post_date_gmt
+            : $post->post_date,
+        'heading' => null,
+        'subheading' => null,
+        'slug' => $post->post_name,
+        'modified' => $post->post_modified_gmt,
+        'link' => [
+            'url' => get_permalink($post->ID),
+            'title' => $render_php['link_title'] ?? null,
+            'target' => $render_php['link_target'] ?? null
+        ],
+        'link_style' => $render_php['link_style'] ?? 'button',
+        'body' => null,
+        'labels' => [],
+        'image' => null,
+        'icon_image' => null,
+        'video' => [
+            'type' => $render_php['video_type'] ?? 'url'
+        ]
+    ];
 
-	// Handle image and icon_image
-	foreach (['image', 'icon_image'] as $key) {
-		if ($s['render_php'][$key]) {
-			if ($s['render_php'][$key] == 'thumbnail') {
-				$p[$key] = \lqx\util\get_thumbnail_image_object($post->ID);
-			} else {
-				$p[$key] = get_field($s['render_php'][$key], $post->ID);
-			}
-		}
-	}
+    if (($s['render_mode'] ?? '') == 'maps-php') {
+        $p['lat'] = get_field('latitude', $p['id']);
+        $p['lon'] = get_field('longitude', $p['id']);
+        $p['address'] = get_field('address', $p['id']);
+        $p['type'] = get_field('location_type', $p['id']);
+    }
 
-	// Handle the URL
-	if ($s['render_php']['use_post_url'] == 'n'){
-		if ($s['render_php']['link']) $p['link'] = get_field($s['render_php']['link'], $post->ID);
-		else $p['link'] = null;
-	}
+    foreach (['heading', 'subheading', 'body'] as $key) {
+        if (!empty($render_php[$key])) {
+            if (in_array($render_php[$key], $wp_post_keys)) {
+                if ($render_php[$key] == 'post_excerpt') {
+                    $p[$key] = '<p>' . $post->{$render_php[$key]} . '</p>';
+                } else {
+                    $p[$key] = $post->{$render_php[$key]};
+                }
+            } else {
+                $p[$key] = get_field($render_php[$key], $post->ID);
+            }
+        }
+    }
 
-	// Handle video
-	$video_url = get_field($s['render_php']['video_url'], $post->ID);
-	$video_upload = get_field($s['render_php']['video_upload'], $post->ID);
-	if ($s['render_php']['video_type'] == 'url' && $video_url) {
-		$p['video'] = [
-			'type' => 'url',
-			'url' => $video_url
-		];
-	}
-	elseif ($s['render_php']['video_type'] == 'upload' && $video_upload) {
-		$p['video'] = [
-			'type' => 'upload',
-			'upload' => $video_upload
-		];
-	}
+    foreach (['image', 'icon_image'] as $key) {
+        if (!empty($render_php[$key])) {
+            if ($render_php[$key] == 'thumbnail') {
+                $p[$key] = \lqx\util\get_thumbnail_image_object($post->ID);
+            } else {
+                $p[$key] = get_field($render_php[$key], $post->ID);
+            }
+        }
+    }
 
-	// Handle labels
-	switch ($s['render_php']['label_type']) {
-		case 'taxonomy':
-			foreach ($s['render_php']['label_taxonomies'] ?? [] as $tax) {
-				$terms = get_the_terms($post->ID, $tax);
-				if ($terms !== false) {
-					foreach ($terms as $term) {
-						$p['labels'][] = [
-							'label' => $term->name,
-							'value' => $tax . ':' . $term->slug
-						];
-					}
-				}
-			}
-			break;
+    if (($render_php['use_post_url'] ?? 'y') == 'n') {
+        if (!empty($render_php['link'])) $p['link'] = get_field($render_php['link'], $post->ID);
+        else $p['link'] = null;
+    }
 
-		case 'field':
-			if(isset($s['render_php']['label_fields']) && is_array($s['render_php']['label_fields'])) {
-				foreach($s['render_php']['label_fields'] as $field) {
-					$label_field_object = get_field_object($field['label_field'], $post->ID);
-					if ($label_field_object != false) {
-						if (is_array($label_field_object['value'])) {
-							foreach ($label_field_object['value'] as $value) {
-								$p['labels'][] = [
-									'label' => $value,
-									'value' => \lqx\util\slugify($value)
-								];
-							}
-						}
-						else {
-							$p['labels'][] = [
-								'label' => $label_field_object['value'],
-								'value' => \lqx\util\slugify($label_field_object['value'])
-							];
-						}
-					}
-				}
-			}
-			break;
-	}
+    $video_url    = !empty($render_php['video_url'])    ? get_field($render_php['video_url'], $post->ID)    : null;
+    $video_upload = !empty($render_php['video_upload']) ? get_field($render_php['video_upload'], $post->ID) : null;
+    $video_type   = $render_php['video_type'] ?? 'url';
 
-	return $p;
+    if ($video_type == 'url' && $video_url) {
+        $p['video'] = [
+            'type' => 'url',
+            'url' => $video_url
+        ];
+    } elseif ($video_type == 'upload' && $video_upload) {
+        $p['video'] = [
+            'type' => 'upload',
+            'upload' => $video_upload
+        ];
+    }
+
+    switch ($render_php['label_type'] ?? '') {
+        case 'taxonomy':
+            foreach ($render_php['label_taxonomies'] ?? [] as $tax) {
+                $terms = get_the_terms($post->ID, $tax);
+                if ($terms !== false) {
+                    foreach ($terms as $term) {
+                        $p['labels'][] = [
+                            'label' => $term->name,
+                            'value' => $tax . ':' . $term->slug
+                        ];
+                    }
+                }
+            }
+            break;
+
+        case 'field':
+            if (isset($render_php['label_fields']) && is_array($render_php['label_fields'])) {
+                foreach ($render_php['label_fields'] as $field) {
+                    $label_field_object = get_field_object($field['label_field'], $post->ID);
+                    if ($label_field_object != false) {
+                        if (is_array($label_field_object['value'])) {
+                            foreach ($label_field_object['value'] as $value) {
+                                $p['labels'][] = [
+                                    'label' => $value,
+                                    'value' => \lqx\util\slugify($value)
+                                ];
+                            }
+                        } else {
+                            $p['labels'][] = [
+                                'label' => $label_field_object['value'],
+                                'value' => \lqx\util\slugify($label_field_object['value'])
+                            ];
+                        }
+                    }
+                }
+            }
+            break;
+    }
+
+    return $p;
 }

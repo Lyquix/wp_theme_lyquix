@@ -444,7 +444,7 @@ export const lyqbox = (() => {
 
 			case 'html':
 			case 'dom':
-				content = decodeURI(slide.html);
+                try { content = decodeURI(slide.html); } catch(e) { content = slide.html; }
 				break;
 
 			default:

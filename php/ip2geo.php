@@ -96,14 +96,14 @@ function rest_route()
 	$reader->close();
 
 	return [
-		'city' => $geo['city']['names']['en'],
-		'subdivision' => $geo['subdivisions'][0]['names']['en'],
-		'country' => $geo['country']['iso_code'],
-		'continent' => $geo['continent']['code'],
-		'time_zone' => $geo['location']['time_zone'],
-		'lat' => $geo['location']['latitude'],
-		'lon' => $geo['location']['longitude'],
-		'radius' => $geo['location']['accuracy_radius'], // in km
+		'city' => $geo['city']['names']['en'] ?? null,
+		'subdivision' => $geo['subdivisions'][0]['names']['en'] ?? null,
+		'country' => $geo['country']['iso_code'] ?? null,
+		'continent' => $geo['continent']['code'] ?? null,
+		'time_zone' => $geo['location']['time_zone'] ?? null,
+		'lat' => $geo['location']['latitude'] ?? null,
+		'lon' => $geo['location']['longitude'] ?? null,
+		'radius' => $geo['location']['accuracy_radius'] ?? null, // in km
 		'ip' => $ip
 	];
 }

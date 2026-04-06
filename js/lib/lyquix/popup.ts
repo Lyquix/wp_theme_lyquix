@@ -269,7 +269,7 @@ export const popup = (() => {
 
 		// Hide delay
 		const hideDelay = popupElem.attr('data-hide-delay');
-		if (!isNaN(hideDelay)) {
+		if (hideDelay !== '' && !isNaN(hideDelay)) {
 			window.setTimeout(() => {
 				close(popupId);
 			}, parseInt(hideDelay) * 1000);
@@ -335,4 +335,3 @@ export const popup = (() => {
 		close
 	};
 })();
-

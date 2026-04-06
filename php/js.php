@@ -186,27 +186,11 @@ function render_lyquix_options() {
 	if (get_theme_mod('ga4_account', '')) $lqx_options['analytics'] = ['measurementId' => get_theme_mod('ga4_account')];
 	if (!get_theme_mod('ga_pageview', '1')) $lqx_options['analytics']['sendPageview'] = false;
 	if (get_theme_mod('ga_via_gtm', '0')) $lqx_options['analytics']['usingGTM'] = true;
-	// Get regions information
-	$regions = get_field('regions', 'option');
-	if (is_array($regions) && count($regions)) {
-		$lqx_options['geolocate'] = ['regions' => []];
-		foreach ($regions as $region) {
-			$region_data = [
-				'name' => $region['name'] ?? null,
-				'mobile_label' => $region['mobile_label'] ?? null,
-				'alias' => $region['alias'] ?? null,
-				'phone_number' => $region['phone_number'] ?? null,
-				'address' => $region['address'] ?? null,
-				'description' => $region['description'] ?? null,
-				'geojson' => null
-			];
-			$geojson_str = $region['geojson'] ?? '';
-			if (is_string($geojson_str) && trim($geojson_str) !== '') {
-				$decoded = json_decode($geojson_str, true);
-				if (is_array($decoded)) $region_data['geojson'] = $decoded;
-			}
-			$lqx_options['geolocate']['regions'][] = $region_data;
-		}
+	// Get regions information from cache (avoids expensive ACF option queries)
+	$regions_config = \lqx\regions\get_regions_config();
+	$full_regions = $regions_config['full_regions'] ?? [];
+	if (is_array($full_regions) && count($full_regions)) {
+		$lqx_options['geolocate'] = ['regions' => $full_regions];
 	}
 
 
@@ -216,14 +200,14 @@ function render_lyquix_options() {
 	echo '<script>((lqxOptions) => {
 		if (typeof lqx !== "undefined" && typeof lqx.init === "function") lqx.init(lqxOptions);
 		else document.addEventListener("lqxload", function () { lqx.init(lqxOptions); });
-	})(JSON.parse(new TextDecoder().decode(Uint8Array.from(atob("' . base64_encode(json_encode($lqx_options)) . '"), c => c.charCodeAt(0))))));</script>';
+	})(JSON.parse(new TextDecoder().decode(Uint8Array.from(atob("' . base64_encode(json_encode($lqx_options)) . '"), c => c.charCodeAt(0)))));</script>';
 
 	$scripts_options = json_decode(get_theme_mod('scripts_options'), true);
 	if (!is_array($scripts_options)) $scripts_options = [];
 	echo '<script>(($lqxOptions) => {
 		if (typeof $lqx !== "undefined" && typeof $lqx.init === "function") $lqx.init($lqxOptions);
 		else document.addEventListener("$lqxload", function () { $lqx.init($lqxOptions); });
-	})(JSON.parse(new TextDecoder().decode(Uint8Array.from(atob("' . base64_encode(json_encode($scripts_options)) . '"), c => c.charCodeAt(0))))));</script>';
+	})(JSON.parse(new TextDecoder().decode(Uint8Array.from(atob("' . base64_encode(json_encode($scripts_options)) . '"), c => c.charCodeAt(0)))));</script>';
 }
 
 /**

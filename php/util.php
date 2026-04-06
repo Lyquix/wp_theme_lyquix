@@ -765,6 +765,10 @@ function get_breakpoints() {
 function get_src_srcset_sizes_attribs($image, $src_size = 'medium', $size_map = null) {
 	if (!is_array($image) || empty($image['url'])) return '';
 
+    if (isset($image['mime_type']) && $image['mime_type'] === 'image/svg+xml') {
+        return 'src="' . esc_url($image['url']) . '"';
+    }
+
 	$breakpoints = get_breakpoints();
 	$bp_names = array_keys($breakpoints);
 	$crop_sizes = ['xsmall', 'small', 'medium', 'large', 'xlarge'];

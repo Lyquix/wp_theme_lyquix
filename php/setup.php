@@ -323,6 +323,14 @@ function theme_setup() {
 			$manager->add_cap('promote_users');
 			$manager->add_cap('list_users');
 			$manager->add_cap('remove_users');
+
+            // Gravity Forms Capabilities
+            $editor->add_cap('gravityforms_view_entries');
+            $editor->add_cap('gravityforms_edit_entries');
+            $editor->add_cap('gravityforms_delete_entries');
+            $editor->add_cap('gravityforms_export_entries');
+            $editor->add_cap('gravityforms_view_entry_notes');
+            $editor->add_cap('gravityforms_edit_entry_notes');
 		});
 	} else {
 		// Remove Manager role if the option is disabled

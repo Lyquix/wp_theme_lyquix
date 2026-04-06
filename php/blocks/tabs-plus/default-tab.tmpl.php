@@ -28,8 +28,8 @@ $contentField = '_block_content_';
 ?>
 <li>
     <button
-        class="tab <?= $item['additional_classes'] ? esc_attr($item['additional_classes']) : '' ?>"
-        id="<?= $item['item_id'] ? esc_attr($item['item_id']) . '-tab' : $settings['hash'] . '-tab-' . $idx ?>"
+        class="tab <?= !empty($item['additional_classes']) ? esc_attr($item['additional_classes']) : '' ?>"
+        id="<?= !empty($item['item_id']) ? esc_attr($item['item_id']) . '-tab' : $settings['hash'] . '-tab-' . $idx ?>"
         aria-controls="<?= $settings['hash'] . '-panel-' . $idx ?>"
         aria-selected="<?= $idx == 0 ? 'true' : 'false' ?>"
         role="tab"

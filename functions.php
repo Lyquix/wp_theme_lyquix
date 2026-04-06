@@ -107,6 +107,9 @@ require_once get_template_directory() . '/php/featured-posts.php';
 // Regions
 require_once get_template_directory() . '/php/regions.php';
 
+// Options
+require_once get_template_directory() . '/php/options.php';
+
 // QR Code Generator
 require_once get_template_directory() . '/php/qr-code.php';
 

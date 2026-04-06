@@ -219,10 +219,14 @@ export const filters = (() => {
 				break;
 
 			case 'php':
-				// Check if there's an existing controls element
+				// render.controls contains both .controls and .pills as siblings.
+				// Extract only the .controls part so the existing pills element stays
+				// in the DOM and renderPills() can update it in place.
+				const $rendered = jQuery(filterObj.render.controls);
+				const $newControls = $rendered.filter(cfg.filters.controlsSelector);
 				controls = filterObj.elem.find(cfg.filters.controlsSelector);
-				if (controls.length) controls.replaceWith(filterObj.render.controls);
-				else filterObj.elem.append(filterObj.render.controls);
+				if (controls.length) controls.replaceWith($newControls.length ? $newControls : $rendered);
+				else filterObj.elem.prepend($newControls.length ? $newControls : $rendered);
 				break;
 		}
 	};
@@ -244,8 +248,9 @@ export const filters = (() => {
 				break;
 
 			case 'php':
-				// Check if there's an existing posts element
-				posts = filterObj.elem.find(cfg.filters.postsSelector);
+				// Also look for .no-results so it gets replaced when results return,
+				// and so subsequent no-result renders replace rather than append.
+				posts = filterObj.elem.find(`${cfg.filters.postsSelector}, .no-results`);
 				if (posts.length) posts.replaceWith(filterObj.render.posts);
 				else filterObj.elem.append(filterObj.render.posts);
 				break;

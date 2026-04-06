@@ -269,7 +269,7 @@ export const modal = (() => {
 
 		// Hide delay
 		const hideDelay = modalElem.attr('data-hide-delay');
-		if (!isNaN(hideDelay)) {
+		if (hideDelay !== '' && !isNaN(hideDelay)) {
 			window.setTimeout(() => {
 				close(modalId);
 			}, parseInt(hideDelay) * 1000);
@@ -336,4 +336,3 @@ export const modal = (() => {
 		close
 	};
 })();
-

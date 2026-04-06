@@ -25,6 +25,62 @@
 namespace lqx\regions;
 
 /**
+ * Load regions configuration from the cache file (generated on admin save)
+ * or fall back to ACF options if the cache file doesn't exist.
+ *
+ * @return array The regions configuration
+ */
+function get_regions_config() {
+	static $config = null;
+	if ($config !== null) return $config;
+
+	// Support both early context (no WP_CONTENT_DIR) and normal WordPress context
+	$cache_file = defined('WP_CONTENT_DIR')
+		? WP_CONTENT_DIR . '/regions-cache.json'
+		: dirname(__DIR__, 3) . '/regions-cache.json';
+
+	if (file_exists($cache_file)) {
+		$json = file_get_contents($cache_file);
+		$config = json_decode($json, true);
+		if (is_array($config)) return $config;
+	}
+
+	// Fallback: load from ACF (expensive — only runs when cache file is missing)
+	$regions = function_exists('get_field') ? get_field('regions', 'option') : [];
+	$config = [
+		'regions' => [],
+		'full_regions' => [],
+		'forced_region_post_types' => function_exists('get_field') ? (get_field('forced_region_post_types', 'option') ?: []) : [],
+		'no_user_region_meaning' => function_exists('get_field') ? (get_field('no_user_region_meaning', 'option') ?? 'outside-region') : 'outside-region',
+		'no_content_region_meaning' => function_exists('get_field') ? (get_field('no_content_region_meaning', 'option') ?? 'everywhere') : 'everywhere',
+	];
+	if (is_array($regions)) {
+		foreach ($regions as $region) {
+			$alias = $region['alias'] ?? null;
+			$geojson_str = $region['geojson'] ?? '';
+			$decoded_geojson = null;
+			if (is_string($geojson_str) && trim($geojson_str) !== '') {
+				$decoded = json_decode($geojson_str, true);
+				if (is_array($decoded)) $decoded_geojson = $decoded;
+			}
+			$config['full_regions'][] = [
+				'name' => $region['name'] ?? null,
+				'mobile_label' => $region['mobile_label'] ?? null,
+				'alias' => $alias,
+				'phone_number' => $region['phone_number'] ?? null,
+				'address' => $region['address'] ?? null,
+				'description' => $region['description'] ?? null,
+				'geojson' => $decoded_geojson,
+			];
+			if ($alias && $decoded_geojson) {
+				$config['regions'][] = ['alias' => $alias, 'geojson' => $decoded_geojson];
+			}
+		}
+	}
+	return $config;
+}
+
+/**
  * Get the user's region from cookie if set
  *
  * @return string|null - The user's region from cookie or null if not set
@@ -39,23 +95,8 @@ function get_region_from_cookie() {
  * @return string|null - The user's region from IP geolocation or null if not found
  */
 function get_region_from_ip() {
-	$regions = get_field('regions', 'option');
-	if (!is_array($regions) || !count($regions)) return null;
-
-	// Build region geo data
-	$geo_data = [];
-	foreach ($regions as $_region) {
-		$region_geojson = $_region['geojson'] ?? '';
-		if (is_string($region_geojson) && trim($region_geojson) !== '') {
-			$decoded = json_decode($region_geojson, true);
-			if (is_array($decoded)) {
-				$geo_data[] = [
-					'alias'  => $_region['alias'] ?? null,
-					'geojson'=> $decoded,
-				];
-			}
-		}
-	}
+	$config = get_regions_config();
+	$geo_data = $config['regions'] ?? [];
 
 	if (!count($geo_data)) return null;
 
@@ -79,7 +120,6 @@ function get_region_from_ip() {
 	return null;
 }
 
-
 /**
  * Get the user's region from post type if on a relevant post type
  *
@@ -87,7 +127,8 @@ function get_region_from_ip() {
  */
 function get_region_from_post_type() {
 	$post_type = get_post_type();
-	$forced_region_post_types = get_field('forced_region_post_types', 'option');
+	$config = get_regions_config();
+	$forced_region_post_types = $config['forced_region_post_types'] ?? [];
 	if (is_array($forced_region_post_types) && in_array($post_type, $forced_region_post_types)) {
 		$related_region = get_field('related_regions');
 		if (is_array($related_region) && $related_region[0] !== '') {
@@ -120,27 +161,34 @@ function get_region_from_post() {
  * @return string - The user's region or default value if no region is found
  */
 function get_region($no_user_region_meaning = null) {
+	// Cache the resolved region for the entire request to avoid
+	// re-computing on every is_region_match() call
+	static $cached_region = null;
+	if ($cached_region !== null && $no_user_region_meaning === null) return $cached_region;
+
 	// Check if post type forces the region
 	$region_from_post_type = get_region_from_post_type();
-	if ($region_from_post_type !== null) return $region_from_post_type;
+	if ($region_from_post_type !== null) { $cached_region = $region_from_post_type; return $cached_region; }
 
 	// Check if the post forces the region
 	$region_from_post = get_region_from_post();
-	if ($region_from_post !== null) return $region_from_post;
+	if ($region_from_post !== null) { $cached_region = $region_from_post; return $cached_region; }
 
 	// Then check cookie since it reflects user selection
 	$region_from_cookie = get_region_from_cookie();
-	if ($region_from_cookie !== null) return $region_from_cookie;
+	if ($region_from_cookie !== null) { $cached_region = $region_from_cookie; return $cached_region; }
 
 	// Finally check IP geolocation as fallback
 	$region_from_ip = get_region_from_ip();
-	if ($region_from_ip !== null) return $region_from_ip;
+	if ($region_from_ip !== null) { $cached_region = $region_from_ip; return $cached_region; }
 
 	// If no region found, return default based on setting
 	if ($no_user_region_meaning === null || !in_array($no_user_region_meaning, ['outside-region', 'everywhere'])) {
-		$no_user_region_meaning = get_field('no_user_region_meaning', 'option') ?? 'outside-region'; // TODO we need to create this option field
+		$config = get_regions_config();
+		$no_user_region_meaning = $config['no_user_region_meaning'] ?? 'outside-region';
 	}
-	return $no_user_region_meaning;
+	$cached_region = $no_user_region_meaning;
+	return $cached_region;
 }
 
 /**
@@ -154,7 +202,8 @@ function get_region($no_user_region_meaning = null) {
 function is_region_match($content_regions, $user_region = null, $no_content_region_meaning = null) {
     $content_regions = is_array($content_regions) ? array_filter($content_regions) : $content_regions;
 	if ($no_content_region_meaning === null || !in_array($no_content_region_meaning, ['everywhere', 'none'])) {
-		$no_content_region_meaning = get_field('no_content_region_meaning', 'option') ?? 'everywhere'; // TODO we need to create this option field
+		$config = get_regions_config();
+		$no_content_region_meaning = $config['no_content_region_meaning'] ?? 'everywhere';
 	}
 
 	// No regions assigned to the content
@@ -268,6 +317,93 @@ function point_in_geojson(float $testLon, float $testLat, array $geojson): bool 
 	}
 
 	return false;
+}
+
+/**
+ * Early IP-based region detection for W3TC cookie group cache key injection.
+ *
+ * Reads regions-cache.json and the MaxMind GeoLite2 database to detect the
+ * visitor's region from their IP address, then sets $_COOKIE['ipDetectedRegion']
+ * so W3TC can incorporate it into the Redis cache key on the current request.
+ *
+ * Designed to be called from wp-config.php before WordPress (and advanced-cache.php)
+ * loads. Uses only the polygon functions in this namespace — no WordPress functions
+ * required.
+ *
+ * @return void
+ */
+function run_early_ip_region_detect() {
+	// Skip for admin, cron, and CLI
+	if (
+		(defined('DOING_CRON') && DOING_CRON) ||
+		(defined('DOING_AJAX') && DOING_AJAX) ||
+		php_sapi_name() === 'cli' ||
+		str_starts_with($_SERVER['REQUEST_URI'] ?? '', '/wp-admin') ||
+		str_starts_with($_SERVER['REQUEST_URI'] ?? '', '/wp-login.php') ||
+		str_starts_with($_SERVER['REQUEST_URI'] ?? '', '/wp-json')
+	) {
+		return;
+	}
+
+	// Skip if user has an explicit manual selection — their choice takes full priority
+	if (!empty($_COOKIE['selectedRegion'])) return;
+
+	// Resolve cache file path (WP_CONTENT_DIR may not be defined in early context)
+	$cache_file = defined('WP_CONTENT_DIR')
+		? WP_CONTENT_DIR . '/regions-cache.json'
+		: dirname(__DIR__, 3) . '/regions-cache.json';
+
+	if (!file_exists($cache_file)) return;
+
+	$config = json_decode(file_get_contents($cache_file), true);
+	if (!is_array($config)) return;
+
+	$regions     = $config['regions']                ?? [];
+	$mmdb_path   = $config['mmdb_path']              ?? '';
+	$reader_path = $config['reader_path']            ?? '';
+	$ip_header   = $config['ip_header']              ?? 'REMOTE_ADDR';
+	$test_ip     = $config['test_ip']                ?? '';
+	$default     = $config['no_user_region_meaning'] ?? 'outside-region';
+
+	if (!$regions || !file_exists($mmdb_path) || !file_exists($reader_path . 'Reader.php')) return;
+
+	$ip = $test_ip ?: ($_SERVER[$ip_header] ?? '');
+	$ip = filter_var($ip, FILTER_VALIDATE_IP);
+	if (!$ip) return;
+	if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE)) return;
+
+	require_once $reader_path . 'Reader.php';
+	require_once $reader_path . 'Decoder.php';
+	require_once $reader_path . 'InvalidDatabaseException.php';
+	require_once $reader_path . 'Metadata.php';
+	require_once $reader_path . 'Util.php';
+
+	try {
+		$reader = new \lqx\ip2geo\Reader($mmdb_path);
+		$geo    = $reader->get($ip);
+		$reader->close();
+	} catch (\Exception $e) {
+		return;
+	}
+
+	$lat = isset($geo['location']['latitude'])  ? (float)$geo['location']['latitude']  : null;
+	$lon = isset($geo['location']['longitude']) ? (float)$geo['location']['longitude'] : null;
+
+	if ($lat === null || $lon === null || !is_finite($lat) || !is_finite($lon)) {
+		$region = $default;
+	} else {
+		$region = $default;
+		foreach ($regions as $r) {
+			if (!empty($r['alias']) && !empty($r['geojson']) && point_in_geojson($lon, $lat, $r['geojson'])) {
+				$region = $r['alias'];
+				break;
+			}
+		}
+	}
+
+	// Inject into $_COOKIE so W3TC reads it when building the Redis cache key.
+	// Only ipDetectedRegion is touched — selectedRegion belongs to the user.
+	$_COOKIE['ipDetectedRegion'] = $region;
 }
 
 add_action('acf/save_post', function($post_id) {

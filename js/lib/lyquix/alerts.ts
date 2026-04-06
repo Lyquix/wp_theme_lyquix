@@ -232,15 +232,15 @@ export const alerts = (() => {
 
 								// Navigation arrows
 								navigation: {
-									prevEl: cfg.alerts.swiperPrevSelector,
-									nextEl: cfg.alerts.swiperNextSelector
+									prevEl: alertsModuleElem.find(cfg.alerts.swiperPrevSelector)[0],
+									nextEl: alertsModuleElem.find(cfg.alerts.swiperNextSelector)[0]
 								}
 							};
 
 							// setup pagination if enabled
 							if (pagination == true) {
 								swiperOptions['pagination'] = {
-									el: cfg.alerts.paginationSelector,
+                                    el: alertsModuleElem.find(cfg.alerts.paginationSelector)[0],
 									clickable: true,
 									renderBullet: function (index, className) {
 										return '<span class="' + className + '">' + (index + 1) + '</span>';

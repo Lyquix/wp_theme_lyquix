@@ -106,10 +106,22 @@ export const geolocate = (() => {
 		vars.geolocate.init = true;
 	};
 
-	// Attempts to locate position of user by means of gps or ip address
-	const geoLocate = () => {
-		if (cfg.geolocate.useCookies) {
-			log('Attempting to geolocate from cookies');
+    // Attempts to locate position of user by means of gps or ip address
+    const geoLocate = () => {
+        // Check for manually selected region cookie first — takes priority over IP/GPS detection
+        const selectedRegion = util.cookie('selectedRegion');
+        if (selectedRegion) {
+            log('Region override from selectedRegion cookie:', selectedRegion);
+            vars.geolocate.regions = [selectedRegion];
+            vars.geolocate.status.ip = 'ready';
+            vars.geolocate.status.gps = 'n/a';
+            bodyGeoData();
+            regionDisplay();
+            return;
+        }
+
+        if (cfg.geolocate.useCookies) {
+            log('Attempting to geolocate from cookies');
 
 			// Get data from cookies
 			vars.geolocate.cookies.ip = util.cookie('lqx.geolocate.cookies.ip');
@@ -214,8 +226,11 @@ export const geolocate = (() => {
 				}
 			}
 
-			// Match regions before triggering event
-			matchRegions();
+            // Match regions before triggering event — skip if already set by selectedRegion cookie
+            if (!vars.geolocate.regions.length) matchRegions();
+
+            // Set body regions attribute
+            vars.body.attr('regions', vars.geolocate.regions.join(','));
 
 			// Trigger custom event 'geolocateready'
 			log('geolocateready event');
@@ -348,9 +363,12 @@ export const geolocate = (() => {
 		 *
 		 */
 
-		if (elems == undefined) {
-			elems = jQuery(cfg.geolocate.regionDisplaySelector);
-		}
+        // Guard against being called as a jQuery event handler
+        if (elems instanceof jQuery.Event) elems = undefined;
+
+        if (elems == undefined) {
+            elems = jQuery(cfg.geolocate.regionDisplaySelector);
+        }
 
 		if (elems instanceof Node) {
 			// Not an array, convert to an array
@@ -361,9 +379,9 @@ export const geolocate = (() => {
 			elems = elems.toArray();
 		}
 
-		if (elems.length) {
-			elems.forEach((elem) => {
-				elem = jQuery(elem);
+        if (elems.length) {
+            elems.forEach((elem) => {
+                elem = jQuery(elem);
 
 				let elemOpts = {
 					regions: [],
@@ -419,7 +437,8 @@ export const geolocate = (() => {
 
 	return Object.defineProperties({
 		init,
-		ready
+		ready,
+        regionDisplay
 	}, {
 		// Set the cfg and vars properties as read-only
 		location: {
@@ -449,6 +468,7 @@ export const geolocate = (() => {
 	}) as {
 		init: (customCfg?: object) => void,
 		ready: (callback: () => void) => void,
+        regionDisplay: (elems?: any) => void,
 		location: object,
 		regions: string[],
 		status: object
