@@ -523,6 +523,7 @@ function theme_setup() {
 				cursor: pointer;
 				background: rgba(128,128,128,0.65);
 				transition: top 200ms ease;
+				max-width: 100%;
 			}
 
 			/* Position variants */
