@@ -25,14 +25,16 @@
 //  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/cards/{preset}-text.tmpl.php
 
 ?>
+<?php if (!empty($item['heading']) || !empty($item['body']) || !empty($item['link']) || ($s['show_subheading'] == 'y' && !empty($item['subheading']))) : ?>
 <div class="text">
 
-	<?php if ($item['heading']) require \lqx\blocks\get_template('cards', $s['preset'], 'heading'); ?>
+	<?php if (!empty($item['heading'])) require \lqx\blocks\get_template('cards', $s['preset'], 'heading'); ?>
 
-	<?php if ($s['show_subheading'] == 'y' && $item['subheading'])  require \lqx\blocks\get_template('cards', $s['preset'], 'subheading'); ?>
+	<?php if ($s['show_subheading'] == 'y' && !empty($item['subheading']))  require \lqx\blocks\get_template('cards', $s['preset'], 'subheading'); ?>
 
-	<?= $item['body'] ?>
+	<?php if (!empty($item['body'])) : ?><?= $item['body'] ?><?php endif; ?>
 
-	<?php if ($item['link']) require \lqx\blocks\get_template('cards', $s['preset'], 'link'); ?>
+	<?php if (!empty($item['link'])) require \lqx\blocks\get_template('cards', $s['preset'], 'link'); ?>
 
 </div>
+<?php endif; ?>

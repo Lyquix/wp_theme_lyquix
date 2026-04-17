@@ -32,7 +32,7 @@
 	<?php if ($c['heading']): ?>
 	<<?= $s['heading_style'] ?> class="title"><?= $c['heading'] ?></<?= $s['heading_style'] ?>>
 	<?php endif; ?>
-	<div class="intro"><?= $c['intro_text'] ?></div>
+	<?php if (!empty($c['intro_text'])) : ?><div class="intro"><?= $c['intro_text'] ?></div><?php endif; ?>
 	<?php if (count($c['links'])) : ?>
 		<ul class="links">
 			<?php foreach ($c['links'] as $link) : ?>

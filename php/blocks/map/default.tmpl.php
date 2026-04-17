@@ -76,7 +76,7 @@ foreach($c as $item) {
 		'zip'=> (is_array($address) ? $address['post_code'] : ''),
 		'street'=> (is_array($address) ? $address['name'] : ''),
 		'display_address' => $display_address_override,
-		'icon' => ($s['google_maps_display_settings']['pin_override'] !== null ? $s['google_maps_display_settings']['pin_override']['url'] : 'http://maps.google.com/mapfiles/ms/icons/' . $item['pin_color'] . '-dot.png'),
+		'icon' => (!empty($s['google_maps_display_settings']['pin_override']) ? $s['google_maps_display_settings']['pin_override']['url'] ?? '' : 'http://maps.google.com/mapfiles/ms/icons/' . ($item['pin_color'] ?? '') . '-dot.png'),
 		'infoWindow' => $s['show_infowindows'] == 'y' ? 'true' : 'false',
 		'html' => ($s['show_infowindows'] == 'y' ? require \lqx\blocks\get_template('map', $s['preset'], 'infowindow'): ''),
 		'additional_classes' => $custom_class,

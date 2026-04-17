@@ -26,7 +26,7 @@
 $settings = \lqx\blocks\get_settings($block);
 $content = \lqx\blocks\get_content($block);
 
-$settings['processed']['open_on_load'] = $context['acf/fields']['accordion-plus_block_admin_open_on_load'];
+$settings['processed']['open_on_load'] = $context['acf/fields']['accordion-plus_block_admin_open_on_load'] ?? null;
 
 // Render the block
 \lqx\blocks\render_block($settings, $content);

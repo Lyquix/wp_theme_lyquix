@@ -43,7 +43,8 @@ if ($item['image'] && $s['items_display_settings']['show_image'] == 'y'): ?>
 		<?= $item['subtitle'] ?>
 	</<?= $s['items_display_settings']['subtitle_style'] == 'p' ? 'strong></p' : $s['items_display_settings']['subtitle_style'] ?>>
 	<?php endif; ?>
-	<div class="address"><?= ($item['display_address'] !== '' ? $item['display_address'] : $item['address']) ?></div>
+	<?php $address_text = !empty($item['display_address']) ? $item['display_address'] : ($item['address'] ?? ''); ?>
+	<?php if (!empty($address_text)) : ?><div class="address"><?= $address_text ?></div><?php endif; ?>
 	<?php if ($item['phone_numbers'] && $s['items_display_settings']['show_phone_numbers'] == 'y'): ?>
 	<div class="phone-numbers">
 		<?php foreach($item['phone_numbers'] as $phone): ?>

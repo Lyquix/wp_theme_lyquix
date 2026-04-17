@@ -25,11 +25,13 @@
 //  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/slider/{preset}-text.tmpl.php
 
 ?>
+<?php if (!empty($item['heading']) || !empty($item['body'])) : ?>
 <div class="text">
-	<?php if ($item['heading']) : ?>
+	<?php if (!empty($item['heading'])) : ?>
 		<<?= $s['heading_style'] ?>>
 			<?= $item['heading'] ?>
 		</<?= $s['heading_style'] ?>>
 	<?php endif; ?>
-	<?= $item['body'] ?>
+	<?php if (!empty($item['body'])) : ?><?= $item['body'] ?><?php endif; ?>
 </div>
+<?php endif; ?>

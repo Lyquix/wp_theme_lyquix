@@ -64,7 +64,7 @@ if ($item['video']['type'] == 'url' && $item['video']['url']) {
 			?>
 			<video
 				autoplay loop muted playsinline
-				poster="<?= $item['image']['sizes']['large'] ?>">
+				poster="<?= $item['image']['sizes']['large'] ?? '' ?>">
 				<source
 					src="<?= esc_attr($item['video']['upload']['url']) ?>"
 					type="<?= esc_attr($item['video']['upload']['mime_type']) ?>">

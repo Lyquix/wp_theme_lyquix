@@ -28,7 +28,7 @@
 <div class="text">
 	<?= $breadcrumbs ?>
 	<h1 class="title"><?= $c['heading_override'] ? $c['heading_override'] : get_the_title() ?></h1>
-	<div class="intro"><?= $c['intro_text'] ?></div>
+	<?php if (!empty($c['intro_text'])) : ?><div class="intro"><?= $c['intro_text'] ?></div><?php endif; ?>
 	<?php if (count($c['links'])) : ?>
 		<ul class="links">
 			<?php foreach ($c['links'] as $link) : ?>

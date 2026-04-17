@@ -41,8 +41,8 @@
 		<video class="<?= implode(' ', $video_classes)?>" preload="auto"
 			loop muted playsinline autoplay
 			poster="<?= $item['image']['sizes']['medium'] ?>"
-			data-src="<?= esc_attr($hover_content['video']['url']) ?>"
-			type="<?= esc_attr($hover_content['video']['mime_type']) ?>">
+			data-src="<?= esc_attr($hover_content['video']['url'] ?? '') ?>"
+			type="<?= esc_attr($hover_content['video']['mime_type'] ?? '') ?>">
 			<source
 				src="<?= esc_attr($item['video']['upload']['url']) ?>"
 				type="<?= esc_attr($item['video']['upload']['mime_type']) ?>"/>

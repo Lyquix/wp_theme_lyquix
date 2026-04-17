@@ -1499,8 +1499,8 @@ function prepare_query($query, $s)
 							AND p.post_status = \'publish\'
 							AND p.ID = pm.post_id
 							AND pm.meta_key = \'related_regions\'
-							AND pm.meta_value LIKE \'%\"' . $region . '"%\'';
-                    $sql = $wpdb->remove_placeholder_escape($wpdb->prepare($region_query, $region));
+							AND pm.meta_value LIKE %s';
+                    $sql = $wpdb->remove_placeholder_escape($wpdb->prepare($region_query, '%"' . $wpdb->esc_like($region) . '"%'));
                     $items = $wpdb->get_results($sql);
 
                     $final_list = [];

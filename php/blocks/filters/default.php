@@ -24,7 +24,7 @@
 //  If you need a custom renderer, copy this file to php/custom/blocks/filters/default.php and modify it there
 //  You may also create custom renderer for specific presets, by copying this file to /php/custom/blocks/filters/{preset}.php
 
-if ($settings['processed']['preset']) { // only proceed if a preset has been selected
+if (!empty($settings['processed']['preset'])) { // only proceed if a preset has been selected
 	// Get the processed settings and posts with data
 	// TODO we should add some validation to $s
 	$s = \lqx\filters\get_settings_and_posts($settings);

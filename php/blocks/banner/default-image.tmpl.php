@@ -40,7 +40,7 @@
 		?>
 		<video class="<?= implode(' ', $video_classes)?>" preload="auto"
 			loop muted playsinline autoplay
-			poster="<?= $c['image']['sizes']['medium'] ?>"
+			poster="<?= $c['image']['sizes']['medium'] ?? '' ?>"
 			data-src="<?= esc_attr($c['video']['upload']['url']) ?>"
 			type="<?= esc_attr($c['video']['mime_type']) ?>">
 			<source

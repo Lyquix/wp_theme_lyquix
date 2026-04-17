@@ -35,7 +35,7 @@
 		'url' => isset($video['url']) ? $video['url'] : $item['image']['sizes']['xlarge'],
 		'title' => $item['title'],
 		'caption' => $item['caption'],
-		'thumb' => $item['thumbnail']['sizes']['large'],
+		'thumb' => $item['thumbnail']['sizes']['large'] ?? null,
 	])) ?>">
 	<img
 		<?= \lqx\util\get_src_srcset_sizes_attribs($item['thumbnail']) ?>
@@ -43,5 +43,5 @@
 	<<?= $s['heading_style'] == 'p' ? 'p class="title"><strong' : $s['heading_style'] ?>>
 		<?= $item['title'] ?>
 	</<?= $s['heading_style'] == 'p' ? 'strong></p' : $s['heading_style'] ?>>
-	<?= '<p>' . $item['teaser'] . '</p>' ?>
+	<?php if (!empty($item['teaser'])) : ?><p><?= $item['teaser'] ?></p><?php endif; ?>
 </li>
