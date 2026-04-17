@@ -831,6 +831,7 @@ function init_settings($s)
                 break;
 
             case 'region':
+                if (!\lqx\regions\has_regions()) break;
                 $control['label'] = 'Region';
                 $control['options'][] = ['value' => 'this-region', 'text' => 'This Region'];
                 $region = \lqx\regions\get_region();
@@ -1487,7 +1488,7 @@ function prepare_query($query, $s)
                 break;
 
             case 'region' :
-                if (isset($_COOKIE['selectedRegion']) || isset($_COOKIE['ipDetectedRegion'])) {
+                if (\lqx\regions\has_regions() && (isset($_COOKIE['selectedRegion']) || isset($_COOKIE['ipDetectedRegion']))) {
                     $region = \lqx\regions\get_region();
                     // we should probably do a mysql query to get all posts within the related region
                     // this is a repeater field that can have multiple values, and thus we need to check each one unless we want to rework this system

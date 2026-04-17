@@ -1518,9 +1518,17 @@ add_action('rest_api_init', function () {
     ));
 });
 
+// Hide the Regional Block Fields tab and select in the block editor when no regions are configured
+add_filter('acf/prepare_field/key=field_6813981f6c967', function($field) {
+    return \lqx\regions\has_regions() ? $field : false;
+});
+add_filter('acf/prepare_field/key=field_681397476c965', function($field) {
+    return \lqx\regions\has_regions() ? $field : false;
+});
+
 // Filter for rendering blocks within regions they're connected to
 add_filter('render_block', function ($block_content, $block) {
-    if (isset($block['attrs']['data']['regions']) && is_array($block['attrs']['data']['regions'])) {
+    if (\lqx\regions\has_regions() && isset($block['attrs']['data']['regions']) && is_array($block['attrs']['data']['regions'])) {
         $block['attrs']['data']['regions'] = array_filter($block['attrs']['data']['regions']);
         if (!\lqx\regions\is_region_match($block['attrs']['data']['regions'])) $block_content = '';
     }

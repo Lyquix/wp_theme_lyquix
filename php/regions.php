@@ -81,6 +81,17 @@ function get_regions_config() {
 }
 
 /**
+ * Check whether any regions are configured.
+ * When no regions exist, all regionalization logic should be skipped.
+ *
+ * @return bool
+ */
+function has_regions(): bool {
+	$config = get_regions_config();
+	return !empty($config['full_regions']);
+}
+
+/**
  * Get the user's region from cookie if set
  *
  * @return string|null - The user's region from cookie or null if not set
@@ -200,6 +211,7 @@ function get_region($no_user_region_meaning = null) {
  * @return bool True if user's region matches content regions or if content has no regions and $
  */
 function is_region_match($content_regions, $user_region = null, $no_content_region_meaning = null) {
+	if (!has_regions()) return true;
     $content_regions = is_array($content_regions) ? array_filter($content_regions) : $content_regions;
 	if ($no_content_region_meaning === null || !in_array($no_content_region_meaning, ['everywhere', 'none'])) {
 		$config = get_regions_config();

@@ -175,7 +175,7 @@ class Mega_Menu_Walker extends \Walker_Nav_Menu {
 				foreach ($posts as $post):
 					$item_regions = get_field('related_regions', $post->ID);
 					setup_postdata($post);
-					if (is_array($item_regions) && !empty($item_regions[0]) && ($item_regions[0] !== '')) {
+					if (\lqx\regions\has_regions() && is_array($item_regions) && !empty($item_regions[0]) && ($item_regions[0] !== '')) {
 						if (!empty($region) && !in_array($region, $item_regions)) {
 							continue;
 						}
