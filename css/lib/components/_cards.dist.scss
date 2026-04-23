@@ -76,6 +76,10 @@ $cards-image-icon-positions: left center right;
     @apply grid p-0 gap-[1em] list-none;
   }
 
+  &:has(.swiper) {
+    @apply overflow-x-hidden;
+  }
+
   &:not([data-preset]) {
     @include default-cards;
   }
