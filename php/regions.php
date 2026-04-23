@@ -422,26 +422,43 @@ add_action('acf/save_post', function($post_id) {
     if ($post_id !== 'options') return;
 
     $regions = get_field('regions', 'option');
-    if (!is_array($regions) || !count($regions)) return;
 
     $export = [];
-    foreach ($regions as $region) {
-        $alias   = $region['alias'] ?? null;
-        $geojson = $region['geojson'] ?? '';
-        if (!$alias || !is_string($geojson) || trim($geojson) === '') continue;
-        $decoded = json_decode($geojson, true);
-        if (!is_array($decoded)) continue;
-        $export[] = ['alias' => $alias, 'geojson' => $decoded];
+    $full_regions = [];
+    if (is_array($regions)) {
+        foreach ($regions as $region) {
+            $alias       = $region['alias'] ?? null;
+            $geojson_str = $region['geojson'] ?? '';
+            $decoded_geojson = null;
+            if (is_string($geojson_str) && trim($geojson_str) !== '') {
+                $decoded = json_decode($geojson_str, true);
+                if (is_array($decoded)) $decoded_geojson = $decoded;
+            }
+            $full_regions[] = [
+                'name'         => $region['name'] ?? null,
+                'mobile_label' => $region['mobile_label'] ?? null,
+                'alias'        => $alias,
+                'phone_number' => $region['phone_number'] ?? null,
+                'address'      => $region['address'] ?? null,
+                'description'  => $region['description'] ?? null,
+                'geojson'      => $decoded_geojson,
+            ];
+            if ($alias && $decoded_geojson) {
+                $export[] = ['alias' => $alias, 'geojson' => $decoded_geojson];
+            }
+        }
     }
 
-    // Also export the settings needed at early cache time
     $config = [
-        'regions'               => $export,
-        'no_user_region_meaning'=> get_field('no_user_region_meaning', 'option') ?? 'outside-region',
-        'ip_header'             => get_theme_mod('ip2geo_ip_address_header', 'REMOTE_ADDR'),
-        'test_ip'               => get_theme_mod('ip2geo_test_ip_address', ''),
-        'mmdb_path'             => wp_get_upload_dir()['basedir'] . '/GeoLite2-City.mmdb',
-        'reader_path'           => get_template_directory() . '/php/ip2geo/', // adjust to your theme path
+        'regions'                   => $export,
+        'full_regions'              => $full_regions,
+        'forced_region_post_types'  => get_field('forced_region_post_types', 'option') ?: [],
+        'no_user_region_meaning'    => get_field('no_user_region_meaning', 'option') ?? 'outside-region',
+        'no_content_region_meaning' => get_field('no_content_region_meaning', 'option') ?? 'everywhere',
+        'ip_header'                 => get_theme_mod('ip2geo_ip_address_header', 'REMOTE_ADDR'),
+        'test_ip'                   => get_theme_mod('ip2geo_test_ip_address', ''),
+        'mmdb_path'                 => wp_get_upload_dir()['basedir'] . '/GeoLite2-City.mmdb',
+        'reader_path'               => get_template_directory() . '/php/ip2geo/',
     ];
 
     file_put_contents(
