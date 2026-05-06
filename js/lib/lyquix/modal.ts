@@ -291,6 +291,102 @@ export const modal = (() => {
 		}
 	};
 
+	/**
+	 * Register a modal entirely from JavaScript — no WP admin entry needed.
+	 *
+	 * The modal is added to the DOM immediately but only shown automatically when
+	 * show_delay >= 0. Call open(id) at any time to show it manually.
+	 *
+	 * @param data.id              Required. Unique element id (e.g. 'mailchimp-signup').
+	 * @param data.heading         Optional heading text.
+	 * @param data.body            Optional HTML body content.
+	 * @param data.css_classes     Optional space-separated CSS classes.
+	 * @param data.heading_style   Tag for the heading ('p'|'h1'–'h6'). Default 'h3'.
+	 * @param data.show_delay      Seconds until auto-open. -1 = no auto-open (default).
+	 * @param data.hide_delay      Seconds until auto-close. Omit to stay open.
+	 * @param data.dismiss_duration Minutes to suppress after dismiss. Omit to always allow re-open.
+	 * @param data.links           Optional array of link/button objects.
+	 * @returns The jQuery element, or null on error.
+	 */
+	const register = (data: {
+		id: string;
+		heading?: string;
+		body?: string;
+		css_classes?: string;
+		heading_style?: 'p' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+		show_delay?: number;
+		hide_delay?: number;
+		dismiss_duration?: number;
+		links?: Array<{
+			type: 'button' | 'link';
+			link: { url: string; target?: string; title?: string };
+		}>;
+	}) => {
+		if (!data?.id) {
+			warn('modal.register: id is required');
+			return null;
+		}
+
+		const escaped = CSS.escape(data.id);
+		if (jQuery('#' + escaped).length) {
+			warn('modal.register: modal already registered', data.id);
+			return jQuery('#' + escaped);
+		}
+
+		const heading_style = data.heading_style || 'h3';
+		const css_classes   = data.css_classes || '';
+		const show_delay    = data.show_delay ?? -1;
+		const hide_delay    = data.hide_delay != null ? String(data.hide_delay) : '';
+		const dismiss       = data.dismiss_duration != null ? String(data.dismiss_duration) : '';
+
+		let html = `<dialog
+			id="${data.id}"
+			class="${css_classes}"
+			data-heading-style="${heading_style}"
+			data-show-delay="${show_delay}"
+			data-hide-delay="${hide_delay}"
+			data-dismiss-duration="${dismiss}"
+			aria-labelledby="${data.id}-title"
+			aria-modal="true"
+			aria-hidden="true">`;
+		html += '<button class="close">Close</button>';
+		if (data.heading) {
+			html += heading_style === 'p' ? `<p class="title" id="${data.id}-title"><strong>` : `<${heading_style} id="${data.id}-title">`;
+			html += data.heading;
+			html += heading_style === 'p' ? '</strong></p>' : `</${heading_style}>`;
+		}
+		html += data.body || '';
+		if (data.links?.length) {
+			html += '<ul class="links">';
+			data.links.forEach((l) => {
+				if (l.link?.url) {
+					html += '<li>';
+					html += `<a href="${l.link.url}" class="${l.type === 'button' ? 'button' : 'readmore'}"${l.link.target ? ' target="_blank"' : ''}>`;
+					html += l.link.title || 'Read More';
+					html += '</a></li>';
+				}
+			});
+			html += '</ul>';
+		}
+		html += '</dialog>';
+
+		const elem = jQuery(html).appendTo(vars.body);
+		log('Modal registered (JS)', data.id);
+
+		elem.find('.close').on('click', () => close(data.id));
+		elem.on('close', () => close(data.id));
+
+		if (show_delay >= 0) {
+			if (show_delay === 0) {
+				open(data.id);
+			} else {
+				window.setTimeout(() => open(data.id), show_delay * 1000);
+			}
+		}
+
+		return elem;
+	};
+
 	const close = (modalId) => {
 		const modalElem = jQuery('#' + modalId);
 		if (!modalElem.length) {
@@ -333,6 +429,7 @@ export const modal = (() => {
 	return {
 		init,
 		open,
-		close
+		close,
+		register
 	};
 })();

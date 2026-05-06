@@ -35,8 +35,9 @@
 	<?php endif; ?>
 		<img
 			<?= \lqx\util\get_src_srcset_sizes_attribs($item['image']) ?>
-			alt="<?= esc_attr($item['image']['alt']) ?>"
-			class="<?= esc_attr($padding) ?>" />
+			<?= \lqx\util\get_alt_attribs($item['image']['alt'] ?? '') ?>
+			class="<?= esc_attr($padding) ?>"
+			<?= $s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '' ?> />
 		<?php if ($item['title']) : ?>
 			<p><?= $item['title'] ?></p>
 		<?php endif; ?>

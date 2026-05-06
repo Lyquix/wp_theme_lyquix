@@ -291,6 +291,109 @@ export const popup = (() => {
 		}
 	};
 
+	/**
+	 * Register a popup entirely from JavaScript — no WP admin entry needed.
+	 *
+	 * The popup is added to the DOM immediately but only shown automatically when
+	 * show_delay >= 0. Call open(id) at any time to show it manually.
+	 *
+	 * @param data.id              Required. Unique element id (e.g. 'mailchimp-signup').
+	 * @param data.heading         Optional heading text.
+	 * @param data.body            Optional HTML body content.
+	 * @param data.css_classes     Optional space-separated CSS classes.
+	 * @param data.heading_style   Tag for the heading ('p'|'h1'–'h6'). Default 'h3'.
+	 * @param data.show_delay      Seconds until auto-open. -1 = no auto-open (default).
+	 * @param data.hide_delay      Seconds until auto-close. Omit to stay open.
+	 * @param data.dismiss_duration Minutes to suppress after dismiss. Omit to always allow re-open.
+	 * @param data.links           Optional array of link/button objects.
+	 * @returns The jQuery element, or null on error.
+	 */
+	const register = (data: {
+		id: string;
+		heading?: string;
+		body?: string;
+		css_classes?: string;
+		heading_style?: 'p' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+		show_delay?: number;
+		hide_delay?: number;
+		dismiss_duration?: number;
+		links?: Array<{
+			type: 'button' | 'link';
+			link: { url: string; target?: string; title?: string };
+		}>;
+	}) => {
+		if (!data?.id) {
+			warn('popup.register: id is required');
+			return null;
+		}
+
+		const escaped = CSS.escape(data.id);
+		if (jQuery('#' + escaped).length) {
+			warn('popup.register: popup already registered', data.id);
+			return jQuery('#' + escaped);
+		}
+
+		// Ensure the popup module wrapper exists (the parent setup() removes it when
+		// there are no WP-configured popups, so we recreate it if needed)
+		let container = jQuery(cfg.popup.popupModuleSelector);
+		if (!container.length) {
+			let wrapper = jQuery('#lqx-module-popup');
+			if (!wrapper.length) {
+				wrapper = jQuery('<section id="lqx-module-popup"></section>').appendTo(vars.body);
+			}
+			container = jQuery('<div class="popup"></div>').appendTo(wrapper);
+		}
+
+		const heading_style = data.heading_style || 'h3';
+		const css_classes   = data.css_classes || '';
+		const show_delay    = data.show_delay ?? -1;
+		const hide_delay    = data.hide_delay != null ? String(data.hide_delay) : '';
+		const dismiss       = data.dismiss_duration != null ? String(data.dismiss_duration) : '';
+
+		let html = `<section
+			id="${data.id}"
+			class="closed ${css_classes}"
+			data-heading-style="${heading_style}"
+			data-show-delay="${show_delay}"
+			data-hide-delay="${hide_delay}"
+			data-dismiss-duration="${dismiss}">`;
+		html += '<button class="close">Close</button>';
+		if (data.heading) {
+			html += heading_style === 'p' ? '<p class="title"><strong>' : `<${heading_style}>`;
+			html += data.heading;
+			html += heading_style === 'p' ? '</strong></p>' : `</${heading_style}>`;
+		}
+		html += data.body || '';
+		if (data.links?.length) {
+			html += '<ul class="links">';
+			data.links.forEach((l) => {
+				if (l.link?.url) {
+					html += '<li>';
+					html += `<a href="${l.link.url}" class="${l.type === 'button' ? 'button' : 'readmore'}"${l.link.target ? ' target="_blank"' : ''}>`;
+					html += l.link.title || 'Read More';
+					html += '</a></li>';
+				}
+			});
+			html += '</ul>';
+		}
+		html += '</section>';
+
+		const elem = jQuery(html).appendTo(container);
+		log('Popup registered (JS)', data.id);
+
+		elem.find('.close').on('click', () => close(data.id));
+
+		if (show_delay >= 0) {
+			if (show_delay === 0) {
+				open(data.id);
+			} else {
+				window.setTimeout(() => open(data.id), show_delay * 1000);
+			}
+		}
+
+		return elem;
+	};
+
 	const close = (popupId) => {
 		const popupElem = jQuery('#' + popupId);
 		if (!popupElem.length) {
@@ -332,6 +435,7 @@ export const popup = (() => {
 	return {
 		init,
 		open,
-		close
+		close,
+		register
 	};
 })();

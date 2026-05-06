@@ -39,7 +39,8 @@
 	])) ?>">
 	<img
 		<?= \lqx\util\get_src_srcset_sizes_attribs($item['thumbnail']) ?>
-		alt="<?= esc_attr($item['image']['alt']) ?>">
+		<?= \lqx\util\get_alt_attribs($item['image']['alt'] ?? '') ?>
+		<?= $s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '' ?>>
 	<<?= $s['heading_style'] == 'p' ? 'p class="title"><strong' : $s['heading_style'] ?>>
 		<?= $item['title'] ?>
 	</<?= $s['heading_style'] == 'p' ? 'strong></p' : $s['heading_style'] ?>>

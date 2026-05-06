@@ -53,15 +53,15 @@
 		<?php if (array_key_exists('url', $c['image_override'])) : ?>
 			<img
 				<?= \lqx\util\get_src_srcset_sizes_attribs($c['image_override'], $s['image_size']) ?>
-				alt="<?= esc_attr($c['image_override']['alt']) ?>"
+				<?= \lqx\util\get_alt_attribs($c['image_override']['alt'] ?? '') ?>
 				class="<?= array_key_exists('url', $c['image_mobile']) ? 'xs:hidden md:block' : '' ?>"
-				<?= $s['disable_lazy_loading'] == 'y' ? 'loading="eager" data-skip-lazy' : '' ?> />
+				<?= $s['lazy_load'] != 'y' ? 'loading="eager" data-skip-lazy' : '' ?> />
 		<?php else :
 			$the_post_thumbnail_opts = [];
 			if (array_key_exists('url', $c['image_mobile'])) {
 				$the_post_thumbnail_opts['class'] =  'xs:hidden md:block';
 			}
-			if ($s['disable_lazy_loading'] == 'y' ) {
+			if ($s['lazy_load'] != 'y' ) {
 				$the_post_thumbnail_opts['loading'] = 'eager';
 				$the_post_thumbnail_opts['data-skip-lazy'] = '';
 			}
@@ -70,9 +70,9 @@
 		<?php if (array_key_exists('url', $c['image_mobile'])) : ?>
 			<img
 				<?= \lqx\util\get_src_srcset_sizes_attribs($c['image_mobile'], $s['image_mobile_size']) ?>
-				alt="<?= esc_attr($c['image_mobile']['alt']) ?>"
+				<?= \lqx\util\get_alt_attribs($c['image_mobile']['alt'] ?? '') ?>
 				class="xs:block md:hidden"
-				<?= $s['disable_lazy_loading'] == 'y' ? 'loading="eager" data-skip-lazy' : '' ?> />
+				<?= $s['lazy_load'] != 'y' ? 'loading="eager" data-skip-lazy' : '' ?> />
 		<?php endif; ?>
 	<?php endif; ?>
 </div>

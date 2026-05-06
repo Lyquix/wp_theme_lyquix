@@ -28,7 +28,8 @@ if ($item['image'] && $s['items_display_settings']['show_image'] == 'y'): ?>
 	<?= ($s['items_display_settings']['image_clickable'] == 'y' && $item['link'] !== '' ? '<a href="' . $item['link']['url'] . '">' : '')?>
 		<img
 			src="<?= esc_attr($item['image']['url']) ?>"
-			alt="<?= esc_attr($item['image']['alt']) ?>"
+			<?= \lqx\util\get_alt_attribs($item['image']['alt'] ?? '') ?>
+			<?= $s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '' ?>
 		/>
 		<?= ($s['items_display_settings']['image_clickable'] == 'y' && $item['link'] !=='' ? '</a>' : '')?>
 	</div>

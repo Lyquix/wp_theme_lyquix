@@ -37,8 +37,25 @@ function rest_route() {
 	if (!$content) return [];
 
 	$content = array_map(function ($modal) use ($settings) {
-		// Add hash to modal
-		$modal['id'] = 'modal-' . md5(json_encode($modal));
+		// Generate a stable hash id excluding the new custom fields for backwards compatibility
+		$hash_data = $modal;
+		unset($hash_data['item_id'], $hash_data['css_classes']);
+		$modal['id'] = 'modal-' . md5(json_encode($hash_data));
+
+		// Override with the custom item_id when provided
+		if (!empty($modal['item_id'])) {
+			$clean = preg_replace('/\s+/', '-', trim($modal['item_id']));
+			$clean = preg_replace('/[^a-zA-Z0-9_-]/', '', $clean);
+			if ($clean !== '') $modal['id'] = $clean;
+		}
+		unset($modal['item_id']);
+
+		// Merge style preset and additional css_classes into one string
+		$parts = array_filter([
+			!empty($modal['style']) ? $modal['style'] : '',
+			!empty($modal['css_classes']) ? $modal['css_classes'] : '',
+		]);
+		$modal['css_classes'] = implode(' ', $parts);
 
 		$modalExpiration = strtotime($modal['expiration']);
 

@@ -505,6 +505,64 @@
                     "save_options": 0
                 },
                 {
+                    "key": "field_6820fa00a0001",
+                    "label": "Item ID",
+                    "name": "item_id",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "Optional stable ID for this popup. If set, it overrides the auto-generated ID, allowing you to reference this popup from JavaScript (e.g. lqx.popup.open('your-id')). Use only letters, numbers, hyphens, and underscores.",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "50",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "default_value": "",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "maxlength": "",
+                    "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "parent_repeater": "field_65566181bf16d"
+                },
+                {
+                    "key": "field_6820fa00a0002",
+                    "label": "Additional Classes",
+                    "name": "css_classes",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "Space-separated CSS classes to add to this popup element (in addition to any selected Style).",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "50",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "default_value": "",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "maxlength": "",
+                    "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "parent_repeater": "field_65566181bf16d"
+                },
+                {
                     "key": "field_68c1990119364",
                     "label": "Regions",
                     "name": "regions",
@@ -568,5 +626,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1757518700
+    "modified": 1776921000
 }

@@ -56,7 +56,8 @@
 		?>
 		<img
 			<?= \lqx\util\get_src_srcset_sizes_attribs($item['image']) ?>
-			alt="<?= esc_attr($item['image']['alt']) ?>">
+			<?= \lqx\util\get_alt_attribs($item['image']['alt'] ?? '') ?>
+			<?= $s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '' ?>>
 	<?php endif; ?>
 		<?= $s['image_clickable'] == 'y' && isset($item['link']) && $item['link']['url'] ? '</a>' : '' ?>
 	<?php endif; ?>

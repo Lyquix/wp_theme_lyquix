@@ -37,6 +37,8 @@ $s = \lqx\util\validate_data($settings['processed'], [
 			'default' => 'id-' . substr(md5(json_encode([$settings, $content, random_int(1000, 9999)])), 24)
 		],
 		'browser_history' => \lqx\util\schema_str_req_n,
+		'close_on_click' => \lqx\util\schema_str_req_n,
+		'lazy_load' => \lqx\util\schema_str_req_y,
 		'convert_to_accordion' => [
 			'type' => 'array',
 			'required' => true,

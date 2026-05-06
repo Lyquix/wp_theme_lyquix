@@ -201,7 +201,8 @@ $s = \lqx\util\validate_data($settings['processed'], [
 					],
 				]
 			]
-		]
+		],
+		'lazy_load' => \lqx\util\schema_str_req_y
 	]
 ]);
 // If valid settings, use them, otherwise throw exception

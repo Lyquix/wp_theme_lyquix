@@ -563,6 +563,7 @@ function get_breadcrumbs($post_id = null, $type = 'parent', $depth = 3, $show_cu
 				]);
 				if ($parent_cat !== 0) {
 					$category = get_category($parent_cat);
+                    $parent_cat = $category->parent;
 				} else {
 					break;
 				}
@@ -591,6 +592,7 @@ function get_breadcrumbs($post_id = null, $type = 'parent', $depth = 3, $show_cu
 				]);
 				if ($parent_cat !== 0) {
 					$category = get_category($parent_cat);
+                    $parent_cat = $category->parent;
 				} else {
 					break;
 				}
@@ -854,6 +856,30 @@ function get_src_srcset_sizes_attribs($image, $src_size = 'medium', $size_map = 
 
 	return 'src="' . $src . '" srcset="' . implode(', ', $srcset_parts) . '" sizes="' . implode(', ', $sizes_parts) . '"';
 }
+
+/**
+ * Returns the alt attribute (and role="presentation" when alt is empty) for an img element.
+ *
+ * Usage: <img <?= \lqx\util\get_src_srcset_sizes_attribs($image) ?> <?= \lqx\util\get_alt_attribs($image['alt']) ?>>
+ *
+ * @param string $alt The alt text value from an ACF image field or attachment meta.
+ *
+ * @return string HTML attribute string: alt="..." or alt="" role="presentation"
+ */
+function get_alt_attribs(string $alt = ''): string {
+	$alt = trim($alt);
+	if ($alt !== '') return 'alt="' . esc_attr($alt) . '"';
+	return 'alt="" role="presentation"';
+}
+
+// Applies the same fallback to images rendered by WordPress (the_post_thumbnail, wp_get_attachment_image, etc.)
+add_filter('wp_get_attachment_image_attributes', function(array $attr): array {
+	if (empty(trim($attr['alt'] ?? ''))) {
+		$attr['alt'] = '';
+		$attr['role'] = 'presentation';
+	}
+	return $attr;
+});
 
 /**
  * Create a slug from a string

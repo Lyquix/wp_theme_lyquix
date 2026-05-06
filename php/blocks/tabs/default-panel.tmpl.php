@@ -50,7 +50,7 @@
 				</<?= $s['subheading_style'] ?>>
 		<?php endif; ?>
 		<?php if (!empty($item['header_image']['url']) && ($s['show_header_image'] == 'y')): ?>
-			<img src="<?= htmlspecialchars($item['header_image']['url'], ENT_QUOTES, 'UTF-8') ?>" alt="Accordion Header Image">
+			<img src="<?= htmlspecialchars($item['header_image']['url'], ENT_QUOTES, 'UTF-8') ?>" <?= \lqx\util\get_alt_attribs($item['header_image']['alt'] ?? '') ?> <?= $s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '' ?>>
 		<?php endif; ?>
 	<?php endif; ?>
 
@@ -60,7 +60,7 @@
 		<?= $item['heading'] ? sprintf('<%s>%s</%s>', $s['heading_style'], $item['heading'], $s['heading_style']) : '' ?>
 		<?= $item['content'] ?>
 		<?php if (!empty($item['image']['url']) && ($s['show_image'] == 'y')): ?>
-			<img src="<?= htmlspecialchars($item['image']['url'], ENT_QUOTES, 'UTF-8') ?>" alt="Image">
+			<img src="<?= htmlspecialchars($item['image']['url'], ENT_QUOTES, 'UTF-8') ?>" <?= \lqx\util\get_alt_attribs($item['image']['alt'] ?? '') ?> <?= $s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '' ?>>
 		<?php endif; ?>
 	</div>
 

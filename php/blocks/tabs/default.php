@@ -39,6 +39,7 @@ $s = \lqx\util\validate_data($settings['processed'], [
 		'show_subheading' => \lqx\util\schema_str_req_y,
 		'show_image' => \lqx\util\schema_str_req_y,
 		'show_header_image' => \lqx\util\schema_str_req_y,
+		'lazy_load' => \lqx\util\schema_str_req_y,
 		'heading_style' => [
 			'type' => 'string',
 			'required' => true,
@@ -46,6 +47,7 @@ $s = \lqx\util\validate_data($settings['processed'], [
 			'allowed' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
 		],
 		'browser_history' => \lqx\util\schema_str_req_n,
+		'close_on_click' => \lqx\util\schema_str_req_n,
 		'convert_to_accordion' => [
 			'type' => 'array',
 			'required' => true,

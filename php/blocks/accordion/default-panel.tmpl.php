@@ -34,7 +34,8 @@
 	<div>
 		<?= $item['content'] ?>
 		<?php if (!empty($item['image']['url']) && ($s['show_image'] == 'y')): ?>
-			<img src="<?= htmlspecialchars($item['image']['url'], ENT_QUOTES, 'UTF-8') ?>" alt="Image">
+			<img src="<?= htmlspecialchars($item['image']['url'], ENT_QUOTES, 'UTF-8') ?>" <?= \lqx\util\get_alt_attribs($item['image']['alt'] ?? '') ?>
+			<?= $s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '' ?>>
 		<?php endif; ?>
 	</div>
 </section>

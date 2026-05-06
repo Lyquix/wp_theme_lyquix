@@ -50,13 +50,15 @@
 	<?php else: ?>
 		<img
 			<?= \lqx\util\get_src_srcset_sizes_attribs($c['image']) ?>
-			alt="<?= esc_attr($c['image']['alt']) ?>"
-			class="<?= array_key_exists('url', $c['image_mobile']) ? 'xs:hidden md:block' : '' ?>" />
+			<?= \lqx\util\get_alt_attribs($c['image']['alt'] ?? '') ?>
+			class="<?= array_key_exists('url', $c['image_mobile']) ? 'xs:hidden md:block' : '' ?>"
+			<?= $s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '' ?> />
 		<?php if (array_key_exists('url', $c['image_mobile'])) : ?>
 			<img
 				<?= \lqx\util\get_src_srcset_sizes_attribs($c['image_mobile'], 'small') ?>
-				alt="<?= esc_attr($c['image_mobile']['alt']) ?>"
-				class="xs:block md:hidden" />
+				<?= \lqx\util\get_alt_attribs($c['image_mobile']['alt'] ?? '') ?>
+				class="xs:block md:hidden"
+				<?= $s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '' ?> />
 		<?php endif; ?>
 	<?php endif; ?>
 </div>

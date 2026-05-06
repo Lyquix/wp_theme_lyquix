@@ -111,8 +111,12 @@ export const tabs = (() => {
 
 					// Add click listener
 					jQuery(tabElem).on('click', () => {
-						// Open tabs
-						open(panelId);
+						const closeOnClick = tabsElem.attr('data-close-on-click') === 'y';
+						const isOpen = tabElem.attr('aria-selected') === 'true';
+						if (closeOnClick && isOpen) {
+							close(panelId);
+							(tabElem.get(0) as HTMLElement).blur();
+						} else open(panelId);
 					});
 				});
 

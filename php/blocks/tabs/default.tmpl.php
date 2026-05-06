@@ -34,6 +34,7 @@
 		class="tabs"
 		id="<?= esc_attr($s['hash']) ?>"
 		data-browser-history="<?= $s['browser_history'] ?>"
+		data-close-on-click="<?= $s['close_on_click'] ?>"
 		data-convert-to-accordion="<?= implode(',', $s['convert_to_accordion']) ?>"
 		data-auto-scroll="<?= implode(',', $s['auto_scroll']) ?>">
 

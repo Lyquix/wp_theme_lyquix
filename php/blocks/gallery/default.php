@@ -76,7 +76,8 @@ $s = \lqx\util\validate_data($settings['processed'], [
 			'default' => 'h3',
 			'allowed' => ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
 		],
-		'browser_history' => \lqx\util\schema_str_req_n
+		'browser_history' => \lqx\util\schema_str_req_n,
+		'lazy_load' => \lqx\util\schema_str_req_y
 	]
 ]);
 

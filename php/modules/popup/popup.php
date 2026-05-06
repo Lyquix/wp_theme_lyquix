@@ -42,8 +42,25 @@ function rest_route() {
 	if (!$content) return [];
 
 	$content = array_map(function ($popup) use ($settings) {
-		// Add a unique id to popup
-		$popup['id'] = 'popup-' . md5(json_encode($popup));
+		// Generate a stable hash id excluding the new custom fields for backwards compatibility
+		$hash_data = $popup;
+		unset($hash_data['item_id'], $hash_data['css_classes']);
+		$popup['id'] = 'popup-' . md5(json_encode($hash_data));
+
+		// Override with the custom item_id when provided
+		if (!empty($popup['item_id'])) {
+			$clean = preg_replace('/\s+/', '-', trim($popup['item_id']));
+			$clean = preg_replace('/[^a-zA-Z0-9_-]/', '', $clean);
+			if ($clean !== '') $popup['id'] = $clean;
+		}
+		unset($popup['item_id']);
+
+		// Merge style preset and additional css_classes into one string
+		$parts = array_filter([
+			!empty($popup['style']) ? $popup['style'] : '',
+			!empty($popup['css_classes']) ? $popup['css_classes'] : '',
+		]);
+		$popup['css_classes'] = implode(' ', $parts);
 
 		$popupExpiration = strtotime($popup['expiration']);
 
@@ -56,8 +73,8 @@ function rest_route() {
 		if ($popup['hide_delay'] == 0) $popup['hide_delay'] = '';
 		if ($popup['dismiss_duration'] == 0) $popup['dismiss_duration'] = '';
 
-		// Add settings to modal
-        $popup['heading_style'] = $settings['heading_style'] ?? '';
+		// Add settings to popup
+		$popup['heading_style'] = $settings['heading_style'] ?? '';
 
 		return $popup;
 	}, $content);

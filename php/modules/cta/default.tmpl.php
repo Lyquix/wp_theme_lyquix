@@ -29,14 +29,16 @@
 			<?php if (array_key_exists('url', $cta['image'])) : ?>
 				<img
 					src="<?= esc_attr($cta['image']['url']) ?>"
-					alt="<?= esc_attr($cta['image']['alt']) ?>"
-					class="<?= array_key_exists('url', $cta['image_mobile']) ? 'xs-hide sm-hide' : '' ?>" />
+					<?= \lqx\util\get_alt_attribs($cta['image']['alt'] ?? '') ?>
+					class="<?= array_key_exists('url', $cta['image_mobile']) ? 'xs-hide sm-hide' : '' ?>"
+					<?= $s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '' ?> />
 			<?php endif;
 			if (array_key_exists('url',$cta['image_mobile'])) : ?>
 				<img
 					src="<?= esc_attr($cta['image_mobile']['url']) ?>"
-					alt="<?= esc_attr($cta['image_mobile']['alt']) ?>"
-					class="hide xs-show sm-show" />
+					<?= \lqx\util\get_alt_attribs($cta['image_mobile']['alt'] ?? '') ?>
+					class="hide xs-show sm-show"
+					<?= $s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '' ?> />
 			<?php endif; ?>
 		</div>
 		<div class="content">

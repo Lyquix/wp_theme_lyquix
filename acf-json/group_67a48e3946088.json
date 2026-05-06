@@ -112,6 +112,37 @@
                     "layout": "horizontal"
                 },
                 {
+                    "key": "field_6820fb00d0001",
+                    "label": "Close on Click",
+                    "name": "close_on_click",
+                    "aria-label": "",
+                    "type": "button_group",
+                    "instructions": "Set to Yes to allow closing an open tab by clicking it again (default: No)",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "choices": {
+                        "y": "Yes",
+                        "n": "No"
+                    },
+                    "default_value": "n",
+                    "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "allow_null": 0,
+                    "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
+                    "layout": "horizontal"
+                },
+                {
                     "key": "field_67a48e3957099",
                     "label": "Convert to Accordion",
                     "name": "convert_to_accordion",
@@ -185,6 +216,37 @@
                     "toggle": 1,
                     "save_custom": 0,
                     "custom_choice_button_text": "Add new choice"
+                },
+                {
+                    "key": "field_6901ba000000d",
+                    "label": "Lazy Load",
+                    "name": "lazy_load",
+                    "aria-label": "",
+                    "type": "button_group",
+                    "instructions": "Set to Yes to lazy load images. (Default: Yes)",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "choices": {
+                        "y": "Yes",
+                        "n": "No"
+                    },
+                    "default_value": "y",
+                    "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "allow_null": 0,
+                    "acfe_permissions": "",
+                    "instruction_placement": "tooltip",
+                    "layout": "horizontal"
                 }
             ],
             "acfe_group_modal_close": 0,
@@ -306,5 +368,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1738837639
+    "modified": 1777547652
 }

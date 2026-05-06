@@ -32,7 +32,8 @@ $html = '<div class="image">'.
 	($s['items_display_settings']['image_clickable'] == 'y' && $link !== '' ? '<a href="' . $link['url'] . '">' : '').
 		'<img
 			src="'.esc_attr($image['url']).'"
-			alt="'.esc_attr($image['alt']).'"
+			'.\lqx\util\get_alt_attribs($image['alt'] ?? '').'
+			'.($s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '').'
 		/>'.
 		($s['items_display_settings']['image_clickable'] == 'y' && $link !== '' ? '</a>' : '').
 	'</div>';

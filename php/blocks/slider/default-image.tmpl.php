@@ -73,14 +73,16 @@ if ($item['video']['type'] == 'url' && $item['video']['url']) {
 			<?php if (array_key_exists('url', $item['image'])) : ?>
 				<img
 					<?= \lqx\util\get_src_srcset_sizes_attribs($item['image'], 'medium') ?>
-					alt="<?= esc_attr($item['image']['alt']) ?>"
-					class="<?= array_key_exists('url', $item['image_mobile']) ? 'xs:hidden md:block' : '' ?>" />
+					<?= \lqx\util\get_alt_attribs($item['image']['alt'] ?? '') ?>
+					class="<?= array_key_exists('url', $item['image_mobile']) ? 'xs:hidden md:block' : '' ?>"
+					<?= $s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '' ?> />
 			<?php endif;
 			if (array_key_exists('url', $item['image_mobile'])) : ?>
 				<img
 					<?= \lqx\util\get_src_srcset_sizes_attribs($item['image_mobile']) ?>
-					alt="<?= esc_attr($item['image_mobile']['alt']) ?>"
-					class="xs:block md:hidden" />
+					<?= \lqx\util\get_alt_attribs($item['image_mobile']['alt'] ?? '') ?>
+					class="xs:block md:hidden"
+					<?= $s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '' ?> />
 			<?php endif; ?>
 		<?php endif; ?>
 

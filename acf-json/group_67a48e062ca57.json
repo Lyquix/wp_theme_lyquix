@@ -77,6 +77,104 @@
                     "layout": "horizontal"
                 },
                 {
+                    "key": "field_6820fb00d0003",
+                    "label": "Close on Click",
+                    "name": "close_on_click_override_group",
+                    "aria-label": "",
+                    "type": "group",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "layout": "block",
+                    "acfe_seamless_style": 1,
+                    "acfe_settings": "",
+                    "instruction_placement": "",
+                    "acfe_permissions": "",
+                    "acfe_group_modal": 0,
+                    "acfe_group_modal_close": 0,
+                    "acfe_group_modal_button": "",
+                    "acfe_group_modal_size": "large",
+                    "sub_fields": [
+                        {
+                            "key": "field_6820fb00d0004",
+                            "label": "",
+                            "name": "close_on_click_override",
+                            "aria-label": "",
+                            "type": "true_false",
+                            "instructions": "Set to Yes to allow closing an open tab by clicking it again",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "40",
+                                "class": "",
+                                "id": ""
+                            },
+                            "acfe_permissions": "",
+                            "instruction_placement": "tooltip",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
+                            "message": "Override Global Settings",
+                            "default_value": 0,
+                            "style": "",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
+                            "ui_on_text": "",
+                            "ui_off_text": "",
+                            "ui": 1
+                        },
+                        {
+                            "key": "field_6820fb00d0005",
+                            "label": "",
+                            "name": "close_on_click",
+                            "aria-label": "",
+                            "type": "button_group",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_6820fb00d0004",
+                                        "operator": "==",
+                                        "value": "1"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "60",
+                                "class": "",
+                                "id": ""
+                            },
+                            "acfe_permissions": "",
+                            "instruction_placement": "",
+                            "hide_field": "",
+                            "hide_label": "",
+                            "hide_instructions": "",
+                            "hide_required": "",
+                            "choices": {
+                                "y": "Yes",
+                                "n": "No"
+                            },
+                            "default_value": "n",
+                            "return_format": "value",
+                            "acfe_settings": "",
+                            "acfe_validate": "",
+                            "allow_null": 0,
+                            "layout": "horizontal"
+                        }
+                    ]
+                },
+                {
                     "key": "field_67a48e063ea8d",
                     "label": "Convert to Accordion",
                     "name": "convert_to_accordion_override_group",
@@ -284,6 +382,37 @@
                             "custom_choice_button_text": "Add new choice"
                         }
                     ]
+                },
+                {
+                    "key": "field_6901ba000000e",
+                    "label": "Lazy Load",
+                    "name": "lazy_load",
+                    "aria-label": "",
+                    "type": "button_group",
+                    "instructions": "Set to Yes to lazy load images. (Default: Yes)",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "choices": {
+                        "y": "Yes",
+                        "n": "No"
+                    },
+                    "default_value": "",
+                    "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "allow_null": 1,
+                    "acfe_permissions": "",
+                    "instruction_placement": "tooltip",
+                    "layout": "horizontal"
                 }
             ],
             "acfe_group_modal": 0,
@@ -320,5 +449,5 @@
     ],
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1738837549
+    "modified": 1777547652
 }

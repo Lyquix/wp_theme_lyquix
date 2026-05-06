@@ -49,7 +49,6 @@ $s = \lqx\util\validate_data($settings['processed'], [
 			'default' => 'medium',
 			'allowed' => ['thumbnail', 'small', 'medium', 'large', 'full']
 		],
-		'disable_lazy_loading' => \lqx\util\schema_str_req_y,
 		'breadcrumbs' => [
 			'type' => 'object',
 			'required' => true,

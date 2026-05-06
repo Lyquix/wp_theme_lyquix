@@ -45,6 +45,7 @@ $s = \lqx\util\validate_data($settings, [
 			'default' => 'p',
 			'allowed' => ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
 		],
+		'lazy_load' => \lqx\util\schema_str_req_y
 	]
 ]);
 

@@ -35,7 +35,8 @@ $s = \lqx\util\validate_data($settings['processed'], [
 			'type' => 'string',
 			'required' => true,
 			'default' => 'id-' . substr(md5(json_encode([$settings, $content, random_int(1000, 9999)])), 24)
-		]
+		],
+		'lazy_load' => \lqx\util\schema_str_req_y
 	]
 ]);
 
