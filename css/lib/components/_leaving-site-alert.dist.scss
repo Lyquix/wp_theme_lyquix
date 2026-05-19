@@ -1,0 +1,14 @@
+// Leaving Site Alert module styles
+// Dialog container, backdrop, heading, and paragraph styles are inherited
+// from the theme's dialog[aria-modal=true][open]:not(.lyqbox) rule in _modal.scss
+
+#lqx-module-leaving-site-alert {
+	dialog {
+		.buttons {
+			display: flex;
+			gap: 1rem;
+			justify-content: flex-end;
+			flex-wrap: wrap;
+		}
+	}
+}

@@ -1,0 +1,16 @@
+{
+	"name": "lqx/related-items",
+	"title": "Lyquix Related Items",
+	"description": "Display related posts based on shared taxonomy, field value, or parent relationship",
+	"category": "lqx-content-blocks",
+	"icon": "networking",
+	"acf": {
+		"mode": "edit",
+		"renderTemplate": "related-items.php"
+	},
+	"supports": {
+		"align": false,
+		"anchor": true,
+		"mode": false
+	}
+}
