@@ -6,7 +6,7 @@
  * A simplified version of the Filters block that displays related posts
  * without interactive controls, search, or pagination.
  *
- * @version     3.2.0
+ * @version     3.4.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2024 Lyquix

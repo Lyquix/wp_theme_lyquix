@@ -7,7 +7,7 @@
  * `render` field in block.json. Outputs lyqbox markup (URL videos or upload+
  * openInLyqbox) or an inline <video> (upload without openInLyqbox).
  *
- * @version     3.2.0
+ * @version     3.4.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2024 Lyquix

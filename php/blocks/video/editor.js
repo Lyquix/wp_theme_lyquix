@@ -4,7 +4,7 @@
  * Edit function for the lqx/video block. Renders InspectorControls panels for
  * Video Source and Playback, and a custom preview in the editor body.
  *
- * @version     3.2.0
+ * @version     3.4.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2024 Lyquix

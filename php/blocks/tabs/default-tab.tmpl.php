@@ -3,7 +3,7 @@
 /**
  * default-tab.tmpl.php - Default template for the Lyquix Tabs block, tab sub-template
  *
- * @version     3.2.0
+ * @version     3.4.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2024 Lyquix

@@ -1,6 +1,6 @@
 # Lyquix WordPress Theme
 
-`@version 3.2.0`
+`@version 3.4.0`
 
 A modern, unopinionated WordPress starter theme designed for agencies and developers who need maximum flexibility without fighting theme defaults.
 
