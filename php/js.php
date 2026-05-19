@@ -197,6 +197,7 @@ function render_lyquix_options() {
 	// Merge with options from template settings
 	$theme_lqx_options = json_decode(get_theme_mod('lqx_options'), true);
 	if (is_array($theme_lqx_options)) $lqx_options = array_replace_recursive($lqx_options, $theme_lqx_options);
+	$lqx_options = apply_filters('lqx_options', $lqx_options);
 	echo '<script>((lqxOptions) => {
 		if (typeof lqx !== "undefined" && typeof lqx.init === "function") lqx.init(lqxOptions);
 		else document.addEventListener("lqxload", function () { lqx.init(lqxOptions); });

@@ -39,6 +39,8 @@
 		data-subheading-style="<?= $s['subheading_style'] ?>"
 		data-heading-clickable="<?= $s['heading_clickable'] ?>"
 		data-image-clickable="<?= $s['image_clickable'] ?>"
+		data-card-clickable="<?= $s['card_clickable'] ?>"
+		<?php if ($s['card_clickable'] == 'y') : ?>data-card-links="<?= esc_attr(json_encode(array_values(array_map(fn($item) => ['url' => $item['link']['url'] ?? '', 'target' => $item['link']['target'] ?? '', 'label' => $item['heading'] ?? ''], $c)))) ?>"<?php endif; ?>
 		data-responsive-rules="<?= esc_attr(json_encode($s['responsive_rules'])) ?>">
 
 		<?= $s['slider'] == 'y' ? '<div class="swiper">' : '' ?>

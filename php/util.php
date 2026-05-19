@@ -498,8 +498,8 @@ function get_video_urls($url) {
 	if (preg_match('/^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/|live\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/', $url, $match)) {
 		$youtube_id = $match[1];
 		if ($youtube_id) {
-			$url = 'https://www.youtube.com/embed/' . $youtube_id . '?rel=0&amp;autoplay=1&amp;mute=1&amp;modestbranding=1';
-			$thumbnail = 'https://img.youtube.com/vi/' . $youtube_id . '/hqdefauldepth$breadcrumbt.jpg';
+			$url = 'https://www.youtube-nocookie.com/embed/' . $youtube_id . '?rel=0&amp;autoplay=1&amp;mute=1&amp;modestbranding=1';
+			$thumbnail = 'https://img.youtube.com/vi/' . $youtube_id . '/hqdefault.jpg';
 		}
 	}
 	// Check if the video is from Vimeo
@@ -515,7 +515,7 @@ function get_video_urls($url) {
 	}
 
 	// Return the video URL and thumbnail URL as an array
-	return ['url' => $url, 'thumbnail' => $thumbnail];
+	return apply_filters('lqx_get_video_urls', ['url' => $url, 'thumbnail' => $thumbnail]);
 }
 
 /**
@@ -958,4 +958,79 @@ function calculate_distance($lat, $lng, $address) {
 		$distance = $earthRadius * $c;
 		return $distance;
 	}
+}
+
+/**
+ * Compute the group key and display label for a post given group_by settings.
+ *
+ * @param int   $post_id   WordPress post ID
+ * @param array $s  The full block settings array (group_by and group_by_* keys at top level)
+ * @return array ['key' => string, 'label' => string]
+ */
+function get_group_by_data(int $post_id, array $s): array {
+	if (($s['group_by'] ?? 'n') !== 'y') return ['key' => '', 'label' => ''];
+
+	// 1. Fetch raw value from the configured source
+	$raw = '';
+	switch ($s['group_by_source'] ?? 'acf_field') {
+		case 'acf_field':
+			$raw = get_field($s['group_by_acf_field'] ?? '', $post_id);
+			break;
+		case 'post_meta':
+			$raw = get_post_meta($post_id, $s['group_by_field_name'] ?? '', true);
+			break;
+		case 'post_property':
+			$raw = get_post_field($s['group_by_post_property'] ?? 'post_date', $post_id);
+			break;
+		case 'taxonomy':
+			$terms = wp_get_post_terms($post_id, $s['group_by_taxonomy'] ?? '', ['fields' => 'names']);
+			$raw = (!is_wp_error($terms) && !empty($terms)) ? $terms[0] : '';
+			break;
+	}
+
+	// 2. Format into key (for sorting/comparing) and label (for display)
+	$key = '';
+	$label = '';
+
+	switch ($s['group_by_value_type'] ?? 'text') {
+		case 'date':
+			$ts = is_numeric($raw) ? (int) $raw : strtotime((string) $raw);
+			if ($ts) {
+				$key   = date($s['group_by_date_key_format']   ?? 'Y-m', $ts);
+				$label = date($s['group_by_date_label_format'] ?? 'F Y', $ts);
+			}
+			break;
+		case 'number':
+			$key = $label = is_numeric($raw) ? (string) $raw : '';
+			break;
+		case 'text':
+		default:
+			$key   = sanitize_key((string) $raw);
+			$label = (string) $raw;
+			break;
+	}
+
+	if ($key === '') return ['key' => '', 'label' => ''];
+
+	// 3. Apply heading template
+	$tmpl = $s['group_by_heading_template'] ?? '';
+	if ($tmpl !== '') {
+		$label = str_replace('{label}', $label, $tmpl);
+	}
+
+	return ['key' => $key, 'label' => $label];
+}
+
+/**
+ * Return the HTML data attribute string for group_by, ready to echo on a <li>.
+ * Returns empty string if group_by is not enabled or no key resolved.
+ *
+ * @param int   $post_id  WordPress post ID
+ * @param array $s        The full block settings array (group_by and group_by_* keys at top level)
+ * @return string
+ */
+function get_group_by_attribs(int $post_id, array $s): string {
+	$data = get_group_by_data($post_id, $s);
+	if ($data['key'] === '') return '';
+	return 'data-group-key="' . esc_attr($data['key']) . '" data-group-label="' . esc_attr($data['label']) . '"';
 }

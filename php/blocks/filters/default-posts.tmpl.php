@@ -37,6 +37,16 @@ if (count($s['posts'])) {
 	// Pass filter preset to cards if cards preset is empty
 	$cards_settings['processed']['preset'] = $cards_settings['processed']['preset'] ?: $s['preset'];
 
+	// Pass group_by settings through to card items
+	$cards_settings['processed']['group_by'] = $s['group_by'] ?? 'n';
+	if (($s['group_by'] ?? 'n') === 'y') {
+		foreach (['group_by_source', 'group_by_acf_field', 'group_by_post_property', 'group_by_field_name',
+		          'group_by_taxonomy', 'group_by_value_type', 'group_by_date_key_format',
+		          'group_by_date_label_format', 'group_by_heading_tag', 'group_by_heading_template'] as $_gb_key) {
+			$cards_settings['processed'][$_gb_key] = $s[$_gb_key] ?? '';
+		}
+	}
+
 	// Render the cards
 	\lqx\blocks\render_block($cards_settings, $s['posts']);
 }

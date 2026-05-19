@@ -54,6 +54,7 @@ $s = \lqx\util\validate_data($settings['processed'], [
 		'heading_clickable' => \lqx\util\schema_str_req_y,
 		'show_image' => \lqx\util\schema_str_req_y,
 		'image_clickable' => \lqx\util\schema_str_req_y,
+		'card_clickable' => \lqx\util\schema_str_req_n,
 		'show_icon_image' => \lqx\util\schema_str_req_y,
 		'show_video' => \lqx\util\schema_str_req_y,
 		'lazy_load' => \lqx\util\schema_str_req_y,
@@ -96,7 +97,18 @@ $s = \lqx\util\validate_data($settings['processed'], [
 					]
 				]
 			]
-		]
+		],
+		'group_by' => \lqx\util\schema_str_req_n,
+		'group_by_source' => \lqx\util\schema_str_req_emp,
+		'group_by_acf_field' => \lqx\util\schema_str_req_emp,
+		'group_by_post_property' => \lqx\util\schema_str_req_emp,
+		'group_by_field_name' => \lqx\util\schema_str_req_emp,
+		'group_by_taxonomy' => \lqx\util\schema_str_req_emp,
+		'group_by_value_type' => \lqx\util\schema_str_req_emp,
+		'group_by_date_key_format' => \lqx\util\schema_str_req_emp,
+		'group_by_date_label_format' => \lqx\util\schema_str_req_emp,
+		'group_by_heading_tag' => \lqx\util\schema_str_req_emp,
+		'group_by_heading_template' => \lqx\util\schema_str_req_emp
 	]
 ]);
 

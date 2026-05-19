@@ -111,6 +111,7 @@ export const modal = (() => {
 								id: util.schemaStrReqNotEmp,
 								heading: util.schemaStrReqEmp,
 								body: util.schemaStrReqEmp,
+								start_date: util.schemaStrReqEmp,
 								expiration: util.schemaStrReqEmp,
 								display_logic: { type: 'string', required: true, default: 'show', allowed: ['show', 'hide'] },
 								display_exceptions: {
@@ -161,6 +162,9 @@ export const modal = (() => {
 
 						// Skip if modal has been dismissed
 						if (util.cookie(modal.id) !== null) return;
+
+						// Skip if modal hasn't started yet
+						if (modal.start_date != '' && now < dayjs(modal.start_date).valueOf()) return;
 
 						// Skip if modal has expired
 						if (modal.expiration != '' && now > dayjs(modal.expiration).valueOf()) return;

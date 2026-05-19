@@ -117,6 +117,7 @@ export const popup = (() => {
 								id: util.schemaStrReqNotEmp,
 								heading: util.schemaStrReqEmp,
 								body: util.schemaStrReqEmp,
+								start_date: util.schemaStrReqEmp,
 								expiration: util.schemaStrReqEmp,
 								display_logic: { type: 'string', required: true, default: 'show', allowed: ['show', 'hide'] },
 								display_exceptions: {
@@ -167,6 +168,9 @@ export const popup = (() => {
 
 						// Skip if popup has been dismissed
 						if (util.cookie(popup.id) !== null) return;
+
+						// Skip if popup hasn't started yet
+						if (popup.start_date != '' && now < dayjs(popup.start_date).valueOf()) return;
 
 						// Skip if popup has expired
 						if (popup.expiration != '' && now > dayjs(popup.expiration).valueOf()) return;

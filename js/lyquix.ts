@@ -44,6 +44,7 @@ import { cards } from './lib/lyquix/cards';
 import { filters } from './lib/lyquix/filters';
 import { gallery } from './lib/lyquix/gallery';
 import { map } from './lib/lyquix/map';
+import { leavingSiteAlert } from './lib/lyquix/leaving-site-alert';
 import { modal } from './lib/lyquix/modal';
 import { popup } from './lib/lyquix/popup';
 import { tabs } from './lib/lyquix/tabs';
@@ -82,6 +83,7 @@ const init = (customCfg) => {
 		'filters',
 		'gallery',
 		'map',
+		'leavingSiteAlert',
 		'modal',
 		'popup',
 		'tabs',
@@ -152,6 +154,7 @@ const expObj = Object.defineProperties({
 	/* Gutenberg blocks */
 	accordion,
 	alerts,
+	leavingSiteAlert,
 	cards,
 	filters,
 	gallery,

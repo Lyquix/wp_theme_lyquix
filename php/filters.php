@@ -44,7 +44,13 @@ add_filter('acf/load_field', function ($field) {
         [ // preset and preset_name fields
             'user' => 'field_67efeef72dff8',
             'choice' => 'field_6697e331c4d4f'
-        ]
+        ],
+        // Related Items - cards_style and cards_preset selects in admin settings
+        [ 'user' => 'field_68b00002a000c', 'choice' => 'field_658db3c35c5ac' ],
+        [ 'user' => 'field_68b00002a000b', 'choice' => 'field_658db3c5e9695' ],
+        // Related Items - style and preset selects in user settings
+        [ 'user' => 'field_68b00003a0012', 'choice' => 'field_68b00003a0031' ],
+        [ 'user' => 'field_68b00003a0013', 'choice' => 'field_68b00003a0033' ]
     ];
 
     foreach ($field_keys as $k) {
@@ -74,15 +80,33 @@ add_filter('acf/load_field', function ($field) {
  *
  * @return void
  */
-function get_acf_fields_as_options($field_details, &$choices, $depth = 0)
+function get_acf_fields_as_options($field_details, &$choices, $depth = 0, $allowed_types = null)
 {
     $key = $field_details['key'];
-    $choices[$key] = str_repeat('- ', $depth) . ($field_details['label'] ?: $field_details['name']) . ' [' . $field_details['key'] . ']';
+    $container_types = ['repeater', 'group', 'flexible_content'];
+    $is_container = in_array($field_details['type'] ?? '', $container_types);
 
-    if ($field_details['sub_fields'] ?? false) {
-        foreach ($field_details['sub_fields'] as $sub_field_details) {
-            get_acf_fields_as_options($sub_field_details, $choices, $depth + 1);
-        }
+    // Add this field to choices unless a type filter is active and this is a container
+    // (containers themselves aren't selectable when filtering by leaf type)
+    if ($allowed_types === null || (!$is_container && in_array($field_details['type'], $allowed_types))) {
+        $choices[$key] = str_repeat('- ', $depth) . ($field_details['label'] ?: $field_details['name']) . ' [' . $field_details['key'] . ']';
+    }
+
+    // Resolve sub_fields — they may be empty or contain unhydrated string keys
+    $sub_fields = $field_details['sub_fields'] ?? [];
+
+    if (!empty($sub_fields) && is_string($sub_fields[0])) {
+        // sub_fields contains field keys as strings — resolve to full objects
+        $sub_fields = array_filter(array_map('acf_get_field', $sub_fields));
+    }
+
+    if (empty($sub_fields) && $is_container) {
+        // Explicitly load sub-fields for container types when not populated
+        $sub_fields = acf_get_fields($key) ?: [];
+    }
+
+    foreach ($sub_fields as $sub_field_details) {
+        get_acf_fields_as_options($sub_field_details, $choices, $depth + 1, $allowed_types);
     }
 }
 
@@ -111,7 +135,14 @@ add_filter('acf/load_field', function ($field) {
         'field_67ffc53fbf4e0' => 'relation', // change order options > locations_field
         'field_67ffc561bf4e1' => 'map', // change order options > address_field
         'field_6813b24814413' => 'text', // pre_filters > region field
-        'field_6813b2c514414' => 'text' // pre_filters > region field
+        'field_6813b2c514414' => 'text', // pre_filters > region field
+        'field_68b00001a0005' => null,   // group_by > acf_field (all field types)
+        'field_68b00002a0007' => null,   // related-items > acf_field (all field types)
+        'field_68b00002a000d' => 'text', // related-items > render_php > heading
+        'field_68b00002a000e' => 'text', // related-items > render_php > subheading
+        'field_68b00002a000f' => 'text', // related-items > render_php > body
+        'field_68b00002a0010' => 'image', // related-items > render_php > image
+        'field_68b00002a0011' => 'image', // related-items > render_php > icon_image
     ];
 
     $field_types = [
@@ -137,14 +168,16 @@ add_filter('acf/load_field', function ($field) {
         if (str_contains($group['title'], 'Custom Post Type: ') || $group['title'] == 'Posts') return true;
     });
 
-    if(in_array($field['key'], ['field_65f471bf7d99b', 'field_65f475117fcd5', 'field_65f475457fcda'])) {
+    if(in_array($field['key'], ['field_65f471bf7d99b', 'field_65f475117fcd5', 'field_65f475457fcda',
+                                'field_68b00002a000d', 'field_68b00002a000e', 'field_68b00002a000f'])) {
         $field['choices']['post_title'] = 'Title';
         $field['choices']['post_name'] = 'Slug';
         $field['choices']['post_excerpt'] = 'Excerpt';
         $field['choices']['post_content'] = 'Content';
     }
 
-    if(in_array($field['key'], ['field_65f4752a7fcd6', 'field_65f4752f7fcd7'])) {
+    if(in_array($field['key'], ['field_65f4752a7fcd6', 'field_65f4752f7fcd7',
+                                'field_68b00002a0010', 'field_68b00002a0011'])) {
         $field['choices']['thumbnail'] = 'Thumbnail';
     }
 
@@ -164,12 +197,15 @@ add_filter('acf/load_field', function ($field) {
         // Get the field group fields
         $group['fields'] = acf_get_fields($group['key']);
 
-        // Loop through fields in group and filter out by field type
+        // Loop through fields in group
+        // When a type filter is set, pass it to get_acf_fields_as_options so it can
+        // recurse into containers (repeaters/groups) and include matching child fields
+        $allowed_types = $field_keys[$field['key']] !== null ? ($field_types[$field_keys[$field['key']]] ?? null) : null;
         foreach ($group['fields'] as $field_details) {
-            if ($field_keys[$field['key']] == null || in_array($field_details['type'], $field_types[$field_keys[$field['key']]])) {
-                // Create group option
+            $is_container = in_array($field_details['type'] ?? '', ['repeater', 'group', 'flexible_content']);
+            if ($allowed_types === null || in_array($field_details['type'], $allowed_types) || $is_container) {
                 if(!isset($field['choices'][$group['title']])) $field['choices'][$group['title']] = [];
-                \lqx\filters\get_acf_fields_as_options($field_details, $field['choices'][$group['title']]);
+                \lqx\filters\get_acf_fields_as_options($field_details, $field['choices'][$group['title']], 0, $allowed_types);
             }
         }
     }
@@ -255,6 +291,7 @@ function get_settings_and_posts($settings)
     $s['posts'] = $post_info['posts'];
     $s['pagination']['total_posts'] = $post_info['total_posts'];
     $s['pagination']['total_pages'] = $post_info['total_pages'];
+    $s['featured_html'] = $post_info['featured_html'] ?? '';
 
     return $s;
 }
@@ -417,13 +454,12 @@ function validate_settings($settings)
                             ]
                         ],
                         'narrow_options' => \lqx\util\schema_str_req_y,
-                        'custom_options_function' => \lqx\util\schema_str_req_emp,
-                        'custom_filter_function' => \lqx\util\schema_str_req_emp,
                         'show_view_all' => \lqx\util\schema_str_req_y,
                         'view_all_label' => [
                             'type' => 'string',
                             'default' => 'View All'
-                        ]
+                        ],
+                        'banner_field' => \lqx\util\schema_str_req_emp
                     ]
                 ]
             ],
@@ -476,6 +512,7 @@ function validate_settings($settings)
                 'default' => 'php',
                 'allowed' => ['php', 'js', 'maps-php', 'maps-js']
             ],
+            'typesense_search' => \lqx\util\schema_str_req_n,
             'render_php' => [
                 'type' => 'object',
                 'required' => true,
@@ -597,7 +634,64 @@ function validate_settings($settings)
                 'allowed' => ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
             ],
             'heading_override' => \lqx\util\schema_str_req_emp,
-            'callback' => \lqx\util\schema_str_req_emp
+            'group_by' => \lqx\util\schema_str_req_n,
+            'group_by_source' => [
+                'type' => 'string',
+                'required' => true,
+                'default' => 'acf_field',
+                'allowed' => ['acf_field', 'post_meta', 'post_property', 'taxonomy']
+            ],
+            'group_by_acf_field' => \lqx\util\schema_str_req_emp,
+            'group_by_post_property' => [
+                'type' => 'string',
+                'required' => true,
+                'default' => 'post_date',
+                'allowed' => ['post_date', 'post_title', 'post_author', 'post_status',
+                              'post_name', 'post_parent', 'post_type', 'menu_order']
+            ],
+            'group_by_field_name' => \lqx\util\schema_str_req_emp,
+            'group_by_taxonomy' => \lqx\util\schema_str_req_emp,
+            'group_by_value_type' => [
+                'type' => 'string',
+                'required' => true,
+                'default' => 'text',
+                'allowed' => ['text', 'date', 'number']
+            ],
+            'group_by_date_key_format' => [
+                'type' => 'string',
+                'required' => true,
+                'default' => 'Y-m'
+            ],
+            'group_by_date_label_format' => [
+                'type' => 'string',
+                'required' => true,
+                'default' => 'F Y'
+            ],
+            'group_by_heading_tag' => [
+                'type' => 'string',
+                'required' => true,
+                'default' => 'h3',
+                'allowed' => ['h2', 'h3', 'h4', 'h5']
+            ],
+            'group_by_heading_template' => \lqx\util\schema_str_req_emp,
+            'callback' => \lqx\util\schema_str_req_emp,
+            'single_control_filter' => \lqx\util\schema_str_req_n,
+            'featured' => [
+                'type' => 'object',
+                'required' => true,
+                'default' => [],
+                'keys' => [
+                    'enabled' => \lqx\util\schema_str_req_n,
+                    'cards_preset' => \lqx\util\schema_str_req_emp,
+                    'cards_style' => \lqx\util\schema_str_req_emp,
+                    'limit' => [
+                        'type' => 'integer',
+                        'required' => true,
+                        'default' => 1,
+                        'range' => [1, 10]
+                    ]
+                ]
+            ]
         ]
     ]);
 
@@ -959,17 +1053,99 @@ function init_settings($s)
 
     $s['pagination'] = $pagination;
 
-    // Remove unused render mode data
+    // Remove unused render mode data.
+    // When typesense_search=y, preserve render_js even for php render_mode because
+    // the browser needs it to render cards via Typesense directly.
+    $is_typesense = ($s['typesense_search'] ?? 'n') === 'y';
     switch ($s['render_mode']) {
         case 'maps-php':
         case 'php':
-            unset($s['render_js']);
+            if (!$is_typesense) unset($s['render_js']);
             break;
 
         case 'maps-js':
         case 'js':
             unset($s['render_php']);
             break;
+    }
+
+    // When typesense_search is enabled the browser queries Typesense directly.
+    // Embed the connection config (from plugin WP options) + a server-side locked
+    // filter translated from pre_filters so the client can't bypass constraints.
+    if ($is_typesense) {
+        $ts_config = get_typesense_client_config();
+        $ts_config['collection'] = $ts_config['collection'] ?: ($s['post_type'] ?? 'posts');
+        $ts_config['locked_filter'] = build_locked_typesense_filter($s);
+
+        // Pre-resolve default sort_by from posts_order (used as initial/fallback sort).
+        $sort_parts = [];
+        foreach ($s['posts_order'] ?? [] as $order) {
+            $dir = $order['order'] ?? 'asc';
+            switch ($order['order_by'] ?? '') {
+                case 'rand':
+                    $sort_parts = ['_eval(random()):desc'];
+                    break 2;
+                case 'date':
+                    $sort_parts[] = "sort_by_date:{$dir}";
+                    break;
+                case 'distance':
+                    // Resolved dynamically in JS once user lat/lng is known
+                    break;
+                case 'field':
+                case 'meta_key':
+                    if (!empty($order['acf_field'])) {
+                        $field_obj = get_field_object($order['acf_field']);
+                        $field_name = $field_obj['name'] ?? '';
+                        if ($field_name) $sort_parts[] = "{$field_name}:{$dir}";
+                    } elseif (!empty($order['value'])) {
+                        $sort_parts[] = "{$order['value']}:{$dir}";
+                    }
+                    break;
+            }
+        }
+        $ts_config['sort_by'] = implode(',', $sort_parts);
+
+        // Build an ACF-key → Typesense-field-name lookup so JS can resolve sort
+        // fields dynamically when the user changes the sort order (change_order feature).
+        // Covers both the default posts_order and all change_order options.
+        $acf_field_names = [];
+        $order_entries = array_merge(
+            $s['posts_order'] ?? [],
+            array_map(function ($opt) {
+                // order_options entries use order_by as {value, label} array from ACF
+                return [
+                    'order_by' => is_array($opt['order_by']) ? ($opt['order_by']['value'] ?? '') : ($opt['order_by'] ?? ''),
+                    'order'    => $opt['order'] ?? 'asc',
+                    'acf_field' => $opt['acf_field'] ?? '',
+                ];
+            }, $s['order_options'] ?? [])
+        );
+        foreach ($order_entries as $order) {
+            $key = $order['acf_field'] ?? '';
+            if (!empty($key) && !isset($acf_field_names[$key])) {
+                $field_obj = get_field_object($key);
+                $field_name = $field_obj['name'] ?? '';
+                if ($field_name) $acf_field_names[$key] = $field_name;
+            }
+        }
+        $ts_config['acf_field_names'] = $acf_field_names;
+
+        // Pass link title for the card CTA button.
+        // Prefer render_php.link_title (php render_mode), fall back to render_js.link_title.
+        $ts_config['link_title'] = $s['render_php']['link_title']
+            ?? $s['render_js']['link_title']
+            ?? '';
+
+        // Pass cards block style/preset so JS can rebuild the correct wrapper CSS classes
+        // (e.g. 'physicians-cards') around the injected card_html items.
+        $ts_config['cards_style']  = $s['render_php']['style']  ?? '';
+        $ts_config['cards_preset'] = $s['render_php']['preset'] ?? '';
+
+        // Allow child themes / plugins to extend the Typesense client config
+        // (e.g. to add render_card_callback, custom fields, etc.).
+        $ts_config = apply_filters('lqx_typesense_config', $ts_config, $s);
+
+        $s['typesense_config'] = $ts_config;
     }
 
     return $s;
@@ -1163,9 +1339,15 @@ function get_options($s)
                 break;
 
             case 'custom':
-                if (!empty($control['custom_options_function']) && is_callable($control['custom_options_function'])) {
-                    $options = call_user_func($control['custom_options_function'], $control, $posts, $s);
-                    if (!is_array($options)) $options = [];
+                if (!empty($control['alias'])) {
+                    $alias = preg_replace('/[^a-z0-9_]/', '_', strtolower($control['alias']));
+                    $file = get_stylesheet_directory() . '/php/custom/filter-controls.php';
+                    if (file_exists($file)) require_once $file;
+                    $fn = 'lqx_filter_options_' . $alias;
+                    if (function_exists($fn)) {
+                        $options = $fn($control, $posts, $s);
+                        if (!is_array($options)) $options = [];
+                    }
                 }
                 break;
         }
@@ -1212,6 +1394,20 @@ function get_options($s)
 
             case 'none';
                 break;
+        }
+
+        // Add banner_html to each option when a banner_field is configured
+        if (!empty($control['banner_field'])) {
+            foreach ($options as &$option) {
+                $banner_html = '';
+                if ($control['type'] === 'taxonomy') {
+                    $banner_html = get_field($control['banner_field'], 'term_' . $option['value']);
+                } elseif ($control['type'] === 'field') {
+                    $banner_html = get_field($control['banner_field'], (int) $option['value']);
+                }
+                $option['banner_html'] = $banner_html ?: '';
+            }
+            unset($option);
         }
 
         // Add options to control
@@ -1733,8 +1929,14 @@ function prepare_query($query, $s)
                         break;
                     }
                 case 'custom':
-                    if (!empty($control['custom_filter_function']) && is_callable($control['custom_filter_function'])) {
-                        $query = call_user_func($control['custom_filter_function'], $query, $control, $s);
+                    if (!empty($control['alias'])) {
+                        $alias = preg_replace('/[^a-z0-9_]/', '_', strtolower($control['alias']));
+                        $file = get_stylesheet_directory() . '/php/custom/filter-controls.php';
+                        if (file_exists($file)) require_once $file;
+                        $fn = 'lqx_filter_apply_' . $alias;
+                        if (function_exists($fn)) {
+                            $query = $fn($query, $control, $s);
+                        }
                     }
                     break;
             }
@@ -1752,196 +1954,101 @@ function prepare_query($query, $s)
 }
 
 /**
- * Prepares, translates, and executes a search query against the Typesense API.
- * This function is the central point of communication with Typesense.
+ * Read Typesense client-side connection config from the cm-typesense plugin WP options.
+ * Returns an array with host, port, protocol, search_only_key, and collection.
  *
- * @param array $s The fully merged settings array from the API call.
- * @return array The raw search results from Typesense, or an array containing an error message.
+ * Settings are stored in WP options:
+ *   cm_typesense_search_config_settings  — server connection + search-only key
+ *   cm_typesense_admin_settings          — collection name
+ *   cm_typesense_plugin_activate         — whether the plugin is active
+ *
+ * @return array
  */
+function get_typesense_client_config(): array {
+    $admin_cfg = get_option('cm_typesense_admin_settings', []);
 
-function prepare_typesense_query($s)
-{
-    $api_instance = \Codemanas\Typesense\Main\TypesenseAPI::getInstance();
-    $collection_name = $s['post_type'] ?? 'posts';
+    if (is_string($admin_cfg)) $admin_cfg = maybe_unserialize($admin_cfg);
+    if (!is_array($admin_cfg)) $admin_cfg = [];
 
-    $ts_args = [
-        's' => $s['search'] ?? '',
-        'filters' => [],
-        'query_by_fields' => [],
-        'facets' => [],
-        'sort' => '',
-        'geofilter' => [],
-        'posts_per_page' => ($s['pagination']['show_all'] ?? 'n') == 'n' ? ($s['pagination']['posts_per_page'] ?? 10) : 250,
-        'paged' => ($s['pagination']['show_all'] ?? 'n') == 'n' ? ($s['pagination']['page'] ?? 1) : 1,
+    // protocol is stored as 'https://' — strip trailing colon/slashes
+    $protocol = rtrim($admin_cfg['protocol'] ?? 'https', ':/ ');
+
+    return [
+        'host'            => $admin_cfg['node']            ?? '',
+        'port'            => (string)($admin_cfg['port']   ?? '443'),
+        'protocol'        => $protocol ?: 'https',
+        'search_only_key' => $admin_cfg['search_api_key']  ?? '',
+        'collection'      => '', // set per-preset from post_type in init_settings
     ];
+}
 
-    $sort_by_parts = [];
-    if (is_array($s['posts_order'])) {
-        foreach ($s['posts_order'] as $order) {
-            $direction = $order['order'] ?? 'desc';
-            switch ($order['order_by']) {
-                case 'rand':
-                    $sort_by_parts = ['_eval(random()):desc'];
-                    break 2;
-                case 'distance':
-                    continue 2;
-                case 'field':
-                    $sort_by_parts[] = get_field_object($order['acf_field'])['name'] . ":{$direction}";
-                    break;
-                case 'meta_key':
-                    $sort_by_parts[] = "{$order['value']}:{$direction}";
-                    break;
-                case 'date':
-                    $sort_by_parts[] = "sort_by_date:{$direction}";
-                    break;
-                case 'title':
-                    $sort_by_parts[] = "post_title:{$direction}";
-                    break;
-            }
-        }
-    }
-    if (!empty($sort_by_parts)) {
-        $ts_args['sort'] = implode(',', $sort_by_parts);
-    }
+/**
+ * Translate pre_filters into a Typesense filter_by string that the client must always include.
+ * This is a security measure: pre_filters constrain results (e.g., by region, date range, taxonomy)
+ * and must not be alterable by the client.
+ *
+ * @param array $s The fully processed settings array
+ * @return string The locked Typesense filter_by clause
+ */
+function build_locked_typesense_filter(array $s): string {
+    $parts = [];
 
-    $base_query_by_fields = ['post_title', 'post_content', 'post_excerpt'];
-    $additional_query_by_fields = [];
-    $all_filters = array_merge($s['pre_filters'] ?? [], $s['controls'] ?? []);
-
-    foreach ($all_filters as $filter) {
-        if (isset($filter['selected']) && ($filter['selected'] === '' || $filter['selected'] === false) && $filter['type'] !== 'distance') {
-            continue;
-        }
-
-        switch ($filter['type']) {
+    foreach ($s['pre_filters'] ?? [] as $filter) {
+        switch ($filter['type'] ?? '') {
             case 'taxonomy':
-                $ts_args['filters'][] = ['field' => ($filter['taxonomy'] ?? $filter['taxonomy_term']->taxonomy) . '_id', 'compare' => $filter['operator_simple'] ?? 'IN', 'value' => $filter['selected'] ?? $filter['taxonomy_term']->term_id];
-                $ts_args['facets'][] = ($filter['taxonomy'] ?? $filter['taxonomy_term']->taxonomy) . '_slug';
+                if (!empty($filter['taxonomy_term']->taxonomy) && !empty($filter['taxonomy_term']->term_id)) {
+                    $field = $filter['taxonomy_term']->taxonomy . '_id';
+                    $op = ($filter['operator_simple'] ?? '=') === '!=' ? '!=' : '=';
+                    $parts[] = $field . ':' . $op . $filter['taxonomy_term']->term_id;
+                }
                 break;
 
             case 'field':
             case 'meta_key':
-                $key = get_field_object($filter['acf_field'])['name'] ?? $filter['meta_key'];
-                $compare = $filter['operator_advanced'] ?? 'IN';
-                $value = $filter['value'] ?? $filter['selected'];
-                if ($field_object = get_field_object($filter['acf_field'])) {
-                    if ($field_object['type'] == 'relationship' && $field_object['return_format'] == 'id') {
-                        $value = get_the_title($filter['selected']);
-                    }
-                } else {
-                    $value = $filter['value'] ?? $filter['selected'];
-                }
-
-                if ($compare === 'LIKE') {
-                    $ts_args['s'] .= ' ' . $value;
-                    $additional_query_by_fields[] = $key;
-                } else {
-                    $ts_args['filters'][] = ['field' => $key, 'compare' => $compare, 'value' => $value];
+                $key = !empty($filter['acf_field']) ? get_field_object($filter['acf_field'])['name'] : ($filter['meta_key'] ?? '');
+                $value = $filter['value'] ?? '';
+                if ($key !== '' && $value !== '') {
+                    $compare = $filter['operator_advanced'] ?? '=';
+                    // Map WP operators to Typesense
+                    $ts_op = match($compare) {
+                        '!=' => '!=',
+                        '>' => '>',
+                        '>=' => '>=',
+                        '<' => '<',
+                        '<=' => '<=',
+                        default => '='
+                    };
+                    $parts[] = $key . ':' . $ts_op . $value;
                 }
                 break;
 
             case 'date':
-                $anchor_str = 'today';
-                if (!empty($filter['anchor'])) {
-                    switch ($filter['anchor']) {
-                        case 'y':
-                            $anchor_str = 'first day of this year';
-                            break;
-                        case 'm':
-                            $anchor_str = 'first day of this month';
-                            break;
-                        case 'w':
-                            $anchor_str = 'last sunday';
-                            break;
-                    }
+                // Translate date pre-filters to a sort_by_date range filter
+                $anchor = match($filter['anchor'] ?? 'd') {
+                    'y' => date('Y') . '-01-01',
+                    'm' => date('Y-m') . '-01',
+                    'w' => date('Y-m-d', strtotime('sunday last week')),
+                    default => date('Y-m-d')
+                };
+                $unit = match($filter['unit'] ?? 'd') {
+                    'w' => 'weeks', 'm' => 'months', 'y' => 'years', default => 'days'
+                };
+                $after = strtotime($anchor . ' -' . ($filter['start'] ?? 0) . ' ' . $unit);
+                $before = strtotime($anchor . ' +' . ($filter['end'] ?? 0) . ' ' . $unit);
+                if ($after && $before) {
+                    $parts[] = 'sort_by_date:[' . $after . '..' . $before . ']';
                 }
-                $anchor_time = strtotime($anchor_str);
-                $unit = $filter['unit'] ?? 'days';
-                $after_timestamp = strtotime("-{$filter['start']} $unit", $anchor_time);
-                $before_timestamp = strtotime("+{$filter['end']} $unit", $anchor_time);
-                $date_field = 'sort_by_date';
-                if (($filter['date_source'] ?? 'default') !== 'default') {
-                    $date_field = get_field_object($filter['acf_field'])['name'] ?? $filter['meta_key'];
-                }
-                $ts_args['filters'][] = ['field' => $date_field, 'compare' => '>=', 'value' => $after_timestamp];
-                $ts_args['filters'][] = ['field' => $date_field, 'compare' => '<=', 'value' => $before_timestamp];
                 break;
 
             case 'author':
-                $ts_args['filters'][] = ['field' => 'post_author_id', 'compare' => '=', 'value' => $filter['value']];
-                break;
-            case 'post_parent':
-                $ts_args['filters'][] = ['field' => 'post_parent', 'compare' => 'IN', 'value' => $filter['post_parent']];
-                break;
-            case 'distance':
-                $filter['miles'] = $filter['miles'] ?: 25;
-                if (isset($filter['lat'], $filter['lng'], $filter['miles'])) {
-                    $user_lat = (float)$filter['lat'];
-                    $user_lng = (float)$filter['lng'];
-                    $radius_miles = $filter['miles'];
-
-                    $ts_args['geofilter'] = [
-                        'field' => 'locations_geopoints',
-                        'lat' => $user_lat,
-                        'lng' => $user_lng,
-                        'miles' => $radius_miles,
-                    ];
-
-                    $ts_args['sort'] = "locations_geopoints($user_lat, $user_lng):asc";
-                }
-            case 'region':
-                $region_cookie = $_COOKIE['selectedRegion'] ?? $_COOKIE['ipDetectedRegion'] ?? null;
-                if ($region_cookie) {
-                    $region = json_decode(stripslashes($region_cookie));
-                    if ($region && !empty($region->title)) {
-                        $ts_args['s'] .= ' ' . $region->title;
-                        $additional_query_by_fields[] = 'related_regions';
-                    }
+                if (!empty($filter['value'])) {
+                    $parts[] = 'post_author_id:=' . $filter['value'];
                 }
                 break;
         }
     }
 
-    $ts_args['s'] = trim($ts_args['s']);
-    if (empty($ts_args['s'])) {
-        $ts_args['s'] = '*';
-    }
-
-    if ($ts_args['s'] !== '*') {
-        $final_query_by = array_merge($base_query_by_fields, $additional_query_by_fields);
-        $ts_args['query_by_fields'] = array_unique($final_query_by);
-    } else {
-        $ts_args['query_by_fields'] = [];
-    }
-
-    if (!empty($ts_args['geofilter'])) {
-        $geo = $ts_args['geofilter'];
-        $ts_args['sort'] = "locations_geopoints({$geo['lat']}, {$geo['lng']}):asc";
-    }
-
-    $translator = new \WP_Typesense_Query_Translator();
-    $search_parameters = $translator->translate($ts_args);
-
-    try {
-        $query_string = http_build_query($search_parameters);
-        $endpoint = 'collections/' . $collection_name . '/documents/search?' . $query_string;
-        $reflection = new \ReflectionClass($api_instance);
-        $method = $reflection->getMethod('makeRequest');
-        $method->setAccessible(true);
-        $results = $method->invoke($api_instance, $endpoint, 'GET', null);
-
-        if (is_wp_error($results)) {
-            return ['found' => 0, 'hits' => [], 'error' => $results->get_error_message()];
-        }
-        if (is_string($results)) {
-            $results = json_decode($results, true);
-        } else {
-            $results = json_decode(json_encode($results), true);
-        }
-        return $results;
-    } catch (\ReflectionException $e) {
-        return ['found' => 0, 'hits' => [], 'error' => 'Reflection Error: ' . $e->getMessage()];
-    }
+    return implode(' && ', $parts);
 }
 
 /**
@@ -2023,6 +2130,54 @@ function get_posts_with_data($s)
         }
     }
 
+    // Build featured posts HTML (PHP render mode, page 1 only)
+    // Uses _is_featured post meta registered by featured-posts.php
+    $featured_html = '';
+    if (
+        in_array($s['render_mode'] ?? '', ['php', 'maps-php']) &&
+        ($s['featured']['enabled'] ?? 'n') === 'y' &&
+        ($s['pagination']['page'] ?? 1) == 1
+    ) {
+        $feat = $s['featured'];
+        $feat_query_args = [
+            'post_type' => $s['post_type'],
+            'post_status' => 'publish',
+            'posts_per_page' => $feat['limit'],
+            'tribe_suppress_query_filters' => true,
+            'meta_query' => [
+                [
+                    'key' => '_is_featured',
+                    'value' => '1',
+                    'compare' => '='
+                ]
+            ]
+        ];
+        $feat_query = new \WP_Query($feat_query_args);
+        if ($feat_query->have_posts()) {
+            $feat_posts = [];
+            $feat_ids = [];
+            while ($feat_query->have_posts()) {
+                $feat_query->the_post();
+                $feat_post = get_post(get_the_ID());
+                $feat_ids[] = $feat_post->ID;
+                $feat_posts[] = build_item_from_post($feat_post, $s);
+            }
+            wp_reset_postdata();
+            $query['post__not_in'] = array_merge($query['post__not_in'] ?? [], $feat_ids);
+            $cards_settings = \lqx\blocks\get_settings(
+                'cards', null,
+                $feat['cards_preset'] ?: ($s['render_php']['preset'] ?? ''),
+                $feat['cards_style'] ?: ($s['render_php']['style'] ?? '')
+            );
+            $cards_settings['processed']['hash'] = $s['hash'] . '-featured';
+            $cards_settings['processed']['class'] = 'posts featured ' . ($feat['cards_style'] ?: ($s['render_php']['style'] ?? ''));
+            $cards_settings['processed']['preset'] = $cards_settings['processed']['preset'] ?: ($feat['cards_preset'] ?: $s['preset']);
+            ob_start();
+            \lqx\blocks\render_block($cards_settings, $feat_posts);
+            $featured_html = ob_get_clean();
+        }
+    }
+
     $query = prepare_query($query, $s);
     $posts = [];
 
@@ -2036,6 +2191,8 @@ function get_posts_with_data($s)
             switch ($s['render_mode']) {
                 case 'maps-js':
                 case 'js':
+                    // Preserve the WP_Post object before reassigning $post to the data array
+                    $wp_post_obj = $post;
                     // Set the post object
                     $post = [
                         'id' => $post->ID,
@@ -2081,6 +2238,12 @@ function get_posts_with_data($s)
                     // Get fields
                     foreach ($s['render_js']['post_fields'] as $field_name => $field_obj) {
                         $post['fields'][$field_name] = get_field($field_obj['key'], $post['id']);
+                    }
+
+                    // Pre-render card HTML via PHP template system (respects child theme / preset template inheritance)
+                    if ($s['render_mode'] === 'js') {
+                        $card_html = render_js_card($wp_post_obj, $s);
+                        if ($card_html) $post['card_html'] = $card_html;
                     }
 
                     break;
@@ -2225,162 +2388,213 @@ function get_posts_with_data($s)
     return [
         'posts' => $posts,
         'total_posts' => $total_posts,
-        'total_pages' => $total_pages
+        'total_pages' => $total_pages,
+        'featured_html' => $featured_html
     ];
 }
 
 /**
- * Fetches post data using Typesense and formats it for the API response.
- * This is a drop-in replacement for the original WP_Query-based function.
+ * Build the card item data array from a WP_Post using a filter preset's render_php config.
+ * Used to pre-render card HTML at Typesense index time.
  *
- * @param array $s The complete settings array from the API call.
- * @return array The formatted posts and pagination data.
+ * @param WP_Post $post - the post to build item data for
+ * @param array   $s    - processed filter settings (with render_php sub-array)
+ * @return array  - item data array ready for lqx\cards\schema validation
  */
-function get_posts_with_typesense_data($s)
+function build_item_from_post($post, $s)
 {
-    // 1. Get the complete search results from our new Typesense function
-    $results = prepare_typesense_query($s);
+    $wp_post_keys = ['post_content', 'post_title', 'post_excerpt', 'post_name'];
+    $render_php   = $s['render_php'];
 
-    // 2. Handle cases where the search failed
-    if (isset($results['error'])) {
-        // Optional: Log the error for debugging
-        // error_log('Typesense API Error: ' . $results['error']);
-        return ['posts' => [], 'total_posts' => 0, 'total_pages' => 0];
-    }
+    $p = [
+        'id'               => $post->ID,
+        'date'             => ($post->post_date_gmt !== '0000-00-00 00:00:00') ? $post->post_date_gmt : $post->post_date,
+        'heading'          => null,
+        'subheading'       => null,
+        'slug'             => $post->post_name,
+        'modified'         => $post->post_modified_gmt,
+        'link'             => [
+            'url'    => get_permalink($post->ID),
+            'title'  => $render_php['link_title']  ?? null,
+            'target' => $render_php['link_target'] ?? null,
+        ],
+        'link_style'       => $render_php['link_style'] ?? 'button',
+        'body'             => null,
+        'labels'           => [],
+        'image'            => null,
+        'icon_image'       => null,
+        'video'            => ['type' => $render_php['video_type'] ?? 'url'],
+        'additional_classes' => '',
+        'item_id'          => '',
+    ];
 
-    // 3. Initialize variables for the response
-    $posts = [];
-    $total_posts = $results['found'];
-    $per_page = ($s['pagination']['show_all'] ?? 'n') == 'n' ? ($s['pagination']['posts_per_page'] ?? 10) : $total_posts;
-    $total_pages = ($per_page > 0 && $total_posts > 0) ? ceil($total_posts / max(1, $per_page)) : 1;
-
-    if (!empty($results['hits'])) {
-        // Loop through the hits directly from the Typesense response. NO MORE get_post()!
-        foreach ($results['hits'] as $hit) {
-            $document = $hit['document']; // This is our single, fast source of data for the post.
-
-            // --- START: Rewritten Data Formatting Logic ---
-            switch ($s['render_mode']) {
-                case 'maps-js':
-                case 'js':
-                    $formatted_post = [
-                        'id' => (int)$document['id'],
-                        'author' => $document['post_author'], // Using the author name string from the index
-                        'date' => gmdate('Y-m-d H:i:s', $document['sort_by_date']), // Convert timestamp to GMT string
-                        'content' => $s['render_js']['post_content'] == 'y' ? ($document['post_content'] ?? '') : '',
-                        'title' => $document['post_title'],
-                        'excerpt' => $s['render_js']['post_excerpt'] == 'y' ? ($document['post_excerpt'] ?? '') : '',
-                        'slug' => basename($document['permalink']), // Deriving slug from the indexed permalink
-                        'modified' => $document['post_modified'],
-                        'link' => $document['permalink'],
-                        'link_style' => $s['render_js']['link_style'] ?? 'button',
-                        'type' => $document['post_type'],
-                        'thumbnail' => $s['render_js']['post_thumbnail'] == 'y' ? ($document['post_thumbnail_html'] ?? []) : [],
-
-                        // Simplified taxonomy output directly from the indexed string arrays
-                        'taxonomies' => [
-                            'category' => $document['category'] ?? [],
-                            'post_tag' => $document['tags'] ?? []
-                        ],
-
-                        // IMPORTANT: Assumes you have indexed your ACF fields into an 'acf_fields' object.
-                        'fields' => $document['acf_fields'] ?? []
-                    ];
-                    break;
-
-                case 'maps-php':
-                case 'php':
-                    $wp_post_keys = ['post_content', 'post_title', 'post_excerpt'];
-
-                    // This is the data for all your custom ACF fields, which you will index.
-                    $acf_fields = $document['acf_fields'] ?? [];
-
-                    $formatted_post = [
-                        'id' => (int)$document['id'],
-                        'date' => gmdate('Y-m-d H:i:s', $document['sort_by_date']),
-                        'slug' => basename($document['permalink']),
-                        'modified' => $document['post_modified'],
-                        'link' => ['url' => $document['permalink'], 'title' => $s['render_php']['link_title'], 'target' => $s['render_php']['link_target']],
-                        'link_style' => $s['render_php']['link_style'] ?? 'button',
-                        'image' => null,
-                        'icon_image' => null,
-                        'video' => ['type' => $s['render_php']['video_type'] ?? 'url'],
-                        'labels' => [],
-                        'heading' => null,
-                        'subheading' => null,
-                        'body' => null,
-                    ];
-
-                    // Dynamically assign heading, subheading, and body from either a core field or an ACF field
-                    foreach (['heading', 'subheading', 'body'] as $key) {
-                        if (!empty($s['render_php'][$key])) {
-                            $field_name = $s['render_php'][$key];
-                            if (in_array($field_name, $wp_post_keys)) {
-                                $formatted_post[$key] = $document[$field_name] ?? '';
-                            } else {
-                                // Assumes the field_name is a key in our indexed acf_fields object
-                                $formatted_post[$key] = $acf_fields[$field_name] ?? '';
-                            }
-                        }
-                    }
-
-                    // Handle image and icon_image
-                    foreach (['image', 'icon_image'] as $key) {
-                        if ($s['render_php'][$key]) {
-                            if ($s['render_php'][$key] == 'thumbnail') {
-                                if ($document['post_thumbnail_html']) {
-                                    // TODO what is image_html and post_thumbnail_html?
-                                    $formatted_post['image_html'] = $document['post_thumbnail_html'];
-                                } else {
-                                    $formatted_post[$key] = \lqx\util\get_thumbnail_image_object((int)$document['id']);
-                                }
-                            } else {
-                                $formatted_post[$key] = get_field($s['render_php'][$key], (int)$document['id']);
-                            }
-                        }
-                    }
-
-                    // Handle custom link from ACF fields
-                    if (($s['render_php']['use_post_url'] ?? 'y') == 'n' && !empty($s['render_php']['link'])) {
-                        $formatted_post['link'] = $acf_fields[$s['render_php']['link']] ?? null;
-                    }
-
-                    // Handle video from ACF fields
-                    $video_url_field = $s['render_php']['video_url'];
-                    $video_upload_field = $s['render_php']['video_upload'];
-                    if (($s['render_php']['video_type'] ?? 'url') == 'url' && !empty($acf_fields[$video_url_field])) {
-                        $formatted_post['video'] = ['type' => 'url', 'url' => $acf_fields[$video_url_field]];
-                    } elseif (($s['render_php']['video_type'] ?? 'url') == 'upload' && !empty($acf_fields[$video_upload_field])) {
-                        $formatted_post['video'] = ['type' => 'upload', 'upload' => $acf_fields[$video_upload_field]];
-                    }
-
-                    // Handle labels from indexed taxonomies (much faster)
-                    if (($s['render_php']['label_type'] ?? '') == 'taxonomy' && !empty($s['render_php']['label_taxonomies'])) {
-                        foreach ($s['render_php']['label_taxonomies'] as $tax) {
-                            // The plugin schema uses 'category' and 'tags' as keys
-                            $tax_key_in_doc = ($tax === 'category') ? 'category' : (($tax === 'post_tag') ? 'tags' : $tax);
-                            if (!empty($document[$tax_key_in_doc])) {
-                                foreach ($document[$tax_key_in_doc] as $term_name) {
-                                    $formatted_post['labels'][] = ['label' => $term_name, 'value' => $tax . ':' . \lqx\util\slugify($term_name)];
-                                }
-                            }
-                        }
-                    }
-                    // (Handling labels from ACF fields would follow a similar pattern, reading from $acf_fields)
-
-                    break;
+    foreach (['heading', 'subheading', 'body'] as $key) {
+        if (!empty($render_php[$key])) {
+            if (in_array($render_php[$key], $wp_post_keys)) {
+                $p[$key] = $render_php[$key] === 'post_excerpt'
+                    ? '<p>' . $post->{$render_php[$key]} . '</p>'
+                    : $post->{$render_php[$key]};
+            } else {
+                $p[$key] = get_field($render_php[$key], $post->ID);
             }
-
-            $posts[] = $formatted_post;
         }
     }
 
-    // 6. Return the final, formatted data structure
-    return [
-        'posts' => $posts,
-        'total_posts' => $total_posts,
-        'total_pages' => $total_pages
-    ];
+    foreach (['image', 'icon_image'] as $key) {
+        if (!empty($render_php[$key])) {
+            $p[$key] = $render_php[$key] === 'thumbnail'
+                ? \lqx\util\get_thumbnail_image_object($post->ID)
+                : get_field($render_php[$key], $post->ID);
+        }
+    }
+
+    if (($render_php['use_post_url'] ?? 'y') === 'n') {
+        $p['link'] = !empty($render_php['link'])
+            ? get_field($render_php['link'], $post->ID)
+            : null;
+    }
+
+    switch ($render_php['label_type'] ?? '') {
+        case 'taxonomy':
+            foreach ($render_php['label_taxonomies'] ?? [] as $tax) {
+                $terms = get_the_terms($post->ID, $tax);
+                if ($terms && !is_wp_error($terms)) {
+                    foreach ($terms as $term) {
+                        $p['labels'][] = ['label' => $term->name, 'value' => $tax . ':' . $term->slug];
+                    }
+                }
+            }
+            break;
+        case 'field':
+            foreach ($render_php['label_fields'] ?? [] as $field_def) {
+                $obj = get_field_object($field_def['label_field'], $post->ID);
+                if ($obj) {
+                    if (is_array($obj['value'])) {
+                        foreach ($obj['value'] as $val) {
+                            $p['labels'][] = ['label' => $val, 'value' => \lqx\util\slugify($val)];
+                        }
+                    } elseif ($obj['value']) {
+                        $p['labels'][] = ['label' => $obj['value'], 'value' => \lqx\util\slugify($obj['value'])];
+                    }
+                }
+            }
+            break;
+    }
+
+    return $p;
+}
+
+/**
+ * Render a single card <li> HTML for a post using a filter preset's card templates.
+ * Intended for pre-rendering card HTML at Typesense index time so JS can inject it
+ * directly without any server roundtrip.
+ *
+ * @param WP_Post $post   - the post to render
+ * @param string  $preset - the filter preset name (e.g. 'physicians-archive')
+ * @return string - the rendered <li> card HTML, or empty string on failure
+ */
+function render_card_for_preset($post, $preset)
+{
+    static $filter_settings_cache = [];
+
+    // Cache filter settings per preset to avoid repeated ACF/DB lookups.
+    // Only validate_settings is called — init_settings runs region/geolocation logic
+    // that isn't needed for card rendering (and fails outside of HTTP context).
+    if (!isset($filter_settings_cache[$preset])) {
+        $settings = \lqx\blocks\get_settings('filters', null, $preset, '');
+        $s        = validate_settings($settings);
+        $filter_settings_cache[$preset] = $s;
+    }
+    $filter_s = $filter_settings_cache[$preset];
+
+    // Only PHP render modes support template-based card rendering
+    if (!in_array($filter_s['render_mode'], ['php', 'maps-php'])) return '';
+
+    // Build the item data array from this post
+    $item_data = build_item_from_post($post, $filter_s);
+
+    // Validate item against the cards schema to get a clean $item with defaults
+    $v = \lqx\util\validate_data($item_data, \lqx\cards\schema);
+    if (!$v['isValid']) return '';
+    $item = $v['data'];
+
+    // Determine cards preset and style from the filter's render_php settings
+    $cards_preset = $filter_s['render_php']['preset'] ?: $preset;
+    $cards_style  = $filter_s['render_php']['style']  ?? '';
+
+    // Get cards block settings and configure them for this context.
+    // Must modify $cards_raw['processed'] directly — render_block uses that array.
+    $cards_raw = \lqx\blocks\get_settings('cards', null, $cards_preset, $cards_style);
+    $cards_raw['processed']['hash']     = 'ts-pre-' . $post->ID;
+    $cards_raw['processed']['class']    = 'posts ' . $cards_style;
+    $cards_raw['processed']['preset']   = $cards_preset;  // drives template resolution
+    $cards_raw['processed']['group_by'] = $filter_s['group_by'] ?? 'n';
+    if (($filter_s['group_by'] ?? 'n') === 'y') {
+        foreach (['group_by_source', 'group_by_acf_field', 'group_by_post_property', 'group_by_field_name',
+                  'group_by_taxonomy', 'group_by_value_type', 'group_by_date_key_format',
+                  'group_by_date_label_format', 'group_by_heading_tag', 'group_by_heading_template'] as $_gb_key) {
+            $cards_raw['processed'][$_gb_key] = $filter_s[$_gb_key] ?? '';
+        }
+    }
+
+    // Render the full cards block HTML with a single item, capture output
+    ob_start();
+    \lqx\blocks\render_block($cards_raw, [$item_data]);
+    $full_html = ob_get_clean();
+
+    // Extract just the <li> element — the full output is section>div>ul>li
+    // Note: the template may emit <li\n\t (newline+indent) rather than <li<space>
+    $start = strpos($full_html, '<li');
+    $end   = strrpos($full_html, '</li>');
+    if ($start !== false && $end !== false) {
+        return substr($full_html, $start, $end - $start + 5);
+    }
+
+    return '';
+}
+
+/**
+ * Render a single card <li> HTML for JS render mode using the PHP template system.
+ * Requires render_php to be configured on the filter settings so field mapping works.
+ * Results are per-post unique (hash changes), but cards_raw settings are cached per preset.
+ *
+ * @param WP_Post $wp_post - the WP_Post object
+ * @param array   $s       - processed filter settings (must include render_php)
+ * @return string - rendered <li> HTML, or empty string on failure
+ */
+function render_js_card($wp_post, $s)
+{
+    static $cards_settings_cache = [];
+
+    if (empty($s['render_php'])) return '';
+
+    $preset    = $s['render_php']['preset'] ?: ($s['preset'] ?? '');
+    $style     = $s['render_php']['style']  ?? '';
+    $cache_key = $preset . '|' . $style;
+
+    if (!isset($cards_settings_cache[$cache_key])) {
+        $cards_raw = \lqx\blocks\get_settings('cards', null, $preset, $style);
+        $cards_raw['processed']['class']  = 'posts ' . $style;
+        $cards_raw['processed']['preset'] = $cards_raw['processed']['preset'] ?: $preset;
+        $cards_settings_cache[$cache_key] = $cards_raw;
+    }
+
+    $cards_raw = $cards_settings_cache[$cache_key];
+    $cards_raw['processed']['hash'] = 'js-' . $wp_post->ID;
+
+    $item_data = build_item_from_post($wp_post, $s);
+
+    ob_start();
+    \lqx\blocks\render_block($cards_raw, [$item_data]);
+    $full_html = ob_get_clean();
+
+    $start = strpos($full_html, '<li');
+    $end   = strrpos($full_html, '</li>');
+    if ($start !== false && $end !== false) {
+        return substr($full_html, $start, $end - $start + 5);
+    }
+
+    return '';
 }
 
 /**
@@ -2492,8 +2706,12 @@ function prepare_json_data($s)
 
     // Handle server-side rendering
     if ($s['render_mode'] == 'php' || $s['render_mode'] == 'maps-php') {
-        foreach (['anchor', 'block', 'class', 'clear_label', 'posts', 'render_js',
-                     'search_placeholder', 'show_clear', 'show_search'] as $key) unset($res[$key]);
+        // When typesense_search=y, keep render_js — the browser needs it for card rendering.
+        $strip_render_js = ($s['typesense_search'] ?? 'n') !== 'y';
+        $strip_keys = ['anchor', 'block', 'class', 'clear_label', 'posts',
+                       'search_placeholder', 'show_clear', 'show_search'];
+        if ($strip_render_js) $strip_keys[] = 'render_js';
+        foreach ($strip_keys as $key) unset($res[$key]);
     }
 
     return $res;
@@ -2656,7 +2874,7 @@ function handle_api_call($request)
     $s = apply_filters('lyquix_filters_option_map', $s);
 
     // Get the posts
-    $post_info = ($s['typesense_search'] ?? 'n') == 'y' ? \lqx\filters\get_posts_with_typesense_data($s) : \lqx\filters\get_posts_with_data($s);
+    $post_info = \lqx\filters\get_posts_with_data($s);
     $s['posts'] = $post_info['posts'];
     $s['pagination']['total_posts'] = $post_info['total_posts'];
     $s['pagination']['total_pages'] = $post_info['total_pages'];
@@ -2665,13 +2883,15 @@ function handle_api_call($request)
     $res = \lqx\filters\prepare_json_data($s);
 
     // Prepare JSON render
+    if (in_array($s['render_mode'], ['php', 'maps-php', 'js'])) {
+        $res['render']['controls'] = \lqx\util\minify_html(render_controls($s));
+    }
+
     if ($s['render_mode'] == 'php' || $s['render_mode'] == 'maps-php') {
-        $res['render'] = [
-            'items' => $post_info['posts'],
-            'controls' => \lqx\util\minify_html(render_controls($s)),
-            'posts' => \lqx\util\minify_html(render_posts($s)),
-            'pagination' => \lqx\util\minify_html(render_pagination($s))
-        ];
+        $res['render']['items']      = $post_info['posts'];
+        $res['render']['posts']      = \lqx\util\minify_html(render_posts($s));
+        $res['render']['pagination'] = \lqx\util\minify_html(render_pagination($s));
+        $res['render']['featured']   = \lqx\util\minify_html($post_info['featured_html'] ?? '');
     }
 
     return $res;
@@ -2687,3 +2907,22 @@ add_action('rest_api_init', function () {
         'permission_callback' => '__return_true',
     ]);
 });
+
+/**
+ * Auto-populate card_html in Typesense documents.
+ * Child themes declare their preset via the lqx_typesense_card_html_preset filter.
+ * Priority 11 runs after child theme hooks (10) so we skip if already set.
+ *
+ * Example child theme registration:
+ *   add_filter('lqx_typesense_card_html_preset', function($preset, $post_type) {
+ *       return $post_type === 'blog' ? 'blog-archive' : $preset;
+ *   }, 10, 2);
+ */
+add_filter('cm_typesense_data_before_entry', function ($data, $post, $post_type) {
+    if (isset($data['card_html'])) return $data;
+    $preset = apply_filters('lqx_typesense_card_html_preset', '', $post_type, $post);
+    if (!$preset) return $data;
+    $card_html = \lqx\filters\render_card_for_preset($post, $preset);
+    if ($card_html) $data['card_html'] = $card_html;
+    return $data;
+}, 11, 3);

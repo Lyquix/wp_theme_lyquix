@@ -47,6 +47,7 @@ export const util = (() => {
 		// Configuration
 		cfg.util = {
 			enabled: true,
+			youtubeEmbedHost: 'www.youtube-nocookie.com',
 		};
 
 		if (customCfg) cfg.util = jQuery.extend(true, cfg.util, customCfg);
@@ -106,7 +107,7 @@ export const util = (() => {
 		if ((match = url.match(youtubeRegex))) {
 			youtubeId = match[1];
 			if (youtubeId) {
-				url = 'https://www.youtube.com/embed/' + youtubeId + '?rel=0&amp;autoplay=1&amp;mute=1&amp;modestbranding=1';
+				url = `https://${cfg.util.youtubeEmbedHost}/embed/${youtubeId}?rel=0&amp;autoplay=1&amp;mute=1&amp;modestbranding=1`;
 				thumbnail = 'https://img.youtube.com/vi/' + youtubeId + '/hqdefault.jpg';
 			}
 		}

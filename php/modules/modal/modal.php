@@ -57,7 +57,18 @@ function rest_route() {
 		]);
 		$modal['css_classes'] = implode(' ', $parts);
 
-		$modalExpiration = strtotime($modal['expiration']);
+		$wp_tz = wp_timezone();
+
+		// Parse start_date in WP timezone (ACF stores dates in the site's local timezone)
+		$modalStartDate = $modal['start_date'] ? (new \DateTimeImmutable($modal['start_date'], $wp_tz))->getTimestamp() : false;
+
+		// Convert start_date to UTC
+		if ($modalStartDate !== false) {
+			$modal['start_date'] = wp_date('c', $modalStartDate);
+		}
+
+		// Parse expiration in WP timezone
+		$modalExpiration = $modal['expiration'] ? (new \DateTimeImmutable($modal['expiration'], $wp_tz))->getTimestamp() : false;
 
 		// Convert expiration to UTC
 		if ($modalExpiration !== false) {
@@ -78,6 +89,8 @@ function rest_route() {
 	$content = array_filter($content, function ($modal) {
 		// Skip items that aren't enabled
 		if ($modal['enabled'] != 'y') return false;
+		// Skip items that haven't started yet
+		if ($modal['start_date'] != '' && time() < strtotime($modal['start_date'])) return false;
 		// Skip items that have expired
 		if ($modal['expiration'] != '' && time() > strtotime($modal['expiration'])) return false;
 		// Skip items that don't match user's region

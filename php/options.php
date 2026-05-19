@@ -175,6 +175,7 @@ add_action('acf/save_post', function($post_id) {
 		'site-settings',
 		'alerts-content',
 		'cta-content',
+		'leaving-site-alert-content',
 		'modals-content',
 		'popups-content',
 		'social'

@@ -91,6 +91,25 @@ export const cards = (() => {
 				// The accordion element
 				cardsElem = jQuery(cardsElem);
 
+				// Clickable card overlay — runs for all presets, before Swiper check
+				if (cardsElem.attr('data-card-clickable') === 'y') {
+					try {
+						const cardLinks = JSON.parse(cardsElem.attr('data-card-links') || '[]');
+						cardsElem.find('li').each((i, li) => {
+							const linkData = cardLinks[i];
+							if (linkData?.url) {
+								const label = linkData.label.replace(/"/g, '&quot;');
+								const target = linkData.target ? ` target="${linkData.target}"` : '';
+								jQuery(li).addClass('card-clickable').prepend(
+									`<a class="card-link-overlay" href="${linkData.url}"${target} aria-label="${label}"></a>`
+								);
+							}
+						});
+					} catch (e) {
+						warn('Card links data is not valid JSON');
+					}
+				}
+
 				// Skip if there isn't no swiper element
 				if (cardsElem.find(cfg.cards.swiperSelector).length == 0) return;
 

@@ -83,7 +83,7 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "50",
+                        "width": "",
                         "class": "",
                         "id": ""
                     },
@@ -106,12 +106,60 @@
                     "parent_repeater": "field_65526244e9ff0"
                 },
                 {
+                    "key": "field_67f7e3001aa01",
+                    "label": "Publish Date",
+                    "name": "start_date",
+                    "aria-label": "",
+                    "type": "date_time_picker",
+                    "instructions": "(Optional) The alert will only be displayed from the selected date and time and if enabled",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_65526288e9ff4",
+                                "operator": "==",
+                                "value": "y"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "50",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "display_format": "Y-m-d H:i:s",
+                    "return_format": "Y-m-d H:i:s",
+                    "first_day": 1,
+                    "placeholder": "",
+                    "min_date": "",
+                    "max_date": "",
+                    "min_time": "",
+                    "max_time": "",
+                    "no_weekends": 0,
+                    "min_hour": "",
+                    "max_hour": "",
+                    "min_min": "",
+                    "max_min": "",
+                    "min_sec": "",
+                    "max_sec": "",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
+                    "parent_repeater": "field_65526244e9ff0",
+                    "default_to_current_date": 0
+                },
+                {
                     "key": "field_65526296e9ff5",
-                    "label": "Expiration",
+                    "label": "Expiration Date",
                     "name": "expiration",
                     "aria-label": "",
                     "type": "date_time_picker",
-                    "instructions": "(Optional) The alert will only be displayed before the selected date and time and if enabled",
+                    "instructions": "(Optional) The alert will stop being displayed after the selected date and time and if enabled",
                     "required": 0,
                     "conditional_logic": [
                         [
@@ -503,5 +551,5 @@
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1760029868
+    "modified": 1776297600
 }

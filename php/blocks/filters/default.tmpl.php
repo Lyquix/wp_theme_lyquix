@@ -45,6 +45,7 @@ wp_enqueue_script('google-maps-api', 'https://maps.googleapis.com/maps/api/js?ke
 			case 'php':
 				require \lqx\blocks\get_template('filters', $s['preset'], 'heading');
 				require \lqx\blocks\get_template('filters', $s['preset'], 'controls');
+				if (!empty($s['featured_html'])) echo $s['featured_html'];
 				require \lqx\blocks\get_template('filters', $s['preset'], 'posts');
 				require \lqx\blocks\get_template('filters', $s['preset'], 'pagination');
 				break;

@@ -38,7 +38,18 @@ function rest_route() {
 		// Add a unuque id to alert
 		$alert['id'] = 'alert-' . md5(json_encode($alert));
 
-		$alertExpiration = strtotime($alert['expiration']);
+		$wp_tz = wp_timezone();
+
+		// Parse start_date in WP timezone (ACF stores dates in the site's local timezone)
+		$alertStartDate = $alert['start_date'] ? (new \DateTimeImmutable($alert['start_date'], $wp_tz))->getTimestamp() : false;
+
+		// Convert start_date to UTC
+		if ($alertStartDate !== false) {
+			$alert['start_date'] = wp_date('c', $alertStartDate);
+		}
+
+		// Parse expiration in WP timezone
+		$alertExpiration = $alert['expiration'] ? (new \DateTimeImmutable($alert['expiration'], $wp_tz))->getTimestamp() : false;
 
 		// Convert expiration to UTC
 		if ($alertExpiration !== false) {
@@ -54,6 +65,8 @@ function rest_route() {
 		if ($alert['enabled'] != 'y') return false;
 		// Skip items with no content
 		if (!$alert['heading'] && !$alert['body']) return false;
+		// Skip items that haven't started yet
+		if ($alert['start_date'] != '' && time() < strtotime($alert['start_date'])) return false;
 		// Skip items that have expired
 		if ($alert['expiration'] != '' && time() > strtotime($alert['expiration'])) return false;
 		// Skip items that don't match user's region

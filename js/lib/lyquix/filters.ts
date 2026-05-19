@@ -50,7 +50,9 @@ export const filters = (() => {
 			hash: null,
 			filters: {},
 			useHashFilterId: null,
-			cache: {}
+			cache: {},
+			renderers: {},
+			handlers: {}
 		};
 
 		// Default module configuration
@@ -70,7 +72,7 @@ export const filters = (() => {
 			orderWrapperSelector: '.order-wrapper',
 			clearButtonSelector: '.clear',
 			// Posts
-			postsSelector: '.posts',
+			postsSelector: '.posts:not(.featured)',
 			// Pagination
 			paginationSelector: '.pagination',
 			firstPageSelector: '.page-first',
@@ -177,6 +179,11 @@ export const filters = (() => {
 
 				// Add listeners
 				addListeners(id);
+
+				// For PHP-rendered filters with group_by enabled, call groupItems to insert group headings
+				if (filterObj.render_mode == 'php' && filterObj.group_by === 'y') {
+					groupItems(id);
+				}
 			});
 		}
 	};
@@ -187,10 +194,13 @@ export const filters = (() => {
 			return;
 		}
 
+		renderFeatured(id);
 		renderControls(id);
 		renderPosts(id);
 		renderPagination(id);
 		renderPills(id);
+		groupItems(id);
+		renderBanners(id);
 
 		// Remove loading class from the filter element
 		vars.filters.filters[id].elem.removeClass('loading');
@@ -200,6 +210,8 @@ export const filters = (() => {
 			.reduce((o, k) => o?.[k], window)
 			?.();
 		}
+
+		fireHandlers(id, 'after-render');
 	};
 
 	const renderControls = (id) => {
@@ -211,12 +223,33 @@ export const filters = (() => {
 		}
 
 		const filterObj = vars.filters.filters[id];
+
+		const customRenderer = getRenderer(id, 'controls');
+		if (customRenderer) { customRenderer(filterObj.elem, filterObj); return; }
+
 		let controls;
 
 		switch (filterObj.render_mode) {
-			case 'js':
-				// TODO handle JS rendering
+			case 'js': {
+				// After the first API call, server returns pre-rendered controls HTML.
+				// On initial page load render.controls is absent — fall back to client-side builder.
+				const controlsSource = filterObj.render?.controls;
+				if (controlsSource) {
+					// Same extraction logic as PHP mode: keep pills element in place
+					const $rendered = jQuery(controlsSource);
+					const $newControls = $rendered.filter(cfg.filters.controlsSelector);
+					controls = filterObj.elem.find(cfg.filters.controlsSelector);
+					if (controls.length) controls.replaceWith($newControls.length ? $newControls : $rendered);
+					else filterObj.elem.prepend($newControls.length ? $newControls : $rendered);
+				} else {
+					const controlsHtml = buildControlsHtml(id);
+					if (!controlsHtml) break;
+					controls = filterObj.elem.find(cfg.filters.controlsSelector);
+					if (controls.length) controls.replaceWith(controlsHtml);
+					else filterObj.elem.prepend(controlsHtml);
+				}
 				break;
+			}
 
 			case 'php':
 				// render.controls contains both .controls and .pills as siblings.
@@ -240,12 +273,20 @@ export const filters = (() => {
 		}
 
 		const filterObj = vars.filters.filters[id];
+
+		const customRenderer = getRenderer(id, 'posts');
+		if (customRenderer) { customRenderer(filterObj.elem, filterObj); return; }
+
 		let posts;
 
 		switch (filterObj.render_mode) {
-			case 'js':
-				// TODO handle JS rendering
+			case 'js': {
+				const postsHtml = buildJsPostsHtml(id);
+				posts = filterObj.elem.find(`${cfg.filters.postsSelector}, .no-results`);
+				if (posts.length) posts.replaceWith(postsHtml);
+				else filterObj.elem.append(postsHtml);
 				break;
+			}
 
 			case 'php':
 				// Also look for .no-results so it gets replaced when results return,
@@ -277,12 +318,31 @@ export const filters = (() => {
 		}
 
 		const filterObj = vars.filters.filters[id];
+
+		const customRenderer = getRenderer(id, 'pagination');
+		if (customRenderer) { customRenderer(filterObj.elem, filterObj); return; }
+
 		let pagination;
 
+		// Typesense path: pagination state was updated in processTypesenseResponse,
+		// build pagination HTML client-side (no PHP response available for this path).
+		if (filterObj.typesense_search === 'y') {
+			const p = filterObj.pagination;
+			const paginationHtml = buildPaginationHtml(id, p);
+			pagination = filterObj.elem.find(cfg.filters.paginationSelector);
+			if (pagination.length) pagination.replaceWith(paginationHtml);
+			else filterObj.elem.append(paginationHtml);
+			return;
+		}
+
 		switch (filterObj.render_mode) {
-			case 'js':
-				// TODO handle JS rendering
+			case 'js': {
+				const paginationHtml = buildPaginationHtml(id, filterObj.pagination);
+				pagination = filterObj.elem.find(cfg.filters.paginationSelector);
+				if (pagination.length) pagination.replaceWith(paginationHtml);
+				else filterObj.elem.append(paginationHtml);
 				break;
+			}
 
 			case 'php':
 				// Check if there's an existing pagination element
@@ -291,6 +351,56 @@ export const filters = (() => {
 				else filterObj.elem.append(filterObj.render.pagination);
 				break;
 		}
+	};
+
+	/**
+	 * Build pagination HTML client-side — mirrors the PHP default-pagination.tmpl.php template.
+	 * Used by the Typesense path which has no PHP pagination response.
+	 */
+	const buildPaginationHtml = (id, p): string => {
+		if (!p || p.pagination !== 'y' || (p.total_pages || 0) <= 1) {
+			return `<div class="pagination" id="${id}-pagination"></div>`;
+		}
+
+		const page       = p.page || 1;
+		const totalPages = p.total_pages || 1;
+		const pageNumbers = p.page_numbers || '3';
+
+		let pageLinks = '';
+
+		if (pageNumbers === '1') {
+			if (page > 1) pageLinks += `<li class="page-ellipsis">&ctdot;</li>`;
+			pageLinks += `<li class="page-number current" data-page="${page}" aria-label="Page ${page}">${page}</li>`;
+			if (page < totalPages) pageLinks += `<li class="page-ellipsis">&ctdot;</li>`;
+		} else if (pageNumbers === 'all') {
+			for (let i = 1; i <= totalPages; i++) {
+				pageLinks += `<li class="page-number${i === page ? ' current' : ''}" data-page="${i}" aria-label="Page ${i}">${i}</li>`;
+			}
+		} else {
+			const n = parseInt(pageNumbers) || 3;
+			let low  = page - Math.floor(n / 2);
+			let high = page + Math.floor(n / 2);
+			if (low < 1)           { low = 1; high = Math.min(totalPages, n); }
+			if (high > totalPages) { high = totalPages; low = Math.max(1, high - n + 1); }
+			if (low > 1)           pageLinks += `<li class="page-ellipsis">&ctdot;</li>`;
+			for (let i = low; i <= high; i++) {
+				pageLinks += `<li class="page-number${i === page ? ' current' : ''}" data-page="${i}" aria-label="Page ${i}">${i}</li>`;
+			}
+			if (high < totalPages) pageLinks += `<li class="page-ellipsis">&ctdot;</li>`;
+		}
+
+		const prevPage = page > 1 ? page - 1 : 1;
+		const nextPage = page < totalPages ? page + 1 : totalPages;
+
+		return `<div class="pagination" id="${id}-pagination">
+			<ul class="pageslinks">
+				<li class="page-first${page === 1 ? ' inactive' : ''}" data-page="1" aria-label="First Page">First</li>
+				<li class="page-prev${page === 1 ? ' inactive' : ''}" data-page="${prevPage}" aria-label="Previous Page">Prev</li>
+				${pageLinks}
+				<li class="page-next${page === totalPages ? ' inactive' : ''}" data-page="${nextPage}" aria-label="Next Page">Next</li>
+				<li class="page-last${page === totalPages ? ' inactive' : ''}" data-page="${totalPages}" aria-label="Last Page">Last</li>
+			</ul>
+		</div>`;
 	};
 
 	const renderPills = (id) => {
@@ -312,6 +422,331 @@ export const filters = (() => {
 			const label = option ? option.text : control.selected;
 			pillsWrapper.append(`<button class="pill" data-control="${control.slug}" data-active-value="${control.selected}">${label}</button>`);
 		});
+	};
+
+	const groupItems = (id) => {
+		const filterObj = vars.filters.filters[id];
+		if (filterObj?.group_by !== 'y') return;
+
+		const tag = filterObj.group_by_heading_tag || 'h3';
+		const container = filterObj.elem.find(cfg.filters.postsSelector);
+		if (!container.length) return;
+
+		// Remove previously injected headings
+		container.find('.lqx-group-heading').remove();
+
+		// Insert headings at group boundaries
+		// Item order is controlled by posts_order — not re-sorted here
+		let lastKey = '';
+		container.find('[data-group-key]').each(function () {
+			const key   = jQuery(this).attr('data-group-key') ?? '';
+			const label = jQuery(this).attr('data-group-label') ?? key;
+			if (key !== lastKey) {
+				jQuery(this).before(`<${tag} class="lqx-group-heading">${label}</${tag}>`);
+				lastKey = key;
+			}
+		});
+	};
+
+	// Escape a value for safe use inside an HTML attribute
+	const escAttr = (s: any): string =>
+		String(s ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+	// Build controls HTML for JS render mode — mirrors default-controls.tmpl.php
+	const buildControlsHtml = (id): string => {
+		const s = vars.filters.filters[id];
+		if (!s) return '';
+
+		const hasContent = s.show_search === 'y' || s.controls?.length;
+		const hasPosts = s.posts?.length;
+		if (!hasContent || (!hasPosts && s.show_controls_on_no_results !== 'y')) return '';
+
+		let html = `<div class="controls" id="${id}-controls">`;
+
+		if (s.show_open_close === 'y') {
+			html += `<div class="open-close-wrapper">` +
+				`<button id="${id}-open" class="open">${s.open_label || ''}</button>` +
+				`<button id="${id}-close" class="close">${s.close_label || ''}</button>` +
+				`</div>`;
+		}
+
+		if (s.show_search === 'y') {
+			html += `<div class="search-wrapper">` +
+				`<label for="${id}-search">${s.search_placeholder || ''}</label>` +
+				`<input class="search" id="${id}-search" placeholder="${escAttr(s.search_placeholder)}" value="${escAttr(s.search)}">` +
+				`<button class="search-button" id="${id}-search-button"></button>` +
+				`</div>`;
+		}
+
+		if (s.controls?.length) {
+			if (s.layout === 'tabbed') {
+				html += `<div class="control-tabs-wrapper"><ul class="control-tabs" id="${id}-control-tabs" role="tablist">`;
+				s.controls.forEach((ctrl, j) => {
+					if (ctrl.visible !== 'y') return;
+					html += `<li role="presentation" class="${j === 0 ? 'active' : ''}">` +
+						`<button id="${id}-control-tab-${j}" class="control-tab" role="tab"` +
+						` aria-controls="${id}-control-wrapper-${j}" aria-selected="${j === 0 ? 'true' : 'false'}"` +
+						` data-control="${escAttr(ctrl.slug)}" data-control-type="${escAttr(ctrl.type)}"` +
+						` tabindex="${j === 0 ? '' : '-1'}">${ctrl.label || ''}</button></li>`;
+				});
+				html += `</ul></div><div class="control-panels-wrapper">`;
+			}
+
+			s.controls.forEach((ctrl, j) => {
+				if (ctrl.visible !== 'y') return;
+				const opts = ctrl.options || [];
+				const isSelected = ctrl.selected !== false && ctrl.selected !== '';
+				const selectedLabel = opts.find(o => String(o.value) === String(ctrl.selected))?.text || '';
+				const activeClass = s.layout === 'tabbed' && j === 0 ? ' active' : '';
+
+				html += `<div class="control-wrapper${isSelected ? ' selected' : ''}${activeClass}"` +
+					` id="${id}-control-wrapper-${j}"` +
+					` data-control="${escAttr(ctrl.slug)}" data-control-type="${escAttr(ctrl.type)}">`;
+
+				const baseId = `${id}-control-${j}`;
+
+				switch (ctrl.presentation) {
+					case 'select': {
+						const viewAllOpt = ctrl.show_view_all === 'y'
+							? `<option value=""${ctrl.selected === '' ? ' selected' : ''}>${ctrl.view_all_label || 'View All'}</option>`
+							: '';
+						const optHtml = opts.map(o =>
+							`<option value="${escAttr(o.value)}"${String(ctrl.selected) === String(o.value) ? ' selected' : ''}>${o.text}</option>`
+						).join('');
+						html += `<label for="${baseId}">` +
+							`<span class="label">${ctrl.label || ''}</span>` +
+							`<span class="selected">${selectedLabel}</span>` +
+							`<select name="${escAttr(ctrl.slug)}" id="${baseId}">${viewAllOpt}${optHtml}</select>` +
+							`</label>`;
+						break;
+					}
+					case 'checkbox':
+					case 'radio': {
+						const inputType = ctrl.presentation;
+						const viewAllInput = ctrl.show_view_all === 'y'
+							? `<label for="${baseId}-all"><input type="${inputType}" id="${baseId}-all" name="${escAttr(ctrl.slug)}" value=""${ctrl.selected === '' ? ' checked' : ''}><span>${ctrl.view_all_label || 'View All'}</span></label>`
+							: '';
+						const inputsHtml = opts.map((o, i) =>
+							`<label for="${baseId}-${i}"><input type="${inputType}" id="${baseId}-${i}" name="${escAttr(ctrl.slug)}" value="${escAttr(o.value)}"${String(ctrl.selected) === String(o.value) ? ' checked' : ''}><span>${o.text}</span></label>`
+						).join('');
+						html += `<fieldset>` +
+							`<legend><span class="label">${ctrl.label || ''}</span><span class="selected">${selectedLabel}</span></legend>` +
+							viewAllInput + inputsHtml +
+							`</fieldset>`;
+						break;
+					}
+					case 'list': {
+						const viewAllLi = ctrl.show_view_all === 'y'
+							? `<li id="${baseId}-all" class="option${ctrl.selected === '' ? ' selected' : ''}" data-value="">${ctrl.view_all_label || 'View All'}</li>`
+							: '';
+						const liHtml = opts.map((o, i) =>
+							`<li id="${baseId}-${i}" class="option${String(ctrl.selected) === String(o.value) ? ' selected' : ''}" data-value="${escAttr(o.value)}">${o.text}</li>`
+						).join('');
+						html += `<label id="${baseId}-label">` +
+							`<span class="label">${ctrl.label || ''}</span>` +
+							`<span class="selected">${selectedLabel}</span>` +
+							`</label>` +
+							`<ul class="control-list" id="${baseId}" role="combobox" aria-labelledby="${baseId}-label">` +
+							viewAllLi + liHtml + `</ul>`;
+						break;
+					}
+					case 'distance': {
+						const distOpts = (ctrl.show_view_all === 'y'
+							? `<option value=""${ctrl.selected === '' ? ' selected' : ''}>${ctrl.view_all_label || 'View All'}</option>`
+							: '') +
+							opts.map(o => `<option value="${escAttr(o.value)}"${String(ctrl.selected) === String(o.value) ? ' selected' : ''}>${o.text}</option>`).join('');
+						html += `<label for="${baseId}">` +
+							`<span class="label">${ctrl.label || ''}</span>` +
+							`<input name="${baseId}-search" type="text" class="search" id="${baseId}-search" placeholder="${escAttr(s.search_placeholder)}" value="${escAttr(ctrl.address || '')}">` +
+							`<button class="search-button" id="${baseId}-search-button">Go</button>` +
+							`<select name="${escAttr(ctrl.slug)}" id="${baseId}">${distOpts}</select>` +
+							`<button class="location-button" id="${baseId}-location-button">Use my current location</button>` +
+							`</label>`;
+						break;
+					}
+					case 'region':
+						html += `<fieldset>` +
+							`<legend><span class="label">Region</span><span class="selected">${selectedLabel}</span></legend>` +
+							`<label for="${baseId}-region"><input type="radio" id="${baseId}-region" name="${escAttr(ctrl.slug)}" value="this-region"${ctrl.selected !== '' ? ' checked' : ''}><span>This Region</span></label>` +
+							`<label for="${baseId}-all"><input type="radio" id="${baseId}-all" name="${escAttr(ctrl.slug)}" value=""${ctrl.selected === '' ? ' checked' : ''}><span>All Regions</span></label>` +
+							`</fieldset>`;
+						break;
+				}
+
+				html += `</div>`;
+			});
+
+			if (s.layout === 'tabbed') html += `</div>`;
+		}
+
+		if (hasContent && s.show_clear === 'y') {
+			html += `<div class="clear-wrapper"><button id="${id}-clear" class="clear">${s.clear_label || 'Clear'}</button></div>`;
+		}
+
+		if (s.change_order === 'y' && s.order_options?.length) {
+			html += `<div class="order-wrapper">` +
+				s.order_options.map(o =>
+					`<div class="option" data-value="${escAttr(o.order_by?.value)}" data-order="${escAttr(o.order)}">${o.order_by?.label || ''}</div>`
+				).join('') +
+				`</div>`;
+		}
+
+		html += `</div>`;
+
+		if (s.use_pills === 'y') html += `<div class="pills" id="${id}-pills"></div>`;
+
+		return html;
+	};
+
+	// Build posts HTML for JS render mode.
+	// Prefers PHP-pre-rendered card_html per post (template inheritance preserved).
+	// Falls back to generic client-side card building when card_html is absent.
+	const buildJsPostsHtml = (id): string => {
+		const filterObj = vars.filters.filters[id];
+		if (!filterObj) return '';
+
+		const posts = filterObj.posts || [];
+		const renderJs = filterObj.render_js || {};
+		const preset = (filterObj.render_php?.preset || filterObj.preset || '');
+		const style  = (filterObj.render_php?.style  || renderJs.style || '');
+
+		if (!posts.length) {
+			return filterObj.show_no_results_message === 'y'
+				? `<div class="no-results">${filterObj.no_results_message || ''}</div>`
+				: '';
+		}
+
+		const sectionClass = ['lqx-block-cards', 'posts', style].filter(Boolean).join(' ');
+		const wrapCards = (cardsHtml: string) =>
+			`<section class="${sectionClass}" data-preset="${escAttr(preset)}">` +
+			`<div class="cards" id="${id}-posts" data-slider="n">` +
+			`<ul class="cards-wrapper">${cardsHtml}</ul>` +
+			`</div></section>`;
+
+		// Prefer PHP-pre-rendered card HTML (set by render_js_card() on the server)
+		if (posts.every(p => p.card_html)) {
+			return wrapCards(posts.map(p => p.card_html).join(''));
+		}
+
+		// Fallback: generic client-side card builder (used when render_php is not configured)
+		const linkStyle = renderJs.link_style || 'button';
+		const linkTitle = renderJs.link_title || 'Read More';
+		const headingTag = renderJs.heading_tag || 'h3';
+
+		const cards = posts.map(post => {
+			// Use pre-rendered HTML for this individual post if available
+			if (post.card_html) return post.card_html;
+
+			let labelsHtml = '';
+			if (renderJs.post_taxonomies?.length) {
+				const labels: string[] = [];
+				renderJs.post_taxonomies.forEach(tax => {
+					const terms = post.taxonomies?.[tax];
+					if (terms) Object.values(terms).forEach((term: any) => labels.push(`<span class="label">${term.text}</span>`));
+				});
+				if (labels.length) labelsHtml = `<div class="labels">${labels.join('')}</div>`;
+			}
+
+			let imageHtml = '';
+			if (renderJs.post_thumbnail === 'y' && post.thumbnail?.length) {
+				const thumb = post.thumbnail[0];
+				const srcset = post.thumbnail.slice(1).map(t => `${escAttr(t.url)} ${t.width}w`).join(', ');
+				imageHtml = `<div class="image"><img src="${escAttr(thumb.url)}" alt="${escAttr(post.title)}"` +
+					(srcset ? ` srcset="${srcset}"` : '') +
+					(thumb.width ? ` width="${thumb.width}"` : '') +
+					(thumb.height ? ` height="${thumb.height}"` : '') +
+					`></div>`;
+			}
+
+			const linkHtml = post.link
+				? `<div class="link"><a class="${linkStyle}" href="${escAttr(post.link)}">${linkTitle}</a></div>`
+				: '';
+
+			return `<li class="card" data-id="${post.id}">` +
+				labelsHtml + imageHtml +
+				`<div class="text">` +
+				(post.title ? `<${headingTag} class="heading"><a href="${escAttr(post.link || '#')}">${post.title}</a></${headingTag}>` : '') +
+				(renderJs.post_excerpt === 'y' && post.excerpt ? `<div class="body"><p>${post.excerpt}</p></div>` : '') +
+				(renderJs.post_content === 'y' && post.content ? `<div class="body">${post.content}</div>` : '') +
+				linkHtml + `</div></li>`;
+		}).join('');
+
+		return wrapCards(cards);
+	};
+
+	// Register a custom renderer for a specific filter (or '*' for all)
+	const registerRenderer = (id: string, type: 'controls'|'posts'|'pagination'|'card', fn: Function) => {
+		if (!vars.filters.renderers[id]) vars.filters.renderers[id] = {};
+		vars.filters.renderers[id][type] = fn;
+	};
+
+	// Register an event handler for a specific filter (or '*' for all)
+	const registerHandler = (id: string, event: string, fn: Function) => {
+		if (!vars.filters.handlers[id]) vars.filters.handlers[id] = {};
+		if (!vars.filters.handlers[id][event]) vars.filters.handlers[id][event] = [];
+		vars.filters.handlers[id][event].push(fn);
+	};
+
+	// Fire all registered handlers for an event; returns false if any handler returns false
+	const fireHandlers = (id: string, event: string, data?: any): boolean => {
+		const handlers = [
+			...(vars.filters.handlers['*']?.[event] ?? []),
+			...(vars.filters.handlers[id]?.[event] ?? [])
+		];
+		for (const fn of handlers) {
+			if (fn(vars.filters.filters[id], data) === false) return false;
+		}
+		return true;
+	};
+
+	// Get a registered renderer for a specific filter and type
+	const getRenderer = (id: string, type: string): Function|null => {
+		return vars.filters.renderers[id]?.[type] ?? vars.filters.renderers['*']?.[type] ?? null;
+	};
+
+	// Render featured posts section (PHP mode, page 1 only)
+	const renderFeatured = (id) => {
+		const filterObj = vars.filters.filters[id];
+		if (!filterObj) return;
+
+		const featuredHtml = filterObj.render?.featured ?? '';
+		const postsElem = filterObj.elem.find(`${cfg.filters.postsSelector}, .no-results`);
+		const featuredElem = filterObj.elem.find('.posts.featured');
+
+		if (featuredHtml) {
+			if (featuredElem.length) featuredElem.replaceWith(featuredHtml);
+			else if (postsElem.length) postsElem.before(featuredHtml);
+			else filterObj.elem.append(featuredHtml);
+		} else if (filterObj.pagination?.page > 1) {
+			featuredElem.remove();
+		}
+	};
+
+	// Render banner from selected option's banner_html
+	const renderBanners = (id) => {
+		const filterObj = vars.filters.filters[id];
+		if (!filterObj) return;
+
+		let bannerHtml = '';
+		for (const control of filterObj.controls) {
+			if (!control.banner_field || !control.selected || !control.options) continue;
+			const opt = control.options.find(o => String(o.value) === String(control.selected));
+			if (opt?.banner_html) {
+				bannerHtml = opt.banner_html;
+				break;
+			}
+		}
+
+		let bannerElem = filterObj.elem.find('.filter-banner');
+		if (!bannerElem.length) {
+			const postsElem = filterObj.elem.find(cfg.filters.postsSelector);
+			if (postsElem.length) postsElem.before('<div class="filter-banner"></div>');
+			else filterObj.elem.append('<div class="filter-banner"></div>');
+			bannerElem = filterObj.elem.find('.filter-banner');
+		}
+
+		if (bannerHtml) bannerElem.html(bannerHtml).show();
+		else bannerElem.empty().hide();
 	};
 
 	// Locate filter-related elements even when they are rendered outside the controls container.
@@ -655,8 +1090,15 @@ export const filters = (() => {
 			}
 		}
 
+		// If single_control_filter is enabled, clear all other controls first
+		if (filterObj.single_control_filter === 'y') {
+			filterObj.controls.forEach(c => { if (c !== control) c.selected = ''; });
+		}
+
 		// Update the control selected value
 		control.selected = controlValue;
+
+		fireHandlers(id, 'control-change', { control, value: controlValue });
 
 		// Return to page 1
 		filterObj.pagination.page = 1;
@@ -728,6 +1170,8 @@ export const filters = (() => {
 		// Update the filter search
 		filterObj.search = query;
 
+		fireHandlers(id, 'search-change', { query });
+
 		// Return to page 1
 		filterObj.pagination.page = 1;
 
@@ -793,6 +1237,8 @@ export const filters = (() => {
 
 		// Update the filter page
 		filterObj.pagination.page = page;
+
+		fireHandlers(id, 'page-change', { page });
 
 		// Add the "current" class to the selected page number
 		filterObj.elem.find(cfg.filters.pageNumberSelector).removeClass('current');
@@ -899,6 +1345,16 @@ export const filters = (() => {
 			});
 		});
 
+		// For region controls: after unchecking all radios, select "All Regions" (value="")
+		// so the UI reflects that no region filter is active.
+		filterObj.controls.forEach((control) => {
+			if (control.type === 'region') {
+				findFilterElems(filterObj, `${cfg.filters.controlWrapperSelector}[data-control="${control.slug}"]`)
+					.find('input[type="radio"][value=""]')
+					.prop('checked', true);
+			}
+		});
+
 		// Reset the search
 		filterObj.search = '';
 
@@ -914,6 +1370,8 @@ export const filters = (() => {
 
 		// Update the hash
 		if (id == vars.filters.useHashFilterId) updateHash();
+
+		fireHandlers(id, 'reset');
 
 		// Call the API
 		callAPI(id);
@@ -1090,11 +1548,23 @@ export const filters = (() => {
 			return;
 		}
 
+		const filterObj = vars.filters.filters[id];
+
+		// Allow handlers to cancel the fetch
+		if (!fireHandlers(id, 'before-fetch')) return;
+
 		// Add loading class to the filter element
-		vars.filters.filters[id].elem.addClass('loading');
+		filterObj.elem.addClass('loading');
+
+		// When typesense_search is enabled the browser queries Typesense directly,
+		// using credentials embedded in typesense_config by PHP at page render time.
+		if (filterObj.typesense_search === 'y') {
+			callTypesense(id);
+			return;
+		}
 
 		// Prepare the payload
-		let payload = jQuery.extend(true, {}, vars.filters.filters[id]);
+		let payload = jQuery.extend(true, {}, filterObj);
 
 		// Remove unnecessary keys
 		['elem', 'id', 'render_mode', 'use_hash'].forEach(key => delete payload[key]);
@@ -1130,6 +1600,391 @@ export const filters = (() => {
 				url: cfg.siteURL + '/wp-json/lyquix/v3/filters'
 			});
 		}
+	};
+
+	/**
+	 * Build a Typesense filter_by string from the active control selections.
+	 */
+	const buildTypesenseFilterBy = (filterObj): string => {
+		const parts: string[] = [];
+
+		// Always include the locked pre-filter from server
+		const locked = filterObj.typesense_config?.locked_filter;
+		if (locked) parts.push(locked);
+
+		// Build filters from active controls
+		filterObj.controls.forEach((control) => {
+			const sel = control.selected;
+			if (sel === '' || sel === null || sel === undefined) return;
+			// Skip empty arrays
+			if (Array.isArray(sel) && sel.length === 0) return;
+
+			switch (control.type) {
+				case 'taxonomy': {
+					// Taxonomy controls store term IDs; Typesense indexes taxonomy slugs
+					const taxField = `${control.taxonomy}_slug`;
+					const selectedIds = Array.isArray(sel) ? sel : [sel];
+					// Resolve IDs to slugs via control.options
+					const slugs = selectedIds.map(id => {
+						const opt = control.options?.find(o => String(o.value) === String(id));
+						return opt ? (opt.slug || opt.text || String(id)) : String(id);
+					}).filter(Boolean);
+					if (slugs.length) parts.push(`${taxField}:=[${slugs.join(',')}]`);
+					break;
+				}
+				case 'field': {
+					const fieldName = control.field_name || control.slug;
+					if (!fieldName) break;
+					const selectedVals = Array.isArray(sel) ? sel : [sel];
+
+					// Relationship fields store post IDs in controls but post titles in Typesense.
+					// All other field types (button_group, select, etc.) store the raw ACF value in both.
+					const isRelationship = control.field_type === 'relationship';
+
+					const filterVals = selectedVals.map(val => {
+						if (isRelationship) {
+							const opt = control.options?.find(o => String(o.value) === String(val));
+							return opt ? (opt.text || String(val)) : String(val);
+						}
+						// Raw value — Typesense stores exactly what ACF returns (e.g. "m", "f", "y", "n")
+						return String(val);
+					}).filter(Boolean);
+					if (filterVals.length) parts.push(`${fieldName}:=[${filterVals.join(',')}]`);
+					break;
+				}
+				case 'region': {
+					// Region control: when "this-region" is selected, filter by the user's
+					// detected region alias. Check geolocate module first, then fall back to
+					// the selectedRegion cookie which stores the alias as a plain string
+					// (e.g. "greater-philadelphia"), NOT as a JSON object.
+					if (sel === 'this-region') {
+						const regions: string[] = (window as any).lqx?.vars?.geolocate?.regions || [];
+						let regionAlias = regions[0] || '';
+						if (!regionAlias) {
+							regionAlias = document.cookie
+								.split('; ')
+								.find(c => c.startsWith('selectedRegion=') || c.startsWith('ipDetectedRegion='))
+								?.split('=').slice(1).join('=') || '';
+						}
+						if (regionAlias) parts.push(`related_regions:=[${regionAlias}]`);
+					}
+					break;
+				}
+				case 'distance':
+					// Distance filtering via Typesense geo_point
+					if (control.lat && control.lng && control.miles) {
+						const radiusKm = parseFloat(control.miles) * 1.60934;
+						parts.push(`locations_geopoints:(${control.lat}, ${control.lng}, ${radiusKm} km)`);
+					}
+					break;
+			}
+		});
+
+		return parts.filter(Boolean).join(' && ');
+	};
+
+	/**
+	 * Build a Typesense sort_by string from the posts_order settings.
+	 *
+	 * Builds dynamically from the current filterObj.posts_order so that change_order
+	 * selections take effect immediately. ACF field keys are resolved via the
+	 * typesense_config.acf_field_names map pre-built server-side.  When posts_order
+	 * is missing an acf_field (e.g. after a change_order click), the matching entry
+	 * in order_options is consulted to retrieve it.
+	 */
+	const buildTypesenseSortBy = (filterObj): string => {
+		const acfFieldNames: Record<string, string> = filterObj.typesense_config?.acf_field_names || {};
+		const parts: string[] = [];
+
+		if (!Array.isArray(filterObj.posts_order) || filterObj.posts_order.length === 0) {
+			// No dynamic order set — fall back to server pre-resolved sort string
+			return filterObj.typesense_config?.sort_by || '';
+		}
+
+		for (const order of filterObj.posts_order) {
+			const dir = order.order || 'asc';
+			switch (order.order_by) {
+				case 'rand':
+					return '_eval(random()):desc';
+				case 'date':
+				case 'modified':
+					parts.push(`sort_by_date:${dir}`);
+					break;
+				case 'distance': {
+					// Geo sort: resolve lat/lng from the active distance control
+					const distCtrl = filterObj.controls?.find(c => c.type === 'distance' && c.lat && c.lng);
+					if (distCtrl) parts.push(`locations_geopoints(${distCtrl.lat}, ${distCtrl.lng}):asc`);
+					break;
+				}
+				case 'field':
+				case 'meta_key': {
+					// Prefer acf_field from the order entry; if missing (e.g. after
+					// change_order click), find matching entry in order_options
+					let acfKey = order.acf_field || '';
+					if (!acfKey && Array.isArray(filterObj.order_options)) {
+						const matchOpt = filterObj.order_options.find(o => {
+							const obVal = typeof o.order_by === 'object' ? (o.order_by?.value || '') : (o.order_by || '');
+							return obVal === order.order_by && o.order === dir;
+						});
+						acfKey = matchOpt?.acf_field || '';
+					}
+					const fieldName = acfKey ? (acfFieldNames[acfKey] || '') : (order.value || '');
+					if (fieldName) parts.push(`${fieldName}:${dir}`);
+					break;
+				}
+			}
+		}
+
+		if (parts.length) return parts.join(',');
+
+		// Nothing resolved — fall back to server pre-resolved sort string
+		return filterObj.typesense_config?.sort_by || '';
+	};
+
+	/**
+	 * Build facet_by string for Typesense to get control option counts.
+	 */
+	const buildTypesenseFacetBy = (filterObj): string => {
+		const facets: string[] = [];
+
+		filterObj.controls.forEach((control) => {
+			switch (control.type) {
+				case 'taxonomy':
+					facets.push(`${control.taxonomy}_slug`);
+					break;
+				case 'field':
+					if (control.field_name) facets.push(control.field_name);
+					break;
+			}
+		});
+
+		return facets.join(',');
+	};
+
+	/**
+	 * Render a single card from a Typesense hit document.
+	 *
+	 * Priority order:
+	 * 1. typesense_config.card_html_field — use pre-rendered HTML stored in the Typesense document.
+	 *    PHP renders the card at index time using the exact PHP templates, stores it in this field.
+	 *    JS just injects it — zero server calls, always matches templates exactly.
+	 * 2. typesense_config.render_card_callback — delegate to a named JS function.
+	 * 3. Generic renderer — builds basic card HTML from render_js settings.
+	 */
+	const renderCardFromHit = (hit, filterObj): string => {
+		const tsConfig = filterObj.typesense_config || {};
+
+		// 0. Check for registered card renderer
+		const cardRenderer = getRenderer(filterObj.id, 'card');
+		if (cardRenderer) return cardRenderer(hit, filterObj);
+
+		// 1. Use pre-rendered HTML — explicit card_html_field config or standard 'card_html' field
+		const htmlField = tsConfig.card_html_field || 'card_html';
+		if (hit.document[htmlField]) {
+			return hit.document[htmlField];
+		}
+
+		// 2. Delegate to custom callback if configured
+		const cbPath = tsConfig.render_card_callback;
+		if (cbPath) {
+			const cb = cbPath.split('.').reduce((o, k) => o?.[k], window as any);
+			if (typeof cb === 'function') return cb(hit, filterObj);
+		}
+
+		const doc = hit.document;
+		const renderJs = filterObj.render_js || {};
+		const linkStyle = renderJs.link_style || 'button';
+		const linkTitle = tsConfig.link_title || renderJs.link_title || 'Read More';
+
+		const title = doc.post_title || '';
+		const excerpt = renderJs.post_excerpt === 'y' ? (doc.post_excerpt || '') : '';
+		const link = doc.permalink || '#';
+		// Show thumbnail whenever the document has one (post_thumbnail_html is pre-rendered
+		// with srcset/sizes by the indexer and is always display-safe)
+		const thumbnail = doc.post_thumbnail_html || '';
+
+		// Build labels from taxonomies
+		let labelsHtml = '';
+		if (renderJs.post_taxonomies && Array.isArray(renderJs.post_taxonomies)) {
+			const labels: string[] = [];
+			renderJs.post_taxonomies.forEach((tax) => {
+				const taxKey = tax === 'category' ? 'category' : (tax === 'post_tag' ? 'tags' : tax);
+				if (doc[taxKey] && Array.isArray(doc[taxKey])) {
+					doc[taxKey].forEach((name) => labels.push(`<span class="label">${name}</span>`));
+				}
+			});
+			if (labels.length) labelsHtml = `<div class="labels">${labels.join('')}</div>`;
+		}
+
+		const linkHtml = link !== '#'
+			? `<div class="link"><a class="${linkStyle}" href="${link}">${linkTitle}</a></div>`
+			: '';
+
+		return `<li class="card">
+			${labelsHtml}
+			${thumbnail ? `<div class="image">${thumbnail}</div>` : ''}
+			<div class="text">
+				${title ? `<h3 class="heading"><a href="${link}">${title}</a></h3>` : ''}
+				${excerpt ? `<div class="body"><p>${excerpt}</p></div>` : ''}
+				${linkHtml}
+			</div>
+		</li>`;
+	};
+
+	/**
+	 * Call Typesense Search API directly from the browser.
+	 * All card data is pre-indexed in Typesense (including pre-rendered card_html).
+	 * JS renders cards purely client-side — no server roundtrip needed after filtering.
+	 */
+	const callTypesense = (id) => {
+		log('Filters callTypesense');
+
+		const filterObj = vars.filters.filters[id];
+		const ts = filterObj.typesense_config;
+
+		if (!ts?.host || !ts?.search_only_key || !ts?.collection) {
+			warn('Typesense configuration incomplete — check cm_typesense_search_config_settings and cm_typesense_admin_settings WP options', ts);
+			filterObj.elem.removeClass('loading');
+			return;
+		}
+
+		const filterBy   = buildTypesenseFilterBy(filterObj);
+		const sortBy     = buildTypesenseSortBy(filterObj);
+		const facetBy    = buildTypesenseFacetBy(filterObj);
+		const searchQuery = filterObj.search || '*';
+		const perPage    = filterObj.pagination?.posts_per_page || 10;
+		const page       = filterObj.pagination?.page || 1;
+
+		const queryByFields = searchQuery !== '*'
+			? 'post_title,post_content,post_excerpt'
+			: 'post_title';
+
+		const params = new URLSearchParams({
+			q:        searchQuery,
+			query_by: queryByFields,
+			per_page: perPage.toString(),
+			page:     page.toString(),
+		});
+
+		if (filterBy) params.set('filter_by', filterBy);
+		if (sortBy)   params.set('sort_by',   sortBy);
+		if (facetBy)  params.set('facet_by',  facetBy);
+
+		const url = `${ts.protocol}://${ts.host}:${ts.port}/collections/${ts.collection}/documents/search?${params.toString()}`;
+
+		const cacheKey = util.hash(url);
+		const cached   = getCache(cacheKey);
+
+		if (cached !== null) {
+			processTypesenseResponse(id, cached);
+			return;
+		}
+
+		fetch(url, {
+			method:  'GET',
+			headers: { 'X-TYPESENSE-API-KEY': ts.search_only_key }
+		})
+		.then(response => {
+			if (!response.ok) throw new Error(`Typesense HTTP ${response.status}`);
+			return response.json();
+		})
+		.then(data => {
+			setCache(cacheKey, data);
+			processTypesenseResponse(id, data);
+		})
+		.catch(err => {
+			error('Typesense search error', err);
+			filterObj.elem.removeClass('loading');
+		});
+	};
+
+	/**
+	 * Process a Typesense search response: render cards client-side and update pagination/pills.
+	 * Uses pre-rendered card HTML from Typesense (via typesense_config.card_html_field) if indexed,
+	 * otherwise falls back to renderCardFromHit for generic rendering.
+	 */
+	const processTypesenseResponse = (id, data) => {
+		log('Filters processTypesenseResponse');
+
+		const filterObj = vars.filters.filters[id];
+		if (!filterObj) return;
+
+		const hits = data.hits || [];
+		const totalFound = data.found || 0;
+		const perPage = filterObj.pagination?.posts_per_page || 10;
+		const totalPages = Math.ceil(totalFound / perPage);
+
+		// Update pagination state
+		filterObj.pagination.total_posts = totalFound;
+		filterObj.pagination.total_pages = totalPages;
+
+		// Render cards from hits
+		let postsHtml = '';
+		if (hits.length) {
+			const cards = hits.map(hit => renderCardFromHit(hit, filterObj)).join('');
+
+			// Build the same wrapper structure that PHP render_block() produces so the card grid
+			// CSS (targeting .lqx-block-cards, .cards-wrapper, .card) continues to work.
+			const tsConfig     = filterObj.typesense_config || {};
+			const cardsStyle   = tsConfig.cards_style   || '';
+			const cardsPreset  = tsConfig.cards_preset  || filterObj.preset || '';
+			const sectionClass = ['lqx-block-cards', 'posts', cardsStyle].filter(Boolean).join(' ');
+
+			postsHtml = `<section id="" class="${sectionClass}" data-preset="${cardsPreset}">` +
+				`<div class="cards" id="${id}-posts" data-slider="n" data-swiper-options-override="" ` +
+				`data-heading-style="h3" data-subheading-style="p" data-heading-clickable="y" ` +
+				`data-image-clickable="y" data-responsive-rules="[]">` +
+				`<ul class="cards-wrapper">${cards}</ul>` +
+				`</div></section>`;
+		} else if (filterObj.show_no_results_message === 'y') {
+			postsHtml = `<div class="no-results">${filterObj.no_results_message || 'No results found.'}</div>`;
+		}
+
+		// Inject posts HTML
+		const postsContainer = filterObj.elem.find(`${cfg.filters.postsSelector}, .no-results`);
+		if (postsContainer.length) postsContainer.replaceWith(postsHtml);
+		else filterObj.elem.append(postsHtml);
+
+		// Update facet counts on control options if facet data is returned
+		if (data.facet_counts && Array.isArray(data.facet_counts)) {
+			data.facet_counts.forEach(facet => {
+				const fieldName = facet.field_name;
+				filterObj.controls.forEach(control => {
+					const ctrlField = control.type === 'taxonomy'
+						? control.taxonomy + '_slug'
+						: control.field_name;
+					if (ctrlField === fieldName && control.options) {
+						control.options.forEach(opt => {
+							const facetValue = facet.counts.find(c => c.value === opt.slug || c.value === opt.text);
+							opt.count = facetValue ? facetValue.count : 0;
+						});
+					}
+				});
+			});
+		}
+
+		// Re-render pagination, pills, and group items
+		renderPagination(id);
+		renderPills(id);
+		groupItems(id);
+		renderFeatured(id);
+		renderBanners(id);
+
+		// Remove loading class
+		filterObj.elem.removeClass('loading');
+
+		// Re-add listeners
+		addListeners(id);
+
+		// Fire callback
+		if (typeof filterObj.callback === 'string' && filterObj.callback !== '') {
+			filterObj.callback
+				.split('.')
+				.reduce((o, k) => o?.[k], window)
+				?.();
+		}
+
+		fireHandlers(id, 'after-render');
 	};
 
 	const processAPIResponse = (data) => {
@@ -1195,6 +2050,9 @@ export const filters = (() => {
 
 	return {
 		init,
+		render,
+		registerRenderer,
+		registerHandler,
 		controlChange,
 		searchChange,
 		pageChange,

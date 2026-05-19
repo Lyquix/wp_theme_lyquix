@@ -520,12 +520,12 @@ export const analytics = (() => {
 			window.addEventListener('message', vimeoReceiveMessage, false);
 
 			// Initialize YouTube or Vimeo videos
-			jQuery('iframe[src*="youtube.com/embed/"], iframe[src*="player.vimeo.com/video/"]').each((idx, elem) => {
+			jQuery(`iframe[src*="${cfg.util.youtubeEmbedHost}/embed/"], iframe[src*="player.vimeo.com/video/"]`).each((idx, elem) => {
 				initVideoPlayerAPI(jQuery(elem));
 			});
 
 			// Add a mututation observer to handle new videos added to the DOM
-			mutation.addHandler('addNode', 'iframe[src*="youtube.com/embed/"], iframe[src*="player.vimeo.com/video/"]', (e) => {
+			mutation.addHandler('addNode', `iframe[src*="${cfg.util.youtubeEmbedHost}/embed/"], iframe[src*="player.vimeo.com/video/"]`, (e) => {
 				initVideoPlayerAPI(jQuery(e));
 			});
 		}
@@ -656,7 +656,7 @@ export const analytics = (() => {
 		if (typeof src != 'undefined') {
 			let playerId = elem.attr('id');
 			// Check youtube players
-			if (src.indexOf('youtube.com/embed/') != -1) {
+			if (src.indexOf(`${cfg.util.youtubeEmbedHost}/embed/`) != -1) {
 				if (!vars.analytics.youTubeIframeAPIReady) {
 					// Load YouTube iframe API
 					// Create the script element

@@ -160,6 +160,7 @@ export const alerts = (() => {
 								id: util.schemaStrReqNotEmp,
 								heading: util.schemaStrReqEmp,
 								body: util.schemaStrReqEmp,
+								start_date: util.schemaStrReqEmp,
 								expiration: util.schemaStrReqEmp,
 								link: {
 									type: 'object',
@@ -182,6 +183,9 @@ export const alerts = (() => {
 
 						// Skip if alert has been closed
 						if (util.cookie(alert.id) !== null) return;
+
+						// Skip if alert hasn't started yet
+						if (alert.start_date != '' && now < dayjs(alert.start_date).valueOf()) return;
 
 						// Skip if alert has expired
 						if (alert.expiration != '' && now > dayjs(alert.expiration).valueOf()) return;

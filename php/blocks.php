@@ -25,6 +25,9 @@
 
 namespace lqx\blocks;
 
+// Video block
+require_once get_template_directory() . '/php/blocks/video/video.php';
+
 /**
  * Process overrides for a block
  *

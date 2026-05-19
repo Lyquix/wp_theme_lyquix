@@ -27,7 +27,8 @@
 ?>
 <li
 	class="<?= $s['slider'] == 'y' ? 'swiper-slide' : 'card' ?> <?= esc_attr($item['additional_classes']) ?>"
-	id="<?= ($item['item_id'] !== '' ? esc_attr($item['item_id']) : $s['hash'] . '-' . $idx) ?>">
+	id="<?= ($item['item_id'] !== '' ? esc_attr($item['item_id']) : $s['hash'] . '-' . $idx) ?>"
+	<?php if (($s['group_by'] ?? 'n') === 'y' && !empty($item['id'])) echo \lqx\util\get_group_by_attribs((int) $item['id'], $s); ?>>
 
 	<?php if (!empty($item['labels'])  && $s['show_labels'] == 'y') require \lqx\blocks\get_template('cards', $s['preset'], 'labels'); ?>
 

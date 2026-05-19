@@ -360,6 +360,37 @@
                     "layout": "horizontal"
                 },
                 {
+                    "key": "field_67ab0001ab2c4",
+                    "label": "Card Clickable",
+                    "name": "card_clickable",
+                    "aria-label": "",
+                    "type": "button_group",
+                    "instructions": "Make the entire card clickable via an invisible overlay link (Default: No)",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "choices": {
+                        "y": "Yes",
+                        "n": "No"
+                    },
+                    "default_value": "n",
+                    "return_format": "value",
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "allow_null": 0,
+                    "instruction_placement": "tooltip",
+                    "acfe_permissions": "",
+                    "layout": "horizontal"
+                },
+                {
                     "key": "field_65e7cdd239f20",
                     "label": "Show Icon Image",
                     "name": "show_icon_image",
