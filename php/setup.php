@@ -603,3 +603,16 @@ function theme_setup() {
 }
 
 add_action('after_setup_theme', '\lqx\setup\theme_setup');
+
+// Block Directory — remove the "Discover more blocks" remote API call from the
+// editor. That call is a synchronous fetch that blocks editor bootstrap and is
+// irrelevant on managed/production sites.
+remove_action('enqueue_block_editor_assets', 'wp_enqueue_editor_block_directory_assets');
+
+// Heartbeat — reduce the editor autosave polling interval from the default 15s
+// to 60s. Cuts PHP-worker load during long editing sessions while keeping
+// autosave functional. Applies only in admin context (not frontend heartbeat).
+add_filter('heartbeat_settings', function ($settings) {
+	if (is_admin()) $settings['interval'] = 60;
+	return $settings;
+});

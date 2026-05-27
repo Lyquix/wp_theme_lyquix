@@ -630,15 +630,26 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 
 	// Register ACF blocks
 	add_action('init', function () {
-		// Use glob to find 'block.json' files in the 'blocks' directory
-		$matches = array_merge(glob(__DIR__ . '/blocks/*/block.json'), glob(get_stylesheet_directory() . '/php/custom/blocks/*/block.json'));
+		// WP 6.7+: register a pre-built metadata collection for parent-theme blocks
+		// so WP reads a single PHP array (opcache-friendly) instead of globbing and
+		// JSON-decoding each block.json on every request. The manifest is generated
+		// by `wp lqx regenerate-block-manifest` and must be re-run after any
+		// block.json change. Falls back to the glob path if the manifest is absent.
+		$manifest = __DIR__ . '/blocks/blocks-manifest.php';
+		if (function_exists('wp_register_block_metadata_collection') && file_exists($manifest)) {
+			wp_register_block_metadata_collection(__DIR__ . '/blocks', $manifest);
+		}
 
-		// Check if any matches were found
-		if (!empty($matches)) {
-			foreach ($matches as $match) {
-				// Get the directory name for each match
-				register_block_type(dirname($match));
-			}
+		// Glob still drives the actual register_block_type() calls. For parent-theme
+		// blocks this is now a cheap lookup against the in-memory collection;
+		// child-theme custom blocks still parse their own block.json files.
+		$matches = array_merge(
+			glob(__DIR__ . '/blocks/*/block.json'),
+			glob(get_stylesheet_directory() . '/php/custom/blocks/*/block.json') ?: []
+		);
+
+		foreach ($matches as $match) {
+			register_block_type(dirname($match));
 		}
 	});
 
@@ -649,180 +660,83 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 		// causing ACF to query every sub-field value (including non-existent rows).
 		if (!is_admin() && !(defined('REST_REQUEST') && REST_REQUEST)) return $field;
 
-		$field_keys = [
-			// Accordion
-			[ // style and style_name fields
-				'user' => 'field_656c9b99e9e1f',
-				'choice' => 'field_656e7cb6b285f'
-			],
-			[ // preset and preset_name fields
-				'user' => 'field_656c9bb1e9e20',
-				'choice' => 'field_658491eadec12'
-			],
-
-			// Accordion Item
-			[ // style and style_name fields
-				'user' => 'field_67a1eb9db5d6b',
-				'choice' => 'field_67a1eaf6ca964'
-			],
-			[ // preset and preset_name fields
-				'user' => 'field_67a1eb9db5dc8',
-				'choice' => 'field_67a1eaf6e1eff'
-			],
-
-			// Accordion Plus
-			[ // style and style_name fields
-				'user' => 'field_67a1e6dd1bbc1',
-				'choice' => 'field_67a1e76b296a2'
-			],
-			[ // preset and preset_name fields
-				'user' => 'field_67a1e6dd1bc0b',
-				'choice' => 'field_67a1e76b49bab'
-			],
-
-			// Banner
-			[ // style and style_name fields
-				'user' => 'field_657727e6739ff',
-				'choice' => 'field_65806108a3e5d'
-			],
-			[ // preset and preset_name fields
-				'user' => 'field_657727e673a6d',
-				'choice' => 'field_656d01578aa30'
-			],
-
-			// Cards
-			[ // style and style_name fields
-				'user' => 'field_658db3cbe1430',
-				'choice' => 'field_658db3c35c5ac'
-			],
-			[ // preset and preset_name fields
-				'user' => 'field_658db3cbe1486',
-				'choice' => 'field_658db3c5e9695'
-			],
-
-			// Filters
-			[ // style and style_name fields
-				'user' => 'field_65f1dd3000026',
-				'choice' => 'field_65f1ddf02e615'
-			],
-			[ // preset and preset_name fields
-				'user' => 'field_65f1e8893c299',
-				'choice' => 'field_65f20fbeb1be3'
-			],
-
-			// Gallery
-			[ // style and style_name fields
-				'user' => 'field_6577582aed940',
-				'choice' => 'field_65806199e7ed0'
-			],
-			[ // preset and preset_name fields
-				'user' => 'field_6577582aed9a8',
-				'choice' => 'field_658061d6e7ed2'
-			],
-
-			// Hero
-			[ // style and style_name fields
-				'user' => 'field_657217f48ca53',
-				'choice' => 'field_657761228bf9d'
-			],
-			[ // preset and preset_name fields
-				'user' => 'field_657218058ca54',
-				'choice' => 'field_657766304a9cc'
-			],
-
-			// Logos
-			[ // style and style_name fields
-				'user' => 'field_65a05775a0471',
-				'choice' => 'field_65a0592361823'
-			],
-			[ // preset and style_name fields
-				'user' => 'field_67e5ab32af0b2',
-				'choice' => 'field_67dc2dd543d6c'
-			],
-
-			//Maps
-			[ // style and style_name fields
-				'user' => 'field_6697e3b0d9419',
-				'choice' => 'field_6697e27cc4d4b'
-			],
-			[// preset and preset_name fields
-				'user' => 'field_6697e3bbd941a',
-				'choice' => 'field_6697e331c4d4f'
-			],
-
-			// Slider
-			[ //  style and style_name fields
-				'user' => 'field_659d51caf3d2a',
-				'choice' => 'field_659d2fcdd2f8e'
-			],
-			[ // preset and preset_name fields
-				'user' => 'field_66799b371d5e9',
-				'choice' => 'field_659fd4dcc3449'
-			],
-
-			// Tabs
-			[ //  style and style_name fields
-				'user' => 'field_656f866617343',
-				'choice' => 'field_656f879ccf606'
-			],
-			[ // preset and preset_name fields
-				'user' => 'field_656f866617344',
-				'choice' => 'field_656f87fcef854'
-			],
-
-			//Tab Item
-			[ //  style and style_name fields
-				'user' => 'field_67a4907787b75',
-				'choice' => 'field_67a4903082e89'
-			],
-			[ // preset and preset_name fields
-				'user' => 'field_67a4907787bc0',
-				'choice' => 'field_67a4903097890'
-			],
-
-			//Tabs Plus
-			[ //  style and style_name fields
-				'user' => 'field_67a48f283f249',
-				'choice' => 'field_67a48e39516c5'
-			],
-			[ // preset and preset_name fields
-				'user' => 'field_67a48f283f29a',
-				'choice' => 'field_67a48e39662df'
-			],
-
-			// Testimonial
-			[ //  style and style_name fields
-				'user' => 'field_6751a226ccc6f',
-				'choice' => 'field_6751a05ca1920'
-			],
-			[ // preset and preset_name fields
-				'user' => 'field_6751a24bccc70',
-				'choice' => 'field_6751a11da1925'
-			],
-			[ //related regions
-				'user' => 'field_67f5347cb7a9d',
-				'choice' => 'field_67f536ccd14e7'
-			],
-			[ // block regions
-				'user' => 'field_681397476c965',
-				'choice' => 'field_67f536ccd14e7'
-			]
-		];
-
-		foreach ($field_keys as $k) {
-			if ($field['key'] == $k['user']) {
-				$choice_field = get_field_object($k['choice']);
-
-				// Add an empty choice
-				$field['choices'] = ['' => 'Select'];
-
-				while (have_rows($choice_field['parent'], 'option')) {
-					the_row();
-					$value = get_sub_field($k['choice'], 'option');
-					$field['choices'][$value] = $value;
-				}
-			}
+		// Static O(1) lookup: user-field-key => choice-field-key. Built once per
+		// request so the filter does a single isset() and returns early for the
+		// vast majority of fields that don't need populated choices.
+		static $lookup = null;
+		if ($lookup === null) {
+			$lookup = [
+				// Accordion
+				'field_656c9b99e9e1f' => 'field_656e7cb6b285f',
+				'field_656c9bb1e9e20' => 'field_658491eadec12',
+				// Accordion Item
+				'field_67a1eb9db5d6b' => 'field_67a1eaf6ca964',
+				'field_67a1eb9db5dc8' => 'field_67a1eaf6e1eff',
+				// Accordion Plus
+				'field_67a1e6dd1bbc1' => 'field_67a1e76b296a2',
+				'field_67a1e6dd1bc0b' => 'field_67a1e76b49bab',
+				// Banner
+				'field_657727e6739ff' => 'field_65806108a3e5d',
+				'field_657727e673a6d' => 'field_656d01578aa30',
+				// Cards
+				'field_658db3cbe1430' => 'field_658db3c35c5ac',
+				'field_658db3cbe1486' => 'field_658db3c5e9695',
+				// Filters
+				'field_65f1dd3000026' => 'field_65f1ddf02e615',
+				'field_65f1e8893c299' => 'field_65f20fbeb1be3',
+				// Gallery
+				'field_6577582aed940' => 'field_65806199e7ed0',
+				'field_6577582aed9a8' => 'field_658061d6e7ed2',
+				// Hero
+				'field_657217f48ca53' => 'field_657761228bf9d',
+				'field_657218058ca54' => 'field_657766304a9cc',
+				// Logos
+				'field_65a05775a0471' => 'field_65a0592361823',
+				'field_67e5ab32af0b2' => 'field_67dc2dd543d6c',
+				// Map
+				'field_6697e3b0d9419' => 'field_6697e27cc4d4b',
+				'field_6697e3bbd941a' => 'field_6697e331c4d4f',
+				// Slider
+				'field_659d51caf3d2a' => 'field_659d2fcdd2f8e',
+				'field_66799b371d5e9' => 'field_659fd4dcc3449',
+				// Tabs
+				'field_656f866617343' => 'field_656f879ccf606',
+				'field_656f866617344' => 'field_656f87fcef854',
+				// Tab Item
+				'field_67a4907787b75' => 'field_67a4903082e89',
+				'field_67a4907787bc0' => 'field_67a4903097890',
+				// Tabs Plus
+				'field_67a48f283f249' => 'field_67a48e39516c5',
+				'field_67a48f283f29a' => 'field_67a48e39662df',
+				// Testimonial
+				'field_6751a226ccc6f' => 'field_6751a05ca1920',
+				'field_6751a24bccc70' => 'field_6751a11da1925',
+				// Regions (shared choice key)
+				'field_67f5347cb7a9d' => 'field_67f536ccd14e7',
+				'field_681397476c965' => 'field_67f536ccd14e7',
+			];
 		}
+
+		// O(1) early return — most fields are not in the lookup
+		if (!isset($lookup[$field['key']])) return $field;
+
+		// Memoize resolved choices per choice-field-key so the have_rows()
+		// repeater walk runs at most once per unique choice field per request.
+		static $choices_cache = [];
+		$choice_key = $lookup[$field['key']];
+
+		if (!isset($choices_cache[$choice_key])) {
+			$choice_field = get_field_object($choice_key);
+			$choices = ['' => 'Select'];
+			while (have_rows($choice_field['parent'], 'option')) {
+				the_row();
+				$value = get_sub_field($choice_key, 'option');
+				$choices[$value] = $value;
+			}
+			$choices_cache[$choice_key] = $choices;
+		}
+
+		$field['choices'] = $choices_cache[$choice_key];
 		return $field;
 	});
 
@@ -1377,7 +1291,7 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 			]
 		];
 
-        // Collect unique field keys needed
+        // Collect unique field keys needed (global + presets per rule)
         $field_keys = [];
         foreach ($rules as $rule) {
             if (!empty($rule['settings']['global_field']))  $field_keys[] = $rule['settings']['global_field'];
@@ -1385,24 +1299,27 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
         }
         $field_keys = array_unique($field_keys);
 
-        // Single call to get ALL options page fields, properly formatted by ACF
-        $all_options = get_fields('options') ?: [];
-
-        // Build globalSettings by matching field_key => field_name => value
+        // Fetch only the specific fields we need rather than materialising the
+        // entire options page via get_fields('options'), which resolves hundreds
+        // of sub-fields we never use.
         $globalSettings = [];
         foreach ($field_keys as $field_key) {
             $field_obj = acf_get_field($field_key);
             $field_name = $field_obj['name'] ?? null;
             $globalSettings[] = [
                 'key'   => $field_key,
-                'value' => ($field_name && isset($all_options[$field_name])) ? $all_options[$field_name] : null
+                'value' => $field_name ? get_field($field_name, 'options') : null,
             ];
         }
 
-		wp_localize_script('custom-acf-js', 'acfObj', [
-			'json' => $rules,
-			'globalSettings' => $globalSettings
-		]);
+		// wp_add_inline_script is preferred over wp_localize_script: avoids the
+		// implicit string-cast, uses proper JSON encoding, and does not create an
+		// extra global variable wrapper.
+		wp_add_inline_script(
+			'custom-acf-js',
+			'var acfObj = ' . wp_json_encode(['json' => $rules, 'globalSettings' => $globalSettings], JSON_HEX_TAG | JSON_HEX_AMP) . ';',
+			'before'
+		);
 
 	});
 
@@ -1508,16 +1425,23 @@ function search_posts_by_block_and_setting($request) {
 }
 
 add_action('rest_api_init', function () {
+    // Both endpoints power the admin-only Block Report tool. Restrict to users
+    // with edit_posts (Editor+) to prevent unauthenticated option / content
+    // enumeration.
+    $require_edit_posts = function () {
+        return current_user_can('edit_posts');
+    };
+
     register_rest_route('lyquix/v3', '/get-options', array(
         'methods' => 'GET',
         'callback' => '\lqx\blocks\get_presets_styles_options',
-        'permission_callback' => '__return_true',
+        'permission_callback' => $require_edit_posts,
     ));
 
     register_rest_route('lyquix/v3', '/search-posts', array(
         'methods' => 'GET',
         'callback' => '\lqx\blocks\search_posts_by_block_and_setting',
-        'permission_callback' => '__return_true',
+        'permission_callback' => $require_edit_posts,
     ));
 });
 

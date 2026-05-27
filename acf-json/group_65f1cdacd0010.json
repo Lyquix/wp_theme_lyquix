@@ -16,14 +16,21 @@
                 "class": "",
                 "id": ""
             },
+            "hide_field": "",
+            "hide_label": "",
+            "hide_instructions": "",
+            "hide_required": "",
             "acfe_repeater_stylised_button": 0,
             "layout": "table",
-            "pagination": 0,
+            "pagination": 1,
+            "rows_per_page": 10,
+            "acfe_settings": "",
             "min": 0,
             "max": 0,
+            "instruction_placement": "",
+            "acfe_permissions": "",
             "collapsed": "",
             "button_label": "Add Row",
-            "rows_per_page": 20,
             "sub_fields": [
                 {
                     "key": "field_65f1ddf02e615",
@@ -68,7 +75,8 @@
             "hide_required": "",
             "acfe_repeater_stylised_button": 0,
             "layout": "block",
-            "pagination": 0,
+            "pagination": 1,
+            "rows_per_page": 5,
             "acfe_settings": "",
             "min": 0,
             "max": 0,
@@ -76,7 +84,6 @@
             "acfe_permissions": "",
             "collapsed": "field_65f20fbeb1be3",
             "button_label": "Add Row",
-            "rows_per_page": 20,
             "sub_fields": [
                 {
                     "key": "field_65f20fbeb1be3",
@@ -163,13 +170,15 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
+    "display_title": "",
+    "allow_ai_access": false,
+    "ai_description": "",
     "acfe_autosync": [
         "json"
     ],
     "acfe_form": 1,
-    "acfe_display_title": "",
     "acfe_permissions": "",
     "acfe_meta": "",
     "acfe_note": "",
-    "modified": 1718724364
+    "modified": 1779368353
 }

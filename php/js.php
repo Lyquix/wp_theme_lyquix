@@ -73,7 +73,7 @@ function enqueue_scripts() {
 	// MobileDetect
 	$scripts[] = [
 		'handle' => 'mobile-detect',
-		'url' => 'https://cdn.jsdelivr.net/npm/mobile-detect@1/mobile-detect.min.js',
+		'url' => \lqx\cdn_mirror\get_url('https://cdn.jsdelivr.net/npm/mobile-detect@1/mobile-detect.min.js'),
 		'version' => '1'
 	];
 
@@ -81,12 +81,12 @@ function enqueue_scripts() {
 	if (get_theme_mod('dayjs', 1)) {
 		$scripts[] = [
 			'handle' => 'dayjs',
-			'url' => 'https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js',
+			'url' => \lqx\cdn_mirror\get_url('https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js'),
 			'version' => '1'
 		];
 		$scripts[] = [
 			'handle' => 'dayjs-locale-en',
-			'url' => 'https://cdn.jsdelivr.net/npm/dayjs@1/locale/en.js',
+			'url' => \lqx\cdn_mirror\get_url('https://cdn.jsdelivr.net/npm/dayjs@1/locale/en.js'),
 			'version' => '1'
 		];
 	}
@@ -95,7 +95,7 @@ function enqueue_scripts() {
 	if (get_theme_mod('swiperjs', 1)) {
 		$scripts[] = [
 			'handle' => 'swiper',
-			'url' => 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js',
+			'url' => \lqx\cdn_mirror\get_url('https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js'),
 			'version' => '11'
 		];
 	}
@@ -109,7 +109,7 @@ function enqueue_scripts() {
 			if (parse_url($jsurl, PHP_URL_SCHEME)) {
 				// Absolute URL
 				$scripts[] = [
-					'url' => $jsurl,
+					'url' => \lqx\cdn_mirror\get_url($jsurl),
 					'handle' => base_convert(crc32($jsurl), 16, 36)
 				];
 			} elseif (parse_url($jsurl, PHP_URL_PATH)) {
@@ -141,7 +141,7 @@ function enqueue_scripts() {
 	if (file_exists(get_stylesheet_directory() . '/js/vue' . ($non_min_js ? '' : '.min') . '.js')) {
 		$scripts[] = [
 			'handle' => 'vue',
-			'url' => 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global' . ($non_min_js ? '' : '.prod') . '.js'
+			'url' => \lqx\cdn_mirror\get_url('https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global' . ($non_min_js ? '' : '.prod') . '.js')
 		];
 		$scripts[] = [
 			'handle' => 'lyquix-vue',

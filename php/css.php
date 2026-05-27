@@ -106,7 +106,7 @@ function get_stylesheets() {
 	if (get_theme_mod('swiperjs', 1)) {
 		$stylesheets[] = [
 			'handle' => 'swiper',
-			'url' => 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css',
+			'url' => \lqx\cdn_mirror\get_url('https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css'),
 			'version' => '11'
 		];
 	}
@@ -121,7 +121,7 @@ function get_stylesheets() {
 				// Absolute URL
 				$stylesheets[] = [
 					'handle' => base_convert(crc32($css_url), 16, 36),
-					'url' => $css_url
+					'url' => \lqx\cdn_mirror\get_url($css_url)
 				];
 			} elseif (parse_url($css_url, PHP_URL_PATH)) {
 				// Relative URL

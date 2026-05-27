@@ -2732,13 +2732,29 @@ function prepare_json_data($s)
  */
 function validate_payload($payload)
 {
-    // TODO: validate received $payload - leave this comment until we're done with the ts file
+    // Minimal-surface validation of the security-sensitive keys. The payload
+    // carries many additional keys that flow into merge_settings(); those are
+    // re-validated downstream by validate_settings() with strict per-key schemas,
+    // so the extra keys are intentionally not modeled here.
+    //
+    // Note: validate_data() silently drops array elements that fail their elem
+    // schema. Because merge_settings() merges controls by index, the allowed
+    // list for controls[].type MUST include every type the frontend can send
+    // — otherwise valid controls would be dropped and the remaining controls
+    // would merge into the wrong settings positions. The filter hook below lets
+    // child themes register new control types without modifying this list.
+    // Keep the default list in sync with validate_settings() (filters.php:421).
     return \lqx\util\validate_data($payload, [
         'type' => 'object',
         'required' => true,
         'keys' => [
             'preset' => \lqx\util\schema_str_req_notemp,
-            'post_id' => \lqx\util\schema_int_req,
+            'post_id' => [
+                'type' => 'integer',
+                'required' => true,
+                'range' => [1, null]
+            ],
+            'style' => \lqx\util\schema_str_req_emp,
             'controls' => [
                 'type' => 'array',
                 'required' => true,
@@ -2748,7 +2764,10 @@ function validate_payload($payload)
                         'type' => [
                             'type' => 'string',
                             'required' => true,
-                            'allowed' => ['taxonomy', 'field']
+                            'allowed' => apply_filters(
+                                'lqx_filters_payload_control_types',
+                                ['taxonomy', 'field', 'distance', 'region', 'custom']
+                            )
                         ],
                         'taxonomy' => \lqx\util\schema_str_req_emp,
                         'acf_field' => \lqx\util\schema_str_req_emp,
@@ -2757,11 +2776,22 @@ function validate_payload($payload)
                 ]
             ],
             'search' => \lqx\util\schema_str_req_emp,
-            'page' => \lqx\util\schema_int_req,
             'pagination' => [
                 'type' => 'object',
+                'required' => true,
                 'keys' => [
-                    'posts_per_page' => \lqx\util\schema_int_req
+                    'page' => [
+                        'type' => 'integer',
+                        'required' => true,
+                        'range' => [1, null],
+                        'default' => 1
+                    ],
+                    'posts_per_page' => [
+                        'type' => 'integer',
+                        'required' => true,
+                        'range' => [1, 200],
+                        'default' => 10
+                    ]
                 ]
             ]
         ]
@@ -2835,25 +2865,15 @@ function handle_api_call($request)
     // Get the payload
     $payload = $request->get_json_params();
 
-    // TODO payload validation
-    /*
-    // Remove any keys that are not allowed
-    foreach (array_keys($payload) as $k) {
-        if (!in_array($k, ['preset', 'post_id', 'controls', 'search', 'pagination'])) unset($payload[$k]);
-
-        if ($k == 'pagination') {
-            foreach (array_keys($payload['pagination']) as $kk) {
-                if ($k != 'posts_per_page') unset($payload['pagination'][$kk]);
-            }
-        }
+    // Validate against the schema in validate_payload(). Reject invalid input
+    // with a 400 rather than continuing — the prior behavior of accepting
+    // arbitrary keys allowed deep-merging unvetted values into the block
+    // settings tree downstream in merge_settings().
+    $v = validate_payload($payload);
+    if (!is_array($v) || empty($v['isValid'])) {
+        return new \WP_Error('lqx_filters_invalid_payload', 'Invalid request payload', ['status' => 400]);
     }
-
-    // Validate the payload. If invalid return null, otherwise get the data
-    $p = validate_payload($payload);
-    if (!$p['isValid']) return null;
-    $p = $p['data'];
-    */
-    $p = $payload;
+    $p = $v['data'];
 
     // Get settings
     $settings = \lqx\blocks\get_settings('filters', $p['post_id'], $p['preset'], $p['style']);

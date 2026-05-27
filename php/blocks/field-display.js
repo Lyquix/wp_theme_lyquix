@@ -53,27 +53,43 @@
 		});
 	}
 
-	// Watch for changes or new blocks
+	// Watch for block selection changes. The subscribe callback fires on every
+	// store mutation, so we debounce it to avoid running the full rule-evaluation
+	// loop on every keystroke or cursor movement.
+	let _debounceTimer;
 	subscribe(() => {
-		var select = wp.data.select('core/block-editor');
-		if (select) {
+		clearTimeout(_debounceTimer);
+		_debounceTimer = setTimeout(() => {
+			var select = wp.data.select('core/block-editor');
+			if (!select) return;
 			let block = select.getSelectedBlock();
-			if (block) {
-				// eslint-disable-next-line no-undef
-				acfObj.json.forEach((item) => {
-					if (block.attributes.name === item.settings.block_name) {
-						let blockEl = $('#block-' + block.clientId);
-						// Set an interval to check the condition every 500 milliseconds (0.5 seconds)
-						let interval = setInterval(function() {
-							if (blockEl.length === 1) {
-								updateBlock(item, block, blockEl);
-								clearInterval(interval); // Stop the interval after the condition is met and function is executed
-							}
-						}, 200);
-					}
-				});
-			}
-		}
+			if (!block) return;
+
+			// eslint-disable-next-line no-undef
+			acfObj.json.forEach((item) => {
+				if (block.attributes.name !== item.settings.block_name) return;
+
+				let blockEl = $('#block-' + block.clientId);
+				if (blockEl.length === 1) {
+					// Block already in DOM — run immediately
+					updateBlock(item, block, blockEl);
+				} else {
+					// Block not yet in DOM — watch for it with MutationObserver
+					// instead of polling with setInterval.
+					const observer = new MutationObserver(() => {
+						blockEl = $('#block-' + block.clientId);
+						if (blockEl.length === 1) {
+							observer.disconnect();
+							updateBlock(item, block, blockEl);
+						}
+					});
+					observer.observe(document.body, { childList: true, subtree: true });
+					// Safety timeout: disconnect after 5 s to avoid memory leaks
+					// if the block never renders (e.g. undo before paint).
+					setTimeout(() => observer.disconnect(), 5000);
+				}
+			});
+		}, 50); // 50 ms debounce — imperceptible to the user, eliminates burst calls
 	});
 
 	// Handle block dependency

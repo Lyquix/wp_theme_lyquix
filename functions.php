@@ -71,6 +71,9 @@ require_once get_template_directory() . '/php/tailwind.php';
 // Prepare meta tags
 require_once get_template_directory() . '/php/meta.php';
 
+// CDN library mirror
+require_once get_template_directory() . '/php/cdn-mirror.php';
+
 // Enqueue CSS
 require_once get_template_directory() . '/php/css.php';
 

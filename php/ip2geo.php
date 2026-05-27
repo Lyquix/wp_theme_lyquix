@@ -95,6 +95,9 @@ function rest_route()
 	$geo = $reader->get($ip);
 	$reader->close();
 
+	// Response scope: ip and accuracy radius are intentionally omitted from the
+	// public REST response to minimize PII exposure. Server-side callers that
+	// need them can read $_SERVER directly or inline this logic.
 	return [
 		'city' => $geo['city']['names']['en'] ?? null,
 		'subdivision' => $geo['subdivisions'][0]['names']['en'] ?? null,
@@ -103,8 +106,6 @@ function rest_route()
 		'time_zone' => $geo['location']['time_zone'] ?? null,
 		'lat' => $geo['location']['latitude'] ?? null,
 		'lon' => $geo['location']['longitude'] ?? null,
-		'radius' => $geo['location']['accuracy_radius'] ?? null, // in km
-		'ip' => $ip
 	];
 }
 
