@@ -3,7 +3,7 @@
 /**
  * comments.php - Disable all comment functionality
  *
- * @version     3.4.0
+ * @version     3.0.0
  * @package     wp_theme_lyquix
  * @author      Lyquix
  * @copyright   Copyright (C) 2015 - 2024 Lyquix
@@ -23,69 +23,89 @@
 //  DO NOT MODIFY THIS FILE!
 
 if (get_theme_mod('feat_disable_comments', '1') === '1') {
-	// Disable comments post type support
-	add_action('init', function () {
-		$post_types = get_post_types();
-		foreach ($post_types as $post_type) {
-			if (post_type_supports($post_type, 'comments')) {
-				remove_post_type_support($post_type, 'comments');
-				remove_post_type_support($post_type, 'trackbacks');
-			}
-		}
-	});
+    // Disable comments post type support
+    add_action('init', function () {
+        $post_types = get_post_types();
+        foreach ($post_types as $post_type) {
+            if (post_type_supports($post_type, 'comments')) {
+                remove_post_type_support($post_type, 'comments');
+                remove_post_type_support($post_type, 'trackbacks');
+            }
+        }
+    });
 
-	// Remove comments from the admin menu and admin bar
-	add_action('admin_menu', function () {
-		remove_menu_page('edit-comments.php');
-		remove_submenu_page('options-general.php', 'options-discussion.php');
-	});
+    // Force comments and pings closed for every post, regardless of stored comment_status.
+    // `remove_post_type_support` does NOT update existing posts' comment_status in the DB,
+    // so without these filters wp-comments-post.php still accepts submissions.
+    add_filter('comments_open', '__return_false', 20, 2);
+    add_filter('pings_open', '__return_false', 20, 2);
 
-	// Remove comments from the admin bar
-	add_action('wp_before_admin_bar_render', function () {
-		if (is_admin_bar_showing()) {
-			remove_action('admin_bar_menu', 'wp_admin_bar_comments_menu', 60);
-		}
-	});
+    // Reject any comment submission that somehow reaches preprocess_comment
+    // (e.g. via wp-comments-post.php on a post that another plugin reopened).
+    add_filter('preprocess_comment', function () {
+        wp_die(
+            esc_html__('Comments are closed.'),
+            esc_html__('Comments are closed.'),
+            ['response' => 403]
+        );
+    }, 1);
 
-	// Remove comments from the "Right Now" dashboard widget
-	add_action('wp_dashboard_setup', function () {
-		remove_meta_box('dashboard_recent_comments', 'dashboard', 'normal');
-	});
+    // Hide any pre-existing comments and zero out the counter on the front-end.
+    add_filter('comments_array', '__return_empty_array', 10);
+    add_filter('get_comments_number', '__return_zero', 10);
 
-	// Disable comment-related REST API endpoints
-	add_filter('rest_endpoints', function ($endpoints) {
-		if (isset($endpoints['/wp/v2/comments'])) {
-			unset($endpoints['/wp/v2/comments']);
-		}
-		if (isset($endpoints['/wp/v2/comments/(?P<id>[\d]+)'])) {
-			unset($endpoints['/wp/v2/comments/(?P<id>[\d]+)']);
-		}
-		return $endpoints;
-	});
+    // Remove comments from the admin menu and admin bar
+    add_action('admin_menu', function () {
+        remove_menu_page('edit-comments.php');
+        remove_submenu_page('options-general.php', 'options-discussion.php');
+    });
 
-	// Disable XML-RPC methods related to comments
-	add_filter('xmlrpc_methods', function ($methods) {
-		unset($methods['wp.getComments']);
-		unset($methods['wp.getComment']);
-		unset($methods['wp.deleteComment']);
-		unset($methods['wp.editComment']);
-		unset($methods['wp.newComment']);
-		return $methods;
-	});
+    // Remove comments from the admin bar
+    add_action('wp_before_admin_bar_render', function () {
+        if (is_admin_bar_showing()) {
+            remove_action('admin_bar_menu', 'wp_admin_bar_comments_menu', 60);
+        }
+    });
 
-	// Disable comments RSS feed
-	add_action('do_feed_comments', function () {
-		wp_die('No comments are available.');
-	}, 1);
+    // Remove comments from the "Right Now" dashboard widget
+    add_action('wp_dashboard_setup', function () {
+        remove_meta_box('dashboard_recent_comments', 'dashboard', 'normal');
+    });
 
-	// Disable comments in the admin
-	add_action('admin_init', function () {
-		// Hide the existing comments
-		add_filter('comments_array', '__return_empty_array', 10);
-		// Remove the comments metabox from the dashboard
-		remove_meta_box('dashboard_recent_comments', 'dashboard', 'normal');
-		// Disable support for comments in the admin
-		remove_post_type_support('post', 'comments');
-		remove_post_type_support('page', 'comments');
-	});
+    // Disable comment-related REST API endpoints
+    add_filter('rest_endpoints', function ($endpoints) {
+        if (isset($endpoints['/wp/v2/comments'])) {
+            unset($endpoints['/wp/v2/comments']);
+        }
+        if (isset($endpoints['/wp/v2/comments/(?P<id>[\d]+)'])) {
+            unset($endpoints['/wp/v2/comments/(?P<id>[\d]+)']);
+        }
+        return $endpoints;
+    });
+
+    // Disable XML-RPC methods related to comments
+    add_filter('xmlrpc_methods', function ($methods) {
+        unset($methods['wp.getComments']);
+        unset($methods['wp.getComment']);
+        unset($methods['wp.deleteComment']);
+        unset($methods['wp.editComment']);
+        unset($methods['wp.newComment']);
+        return $methods;
+    });
+
+    // Disable comments RSS feed
+    add_action('do_feed_comments', function () {
+        wp_die('No comments are available.');
+    }, 1);
+
+    // Disable comments in the admin
+    add_action('admin_init', function () {
+        // Hide the existing comments
+        add_filter('comments_array', '__return_empty_array', 10);
+        // Remove the comments metabox from the dashboard
+        remove_meta_box('dashboard_recent_comments', 'dashboard', 'normal');
+        // Disable support for comments in the admin
+        remove_post_type_support('post', 'comments');
+        remove_post_type_support('page', 'comments');
+    });
 }
