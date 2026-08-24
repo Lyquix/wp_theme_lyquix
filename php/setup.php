@@ -412,6 +412,47 @@ function theme_setup() {
 		});
 	}
 
+	// Featured Image Column in Post/CPT Lists
+	if (get_theme_mod('feat_featured_image_column', '1') === '1') {
+		add_action('init', function() {
+			$post_types = get_post_types(['public' => true], 'names');
+			foreach ($post_types as $post_type) {
+				add_filter('manage_' . $post_type . '_posts_columns', function($columns) {
+					$new = [];
+					foreach ($columns as $key => $label) {
+						$new[$key] = $label;
+						if ($key === 'featured') {
+							$new['lqx_featured_image'] = __('Featured Image', 'lyquix');
+						}
+					}
+					if (!isset($new['lqx_featured_image'])) {
+						$new['lqx_featured_image'] = __('Featured Image', 'lyquix');
+					}
+					return $new;
+				}, 20);
+
+				add_action('manage_' . $post_type . '_posts_custom_column', function($column, $post_id) {
+					if ($column !== 'lqx_featured_image') return;
+					if (has_post_thumbnail($post_id)) {
+						echo get_the_post_thumbnail($post_id, [60, 60], [
+							'style'   => 'width:60px;height:auto;border-radius:3px;display:block;',
+							'loading' => 'lazy',
+						]);
+					} else {
+						echo '<span aria-hidden="true">&mdash;</span>';
+					}
+				}, 10, 2);
+			}
+		});
+
+		add_filter('default_hidden_columns', function($hidden, $screen) {
+			if ($screen && isset($screen->base) && $screen->base === 'edit') {
+				$hidden[] = 'lqx_featured_image';
+			}
+			return $hidden;
+		}, 10, 2);
+	}
+
 	// Suppress warnings and notices from PHP
 	if (get_theme_mod('suppress_php_warnings', '0') === '1') {
 		add_action('wp', function() {

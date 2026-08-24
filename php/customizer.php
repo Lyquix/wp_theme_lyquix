@@ -427,6 +427,12 @@ function customizer_add($wp_customize)
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
 			],
+			'feat_featured_image_column' => [
+				'type' => 'radio',
+				'label' => 'Enable Featured Image Column in Post/CPT Lists',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
 			'feat_required_plugins_alert' => [
 				'type' => 'radio',
 				'label' => 'Enable Required Plugins Alert',
