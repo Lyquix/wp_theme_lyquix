@@ -453,6 +453,40 @@ function theme_setup() {
 		}, 10, 2);
 	}
 
+	// Post ID Column in Post/CPT Lists
+	if (get_theme_mod('feat_post_id_column', '1') === '1') {
+		add_action('init', function() {
+			$post_types = get_post_types(['public' => true], 'names');
+			foreach ($post_types as $post_type) {
+				add_filter('manage_' . $post_type . '_posts_columns', function($columns) {
+					$new = [];
+					foreach ($columns as $key => $label) {
+						$new[$key] = $label;
+						if ($key === 'title') {
+							$new['lqx_post_id'] = __('ID', 'lyquix');
+						}
+					}
+					if (!isset($new['lqx_post_id'])) {
+						$new['lqx_post_id'] = __('ID', 'lyquix');
+					}
+					return $new;
+				}, 20);
+
+				add_action('manage_' . $post_type . '_posts_custom_column', function($column, $post_id) {
+					if ($column !== 'lqx_post_id') return;
+					echo esc_html($post_id);
+				}, 10, 2);
+			}
+		});
+
+		add_filter('default_hidden_columns', function($hidden, $screen) {
+			if ($screen && isset($screen->base) && $screen->base === 'edit') {
+				$hidden[] = 'lqx_post_id';
+			}
+			return $hidden;
+		}, 10, 2);
+	}
+
 	// Suppress warnings and notices from PHP
 	if (get_theme_mod('suppress_php_warnings', '0') === '1') {
 		add_action('wp', function() {

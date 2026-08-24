@@ -433,6 +433,12 @@ function customizer_add($wp_customize)
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
 			],
+			'feat_post_id_column' => [
+				'type' => 'radio',
+				'label' => 'Enable Post ID Column in Post/CPT Lists',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
 			'feat_required_plugins_alert' => [
 				'type' => 'radio',
 				'label' => 'Enable Required Plugins Alert',
