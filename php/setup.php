@@ -552,6 +552,23 @@ function theme_setup() {
 				transform: translateY(0);
 			}
 
+			/* On smaller screens WP re-lays-out the admin bar and the
+			   top-secondary ("Howdy, user") menu can stay visible even while
+			   the bar is collapsed. Hide it until the bar is opened. */
+			@media screen and (max-width: 782px) {
+				#wpadminbar #wp-admin-bar-top-secondary {
+					visibility: hidden;
+					opacity: 0;
+					pointer-events: none;
+					transition: opacity 200ms ease;
+				}
+				body.lqx-adminbar-open #wpadminbar #wp-admin-bar-top-secondary {
+					visibility: visible;
+					opacity: 1;
+					pointer-events: auto;
+				}
+			}
+
 			/* Notch button */
 			#lqx-adminbar-notch {
 				position: fixed;
