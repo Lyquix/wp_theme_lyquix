@@ -113,6 +113,9 @@ require_once get_template_directory() . '/php/regions.php';
 // Options
 require_once get_template_directory() . '/php/options.php';
 
+// Block settings sync (export/import Global Settings, Styles, Presets)
+require_once get_template_directory() . '/php/block-settings-sync.php';
+
 // QR Code Generator
 require_once get_template_directory() . '/php/qr-code.php';
 

@@ -87,4 +87,25 @@ if (get_theme_mod('feat_layout_blocks', '1') === '1') {
 		}
 		return true;
 	}, 10, 2);
+
+	// Populate the Box block's Style dropdown from the Box Site Settings page
+	add_filter('acf/load_field/key=field_fee77bc4d8220', function ($field) {
+		// Only needed in the block editor to populate the style dropdown
+		if (!is_admin() && !(defined('REST_REQUEST') && REST_REQUEST)) return $field;
+
+		static $choices = null;
+		if ($choices === null) {
+			$choices = ['' => 'Select'];
+			if (have_rows('box_block_styles', 'option')) {
+				while (have_rows('box_block_styles', 'option')) {
+					the_row();
+					$value = get_sub_field('style_name');
+					if ($value) $choices[$value] = $value;
+				}
+			}
+		}
+
+		$field['choices'] = $choices;
+		return $field;
+	});
 }

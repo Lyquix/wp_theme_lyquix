@@ -24,7 +24,7 @@
 (function (wp, acf, $) {
 	const { subscribe, select } = wp.data;
 	var previousBlockId = null;
-	var excludedTypes = ['tab', 'group', 'repeater'];
+	var excludedTypes = ['tab', 'group', 'repeater', 'accordion'];
 	var classPrefix = 'tailwind_';
 	var localKey = 'tailwindClasses';
 	localStorage.removeItem(localKey);
@@ -81,7 +81,7 @@
 						// Initialize tailwindClasses for the selectedBlockId if it doesn't exist
 						tailwindClasses[blockId] = tailwindClasses[blockId] || {};
 
-						if (name.includes(classPrefix) && val) {
+						if (name && name.includes(classPrefix) && val) {
 							val = name + val;
 						}
 						if (val && val.includes(classPrefix)) {
@@ -105,7 +105,7 @@
 			var val = field.val();
 			var key = field.cid;
 			var name = field.data.name;
-			if (name.includes(classPrefix) && val) {
+			if (name && name.includes(classPrefix) && val) {
 				val = name + val;
 			}
 
@@ -157,3 +157,40 @@
 		localStorage.removeItem(localKey);
 	});
 })(wp, acf, jQuery);
+
+// Fix: first lqx block inserted opens in preview mode in WP 7.0.
+//
+// Root cause (from ACF's minified source):
+//   WP 7.0 creates an iframe[name="editor-canvas"] during editor init. ACF's block
+//   class component setup() detects it via I() and directly mutates the Gutenberg
+//   store's attributes object (same JS reference — no setAttributes call) to
+//   mode:'preview'. The iframe is removed before useEffect fires, so detecting it
+//   here is always too late. Instead: check the store directly after mount. If mode
+//   is 'preview' for an edit-only block (supports.mode:false), it was set incorrectly.
+//   Dispatching mode:'edit' is a real change ('preview'→'edit'), creates a fresh
+//   attributes object, and triggers a re-render where ACF reads mode:'edit' from props
+//   (not the mutated object) and renders correctly in edit mode.
+(function (wp) {
+	if (!wp.hooks || !wp.compose || !wp.element || !wp.blocks || !wp.data) return;
+
+	wp.hooks.addFilter(
+		'editor.BlockEdit',
+		'lyquix/force-edit-mode',
+		wp.compose.createHigherOrderComponent(function (BlockEdit) {
+			return function (props) {
+			var editModeBlocks = ['lqx/accordion', 'lqx/banner', 'lqx/cards', 'lqx/filters', 'lqx/gallery', 'lqx/hero', 'lqx/logos', 'lqx/map', 'lqx/related-items', 'lqx/slider', 'lqx/tabs'];
+
+				wp.element.useEffect(function () {
+					if (editModeBlocks.indexOf(props.name) === -1) return;
+
+					var block = wp.data.select('core/block-editor').getBlock(props.clientId);
+					if (!block || block.attributes.mode !== 'preview') return;
+
+					wp.data.dispatch('core/block-editor').updateBlockAttributes(props.clientId, { mode: 'edit' });
+				}, []);
+
+				return wp.element.createElement(BlockEdit, props);
+			};
+		}, 'withForceEditMode')
+	);
+})(wp);

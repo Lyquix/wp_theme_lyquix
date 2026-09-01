@@ -219,3 +219,13 @@ Returns the file path to the block's template PHP file.
 ## Reset Global Settings
 
 The theme provides an admin page under **Site Settings > Reset Global Settings** that allows administrators to reset global settings for any or all blocks and modules back to their default values. This is useful when settings have been modified and you want to start fresh.
+
+## Syncing Block Settings Across Environments
+
+ACF Local JSON (`acf-json/`) only versions field group *structure*. The values admins save into block **Global Settings**, **Styles**, and **Presets** live in `wp_options` and are normally never written to git. The Block Settings Sync system (`php/block-settings-sync.php`) closes that gap:
+
+- On every save of a block's Global Settings, Styles, or Presets, all values are exported to `acf-json/block-settings.json` in the **child theme**, so they are versioned with the project repo.
+- Any environment whose database has no value yet (fresh install, new developer, new environment) automatically falls back to reading the file via `acf/load_value` — no manual import step.
+- A one-off re-sync can be forced from **Site Settings > Sync Block Settings**, or via WP-CLI: `wp lqx export-block-settings` / `wp lqx import-block-settings` (both accept `--file=<path>`).
+
+Values already saved in the database always take priority over the file, so local changes are never clobbered.

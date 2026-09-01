@@ -117,6 +117,8 @@ Reel > [Image 1] + [Image 2] + [Image 3] + ...
 ### Box
 Adds padding around its content. Configure padding values through Tailwind utility fields.
 
+Named styles can be defined under **Site Settings > Box** (a repeater of style slugs). Each Box block instance can then pick a style from a dropdown, and the selected slug is added as a CSS class on the `box-l` element for the child theme to style.
+
 ### Center
 Centers content horizontally with a configurable max-width. Uses `margin-inline: auto`.
 
