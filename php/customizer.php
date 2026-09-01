@@ -331,6 +331,12 @@ function customizer_add($wp_customize)
 				'choices' => ['0' => 'No', '1' => 'Yes'],
 				'default' => '1'
 			],
+			'feat_remove_body_padding' => [
+				'type' => 'radio',
+				'label' => 'Remove WP Core Body Padding',
+				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'default' => '1'
+			],
 			'feat_content_blocks' => [
 				'type' => 'radio',
 				'label' => 'Enable Content Blocks',

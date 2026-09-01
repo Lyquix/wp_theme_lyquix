@@ -135,8 +135,14 @@ export const mutation = (() => {
 		for (let i = 0; i < nodes.length; i++) {
 			const n = jQuery(nodes[i]);
 			o.push(n);
-			const children = n.find('*').toArray();
-			if (children.length) o = o.concat(children);
+			// Wrap each descendant individually so handlers always receive a single-element
+			// jQuery object (with .length/.each()), matching what they receive for the
+			// top-level node — .toArray() previously unwrapped these to plain DOM elements,
+			// silently breaking handlers (like lyqbox's setup/teardown) for any match nested
+			// inside a larger inserted/removed subtree rather than the subtree root itself.
+			n.find('*').each((idx, child) => {
+				o.push(jQuery(child));
+			});
 		}
 		return o;
 	};

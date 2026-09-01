@@ -91,6 +91,16 @@ add_action('acf/save_post', function($post_id) {
  * before ACF initialises, before any hook fires — eliminating every individual
  * get_option() hit for ACF option-page data at zero extra query cost.
  *
+ * Excludes exploded repeater-row fields (e.g. ..._0_start_date) — marking those
+ * autoload='yes' changes which cache-invalidation branch WordPress's
+ * delete_option() takes (it stops clearing the per-option cache, only the bulk
+ * alloptions cache). A paginated repeater that deletes a row and rewrites
+ * another row's data into that same slot within one request then reads back a
+ * stale cached value, so update_option() wrongly takes the UPDATE path against
+ * a row that's already gone — 0 rows affected, save silently lost. Repeater
+ * rows are also the case autoloading benefits least: exploding them into the
+ * alloptions blob bloats it on every request for data rarely needed there.
+ *
  * Triggered at priority 30 (after the cache file is written at priority 20).
  * The admin only needs to save the ACF options page once for this to take effect.
  */
@@ -102,9 +112,11 @@ add_action('acf/save_post', function($post_id) {
 		$wpdb->prepare(
 			"UPDATE {$wpdb->options} SET autoload = 'yes'
 			 WHERE (option_name LIKE %s OR option_name LIKE %s)
+			 AND option_name NOT REGEXP %s
 			 AND autoload != 'yes'",
 			$wpdb->esc_like('options_') . '%',
-			$wpdb->esc_like('_options_') . '%'
+			$wpdb->esc_like('_options_') . '%',
+			'_[0-9]+_'
 		)
 	);
 }, 30);

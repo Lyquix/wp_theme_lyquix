@@ -135,6 +135,6 @@ foreach ($s['responsive_rules'] as $rule) {
 $c = array_filter(array_map(function($item) {
 	$v = \lqx\util\validate_data($item, \lqx\cards\schema);
 	return $v['isValid'] ? $v['data'] : null;
-}, $content));
+}, is_array($content) ? $content : []));
 
 if (!empty($c)) require \lqx\blocks\get_template('cards', $s['preset']);

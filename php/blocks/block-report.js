@@ -1,4 +1,6 @@
 jQuery(document).ready(function ($) {
+    $.ajaxSetup({ headers: { 'X-WP-Nonce': lqxBlockReportObj.nonce } });
+
     const blockTypeField = $('#acf-field_6729f97d9e5be');
     const settingField = $('#acf-field_6729fac39e5bf');
     const fields = {

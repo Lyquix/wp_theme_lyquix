@@ -133,7 +133,8 @@ function enqueue_scripts() {
 		$scripts[] = [
 			'handle' => 'lyquix',
 			'url' => get_stylesheet_directory_uri() . '/js/lyquix' . ($non_min_js ? '' : '.min') . '.js',
-			'version' => date("YmdHis", filemtime(get_stylesheet_directory() . '/js/lyquix' . ($non_min_js ? '' : '.min') . '.js'))
+			'version' => date("YmdHis", filemtime(get_stylesheet_directory() . '/js/lyquix' . ($non_min_js ? '' : '.min') . '.js')),
+			'strategy' => 'defer'
 		];
 	}
 
@@ -155,13 +156,19 @@ function enqueue_scripts() {
 		$scripts[] = [
 			'handle' => 'scripts',
 			'url' => get_stylesheet_directory_uri() . '/js/scripts' . ($non_min_js ? '' : '.min') . '.js',
-			'version' => date("YmdHis", filemtime(get_stylesheet_directory() . '/js/scripts' . ($non_min_js ? '' : '.min') . '.js'))
+			'version' => date("YmdHis", filemtime(get_stylesheet_directory() . '/js/scripts' . ($non_min_js ? '' : '.min') . '.js')),
+			'strategy' => 'defer'
 		];
 	}
 
 	// Queue styles
 	foreach ($scripts as $js_url) {
-		wp_enqueue_script($js_url['handle'], $js_url['url'], [], $js_url['version'] ?? null, true);
+		// WP 6.3+ accepts an array with a loading strategy; older versions treat the
+		// non-empty array as a truthy in_footer, so this degrades to footer loading
+		$args = isset($js_url['strategy']) && version_compare(get_bloginfo('version'), '6.3', '>=')
+			? ['in_footer' => true, 'strategy' => $js_url['strategy']]
+			: true;
+		wp_enqueue_script($js_url['handle'], $js_url['url'], [], $js_url['version'] ?? null, $args);
 	}
 }
 add_action('wp_enqueue_scripts', '\lqx\js\enqueue_scripts', 100);

@@ -265,6 +265,6 @@ $c = array_filter(array_map(function($item) {
 		],
 	]);
 	return $v['isValid'] ? $v['data'] : null;
-}, $content));
+}, is_array($content) ? $content : []));
 
 if (!empty($c)) require \lqx\blocks\get_template('map', $s['preset']);

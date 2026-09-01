@@ -120,6 +120,9 @@
 	// Popups
 	\lqx\modules\popup\render();
 
+	// Leaving site alert
+	\lqx\modules\leaving_site_alert\render();
+
 	// End of non-chromeless page template
 	endif;
 

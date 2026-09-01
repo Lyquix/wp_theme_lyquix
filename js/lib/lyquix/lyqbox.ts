@@ -125,6 +125,11 @@ export const lyqbox = (() => {
 				// Add a mutation handler for lightboxes added to the DOM
 				mutation.addHandler('addNode', cfg.lyqbox.selector, setup);
 
+				// Clean up stale slide registrations when their trigger elements are removed
+				// (e.g. AJAX re-renders), so a reused positional name doesn't get treated as
+				// an existing gallery instead of a fresh single slide
+				mutation.addHandler('removeNode', cfg.lyqbox.selector, teardown);
+
 				// Show lightbox from URL hash
 				showHash();
 			});
@@ -163,6 +168,21 @@ export const lyqbox = (() => {
 
 				// Slugify the name
 				opts.name = util.slugify(opts.name);
+
+				// Purge slides whose trigger element is no longer in the DOM (e.g. replaced
+				// by an AJAX re-render) so a reused positional name registers as a fresh
+				// lightbox instead of being appended to a stale, already-registered one.
+				// Checked here (rather than relying solely on the removeNode mutation
+				// handler) because a single mutation record can bundle the old node's
+				// removal with the new node's addition, and addNode is processed first.
+				if (opts.name in vars.lyqbox.lightboxes) {
+					const existing = vars.lyqbox.lightboxes[opts.name];
+					existing.slides = existing.slides.filter((s) => s.elem && document.body.contains(s.elem.get(0)));
+					if (!existing.slides.length && !existing.open) {
+						if (existing.elem) existing.elem.remove();
+						delete vars.lyqbox.lightboxes[opts.name];
+					}
+				}
 
 				// Check if the name already exists
 				if (!(opts.name in vars.lyqbox.lightboxes)) {
@@ -301,6 +321,36 @@ export const lyqbox = (() => {
 				});
 			});
 		}
+	};
+
+	// Remove a slide's registration when its trigger element is removed from the DOM
+	// (e.g. AJAX re-renders), so a reused positional name registers as a fresh
+	// lightbox instead of being appended to a stale, already-registered one
+	const teardown = (elems) => {
+		if (!elems.length) return;
+
+		elems.each((idx, slide) => {
+			slide = jQuery(slide);
+
+			let opts = slide.attr('data-lyqbox');
+			if (!opts) return;
+			try { opts = JSON.parse(opts); } catch (e) { return; }
+			if (!opts.name) return;
+
+			const name = util.slugify(opts.name);
+			const lightbox = vars.lyqbox.lightboxes[name];
+			if (!lightbox) return;
+
+			// Remove the slide entry that matches this element
+			lightbox.slides = lightbox.slides.filter((s) => s.elem?.get(0) !== slide.get(0));
+
+			// If no slides are left and the lightbox isn't open, drop the registration
+			// entirely so a future setup() call creates it fresh rather than appending
+			if (!lightbox.slides.length && !lightbox.open) {
+				if (lightbox.elem) lightbox.elem.remove();
+				delete vars.lyqbox.lightboxes[name];
+			}
+		});
 	};
 
 	// Open the lightbox (id), on the slide (index)

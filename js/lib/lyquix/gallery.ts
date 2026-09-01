@@ -56,6 +56,7 @@ export const gallery = (() => {
 			swiperSlideClass: 'swiper-slide',
 			swiperNextSelector: '.swiper-button-next',
 			swiperPrevSelector: '.swiper-button-prev',
+			swiperPaginationSelector: '.swiper-pagination',
 			analytics: {
 				enabled: true,
 				nonInteraction: true,
@@ -99,6 +100,9 @@ export const gallery = (() => {
 				// Skip if there isn't no swiper element
 				if (galleryElem.find(cfg.gallery.swiperSelector).length == 0) return;
 
+				// Get the settings
+				const pagination = galleryElem.attr('data-pagination') === 'y';
+
 				// Swipper options
 				let swiperOptions = {
 					// Optional parameters
@@ -112,6 +116,23 @@ export const gallery = (() => {
 						nextEl: cfg.gallery.swiperNextSelector
 					}
 				};
+
+				if (pagination == true) {
+					swiperOptions['pagination'] = {
+						enabled: true,
+						el: cfg.gallery.swiperPaginationSelector,
+						clickable: true,
+						renderBullet(index: number, className: string): string {
+							const slideEl = this.slides[index];
+							const teaserText = slideEl.getAttribute('data-slide-teaser');
+							const thumbnail = slideEl.getAttribute('data-slide-thumbnail');
+							// Returning the HTML string for the bullet, conditionally rendering either an image with the thumbnail or the teaser text
+							return `<span class="${className}" role="button" aria-label="Go to slide ${index + 1}">` +
+								(thumbnail ? `<img src="${thumbnail}" alt="" />` : teaserText) +
+								'</span>';
+						},
+					};
+				}
 
 				// Swiper options override
 				try {

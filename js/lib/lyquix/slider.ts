@@ -152,7 +152,8 @@ export const slider = (() => {
 					}
 				}
 
-				new Swiper('#' + sliderElem.attr('id') + ' ' + cfg.slider.swiperSelector, swiperOptions);
+				// Keep a reference to the Swiper instance so custom scripts can use the Swiper API
+				vars.slider.slider.push(new Swiper('#' + sliderElem.attr('id') + ' ' + cfg.slider.swiperSelector, swiperOptions));
 
 				if (navigation == true) {
 					// Prev/Next button listeners

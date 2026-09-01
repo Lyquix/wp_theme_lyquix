@@ -294,7 +294,7 @@
                             "hide_instructions": "",
                             "hide_required": "",
                             "uploader": "",
-                            "return_format": "url",
+                            "return_format": "array",
                             "upload_folder": "",
                             "button_label": "Add File",
                             "file_count": 0,

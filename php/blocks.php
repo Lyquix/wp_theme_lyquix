@@ -25,9 +25,6 @@
 
 namespace lqx\blocks;
 
-// Video block
-require_once get_template_directory() . '/php/blocks/video/video.php';
-
 /**
  * Process overrides for a block
  *
@@ -260,7 +257,7 @@ function get_settings($block, $post_id = null, $forced_preset = null, $forced_st
 		// Check for settings presets
 		if (isset($settings['local']['user']['preset']) && $settings['local']['user']['preset'] !== '') {
 			$preset_exists = false;
-			foreach ($settings['presets'] as $preset) {
+			foreach (($settings['presets'] ?? []) as $preset) {
 				if ($preset['preset_name'] == $settings['local']['user']['preset']) {
 					// Process the overrides
 					$settings['processed'] = merge_settings($settings['processed'], remove_empty_settings(process_overrides($preset[$block_name . '_block_admin'])));
@@ -1371,6 +1368,15 @@ add_action('admin_enqueue_scripts', function ($hook) {
         ['jquery'],
         null,
         true
+    );
+
+    // wp_add_inline_script is preferred over wp_localize_script: avoids the
+    // implicit string-cast, uses proper JSON encoding, and does not create an
+    // extra global variable wrapper.
+    wp_add_inline_script(
+        'block-report-js',
+        'var lqxBlockReportObj = ' . wp_json_encode(['nonce' => wp_create_nonce('wp_rest')], JSON_HEX_TAG | JSON_HEX_AMP) . ';',
+        'before'
     );
 });
 

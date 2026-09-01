@@ -94,6 +94,7 @@
 
 	// Handle block dependency
 	const updateBlock = (item, block, blockEl) => {
+		if (!block.attributes || !block.attributes.data) return;
 		for (const rule of item.rules) {
 			let dependency = {};
 
@@ -184,6 +185,7 @@
 	};
 
 	const findKeyByValue = (object, value) => {
+		if (!object) return undefined;
 		return Object.keys(object).find(key => object[key] === value);
 	};
 

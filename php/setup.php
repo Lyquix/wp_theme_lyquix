@@ -291,7 +291,27 @@ function theme_setup() {
 		}
 	}
 
-	// Add user management capabilities to editor user role
+	// Remove the body padding WP core's default theme.json injects since WP 5.9,
+	// which interferes with the site's own layout styles
+	if (get_theme_mod('feat_remove_body_padding', '1') === '1') {
+		add_filter('wp_theme_json_data_default', function ($theme_json) {
+			return $theme_json->update_with([
+				'version' => 2,
+				'styles' => [
+					'spacing' => [
+						'padding' => [
+							'top'    => null,
+							'right'  => null,
+							'bottom' => null,
+							'left'   => null,
+						],
+					],
+				],
+			]);
+		});
+	}
+
+	// Add or remove user management capabilities on the editor user role
 	if (get_theme_mod('feat_user_management_editors', '1') === '1') {
 		add_action('admin_init', function () {
 			$role = get_role('editor');
@@ -301,6 +321,17 @@ function theme_setup() {
 			$role->add_cap('promote_users');
 			$role->add_cap('list_users');
 			$role->add_cap('remove_users');
+		});
+	} else {
+		// Remove user management capabilities if the option is disabled
+		add_action('admin_init', function () {
+			$role = get_role('editor');
+			$role->remove_cap('create_users');
+			$role->remove_cap('edit_users');
+			$role->remove_cap('delete_users');
+			$role->remove_cap('promote_users');
+			$role->remove_cap('list_users');
+			$role->remove_cap('remove_users');
 		});
 	}
 

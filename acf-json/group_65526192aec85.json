@@ -40,7 +40,7 @@
             "pagination": 1,
             "rows_per_page": 20,
             "min": 0,
-            "max": 3,
+            "max": 0,
             "collapsed": "field_65526256e9ff1",
             "button_label": "Add Row",
             "sub_fields": [
