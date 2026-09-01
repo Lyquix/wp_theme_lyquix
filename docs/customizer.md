@@ -139,6 +139,7 @@ These toggles control various theme behaviors:
 | Setting | Default | Description |
 |---------|---------|-------------|
 | Disable Comments | Yes | Remove comment support from all post types. |
+| Remove WP Core Body Padding | Yes | Strip the root body padding WP core's default `theme.json` injects since WP 5.9. |
 | Enable Content Blocks | Yes | Register Lyquix Gutenberg content blocks. |
 | Enable Layout Blocks | Yes | Register Lyquix Gutenberg layout blocks. |
 | Enable Modules | Yes | Load and register theme modules. |
