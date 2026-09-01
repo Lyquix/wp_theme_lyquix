@@ -1059,10 +1059,36 @@ export const analytics = (() => {
 		}
 	};
 
+	/**
+	 * Builds a human readable event label for a click on an element (link or button)
+	 * inside a content module, such as alerts, modal or popup.
+	 *
+	 * The label combines an optional context (usually the module heading), the text of
+	 * the clicked element, and its URL, skipping the parts that are empty.
+	 *
+	 * @param {object} elem - the clicked element
+	 * @param {string} context - optional context, usually the module heading
+	 *
+	 * @returns {string} the event label
+	 */
+	const getClickEventLabel = (elem, context?: string) => {
+		const clickedElem = jQuery(elem);
+
+		return [
+			context,
+			clickedElem.text() || clickedElem.attr('aria-label') || clickedElem.attr('title'),
+			clickedElem.attr('href')
+		]
+			.map((part) => (part || '').replace(/\s+/g, ' ').trim())
+			.filter((part) => part !== '')
+			.join(' | ');
+	};
+
 	return Object.defineProperties({
 		init,
 		sendGAEvent,
-		sendGAPageview
+		sendGAPageview,
+		getClickEventLabel
 	}, {
 		// Set the status property as read-only
 		status: {
@@ -1089,6 +1115,7 @@ export const analytics = (() => {
 			title: string,
 			callback?: () => void
 		}) => void,
+		getClickEventLabel: (elem: any, context?: string) => string,
 		status: string
 	};
 })();

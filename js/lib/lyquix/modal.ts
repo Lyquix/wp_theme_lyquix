@@ -61,7 +61,8 @@ export const modal = (() => {
 				enabled: true,
 				nonInteraction: true,
 				onOpen: true, // Sends event on modal open
-				onClose: true // Sends event on modal dismissal
+				onClose: true, // Sends event on modal dismissal
+				onClick: true // Sends event on click on links and buttons inside the modal
 			}
 		};
 
@@ -242,6 +243,9 @@ export const modal = (() => {
 						modalElem.on('close', () => {
 							close(modal.id);
 						});
+
+						// Track clicks on links and buttons
+						trackClicks(modalElem);
 					});
 
 					if (!jQuery('[id^=modal-]').length) {
@@ -256,6 +260,31 @@ export const modal = (() => {
 			},
 
 			url: cfg.siteURL + '/wp-json/lyquix/v3/modal'
+		});
+	};
+
+	/**
+	 * Adds a click listener to the links and buttons inside a modal, and sends an
+	 * analytics event for every click. The close button is excluded, as it is already
+	 * tracked by the close event.
+	 *
+	 * @param {object} modalElem - the modal element
+	 */
+	const trackClicks = (modalElem) => {
+		if (!cfg.modal.analytics.enabled || !cfg.modal.analytics.onClick) return;
+
+		modalElem.on('click', 'a[href], button:not(.close)', function () {
+			// Get the heading
+			const headingStyle = modalElem.attr('data-heading-style') || 'h3';
+			const heading = modalElem.find(headingStyle == 'p' ? 'p.title strong' : headingStyle).text();
+
+			// Send event for the click
+			analytics.sendGAEvent({
+				'eventCategory': 'Modal',
+				'eventAction': 'Click',
+				'eventLabel': analytics.getClickEventLabel(this, heading),
+				'nonInteraction': false
+			});
 		});
 	};
 
@@ -379,6 +408,9 @@ export const modal = (() => {
 
 		elem.find('.close').on('click', () => close(data.id));
 		elem.on('close', () => close(data.id));
+
+		// Track clicks on links and buttons
+		trackClicks(elem);
 
 		if (show_delay >= 0) {
 			if (show_delay === 0) {

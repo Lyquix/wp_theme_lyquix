@@ -205,10 +205,23 @@ cfg.modal = {
         enabled: true,
         nonInteraction: true,
         onOpen: true,
-        onClose: true
+        onClose: true,
+        onClick: true
     }
 };
 ```
+
+### Analytics Events
+
+| Action | When | Label |
+|--------|------|-------|
+| `Open` | Modal is opened | Modal heading |
+| `Close` | Modal is dismissed | Modal heading |
+| `Click` | A link or button inside the modal is clicked | `heading \| link text \| url` |
+
+`Click` events are always sent as interactive (`non_interaction: false`), regardless of the
+`nonInteraction` setting, since a click is a deliberate user interaction. The close button is
+excluded — it is already covered by the `Close` event.
 
 ### Functions
 
@@ -277,10 +290,23 @@ cfg.alerts = {
         enabled: true,
         nonInteraction: true,
         onClose: true,
-        onPrevNext: true
+        onPrevNext: true,
+        onClick: true
     }
 };
 ```
+
+### Analytics Events
+
+| Action | When | Label |
+|--------|------|-------|
+| `Close` | Alerts bar is dismissed | *(empty)* |
+| `Previous` / `Next` | Navigation arrow is clicked | *(empty)* |
+| `Click` | A link or button inside an alert is clicked | `alert heading \| link text \| url` |
+
+`Click` events are always sent as interactive (`non_interaction: false`), regardless of the
+`nonInteraction` setting. The close button and the Swiper navigation controls are excluded —
+they are already covered by the `Close` and `Previous`/`Next` events.
 
 ### AJAX Endpoint
 
@@ -410,10 +436,13 @@ cfg.popup = {
         enabled: true,
         nonInteraction: true,
         onOpen: true,
-        onClose: true
+        onClose: true,
+        onClick: true
     }
 };
 ```
+
+Analytics events match the modal module, using the `Popup` event category.
 
 ### Functions
 

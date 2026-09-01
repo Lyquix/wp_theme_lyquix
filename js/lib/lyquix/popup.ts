@@ -61,7 +61,8 @@ export const popup = (() => {
 				enabled: true,
 				nonInteraction: true,
 				onOpen: true, // Sends event on popup open
-				onClose: true // Sends event on popup dismissal
+				onClose: true, // Sends event on popup dismissal
+				onClick: true // Sends event on click on links and buttons inside the popup
 			}
 		};
 
@@ -241,6 +242,9 @@ export const popup = (() => {
 						popupElem.find('.close').click(() => {
 							close(popup.id);
 						});
+
+						// Track clicks on links and buttons
+						trackClicks(popupElem);
 					});
 
 					if (!popupModuleElem.children().length) {
@@ -257,6 +261,31 @@ export const popup = (() => {
 			},
 
 			url: cfg.siteURL + '/wp-json/lyquix/v3/popup'
+		});
+	};
+
+	/**
+	 * Adds a click listener to the links and buttons inside a popup, and sends an
+	 * analytics event for every click. The close button is excluded, as it is already
+	 * tracked by the close event.
+	 *
+	 * @param {object} popupElem - the popup element
+	 */
+	const trackClicks = (popupElem) => {
+		if (!cfg.popup.analytics.enabled || !cfg.popup.analytics.onClick) return;
+
+		popupElem.on('click', 'a[href], button:not(.close)', function () {
+			// Get the heading
+			const headingStyle = popupElem.attr('data-heading-style') || 'h3';
+			const heading = popupElem.find(headingStyle == 'p' ? 'p.title strong' : headingStyle).text();
+
+			// Send event for the click
+			analytics.sendGAEvent({
+				'eventCategory': 'Popup',
+				'eventAction': 'Click',
+				'eventLabel': analytics.getClickEventLabel(this, heading),
+				'nonInteraction': false
+			});
 		});
 	};
 
@@ -386,6 +415,9 @@ export const popup = (() => {
 		log('Popup registered (JS)', data.id);
 
 		elem.find('.close').on('click', () => close(data.id));
+
+		// Track clicks on links and buttons
+		trackClicks(elem);
 
 		if (show_delay >= 0) {
 			if (show_delay === 0) {

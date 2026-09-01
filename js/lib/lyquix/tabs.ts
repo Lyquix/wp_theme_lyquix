@@ -118,6 +118,40 @@ export const tabs = (() => {
 							(tabElem.get(0) as HTMLElement).blur();
 						} else open(panelId);
 					});
+
+					// Add keyboard navigation listener (WAI-ARIA APG tabs pattern:
+					// Left/Right/Up/Down moves focus and activates, Home/End jump to first/last)
+					jQuery(tabElem).on('keydown', (e) => {
+						const tabsList = tabElem.closest(cfg.tabs.tabsListSelector);
+						const allTabs = tabsList.find(cfg.tabs.tabSelector);
+						const currentIndex = allTabs.index(tabElem.get(0));
+
+						let newIndex;
+						switch (e.key) {
+							case 'ArrowRight':
+							case 'ArrowDown':
+								newIndex = (currentIndex + 1) % allTabs.length;
+								break;
+							case 'ArrowLeft':
+							case 'ArrowUp':
+								newIndex = (currentIndex - 1 + allTabs.length) % allTabs.length;
+								break;
+							case 'Home':
+								newIndex = 0;
+								break;
+							case 'End':
+								newIndex = allTabs.length - 1;
+								break;
+							default:
+								return;
+						}
+
+						e.preventDefault();
+
+						const newTabElem = jQuery(allTabs.get(newIndex));
+						(newTabElem.get(0) as HTMLElement).focus();
+						open(newTabElem.attr('id').replace('-tab-', '-panel-'));
+					});
 				});
 
 				// Convert to accordion?
@@ -181,6 +215,38 @@ export const tabs = (() => {
 							// Open accordion, close if clicked on again
 							if (panelElem.attr('aria-hidden') === 'true') open(panelId);
 							else close(panelId);
+						});
+
+						// Add keyboard navigation listener (Down/Up moves focus between headers,
+						// Home/End jump to first/last, automatically opening the newly focused
+						// panel to match this component's click-to-open behavior)
+						jQuery(headerElem).on('keydown', (e) => {
+							const allHeaders = tabsElem.find(cfg.tabs.headerSelector);
+							const currentIndex = allHeaders.index(headerElem.get(0));
+
+							let newIndex;
+							switch (e.key) {
+								case 'ArrowDown':
+									newIndex = (currentIndex + 1) % allHeaders.length;
+									break;
+								case 'ArrowUp':
+									newIndex = (currentIndex - 1 + allHeaders.length) % allHeaders.length;
+									break;
+								case 'Home':
+									newIndex = 0;
+									break;
+								case 'End':
+									newIndex = allHeaders.length - 1;
+									break;
+								default:
+									return;
+							}
+
+							e.preventDefault();
+
+							const newHeaderElem = jQuery(allHeaders.get(newIndex));
+							(newHeaderElem.get(0) as HTMLElement).focus();
+							open(newHeaderElem.attr('id').replace('-header-', '-panel-'));
 						});
 					});
 				}

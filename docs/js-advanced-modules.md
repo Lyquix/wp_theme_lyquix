@@ -60,6 +60,23 @@ lqx.analytics.sendGAEvent({
 - `eventData.eventName` (string, required) — the GA4 event name
 - Other properties are passed through as event parameters
 
+#### `getClickEventLabel(elem, context)`
+
+Build a human readable event label for a click on a link or button inside a content module
+(alerts, modal, popup). Combines the context, the element text, and the element URL, skipping
+the parts that are empty.
+
+```javascript
+lqx.analytics.getClickEventLabel(elem, 'Campus closed today');
+// => 'Campus closed today | Read More | /news/campus-closed'
+```
+
+**Parameters:**
+- `elem` (element, required) — the clicked element
+- `context` (string, optional) — usually the module heading
+
+**Returns:** string — the parts joined with ` | `
+
 ### How Other Modules Use It
 
 Block modules call `sendGAEvent` for user interactions:

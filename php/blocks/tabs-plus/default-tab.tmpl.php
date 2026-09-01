@@ -26,7 +26,7 @@
 $blockName = 'tab-item';
 $contentField = '_block_content_';
 ?>
-<li>
+<li role="presentation">
     <button
         class="tab <?= !empty($item['additional_classes']) ? esc_attr($item['additional_classes']) : '' ?>"
         id="<?= !empty($item['item_id']) ? esc_attr($item['item_id']) . '-tab' : $settings['hash'] . '-tab-' . $idx ?>"

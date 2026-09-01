@@ -138,6 +138,7 @@ The Lyquix library consists of 24 TypeScript modules organized in three categori
 | `slider.ts` | Image/content carousel (Swiper) with pagination thumbnails |
 | `cards.ts` | Responsive card grid (Swiper) with breakpoint-based column rules |
 | `popup.ts` | Popup notifications with CSS-based visibility, cookies, display logic |
+| `a11y.ts` | Accessibility fixes for third-party widgets — labels unlabeled Swiper arrows and pagination bullets, re-applied via MutationObserver |
 
 ([Detailed reference](js-ui-components.md))
 

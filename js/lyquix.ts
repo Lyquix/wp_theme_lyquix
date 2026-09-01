@@ -24,6 +24,7 @@
 import { vars, cfg, log, warn, error } from './lib/lyquix/core';
 
 // Import library modules
+import { a11y } from './lib/lyquix/a11y';
 import { analytics } from './lib/lyquix/analytics';
 import { detect } from './lib/lyquix/detect';
 import { geolocate } from './lib/lyquix/geolocate';
@@ -88,7 +89,9 @@ const init = (customCfg) => {
 		'popup',
 		'tabs',
 		'slider',
-		'testimonial'
+		'testimonial',
+		// Accessibility fixes run last, after all widgets have initialized
+		'a11y'
 	];
 
 	// Initialize core config
@@ -139,6 +142,7 @@ const expObj = Object.defineProperties({
 	warn,
 	error,
 	/* JS Modules */
+	a11y,
 	analytics,
 	detect,
 	geolocate,

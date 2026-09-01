@@ -25,7 +25,7 @@
 //  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/tabs/{preset}-tab.tmpl.php
 
 ?>
-<li>
+<li role="presentation">
 	<button
 		class="tab <?= $item['additional_classes'] ? esc_attr($item['additional_classes']) : '' ?>"
 		id="<?= $item['item_id'] ? esc_attr($item['item_id']) . '-tab' : $s['hash'] . '-tab-' . $idx ?>"

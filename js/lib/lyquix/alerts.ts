@@ -63,7 +63,8 @@ export const alerts = (() => {
 				enabled: true,
 				nonInteraction: true,
 				onClose: true, // Sends event on alerts close
-				onPrevNext: true // Sends event on prev/next click
+				onPrevNext: true, // Sends event on prev/next click
+				onClick: true // Sends event on click on links and buttons inside an alert
 			}
 		};
 
@@ -322,6 +323,24 @@ export const alerts = (() => {
 							}
 						});
 
+						// Link and button click listeners
+						if (cfg.alerts.analytics.enabled && cfg.alerts.analytics.onClick) {
+							alertsModuleElem.on('click', 'a[href], button:not(.close)', function () {
+								// Get the heading of the alert that contains the clicked element
+								const heading = jQuery(this)
+									.closest('.' + cfg.alerts.swiperSlideClass)
+									.find(headingStyle == 'p' ? 'p.title strong' : headingStyle)
+									.text();
+
+								// Send event for the click
+								analytics.sendGAEvent({
+									'eventCategory': 'Alerts',
+									'eventAction': 'Click',
+									'eventLabel': analytics.getClickEventLabel(this, heading),
+									'nonInteraction': false
+								});
+							});
+						}
 					} else {
 						// All alerts were expired or closed
 						alertsModuleElem.remove();

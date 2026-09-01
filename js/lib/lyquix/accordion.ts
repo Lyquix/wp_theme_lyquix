@@ -162,6 +162,38 @@ export const accordion = (() => { // Change the accordion name
 						// Close accordion
 						else close(panelId);
 					});
+
+					// Add keyboard navigation listener (Down/Up moves focus between headers,
+					// Home/End jump to first/last, automatically opening the newly focused
+					// panel to match this component's click-to-open behavior)
+					headerElem.on('keydown', (e) => {
+						const allHeaders = accElem.find(cfg.accordion.headerSelector);
+						const currentIndex = allHeaders.index(headerElem.get(0));
+
+						let newIndex;
+						switch (e.key) {
+							case 'ArrowDown':
+								newIndex = (currentIndex + 1) % allHeaders.length;
+								break;
+							case 'ArrowUp':
+								newIndex = (currentIndex - 1 + allHeaders.length) % allHeaders.length;
+								break;
+							case 'Home':
+								newIndex = 0;
+								break;
+							case 'End':
+								newIndex = allHeaders.length - 1;
+								break;
+							default:
+								return;
+						}
+
+						e.preventDefault();
+
+						const newHeaderElem = jQuery(allHeaders.get(newIndex));
+						(newHeaderElem.get(0) as HTMLElement).focus();
+						open(newHeaderElem.attr('id').replace('-header-', '-panel-'));
+					});
 				});
 			});
 		}
