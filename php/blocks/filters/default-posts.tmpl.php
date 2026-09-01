@@ -54,7 +54,7 @@ else if($s['show_no_results_message'] == 'y') {
 	// No posts found
 	?>
 	<div class="no-results">
-		<?= $s['no_results_message'] ?>
+		<?= wp_kses_post(html_entity_decode($s['no_results_message'])) ?>
 	</div>
 	<?php
 }

@@ -160,6 +160,9 @@ add_filter('acf/load_field', function ($field) {
 
     if (!array_key_exists($field['key'], $field_keys)) return $field;
 
+    // Clear any stale choices stored in the JSON/database so dynamic population starts fresh
+    $field['choices'] = [];
+
     // Get all field groups
     $field_groups = acf_get_field_groups();
 
@@ -174,6 +177,10 @@ add_filter('acf/load_field', function ($field) {
         $field['choices']['post_name'] = 'Slug';
         $field['choices']['post_excerpt'] = 'Excerpt';
         $field['choices']['post_content'] = 'Content';
+    }
+
+    if ($field['key'] == 'field_65f475117fcd5') {
+        $field['choices']['post_date'] = 'Date';
     }
 
     if(in_array($field['key'], ['field_65f4752a7fcd6', 'field_65f4752f7fcd7',
@@ -211,6 +218,46 @@ add_filter('acf/load_field', function ($field) {
     }
 
     return $field;
+});
+
+// Strip dynamic choices before ACF saves field groups to JSON, to avoid stale choices from other projects
+add_filter('acf/prepare_field_group_for_export', function ($group) {
+    $dynamic_field_keys = [
+        'field_65f1ea274754b', 'field_6707cced1dfc9', 'field_65f1ebb9ef068',
+        'field_65f248687356f', 'field_67f949359f162', 'field_65f3010821d84',
+        'field_65f471bf7d99b', 'field_65f475117fcd5', 'field_65f4752a7fcd6',
+        'field_65f4752f7fcd7', 'field_65f475367fcd8', 'field_65f4753d7fcd9',
+        'field_65f475457fcda', 'field_65f4754e7fcdb', 'field_66393791fb81d',
+        'field_67f959b5ada75', 'field_67f959d6ada76', 'field_67ffc50abf4de',
+        'field_67ffc530bf4df', 'field_67ffc53fbf4e0', 'field_67ffc561bf4e1',
+        'field_6813b24814413', 'field_6813b2c514414', 'field_68b00001a0005',
+        'field_68b00002a0007', 'field_68b00002a000d', 'field_68b00002a000e',
+        'field_68b00002a000f', 'field_68b00002a0010', 'field_68b00002a0011',
+    ];
+
+    $strip_choices = function (&$fields) use (&$strip_choices, $dynamic_field_keys) {
+        foreach ($fields as &$field) {
+            if (in_array($field['key'], $dynamic_field_keys)) {
+                $field['choices'] = [];
+            }
+            if (!empty($field['sub_fields'])) {
+                $strip_choices($field['sub_fields']);
+            }
+            if (!empty($field['layouts'])) {
+                foreach ($field['layouts'] as &$layout) {
+                    if (!empty($layout['sub_fields'])) {
+                        $strip_choices($layout['sub_fields']);
+                    }
+                }
+            }
+        }
+    };
+
+    if (!empty($group['fields'])) {
+        $strip_choices($group['fields']);
+    }
+
+    return $group;
 });
 
 /**
@@ -633,6 +680,13 @@ function validate_settings($settings)
                 'default' => 'p',
                 'allowed' => ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
             ],
+            'show_view_all' => [
+                'type' => 'string',
+                'required' => true,
+                'default' => 'n',
+                'allowed' => ['dynamic', 'url', 'n']
+            ],
+            'view_all_url' => \lqx\util\schema_str_req_emp,
             'heading_override' => \lqx\util\schema_str_req_emp,
             'group_by' => \lqx\util\schema_str_req_n,
             'group_by_source' => [
@@ -1209,7 +1263,10 @@ function get_options($s)
             case 'field':
                 // Prepare the SQL query to get field values and post counts
                 $field = get_field_object($control['acf_field'], null, true, false, false);
-                $id_statement = ($control['narrow_options'] == 'y' ? "AND `post_id` IN (" . implode(',', array_map('intval', $posts)) . ") " : "");
+                // Always restrict to published posts of the filter's post type, so options
+                // never surface values that only exist on trashed/draft/other-post-type rows.
+                // narrow_options additionally restricts to the currently narrowed post set.
+                $id_statement = ($control['narrow_options'] == 'y' ? "AND `pm`.`post_id` IN (" . implode(',', array_map('intval', $posts)) . ") " : "");
 
                 // Check if this is a sub-field within a group or repeater
                 // ACF sub-fields have a parent that starts with 'field_' (parent field key),
@@ -1226,24 +1283,30 @@ function get_options($s)
                     $like_key = '%' . $escaped_name;
                     $not_like_key = $wpdb->esc_like('_') . '%' . $escaped_name;
                     $sql = $wpdb->prepare(
-                        "SELECT `meta_value`, COUNT(`post_id`) as `count`
-						FROM {$wpdb->postmeta}
-						WHERE `meta_key` LIKE %s
-						AND `meta_key` NOT LIKE %s
-						AND `meta_value` != ''
+                        "SELECT `pm`.`meta_value`, COUNT(`pm`.`post_id`) as `count`
+						FROM {$wpdb->postmeta} pm
+						INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+						WHERE `pm`.`meta_key` LIKE %s
+						AND `pm`.`meta_key` NOT LIKE %s
+						AND `pm`.`meta_value` != ''
+						AND `p`.`post_status` = 'publish'
+						AND `p`.`post_type` = %s
 						$id_statement
-						GROUP BY `meta_value`",
-                        [$like_key, $not_like_key]
+						GROUP BY `pm`.`meta_value`",
+                        [$like_key, $not_like_key, $s['post_type']]
                     );
                 } else {
                     $sql = $wpdb->prepare(
-                        "SELECT `meta_value`, COUNT(`post_id`) as `count`
-						FROM {$wpdb->postmeta}
-						WHERE `meta_key` = %s
-						AND `meta_value` != ''
+                        "SELECT `pm`.`meta_value`, COUNT(`pm`.`post_id`) as `count`
+						FROM {$wpdb->postmeta} pm
+						INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+						WHERE `pm`.`meta_key` = %s
+						AND `pm`.`meta_value` != ''
+						AND `p`.`post_status` = 'publish'
+						AND `p`.`post_type` = %s
 						$id_statement
-						GROUP BY `meta_value`",
-                        [$field['name']]
+						GROUP BY `pm`.`meta_value`",
+                        [$field['name'], $s['post_type']]
                     );
                 }
                 // Execute the query
@@ -1278,14 +1341,14 @@ function get_options($s)
                             }
                         }
                     } else {
-                        if (isset($field['field_choices'])) {
+                        if (isset($field['choices'])) {
                             foreach ($field_values as $field_value) {
                                 // Field with choices like select, radio, checkbox
-                                foreach ($field['field_choices'] as $choice_key => $choice) {
+                                foreach ($field['choices'] as $choice_key => $choice) {
                                     if ($choice_key == $field_value->meta_value) {
-                                        $options[$field_value] = [
+                                        $options[$field_value->meta_value] = [
                                             'value' => $choice_key,
-                                            'slug' => get_post_field('post_name', $choice_key),
+                                            'slug' => \lqx\util\slugify($choice_key),
                                             'text' => $choice,
                                             'disabled' => false,
                                             'selected' => false,
@@ -1304,7 +1367,7 @@ function get_options($s)
                                     $array = json_decode($raw, true);
                                 }
 
-                                if ($array) {
+                                if (is_array($array)) {
                                     foreach ($array as $value) {
                                         if (!array_key_exists($value, $options)) {
                                             $options[$value] = [
@@ -2251,7 +2314,7 @@ function get_posts_with_data($s)
                 case 'maps-php':
                 case 'php':
                     // List of field names that represent WP_Post fields, not ACF fields
-                    $wp_post_keys = ['post_content', 'post_title', 'post_excerpt', 'post_name'];
+                    $wp_post_keys = ['post_content', 'post_title', 'post_excerpt', 'post_name', 'post_date'];
 
                     // Set the defaults
                     $p = [
@@ -2291,6 +2354,8 @@ function get_posts_with_data($s)
                             if (in_array($s['render_php'][$key], $wp_post_keys)) {
                                 if ($s['render_php'][$key] == 'post_excerpt') {
                                     $p[$key] = '<p>' . $post->{$s['render_php'][$key]} . '</p>';
+                                } elseif ($s['render_php'][$key] == 'post_date') {
+                                    $p[$key] = date_i18n('F j, Y', strtotime($post->post_date));
                                 } else {
                                     $p[$key] = $post->{$s['render_php'][$key]};
                                 }
@@ -2403,7 +2468,7 @@ function get_posts_with_data($s)
  */
 function build_item_from_post($post, $s)
 {
-    $wp_post_keys = ['post_content', 'post_title', 'post_excerpt', 'post_name'];
+    $wp_post_keys = ['post_content', 'post_title', 'post_excerpt', 'post_name', 'post_date'];
     $render_php   = $s['render_php'];
 
     $p = [
@@ -2431,9 +2496,13 @@ function build_item_from_post($post, $s)
     foreach (['heading', 'subheading', 'body'] as $key) {
         if (!empty($render_php[$key])) {
             if (in_array($render_php[$key], $wp_post_keys)) {
-                $p[$key] = $render_php[$key] === 'post_excerpt'
-                    ? '<p>' . $post->{$render_php[$key]} . '</p>'
-                    : $post->{$render_php[$key]};
+                if ($render_php[$key] === 'post_excerpt') {
+                    $p[$key] = '<p>' . $post->{$render_php[$key]} . '</p>';
+                } elseif ($render_php[$key] === 'post_date') {
+                    $p[$key] = date_i18n('F j, Y', strtotime($post->post_date));
+                } else {
+                    $p[$key] = $post->{$render_php[$key]};
+                }
             } else {
                 $p[$key] = get_field($render_php[$key], $post->ID);
             }

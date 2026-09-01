@@ -44,7 +44,7 @@ if (
 	<div class="search-wrapper">
 		<label for="<?= $s['hash'] ?>-search"><?= $s['search_placeholder'] ?></label>
 		<input class="search" id="<?= $s['hash'] ?>-search" placeholder="<?= esc_attr($s['search_placeholder']) ?>" value="<?= esc_attr($s['search']) ?>">
-		<button class="search-button" id="<?= $s['hash'] ?>-search-button"></button>
+		<button class="search-button" id="<?= $s['hash'] ?>-search-button" aria-label="<?= esc_attr__('Search', 'lyquix') ?>"></button>
 	</div>
 <?php endif; ?>
 
@@ -202,6 +202,7 @@ if (
 						<span class="label"><?= $control['label'] ?></span>
 						<span class="selected"><?= \lqx\filters\get_selected_option_label($control) ?></span>
 					</label>
+					<button type="button" class="control-clear" aria-label="Clear <?= esc_attr($control['label']) ?> filter"></button>
 
 					<ul class="control-list" id="<?= $s['hash'] ?>-control-<?= $j ?>" role="combobox" aria-labelledby="<?= $s['hash'] ?>-control-<?= $j ?>-label">
 

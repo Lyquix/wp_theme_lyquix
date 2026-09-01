@@ -474,7 +474,7 @@ export const filters = (() => {
 			html += `<div class="search-wrapper">` +
 				`<label for="${id}-search">${s.search_placeholder || ''}</label>` +
 				`<input class="search" id="${id}-search" placeholder="${escAttr(s.search_placeholder)}" value="${escAttr(s.search)}">` +
-				`<button class="search-button" id="${id}-search-button"></button>` +
+				`<button class="search-button" id="${id}-search-button" aria-label="Search"></button>` +
 				`</div>`;
 		}
 
@@ -546,6 +546,7 @@ export const filters = (() => {
 							`<span class="label">${ctrl.label || ''}</span>` +
 							`<span class="selected">${selectedLabel}</span>` +
 							`</label>` +
+							`<button type="button" class="control-clear" aria-label="Clear ${escAttr(ctrl.label || '')} filter"></button>` +
 							`<ul class="control-list" id="${baseId}" role="combobox" aria-labelledby="${baseId}-label">` +
 							viewAllLi + liHtml + `</ul>`;
 						break;
@@ -891,6 +892,14 @@ export const filters = (() => {
 							} else {
 								controlsSelector.removeClass('open-list');
 							}
+						});
+
+						// Clear the control when the clear icon is clicked, without also toggling the list open
+						controlWrapper.find('.control-clear').off('click.lqxfilters').on('click.lqxfilters', (e) => {
+							e.preventDefault();
+							e.stopPropagation();
+							controlChange(id, controlName, '');
+							control.find('li').removeClass('selected');
 						});
 						break;
 					case 'button':
@@ -2040,11 +2049,14 @@ export const filters = (() => {
 		addListeners(id);
 
 		// Scroll to top if necessary
-		const postsElem = vars.filters.filters[id].elem.find(cfg.filters.postsSelector);
-		if (postsElem.offset().top < jQuery(window).scrollTop() || postsElem.offset().top > jQuery(window).scrollTop() + jQuery(window).height() * 0.25) {
-			jQuery('html, body').animate({
-				scrollTop: postsElem.offset().top - jQuery(window).height() * 0.25
-			}, 500);
+		const postsElem = vars.filters.filters[id].elem.find(`${cfg.filters.postsSelector}, .no-results`);
+		if (postsElem.length) {
+			const postsOffset = postsElem.offset();
+			if (postsOffset.top < jQuery(window).scrollTop() || postsOffset.top > jQuery(window).scrollTop() + jQuery(window).height() * 0.25) {
+				jQuery('html, body').animate({
+					scrollTop: postsOffset.top - jQuery(window).height() * 0.25
+				}, 500);
+			}
 		}
 	};
 
