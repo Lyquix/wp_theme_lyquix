@@ -418,6 +418,10 @@ function run_early_ip_region_detect() {
 	$_COOKIE['ipDetectedRegion'] = $region;
 }
 
+// When this file is loaded before WordPress (e.g. required from wp-config.php for
+// early IP region detection), WP functions don't exist yet — skip hook registration
+if (!function_exists('add_action')) return;
+
 add_action('acf/save_post', function($post_id) {
     if ($post_id !== 'options') return;
 
