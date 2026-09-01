@@ -205,16 +205,25 @@ function render_lyquix_options() {
 	$theme_lqx_options = json_decode(get_theme_mod('lqx_options'), true);
 	if (is_array($theme_lqx_options)) $lqx_options = array_replace_recursive($lqx_options, $theme_lqx_options);
 	$lqx_options = apply_filters('lqx_options', $lqx_options);
+	// lyquix.js is loaded with defer, so the bundle may not have executed yet when this
+	// inline runs: listen for lqxload on both event systems (the bundle announces itself
+	// with a jQuery trigger, which native addEventListener cannot hear); init is run-once
 	echo '<script>((lqxOptions) => {
 		if (typeof lqx !== "undefined" && typeof lqx.init === "function") lqx.init(lqxOptions);
-		else document.addEventListener("lqxload", function () { lqx.init(lqxOptions); });
+		else {
+			document.addEventListener("lqxload", function () { lqx.init(lqxOptions); });
+			if (window.jQuery) jQuery(document).one("lqxload", function () { lqx.init(lqxOptions); });
+		}
 	})(JSON.parse(new TextDecoder().decode(Uint8Array.from(atob("' . base64_encode(json_encode($lqx_options)) . '"), c => c.charCodeAt(0)))));</script>';
 
 	$scripts_options = json_decode(get_theme_mod('scripts_options'), true);
 	if (!is_array($scripts_options)) $scripts_options = [];
 	echo '<script>(($lqxOptions) => {
 		if (typeof $lqx !== "undefined" && typeof $lqx.init === "function") $lqx.init($lqxOptions);
-		else document.addEventListener("$lqxload", function () { $lqx.init($lqxOptions); });
+		else {
+			document.addEventListener("$lqxload", function () { $lqx.init($lqxOptions); });
+			if (window.jQuery) jQuery(document).one("$lqxload", function () { $lqx.init($lqxOptions); });
+		}
 	})(JSON.parse(new TextDecoder().decode(Uint8Array.from(atob("' . base64_encode(json_encode($scripts_options)) . '"), c => c.charCodeAt(0)))));</script>';
 }
 
