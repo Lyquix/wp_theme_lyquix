@@ -211,6 +211,6 @@ add_action('wp_enqueue_scripts', function () {
 function render_page_custom_css() {
 	if (function_exists('get_field')) {
 		$custom_css = get_field('custom_css');
-		if ($custom_css) echo "<style>\n" . $custom_css . "\n</style>";
+		if ($custom_css) echo "<style>\n" . str_ireplace('</style', '<\/style', $custom_css) . "\n</style>";
 	}
 }

@@ -311,6 +311,30 @@ function theme_setup() {
 		});
 	}
 
+	// Per-post custom CSS/JS is site-executed code: only users with unfiltered_html may see or save it
+	foreach (['field_651d94db713ae', 'field_651d977c0a688'] as $lqx_code_field_key) {
+		add_filter('acf/prepare_field/key=' . $lqx_code_field_key, function ($field) {
+			return current_user_can('unfiltered_html') ? $field : false;
+		});
+		add_filter('acf/update_value/key=' . $lqx_code_field_key, function ($value, $post_id, $field) {
+			if (current_user_can('unfiltered_html')) return $value;
+			return get_field($field['name'], $post_id, false); // keep the stored value untouched
+		}, 10, 3);
+	}
+
+	// Users without manage_options can never assign the Administrator role or edit administrators
+	add_filter('editable_roles', function ($roles) {
+		if (!current_user_can('manage_options')) unset($roles['administrator']);
+		return $roles;
+	});
+	add_filter('map_meta_cap', function ($caps, $cap, $user_id, $args) {
+		if (in_array($cap, ['edit_user', 'delete_user', 'promote_user', 'remove_user'], true) && !empty($args[0]) && !user_can($user_id, 'manage_options')) {
+			$target = get_userdata((int) $args[0]);
+			if ($target && in_array('administrator', (array) $target->roles, true)) $caps[] = 'do_not_allow';
+		}
+		return $caps;
+	}, 10, 4);
+
 	// Add or remove user management capabilities on the editor user role
 	if (get_theme_mod('feat_user_management_editors', '1') === '1') {
 		add_action('admin_init', function () {

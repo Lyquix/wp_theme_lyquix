@@ -47,7 +47,7 @@ function rest_route()
 		$curl_err = curl_errno($ch);
 
 		// Check if the response code is 200
-		if ($curl_info['http_code'] !== 200 || $curl_err !== 0) return ['error' => 'Error downloading database', 'curl_info' => $curl_info, 'curl_err' => curl_error($ch)];
+		if ($curl_info['http_code'] !== 200 || $curl_err !== 0) return ['error' => 'Error downloading database', 'http_code' => $curl_info['http_code'] ?? 0];
 		curl_close($ch);
 
 		$fh = fopen($db_tar_gz, 'w');

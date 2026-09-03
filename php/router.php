@@ -162,6 +162,10 @@ function render() {
 
 		// There was an unexpected template request, or the theme default templates are missing
 		else {
+			// Never expose query internals to visitors: only admins with WP_DEBUG see the dump
+			if (!(defined('WP_DEBUG') && WP_DEBUG && current_user_can('manage_options'))) {
+				wp_die('No suitable template found', 'No suitable template found', ['response' => 500]);
+			}
 			$msg = [
 				"<h1>Error: no suitable template found</h1>",
 				"<pre>",
