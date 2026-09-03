@@ -224,7 +224,7 @@ export const analytics = (() => {
 			initTracking();
 		}
 		else if (count < 600) setTimeout(() => {
-			checkGA(count++);
+			checkGA(count + 1);
 		}, 100);
 		else {
 			vars.analytics.status = 'n/a';

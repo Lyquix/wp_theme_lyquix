@@ -29,9 +29,19 @@ function render() {
 	if (get_theme_mod('browser_alert', 1)) : ?>
 	<script>
 	((u) => {
-		var s = document.createElement('script');
-		s.src = u + '&ua=' + encodeURIComponent(lqx.util.hash(window.navigator.userAgent));
-		document.getElementsByTagName('head')[0].appendChild(s);
+		// lyquix.js loads deferred: run once lqx is available (both event systems, run-once)
+		var done = false;
+		var run = () => {
+			if (done) return; done = true;
+			var s = document.createElement('script');
+			s.src = u + '&ua=' + encodeURIComponent(lqx.util.hash(window.navigator.userAgent));
+			document.getElementsByTagName('head')[0].appendChild(s);
+		};
+		if (window.lqx && lqx.util) run();
+		else {
+			document.addEventListener('lqxload', run);
+			if (window.jQuery) jQuery(document).one('lqxload', run);
+		}
 	})('<?= get_template_directory_uri() ?>/php/browsers/?accepted=<?= get_theme_mod('accepted_browser_versions', 3) ?>');
 	</script>
 <?php endif;
