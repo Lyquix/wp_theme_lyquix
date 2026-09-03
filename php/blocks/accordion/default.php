@@ -42,6 +42,7 @@ $s = \lqx\util\validate_data($settings['processed'], [
 		'show_header_image' => \lqx\util\schema_str_req_y,
 		'show_image' => \lqx\util\schema_str_req_y,
 		'lazy_load' => \lqx\util\schema_str_req_y,
+		'faq_schema' => \lqx\util\schema_str_req_n,
 		'heading_style' => [
 			'type' => 'string',
 			'required' => true,
@@ -67,6 +68,10 @@ if (empty($s)) {
 	if (\lqx\util\is_local_environment()) throw new \Exception('Invalid block settings: ' . var_export($settings['processed'], true));
 	return;
 }
+
+// FAQ Schema: the Content tab field overrides the global setting when set
+$faq_schema = get_field('faq_schema');
+if ($faq_schema === 'y' || $faq_schema === 'n') $s['faq_schema'] = $faq_schema;
 
 // Get content and filter our invalid content
 $c = array_filter(array_map(function($item) {

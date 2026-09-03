@@ -49,3 +49,25 @@
 	</div>
 
 </section>
+
+<?php if ($s['faq_schema'] == 'y'): ?>
+	<?php
+	$faq_entities = [];
+	foreach ($c as $item) {
+		$faq_entities[] = [
+			'@type' => 'Question',
+			'name' => trim(wp_strip_all_tags($item['heading'])),
+			'acceptedAnswer' => [
+				'@type' => 'Answer',
+				'text' => trim(wp_strip_all_tags($item['content']))
+			]
+		];
+	}
+	$faq_schema = [
+		'@context' => 'https://schema.org',
+		'@type' => 'FAQPage',
+		'mainEntity' => $faq_entities
+	];
+	?>
+	<script type="application/ld+json"><?= wp_json_encode($faq_schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?></script>
+<?php endif; ?>

@@ -129,44 +129,6 @@
                     "append": "",
                     "parent_repeater": "field_65301b9bb6ce8"
                 },
-							{
-								"key": "field_68076aecf118d",
-								"label": "Header Image",
-								"name": "header_image",
-								"aria-label": "",
-								"type": "image",
-								"instructions": "",
-								"required": 0,
-								"conditional_logic": 0,
-								"wrapper": {
-									"width": "",
-									"class": "",
-									"id": ""
-								},
-								"hide_field": "",
-								"hide_label": "",
-								"hide_instructions": "",
-								"hide_required": "",
-								"uploader": "",
-								"return_format": "array",
-								"library": "all",
-								"upload_folder": "",
-								"acfe_thumbnail": 0,
-								"acfe_settings": "",
-								"acfe_validate": "",
-								"min_width": "",
-								"min_height": "",
-								"min_size": "",
-								"max_width": "",
-								"max_height": "",
-								"max_size": "",
-								"mime_types": "",
-								"acfe_permissions": "",
-								"instruction_placement": "",
-								"allow_in_bindings": 0,
-								"preview_size": "medium",
-								"parent_repeater": "field_65301b9bb6ce8"
-							},
                 {
                     "key": "field_65302bf5062cd",
                     "label": "Content",
@@ -251,6 +213,44 @@
                     "parent_repeater": "field_65301b9bb6ce8"
                 },
                 {
+                    "key": "field_68076aecf118d",
+                    "label": "Header Image",
+                    "name": "header_image",
+                    "aria-label": "",
+                    "type": "image",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "hide_field": "",
+                    "hide_label": "",
+                    "hide_instructions": "",
+                    "hide_required": "",
+                    "uploader": "",
+                    "return_format": "array",
+                    "library": "all",
+                    "upload_folder": "",
+                    "acfe_thumbnail": 0,
+                    "acfe_settings": "",
+                    "acfe_validate": "",
+                    "min_width": "",
+                    "min_height": "",
+                    "min_size": "",
+                    "max_width": "",
+                    "max_height": "",
+                    "max_size": "",
+                    "mime_types": "",
+                    "acfe_permissions": "",
+                    "instruction_placement": "",
+                    "allow_in_bindings": 0,
+                    "preview_size": "medium",
+                    "parent_repeater": "field_65301b9bb6ce8"
+                },
+                {
                     "key": "field_66634fc721f10",
                     "label": "Additional Classes",
                     "name": "additional_classes",
@@ -309,6 +309,37 @@
                     "parent_repeater": "field_65301b9bb6ce8"
                 }
             ]
+        },
+        {
+            "key": "field_6901ba0000008",
+            "label": "FAQ Schema",
+            "name": "faq_schema",
+            "aria-label": "",
+            "type": "button_group",
+            "instructions": "Set to Yes to output FAQPage schema (JSON-LD) for this accordion",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "hide_field": "",
+            "hide_label": "",
+            "hide_instructions": "",
+            "hide_required": "",
+            "choices": {
+                "y": "Yes",
+                "n": "No"
+            },
+            "default_value": "n",
+            "return_format": "value",
+            "acfe_settings": "",
+            "acfe_validate": "",
+            "allow_null": 1,
+            "acfe_permissions": "",
+            "instruction_placement": "tooltip",
+            "layout": "horizontal"
         }
     ],
     "location": [
@@ -329,13 +360,14 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "acfe_autosync": [
-        "json"
-    ],
-    "acfe_form": 1,
-    "acfe_display_title": "",
-    "acfe_permissions": "",
-    "acfe_meta": "",
-    "acfe_note": "",
-    "modified": 1743416639
+    "display_title": "",
+    "allow_ai_access": false,
+    "ai_description": "",
+    "acfe": {
+        "autosync": [
+            "json"
+        ],
+        "advanced": "1"
+    },
+    "modified": 1788437897
 }
