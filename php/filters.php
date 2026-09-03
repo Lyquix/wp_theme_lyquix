@@ -1754,13 +1754,13 @@ function prepare_query($query, $s)
                     global $wpdb;
 
                     $region_query = 'SELECT p.ID
-						FROM gqhmnv_posts as p, gqhmnv_postmeta as pm
-						WHERE p.post_type = \'' . $s['post_type'] . '\'
+						FROM ' . $wpdb->posts . ' as p, ' . $wpdb->postmeta . ' as pm
+						WHERE p.post_type = %s
 							AND p.post_status = \'publish\'
 							AND p.ID = pm.post_id
 							AND pm.meta_key = \'related_regions\'
 							AND pm.meta_value LIKE %s';
-                    $sql = $wpdb->remove_placeholder_escape($wpdb->prepare($region_query, '%"' . $wpdb->esc_like($region) . '"%'));
+                    $sql = $wpdb->remove_placeholder_escape($wpdb->prepare($region_query, $s['post_type'], '%"' . $wpdb->esc_like($region) . '"%'));
                     $items = $wpdb->get_results($sql);
 
                     $final_list = [];
@@ -1875,9 +1875,9 @@ function prepare_query($query, $s)
 											POINT(lng_meta.meta_value, lat_meta.meta_value),
 											POINT(%f, %f)
 										) AS distance_m
-							FROM gqhmnv_posts p
-							JOIN gqhmnv_postmeta lat_meta ON p.ID = lat_meta.post_id AND lat_meta.meta_key = \'latitude\'
-							JOIN gqhmnv_postmeta lng_meta ON p.ID = lng_meta.post_id AND lng_meta.meta_key = \'longitude\'
+							FROM ' . $wpdb->posts . ' p
+							JOIN ' . $wpdb->postmeta . ' lat_meta ON p.ID = lat_meta.post_id AND lat_meta.meta_key = \'latitude\'
+							JOIN ' . $wpdb->postmeta . ' lng_meta ON p.ID = lng_meta.post_id AND lng_meta.meta_key = \'longitude\'
 							WHERE p.post_type = \'locations\'
 								AND p.post_status = \'publish\'
 								HAVING distance_m < %f
@@ -1920,9 +1920,9 @@ function prepare_query($query, $s)
 											POINT(lng_meta.meta_value, lat_meta.meta_value),
 											POINT(%f, %f)
 										) AS distance_m
-							FROM gqhmnv_posts p
-							JOIN gqhmnv_postmeta lat_meta ON p.ID = lat_meta.post_id AND lat_meta.meta_key = \'latitude\'
-							JOIN gqhmnv_postmeta lng_meta ON p.ID = lng_meta.post_id AND lng_meta.meta_key = \'longitude\'
+							FROM ' . $wpdb->posts . ' p
+							JOIN ' . $wpdb->postmeta . ' lat_meta ON p.ID = lat_meta.post_id AND lat_meta.meta_key = \'latitude\'
+							JOIN ' . $wpdb->postmeta . ' lng_meta ON p.ID = lng_meta.post_id AND lng_meta.meta_key = \'longitude\'
 							WHERE p.post_type = \'locations\'
 								AND p.post_status = \'publish\'
 								HAVING distance_m < %f
@@ -1954,7 +1954,7 @@ function prepare_query($query, $s)
                         /*global $wpdb;
 
                         $region_query = 'SELECT p.ID
-                            FROM gqhmnv_posts as p, gqhmnv_postmeta as pm
+                            FROM ' . $wpdb->posts . ' as p, ' . $wpdb->postmeta . ' as pm
                             WHERE p.post_type = \'physicians\'
                                 AND p.post_status = \'publish\'
                                 AND p.ID = pm.post_id
@@ -2943,6 +2943,26 @@ function handle_api_call($request)
         return new \WP_Error('lqx_filters_invalid_payload', 'Invalid request payload', ['status' => 400]);
     }
     $p = $v['data'];
+
+    // Only user-interaction keys may override server-side settings. merge_settings() deep-merges
+    // whatever it receives, and the rest of the settings tree (post_type, pre_filters, render_*,
+    // callbacks...) comes from ACF and must never be client-controlled.
+    $p = array_intersect_key($p, array_flip(['preset', 'post_id', 'style', 'hash', 'anchor', 'controls', 'search', 'pagination']));
+    foreach (['hash', 'anchor'] as $k) {
+        if (isset($p[$k])) $p[$k] = preg_replace('/[^A-Za-z0-9_-]/', '', (string) $p[$k]);
+    }
+    if (isset($p['controls']) && is_array($p['controls'])) {
+        $allowed_control_keys = array_flip(apply_filters(
+            'lqx_filters_payload_control_keys',
+            ['type', 'taxonomy', 'acf_field', 'selected', 'miles', 'lat', 'lng', 'lon', 'address']
+        ));
+        foreach ($p['controls'] as $i => $control) {
+            $p['controls'][$i] = is_array($control) ? array_intersect_key($control, $allowed_control_keys) : [];
+        }
+    }
+    if (isset($p['pagination']) && is_array($p['pagination'])) {
+        $p['pagination'] = array_intersect_key($p['pagination'], array_flip(['page', 'posts_per_page']));
+    }
 
     // Get settings
     $settings = \lqx\blocks\get_settings('filters', $p['post_id'], $p['preset'], $p['style']);
