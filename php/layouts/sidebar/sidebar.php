@@ -26,6 +26,10 @@
 $classes = \lqx\layouts\get_tailwind_classes();
 if (array_key_exists('className', $block) && !empty($block['className']) ) $classes .= ' ' . $block['className'];
 
+// Apply the selected Style (defined in Site Settings > Layout) as a class
+$style = get_field('style');
+if ($style) $classes .= ' ' . $style;
+
 ?>
 <div id="<?= esc_attr($block['anchor'] ?? '') ?>" class="sidebar-l <?= $classes ?>">
 	<InnerBlocks />

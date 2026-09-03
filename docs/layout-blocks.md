@@ -117,7 +117,7 @@ Reel > [Image 1] + [Image 2] + [Image 3] + ...
 ### Box
 Adds padding around its content. Configure padding values through Tailwind utility fields.
 
-Named styles can be defined under **Site Settings > Box** (a repeater of style slugs). Each Box block instance can then pick a style from a dropdown, and the selected slug is added as a CSS class on the `box-l` element for the child theme to style.
+Like every layout block, Box supports named styles — see **Layout block styles** below.
 
 ### Center
 Centers content horizontally with a configurable max-width. Uses `margin-inline: auto`.
@@ -179,3 +179,7 @@ add_filter('acf/blocks/wrap_frontend_innerblocks', function ($wrap, $name) {
     return true;
 }, 10, 2);
 ```
+
+## Layout block styles
+
+Every layout block has a **Style** dropdown in its block settings. The available styles are defined once per block under **Site Settings > Layout**, which has one tab per layout block (Box, Center, Cluster, Container, Cover, Frame, Grid, Icon, Imposter, Reel, Sidebar, Stack, Switcher) holding a *Styles* repeater of style slugs (`<block>_block_styles`). The selected slug is appended as a CSS class on the block's root element (for example `box-l my-style`) for the child theme to target. Style values are included in the Block Settings Sync export, so they travel with the project repo like the content blocks' styles.

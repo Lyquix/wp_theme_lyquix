@@ -88,24 +88,42 @@ if (get_theme_mod('feat_layout_blocks', '1') === '1') {
 		return true;
 	}, 10, 2);
 
-	// Populate the Box block's Style dropdown from the Box Site Settings page
-	add_filter('acf/load_field/key=field_fee77bc4d8220', function ($field) {
-		// Only needed in the block editor to populate the style dropdown
-		if (!is_admin() && !(defined('REST_REQUEST') && REST_REQUEST)) return $field;
+	// Populate each layout block's Style dropdown from its Styles repeater on the
+	// Site Settings > Layout page (field name: <block>_block_styles, one tab per block)
+	$layout_style_fields = [
+		'box' => 'field_fee77bc4d8220',
+		'center' => 'field_25af950c75b24',
+		'luster' => 'field_708fdfc23fd3a',
+		'container' => 'field_d9cf4850f29d6',
+		'cover' => 'field_89920973daf15',
+		'frame' => 'field_e2c5691d5bffa',
+		'grid' => 'field_16bd134a8f00d',
+		'icon' => 'field_91fd844e76ab0',
+		'imposter' => 'field_2cc7d1523268c',
+		'reel' => 'field_24cebc6d20341',
+		'sidebar' => 'field_e2d506c15ac88',
+		'stack' => 'field_37ab950d92e58',
+		'switcher' => 'field_a4da1ecb0b542'
+	];
+	foreach ($layout_style_fields as $layout_block => $style_field_key) {
+		add_filter('acf/load_field/key=' . $style_field_key, function ($field) use ($layout_block) {
+			// Only needed in the block editor to populate the style dropdown
+			if (!is_admin() && !(defined('REST_REQUEST') && REST_REQUEST)) return $field;
 
-		static $choices = null;
-		if ($choices === null) {
-			$choices = ['' => 'Select'];
-			if (have_rows('box_block_styles', 'option')) {
-				while (have_rows('box_block_styles', 'option')) {
-					the_row();
-					$value = get_sub_field('style_name');
-					if ($value) $choices[$value] = $value;
+			static $choices = [];
+			if (!isset($choices[$layout_block])) {
+				$choices[$layout_block] = ['' => 'Select'];
+				if (function_exists('have_rows') && have_rows($layout_block . '_block_styles', 'option')) {
+					while (have_rows($layout_block . '_block_styles', 'option')) {
+						the_row();
+						$value = get_sub_field('style_name');
+						if ($value) $choices[$layout_block][$value] = $value;
+					}
 				}
 			}
-		}
 
-		$field['choices'] = $choices;
-		return $field;
-	});
+			$field['choices'] = $choices[$layout_block];
+			return $field;
+		});
+	}
 }
