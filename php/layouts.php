@@ -80,6 +80,13 @@ if (get_theme_mod('feat_layout_blocks', '1') === '1') {
 		}
 	});
 
+	// Legacy: the Cluster block was registered as 'lqx/luster' (typo) until 3.5.1.
+	// No known content uses the old name, but render any stray legacy block as the Cluster block.
+	add_filter('render_block_data', function ($parsed_block) {
+		if (($parsed_block['blockName'] ?? '') === 'lqx/luster') $parsed_block['blockName'] = 'lqx/cluster';
+		return $parsed_block;
+	}, 5);
+
 	// ACF Inner Blocks should wrap
 	add_filter('acf/blocks/wrap_frontend_innerblocks', function ($wrap, $name) {
 		if (str_contains($name, 'lqx/')) {
@@ -93,7 +100,7 @@ if (get_theme_mod('feat_layout_blocks', '1') === '1') {
 	$layout_style_fields = [
 		'box' => 'field_fee77bc4d8220',
 		'center' => 'field_25af950c75b24',
-		'luster' => 'field_708fdfc23fd3a',
+		'cluster' => 'field_708fdfc23fd3a',
 		'container' => 'field_d9cf4850f29d6',
 		'cover' => 'field_89920973daf15',
 		'frame' => 'field_e2c5691d5bffa',

@@ -165,7 +165,7 @@
         {
             "key": "field_87faa30034994",
             "label": "Styles",
-            "name": "luster_block_styles",
+            "name": "cluster_block_styles",
             "aria-label": "",
             "type": "repeater",
             "instructions": "Named styles for the Cluster layout block. Each style name becomes a CSS class you can target in the child theme.",

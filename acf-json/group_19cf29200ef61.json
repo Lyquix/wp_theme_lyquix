@@ -47,7 +47,7 @@
             {
                 "param": "block",
                 "operator": "==",
-                "value": "lqx/luster"
+                "value": "lqx/cluster"
             }
         ]
     ],

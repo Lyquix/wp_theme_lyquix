@@ -22,7 +22,7 @@
 		"*  DO NOT MODIFY THIS FILE!",
 		"*/"
 	],
-	"name": "lqx/luster",
+	"name": "lqx/cluster",
 	"title": "Lyquix Cluster",
 	"description": "A Cluster block",
 	"category": "lqx-layout-blocks",
