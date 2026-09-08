@@ -22,6 +22,7 @@
 		"*  DO NOT MODIFY THIS FILE!",
 		"*/"
 	],
+	"apiVersion": 3,
 	"name": "lqx/testimonial",
 	"title": "Lyquix Testimonial",
 	"description": "A Testimonial block",
@@ -30,13 +31,12 @@
 	"keywords": [
 		"testimonial"
 	],
-	"acf": {
-		"mode": "edit",
-		"renderTemplate": "testimonial.php"
-	},
 	"supports": {
 		"align": false,
-		"anchor": true,
-		"mode" : false
+		"anchor": true
+	},
+	"acf": {
+		"renderTemplate": "testimonial.php",
+		"blockVersion": 3
 	}
 }

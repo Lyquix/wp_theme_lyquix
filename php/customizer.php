@@ -183,16 +183,32 @@ function customizer_add($wp_customize)
 				'type' => 'textarea',
 				'label' => 'Scripts Options',
 			],
-			'dayjs' => [
+			'recaptcha_scope' => [
 				'type' => 'radio',
-				'label' => 'Day.js library',
-				'choices' => ['0' => 'No', '1' => 'Yes'],
-				'default' => '1'
+				'label' => 'reCAPTCHA scripts',
+				'choices' => [
+					'all' => 'Every page (best bot scoring)',
+					'forms' => 'Only pages with a form (lighter pages)'
+				],
+				'default' => 'all'
+			],
+			'jquery_version' => [
+				'type' => 'radio',
+				'label' => 'Front-end jQuery version',
+				'choices' => [
+					'4' => 'jQuery 4 (with Migrate 4)',
+					'core' => 'WordPress default'
+				],
+				'default' => '4'
 			],
 			'swiperjs' => [
 				'type' => 'radio',
 				'label' => 'Swiper library',
-				'choices' => ['0' => 'No', '1' => 'Yes'],
+				'choices' => [
+					'0' => 'No',
+					'1' => 'Yes, on every page',
+					'2' => 'Only on pages that need it'
+				],
 				'default' => '1'
 			],
 			'add_js_libraries' => [
@@ -798,8 +814,8 @@ if (class_exists('\WP_Customize_Control')) {
 				<?php foreach ($values as $label => $viewport) : ?>
 					<label>
 						<?= esc_html($label); ?>
-						<input type="number" value="<?= esc_attr($viewport['width']); ?>" data-viewport="<?= $label; ?>-width" />
-						<input type="number" value="<?= esc_attr($viewport['height']); ?>" data-viewport="<?= $label; ?>-height" />
+						<input type="number" value="<?= esc_attr($viewport['width']); ?>" data-viewport="<?= esc_attr($label) ?>-width" />
+						<input type="number" value="<?= esc_attr($viewport['height']); ?>" data-viewport="<?= esc_attr($label) ?>-height" />
 					</label>
 					<br>
 				<?php endforeach; ?>

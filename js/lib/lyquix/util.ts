@@ -687,9 +687,39 @@ export const util = (() => {
 		};
 	};
 
+	/**
+	 * Parse a date string into a timestamp in milliseconds.
+	 *
+	 * Replaces Day.js, which was loaded on every page to do exactly this. ACF hands
+	 * back 'YYYY-MM-DD HH:mm:ss', which Safari and older engines reject outright and
+	 * others read as UTC rather than local time, so the space is normalised to 'T'
+	 * before handing the string to Date. A bare 'YYYY-MM-DD' is left alone: the spec
+	 * says to read it as UTC, and that is what Day.js did with it too.
+	 *
+	 * @param {string} dateStr - the date string to parse
+	 *
+	 * @returns {number} milliseconds since the epoch, or NaN when unparseable
+	 */
+	const parseDate = (dateStr: string): number => {
+		if (!dateStr) return NaN;
+
+		const str = String(dateStr).trim();
+
+		// 'YYYY-MM-DD HH:mm(:ss)' - local time, same as Day.js
+		if (/^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}(:\d{2})?$/.test(str)) {
+			const [datePart, timePart] = str.split(/[ T]/);
+			const [y, m, d] = datePart.split('-').map(Number);
+			const [hh, mm, ss] = timePart.split(':').map(Number);
+			return new Date(y, m - 1, d, hh, mm, ss || 0).getTime();
+		}
+
+		return Date.parse(str);
+	};
+
 	return {
 		init,
 		cookie,
+		parseDate,
 		getVideoUrls,
 		hash,
 		parseUrlParams,

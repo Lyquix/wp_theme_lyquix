@@ -31,6 +31,6 @@ $style = get_field('style');
 if ($style) $classes .= ' ' . $style;
 
 ?>
-<div id="<?= esc_attr($block['anchor'] ?? '') ?>" class="cluster-l <?= $classes ?>">
+<div id="<?= esc_attr($block['anchor'] ?? '') ?>" class="cluster-l <?= esc_attr($classes) ?>">
 	<InnerBlocks />
 </div>

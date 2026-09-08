@@ -22,6 +22,7 @@
 		"*  DO NOT MODIFY THIS FILE!",
 		"*/"
 	],
+	"apiVersion": 3,
 	"name": "lqx/banner",
 	"title": "Lyquix Banner",
 	"description": "A banner block",
@@ -30,13 +31,12 @@
 	"keywords": [
 		"banner"
 	],
-	"acf": {
-		"mode": "edit",
-		"renderTemplate": "banner.php"
-	},
 	"supports": {
 		"align": false,
-		"anchor": true,
-		"mode" : false
+		"anchor": true
+	},
+	"acf": {
+		"renderTemplate": "banner.php",
+		"blockVersion": 3
 	}
 }

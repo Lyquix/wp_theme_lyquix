@@ -22,6 +22,7 @@
 		"*  DO NOT MODIFY THIS FILE!",
 		"*/"
 	],
+	"apiVersion": 3,
 	"name": "lqx/reel",
 	"title": "Lyquix Reel",
 	"description": "A Reel block",
@@ -30,13 +31,12 @@
 	"keywords": [
 		"reel"
 	],
-	"acf": {
-		"mode": "preview",
-		"renderTemplate": "reel.php"
-	},
 	"supports": {
 		"align": false,
-		"anchor": true,
-		"mode": false
+		"anchor": true
+	},
+	"acf": {
+		"renderTemplate": "reel.php",
+		"blockVersion": 3
 	}
 }

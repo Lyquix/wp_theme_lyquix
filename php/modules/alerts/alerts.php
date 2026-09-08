@@ -78,10 +78,9 @@ function rest_route() {
 
 // Register a REST API endpoint to get the alerts from site options
 add_action('rest_api_init', function () {
-	register_rest_route('lyquix/v3', '/alerts', [
+	\lqx\rest\register_public_route('alerts', [
 		'methods' => 'GET',
 		'callback' => '\lqx\modules\alerts\rest_route',
-		'permission_callback' => '__return_true',
 	]);
 });
 

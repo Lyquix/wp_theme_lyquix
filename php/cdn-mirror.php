@@ -79,19 +79,16 @@ function get_url($cdn_url) {
  * Filter `lqx_cdn_mirror_urls` allows projects to extend the list.
  */
 function get_managed_urls() {
-	$urls = [
-		// Mobile-Detect — always enqueued
-		'https://cdn.jsdelivr.net/npm/mobile-detect@1/mobile-detect.min.js',
-	];
+	$urls = [];
 
-	if (get_theme_mod('dayjs', 1)) {
-		$urls[] = 'https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js';
-		$urls[] = 'https://cdn.jsdelivr.net/npm/dayjs@1/locale/en.js';
+	if (get_theme_mod('jquery_version', '4') === '4') {
+		$urls[] = 'https://cdn.jsdelivr.net/npm/jquery@4/dist/jquery.min.js';
+		if (get_theme_mod('enable_jquery_migrate', '1')) $urls[] = 'https://cdn.jsdelivr.net/npm/jquery-migrate@4/dist/jquery-migrate.min.js';
 	}
 
 	if (get_theme_mod('swiperjs', 1)) {
-		$urls[] = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js';
-		$urls[] = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css';
+		$urls[] = 'https://cdn.jsdelivr.net/npm/swiper@14/swiper-bundle.min.js';
+		$urls[] = 'https://cdn.jsdelivr.net/npm/swiper@14/swiper-bundle.min.css';
 	}
 
 	// Vue — mirror both prod and dev builds since which one is enqueued depends

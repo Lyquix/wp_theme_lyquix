@@ -49,10 +49,9 @@ function rest_route() {
 
 // Register REST API endpoint
 add_action('rest_api_init', function () {
-	register_rest_route('lyquix/v3', '/leaving-site-alert', [
+	\lqx\rest\register_public_route('leaving-site-alert', [
 		'methods' => 'GET',
 		'callback' => '\lqx\modules\leaving_site_alert\rest_route',
-		'permission_callback' => '__return_true',
 	]);
 });
 

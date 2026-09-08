@@ -27,9 +27,9 @@
 if ($item['link']) : ?>
 <div class="card-link">
 	<a
-		class="<?= $item['link_style'] == 'button' ? 'button' : 'readmore' ?>"
+		class="<?= esc_attr($item['link_style'] == 'button' ? 'button' : 'readmore') ?>"
 		href="<?= esc_attr($item['link']['url']) ?>"
-		target="<?= $item['link']['target'] ?? '' ?>">
+		target="<?= esc_attr($item['link']['target'] ?? '') ?>">
 		<?= $item['link']['title'] ? $item['link']['title'] : 'Read More' ?>
 	</a>
 </div>

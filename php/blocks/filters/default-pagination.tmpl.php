@@ -27,25 +27,25 @@
 $p = $s['pagination'];
 
 if ($p['total_pages'] > 1 && $p['pagination'] == 'y') : ?>
-<div class="pagination" id="<?= $s['hash'] ?>-pagination">
+<div class="pagination" id="<?= esc_attr($s['hash']) ?>-pagination">
 
 	<ul class="pageslinks">
 
-		<li class="page-first<?= ($p['page'] == 1 ? ' inactive' : '') ?>" data-page="1" aria-label="First Page">First</li>
-		<li class="page-prev<?= ($p['page'] == 1 ? ' inactive' : '') ?>" data-page="<?= $p['page'] > 1 ? $p['page'] - 1 : 1 ?>" aria-label="Previous Page">Prev</li>
+		<li class="page-first<?= esc_attr(($p['page'] == 1 ? ' inactive' : '')) ?>" data-page="1" aria-label="First Page">First</li>
+		<li class="page-prev<?= esc_attr(($p['page'] == 1 ? ' inactive' : '')) ?>" data-page="<?= esc_attr($p['page'] > 1 ? $p['page'] - 1 : 1) ?>" aria-label="Previous Page">Prev</li>
 
 		<?php if ($p['page_numbers'] == 1) : ?>
 
 			<?php if ($p['page'] > 1) : ?><li class="page-ellipsis">&ctdot;</li><?php endif; ?>
 
-			<li class="page-number current" data-page="<?= $p['page'] ?>" aria-label="Page <?= $p['page'] ?>"><?= $p['page'] ?></li>
+			<li class="page-number current" data-page="<?= esc_attr($p['page']) ?>" aria-label="Page <?= esc_attr($p['page']) ?>"><?= $p['page'] ?></li>
 
 			<?php if ($p['page'] < $p['total_pages']) : ?><li class="page-ellipsis">&ctdot;</li><?php endif; ?>
 
 		<?php elseif ($p['page_numbers'] == 'all') : ?>
 			<?php for ($i = 1; $i <= $p['total_pages']; $i++) : ?>
 
-			<li class="page-number<?= $i == $p['page'] ? ' current' : '' ?>" data-page="<?= $i ?>" aria-label="Page <?= $i ?>"><?= $i ?></li>
+			<li class="page-number<?= esc_attr($i == $p['page'] ? ' current' : '') ?>" data-page="<?= esc_attr($i) ?>" aria-label="Page <?= esc_attr($i) ?>"><?= esc_html($i) ?></li>
 
 			<?php endfor;	?>
 		<?php else : ?>
@@ -76,7 +76,7 @@ if ($p['total_pages'] > 1 && $p['pagination'] == 'y') : ?>
 
 			<?php foreach ($range as $i) : ?>
 
-				<li class="page-number<?= $i == $p['page'] ? ' current' : '' ?>" data-page="<?= $i ?>" aria-label="Page <?= $i ?>"><?= $i ?></li>
+				<li class="page-number<?= esc_attr($i == $p['page'] ? ' current' : '') ?>" data-page="<?= esc_attr($i) ?>" aria-label="Page <?= esc_attr($i) ?>"><?= esc_html($i) ?></li>
 
 			<?php endforeach; ?>
 
@@ -85,8 +85,8 @@ if ($p['total_pages'] > 1 && $p['pagination'] == 'y') : ?>
 		<?php endif; ?>
 
 
-		<li class="page-next<?= ($p['page'] == $p['total_pages'] ? ' inactive' : '') ?>" data-page="<?= $p['page'] < $p['total_pages'] ? $p['page'] + 1 : $p['total_pages'] ?>" aria-label="Next Page">Next</li>
-		<li class="page-last<?= ($p['page'] == $p['total_pages'] ? ' inactive' : '') ?>" data-page="<?= $i ?>" aria-label="Last Page">Last</li>
+		<li class="page-next<?= esc_attr(($p['page'] == $p['total_pages'] ? ' inactive' : '')) ?>" data-page="<?= esc_attr($p['page'] < $p['total_pages'] ? $p['page'] + 1 : $p['total_pages']) ?>" aria-label="Next Page">Next</li>
+		<li class="page-last<?= esc_attr(($p['page'] == $p['total_pages'] ? ' inactive' : '')) ?>" data-page="<?= esc_attr($i) ?>" aria-label="Last Page">Last</li>
 
 	</ul>
 

@@ -28,8 +28,8 @@
 <ul class="labels">
 	<?php foreach ($item['labels'] as $label) : ?>
 		<li
-			data-label-value="<?= $label['value'] ? $label['value'] : \lqx\util\slugify($label['label']) ?>">
-			<?= $label['label'] ?>
+			data-label-value="<?= esc_attr($label['value'] ? $label['value'] : \lqx\util\slugify($label['label'])) ?>">
+			<?= esc_html($label['label']) ?>
 		</li>
 	<?php endforeach; ?>
 </ul>

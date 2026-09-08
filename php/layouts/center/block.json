@@ -22,6 +22,7 @@
 		"*  DO NOT MODIFY THIS FILE!",
 		"*/"
 	],
+	"apiVersion": 3,
 	"name": "lqx/center",
 	"title": "Lyquix Center",
 	"description": "A Center block",
@@ -30,13 +31,12 @@
 	"keywords": [
 		"center"
 	],
-	"acf": {
-		"mode": "preview",
-		"renderTemplate": "center.php"
-	},
 	"supports": {
 		"align": false,
-		"anchor": true,
-		"mode": false
+		"anchor": true
+	},
+	"acf": {
+		"renderTemplate": "center.php",
+		"blockVersion": 3
 	}
 }

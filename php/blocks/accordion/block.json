@@ -22,6 +22,7 @@
 		"*  DO NOT MODIFY THIS FILE!",
 		"*/"
 	],
+	"apiVersion": 3,
 	"name": "lqx/accordion",
 	"title": "Lyquix Accordion",
 	"description": "An Accordion block",
@@ -30,13 +31,12 @@
 	"keywords": [
 		"accordion"
 	],
-	"acf": {
-		"mode": "edit",
-		"renderTemplate": "accordion.php"
-	},
 	"supports": {
 		"align": false,
-		"anchor": true,
-		"mode" : false
+		"anchor": true
+	},
+	"acf": {
+		"renderTemplate": "accordion.php",
+		"blockVersion": 3
 	}
 }

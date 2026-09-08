@@ -147,9 +147,30 @@ export const mutation = (() => {
 		return o;
 	};
 
+	/**
+	 * Normalize whatever a handler was given into a plain array of elements.
+	 *
+	 * Mutation handlers receive a single-element jQuery object, while the same
+	 * functions are usually also called directly at init with a NodeList from
+	 * querySelectorAll, or with a bare element. jQuery objects expose `length` but
+	 * not `forEach`, so code that branched on `length` broke when the mutation
+	 * observer started wrapping matched descendants.
+	 *
+	 * @param {object} elems - jQuery object, NodeList, array, or single element
+	 *
+	 * @returns {array} the elements as a plain array
+	 */
+	const toElements = (elems) => {
+		if (!elems) return [];
+		if (typeof elems.toArray === 'function') return elems.toArray();
+		if (typeof elems.length === 'number') return Array.prototype.slice.call(elems);
+		return [elems];
+	};
+
 	return {
 		init,
-		addHandler
+		addHandler,
+		toElements
 	};
 
 })();

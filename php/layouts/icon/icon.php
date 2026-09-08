@@ -31,6 +31,6 @@ $style = get_field('style');
 if ($style) $classes .= ' ' . $style;
 
 ?>
-<span id="<?= esc_attr($block['anchor'] ?? '') ?>" class="icon-l <?= $classes ?>">
+<span id="<?= esc_attr($block['anchor'] ?? '') ?>" class="icon-l <?= esc_attr($classes) ?>">
 	<InnerBlocks />
 </span>

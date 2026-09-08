@@ -22,6 +22,7 @@
 		"*  DO NOT MODIFY THIS FILE!",
 		"*/"
 	],
+	"apiVersion": 3,
 	"name": "lqx/switcher",
 	"title": "Lyquix Switcher",
 	"description": "A Switcher block",
@@ -30,13 +31,12 @@
 	"keywords": [
 		"switcher"
 	],
-	"acf": {
-		"mode": "preview",
-		"renderTemplate": "switcher.php"
-	},
 	"supports": {
 		"align": false,
-		"anchor": true,
-		"mode": false
+		"anchor": true
+	},
+	"acf": {
+		"renderTemplate": "switcher.php",
+		"blockVersion": 3
 	}
 }

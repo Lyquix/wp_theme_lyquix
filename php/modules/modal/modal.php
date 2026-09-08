@@ -103,9 +103,8 @@ function rest_route() {
 
 // Register a REST API endpoint to get the modal from site options
 add_action('rest_api_init', function () {
-	register_rest_route('lyquix/v3', '/modal', [
+	\lqx\rest\register_public_route('modal', [
 		'methods' => 'GET',
 		'callback' => '\lqx\modules\modal\rest_route',
-		'permission_callback' => '__return_true',
 	]);
 });

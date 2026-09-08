@@ -28,19 +28,19 @@
 <section
 	class="tab-panel  <?= $item['additional_classes'] ? esc_attr($item['additional_classes']) : '' ?>"
 	id="<?= $item['item_id'] ? esc_attr($item['item_id']) . '-panel' : $s['hash'] . '-panel-' . $idx ?>"
-	aria-labelledby="<?= $s['hash'] . '-tab-' . $idx ?>"
-	aria-hidden="<?= $idx == 0 ? 'false' : 'true' ?>"
+	aria-labelledby="<?= esc_attr($s['hash'] . '-tab-' . $idx) ?>"
+	aria-hidden="<?= esc_attr($idx == 0 ? 'false' : 'true') ?>"
 	role="tabpanel"
 	tabindex="0">
 
 	<?php if (count($s['convert_to_accordion'])) : ?>
 		<button
 			class="accordion-header"
-			id="<?= $s['hash'] . '-header-' . $idx ?>"
-			aria-expanded="<?= $idx == 0 ? 'true' : 'false' ?>"
-			aria-controls="<?= $s['hash'] . '-panel-' . $idx ?>"
+			id="<?= esc_attr($s['hash'] . '-header-' . $idx) ?>"
+			aria-expanded="<?= esc_attr($idx == 0 ? 'true' : 'false') ?>"
+			aria-controls="<?= esc_attr($s['hash'] . '-panel-' . $idx) ?>"
 			aria-hidden="true">
-			<?= $item['label'] ?>
+			<?= esc_html($item['label']) ?>
 		</button>
 		<?php if (!empty($item['subheading'])): ?>
 				<<?= $s['subheading_style'] ?>
@@ -50,17 +50,17 @@
 				</<?= $s['subheading_style'] ?>>
 		<?php endif; ?>
 		<?php if (!empty($item['header_image']['url']) && ($s['show_header_image'] == 'y')): ?>
-			<img src="<?= htmlspecialchars($item['header_image']['url'], ENT_QUOTES, 'UTF-8') ?>" <?= \lqx\util\get_alt_attribs($item['header_image']['alt'] ?? '') ?> <?= $s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '' ?>>
+			<img src="<?= esc_url(htmlspecialchars($item['header_image']['url'], ENT_QUOTES, 'UTF-8')) ?>" <?= \lqx\util\get_alt_attribs($item['header_image']['alt'] ?? '') ?> <?= $s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '' ?>>
 		<?php endif; ?>
 	<?php endif; ?>
 
 	<div
 		class="tab-content"
-		id="<?= $s['hash'] . '-content-' . $idx ?>">
+		id="<?= esc_attr($s['hash'] . '-content-' . $idx) ?>">
 		<?= $item['heading'] ? sprintf('<%s>%s</%s>', $s['heading_style'], $item['heading'], $s['heading_style']) : '' ?>
 		<?= $item['content'] ?>
 		<?php if (!empty($item['image']['url']) && ($s['show_image'] == 'y')): ?>
-			<img src="<?= htmlspecialchars($item['image']['url'], ENT_QUOTES, 'UTF-8') ?>" <?= \lqx\util\get_alt_attribs($item['image']['alt'] ?? '') ?> <?= $s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '' ?>>
+			<img src="<?= esc_url(htmlspecialchars($item['image']['url'], ENT_QUOTES, 'UTF-8')) ?>" <?= \lqx\util\get_alt_attribs($item['image']['alt'] ?? '') ?> <?= $s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '' ?>>
 		<?php endif; ?>
 	</div>
 

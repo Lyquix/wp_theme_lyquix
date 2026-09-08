@@ -22,6 +22,7 @@
 		"*  DO NOT MODIFY THIS FILE!",
 		"*/"
 	],
+	"apiVersion": 3,
 	"name": "lqx/tab-item",
 	"title": "Lyquix Tab Item",
 	"description": "A Tab Item block",
@@ -31,15 +32,19 @@
 		"tabs",
 		"tab-item"
 	],
-	"acf": {
-		"mode": "preview",
-		"renderTemplate": "tab-item.php"
-	},
+	"parent": [
+		"lqx/tabs-plus"
+	],
 	"supports": {
 		"align": false,
 		"anchor": true,
 		"jsx": true
 	},
-	"parent": ["lqx/tabs-plus"],
-	"usesContext": ["acf/fields"]
+	"usesContext": [
+		"acf/fields"
+	],
+	"acf": {
+		"renderTemplate": "tab-item.php",
+		"blockVersion": 3
+	}
 }

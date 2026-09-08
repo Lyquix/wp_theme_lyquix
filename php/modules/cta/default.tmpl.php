@@ -24,13 +24,13 @@
 //  If you need a custom renderer, copy this file to php/custom/modules/cta/default.tmpl.php and modify it there
 ?>
 <section class="lqx-module-cta">
-	<div class="cta <?= $cta['slim_cta'] == 'y' ? 'slim' : '' ?> <?= $cta['style'] ?>">
+	<div class="cta <?= esc_attr($cta['slim_cta'] == 'y' ? 'slim' : '') ?> <?= $cta['style'] ?>">
 		<div class="image">
 			<?php if (array_key_exists('url', $cta['image'])) : ?>
 				<img
 					src="<?= esc_attr($cta['image']['url']) ?>"
 					<?= \lqx\util\get_alt_attribs($cta['image']['alt'] ?? '') ?>
-					class="<?= array_key_exists('url', $cta['image_mobile']) ? 'xs-hide sm-hide' : '' ?>"
+					class="<?= esc_attr(array_key_exists('url', $cta['image_mobile']) ? 'xs-hide sm-hide' : '') ?>"
 					<?= $s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '' ?> />
 			<?php endif;
 			if (array_key_exists('url',$cta['image_mobile'])) : ?>
@@ -52,9 +52,9 @@
 					<?php foreach($cta['links'] as $link):?>
 						<li>
 							<a
-								class="<?= $link['type'] == 'button' ? 'button': 'readmore' ?>"
+								class="<?= esc_attr($link['type'] == 'button' ? 'button': 'readmore') ?>"
 								href="<?= esc_attr($link['link']['url']) ?>"
-								target="<?= $link['link']['target'] ?>">
+								target="<?= esc_attr($link['link']['target']) ?>">
 								<?= $link['link']['title'] ?>
 							</a>
 						</li>

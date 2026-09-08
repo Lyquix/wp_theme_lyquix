@@ -28,9 +28,9 @@
 <<?= $s['heading_style'] ?>>
 	<button
 		class="accordion-header"
-		id="<?= $s['hash'] . '-header-' . $idx ?>"
-		aria-expanded="<?= $idx == 0 && $s['open_on_load'] == 'y' ? 'true' : 'false' ?>"
-		aria-controls="<?= $s['hash'] . '-panel-' . $idx ?>">
+		id="<?= esc_attr($s['hash'] . '-header-' . $idx) ?>"
+		aria-expanded="<?= esc_attr($idx == 0 && $s['open_on_load'] == 'y' ? 'true' : 'false') ?>"
+		aria-controls="<?= esc_attr($s['hash'] . '-panel-' . $idx) ?>">
 		<?= $item['heading'] ?>
 	</button>
 </<?= $s['heading_style'] ?>>
@@ -42,5 +42,5 @@
 <?php endif; ?>
 
 <?php if (!empty($item['header_image']['url']) && ($s['show_header_image'] == 'y')): ?>
-	<img src="<?= htmlspecialchars($item['header_image']['url'], ENT_QUOTES, 'UTF-8') ?>" <?= \lqx\util\get_alt_attribs($item['header_image']['alt'] ?? '') ?> <?= $s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '' ?>>
+	<img src="<?= esc_url(htmlspecialchars($item['header_image']['url'], ENT_QUOTES, 'UTF-8')) ?>" <?= \lqx\util\get_alt_attribs($item['header_image']['alt'] ?? '') ?> <?= $s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '' ?>>
 <?php endif; ?>

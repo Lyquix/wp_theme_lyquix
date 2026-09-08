@@ -22,6 +22,7 @@
 		"*  DO NOT MODIFY THIS FILE!",
 		"*/"
 	],
+	"apiVersion": 3,
 	"name": "lqx/map",
 	"title": "Lyquix Map",
 	"description": "An locations block with support for a map and items list",
@@ -31,13 +32,12 @@
 		"locations",
 		"map"
 	],
-	"acf": {
-		"mode": "edit",
-		"renderTemplate": "map.php"
-	},
 	"supports": {
 		"align": false,
-		"anchor": true,
-		"mode" : false
+		"anchor": true
+	},
+	"acf": {
+		"renderTemplate": "map.php",
+		"blockVersion": 3
 	}
 }

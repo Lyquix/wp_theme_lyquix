@@ -22,6 +22,7 @@
 		"*  DO NOT MODIFY THIS FILE!",
 		"*/"
 	],
+	"apiVersion": 3,
 	"name": "lqx/sidebar",
 	"title": "Lyquix Sidebar",
 	"description": "A Sidebar block",
@@ -30,13 +31,12 @@
 	"keywords": [
 		"sidebar"
 	],
-	"acf": {
-		"mode": "preview",
-		"renderTemplate": "sidebar.php"
-	},
 	"supports": {
 		"align": false,
-		"anchor": true,
-		"mode": false
+		"anchor": true
+	},
+	"acf": {
+		"renderTemplate": "sidebar.php",
+		"blockVersion": 3
 	}
 }

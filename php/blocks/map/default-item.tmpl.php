@@ -49,11 +49,11 @@ if ($item['image'] && $s['items_display_settings']['show_image'] == 'y'): ?>
 	<?php if ($item['phone_numbers'] && $s['items_display_settings']['show_phone_numbers'] == 'y'): ?>
 	<div class="phone-numbers">
 		<?php foreach($item['phone_numbers'] as $phone): ?>
-			<div><?= $phone['label']?>: <a href=tel:"<?= $phone['phone_number'] ?>"><?= $phone['phone_number'] ?></a></div>
+			<div><?= esc_html($phone['label']) ?>: <a href="tel:<?= esc_attr($phone['phone_number']) ?>"><?= esc_html($phone['phone_number']) ?></a></div>
 		<?php endforeach; ?>
 	</div>
 	<?php endif; ?>
 	<?php if ($s['items_display_settings']['show_description'] == 'y'):?> <?= $item['description'] ?> <?php endif; ?>
 	<?php if (is_array($item['business_hours']) && count($item['business_hours']) > 0 && $s['items_display_settings']['show_business_hours'] == 'y') require \lqx\blocks\get_template('map', $s['preset'], 'office-hours'); ?>
-	<?php	if ($s['show_get_directions_link'] == 'y'): ?><a href="https://maps.google.com/?q=<?=URLEncode($item['address'])?>">Get Directions</a><?php endif;?>
+	<?php	if ($s['show_get_directions_link'] == 'y'): ?><a href="https://maps.google.com/?q=<?= esc_url(URLEncode($item['address'])) ?>">Get Directions</a><?php endif;?>
 </div>

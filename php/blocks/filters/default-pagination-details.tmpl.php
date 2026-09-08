@@ -27,9 +27,9 @@
 ?>
 <div class="pagination-details">
 	<div class="page-details">
-		Page <?= $p['page'] ?> of <?= $p['total_pages'] ?>
+		Page <?= $p['page'] ?> of <?= esc_html($p['total_pages']) ?>
 	</div>
 	<div class="posts-details">
-		Posts <?= (($p['page'] - 1) * $p['posts_per_page']) + 1 ?> to <?= min($p['page'] * $p['posts_per_page'], $p['total_posts']) ?> of <?= $p['total_posts'] ?>
+		Posts <?= (($p['page'] - 1) * $p['posts_per_page']) + 1 ?> to <?= min($p['page'] * $p['posts_per_page'], $p['total_posts']) ?> of <?= esc_html($p['total_posts']) ?>
 	</div>
 </div>

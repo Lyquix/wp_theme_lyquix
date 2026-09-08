@@ -33,10 +33,10 @@
 	<div
 		class="accordion"
 		id="<?= esc_attr($s['hash']) ?>"
-		data-open-on-load="<?= $s['open_on_load'] ?>"
-		data-open-multiple="<?= $s['open_multiple'] ?>"
-		data-browser-history="<?= $s['browser_history'] ?>"
-		data-auto-scroll="<?= implode(',', $s['auto_scroll']) ?>">
+		data-open-on-load="<?= esc_attr($s['open_on_load']) ?>"
+		data-open-multiple="<?= esc_attr($s['open_multiple']) ?>"
+		data-browser-history="<?= esc_attr($s['browser_history']) ?>"
+		data-auto-scroll="<?= esc_attr(implode(',', $s['auto_scroll'])) ?>">
 
 		<?php foreach ($c as $idx => $item) : ?>
 			<div

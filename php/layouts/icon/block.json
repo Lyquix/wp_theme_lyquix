@@ -22,6 +22,7 @@
 		"*  DO NOT MODIFY THIS FILE!",
 		"*/"
 	],
+	"apiVersion": 3,
 	"name": "lqx/icon",
 	"title": "Lyquix Icon",
 	"description": "A Icon block",
@@ -30,13 +31,12 @@
 	"keywords": [
 		"icon"
 	],
-	"acf": {
-		"mode": "preview",
-		"renderTemplate": "icon.php"
-	},
 	"supports": {
 		"align": false,
-		"anchor": true,
-		"mode": false
+		"anchor": true
+	},
+	"acf": {
+		"renderTemplate": "icon.php",
+		"blockVersion": 3
 	}
 }

@@ -22,6 +22,7 @@
 		"*  DO NOT MODIFY THIS FILE!",
 		"*/"
 	],
+	"apiVersion": 3,
 	"name": "lqx/hero",
 	"title": "Lyquix Hero",
 	"description": "A banner block meant for the top of the page",
@@ -30,13 +31,12 @@
 	"keywords": [
 		"banner"
 	],
-	"acf": {
-		"mode": "edit",
-		"renderTemplate": "hero.php"
-	},
 	"supports": {
 		"align": false,
-		"anchor": true,
-		"mode" : false
+		"anchor": true
+	},
+	"acf": {
+		"renderTemplate": "hero.php",
+		"blockVersion": 3
 	}
 }

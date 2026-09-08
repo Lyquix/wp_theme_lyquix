@@ -22,6 +22,7 @@
 		"*  DO NOT MODIFY THIS FILE!",
 		"*/"
 	],
+	"apiVersion": 3,
 	"name": "lqx/tabs-plus",
 	"title": "Lyquix Tabs Plus",
 	"description": "A Tabs Plus block",
@@ -30,15 +31,15 @@
 	"keywords": [
 		"tabs"
 	],
-	"acf": {
-		"mode": "preview",
-		"renderTemplate": "tabs-plus.php"
-	},
 	"supports": {
 		"align": false,
 		"anchor": true
 	},
 	"providesContext": {
 		"acf/fields": "data"
+	},
+	"acf": {
+		"renderTemplate": "tabs-plus.php",
+		"blockVersion": 3
 	}
 }

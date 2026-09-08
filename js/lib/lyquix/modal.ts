@@ -24,7 +24,7 @@ import { vars, cfg, log, warn, error } from './core';
 import { util } from './util';
 import { analytics } from './analytics';
 
-declare const dayjs, jQuery;
+declare const jQuery;
 
 /**
  * This module provides functionality for modals in a web page.
@@ -165,10 +165,10 @@ export const modal = (() => {
 						if (util.cookie(modal.id) !== null) return;
 
 						// Skip if modal hasn't started yet
-						if (modal.start_date != '' && now < dayjs(modal.start_date).valueOf()) return;
+						if (modal.start_date != '' && now < util.parseDate(modal.start_date)) return;
 
 						// Skip if modal has expired
-						if (modal.expiration != '' && now > dayjs(modal.expiration).valueOf()) return;
+						if (modal.expiration != '' && now > util.parseDate(modal.expiration)) return;
 
 						// Skip if there's no content
 						if (!modal.heading && !modal.body) return;

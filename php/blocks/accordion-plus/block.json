@@ -22,6 +22,7 @@
 		"*  DO NOT MODIFY THIS FILE!",
 		"*/"
 	],
+	"apiVersion": 3,
 	"name": "lqx/accordion-plus",
 	"title": "Lyquix Accordion Plus",
 	"description": "An Accordion Plus block",
@@ -31,15 +32,15 @@
 		"accordion",
 		"plus"
 	],
-	"acf": {
-		"mode": "preview",
-		"renderTemplate": "accordion-plus.php"
-	},
 	"supports": {
 		"align": false,
 		"anchor": true
 	},
 	"providesContext": {
 		"acf/fields": "data"
+	},
+	"acf": {
+		"renderTemplate": "accordion-plus.php",
+		"blockVersion": 3
 	}
 }

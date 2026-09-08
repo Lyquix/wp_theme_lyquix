@@ -22,6 +22,7 @@
 		"*  DO NOT MODIFY THIS FILE!",
 		"*/"
 	],
+	"apiVersion": 3,
 	"name": "lqx/cards",
 	"title": "Lyquix Cards",
 	"description": "An cards block",
@@ -30,13 +31,12 @@
 	"keywords": [
 		"cards"
 	],
-	"acf": {
-		"mode": "edit",
-		"renderTemplate": "cards.php"
-	},
 	"supports": {
 		"align": false,
-		"anchor": true,
-		"mode" : false
+		"anchor": true
+	},
+	"acf": {
+		"renderTemplate": "cards.php",
+		"blockVersion": 3
 	}
 }

@@ -48,7 +48,7 @@ $html .= '<div class="text">';
 	$html .= '<div class="phone-numbers">';
 	if (is_array($phone_numbers)):
 		foreach($phone_numbers as $phone):
-			$html .=	'<div>' . $phone['label'] . ': <a href=tel:"' . $phone['phone_number'] .'">' . $phone['phone_number'] . '</a></div>';
+			$html .=	'<div>' . esc_html($phone['label']) . ': <a href="tel:' . esc_attr($phone['phone_number']) . '">' . esc_html($phone['phone_number']) . '</a></div>';
 		endforeach;
 	endif;
 	$html .= '</div>';

@@ -22,6 +22,7 @@
 		"*  DO NOT MODIFY THIS FILE!",
 		"*/"
 	],
+	"apiVersion": 3,
 	"name": "lqx/cluster",
 	"title": "Lyquix Cluster",
 	"description": "A Cluster block",
@@ -30,13 +31,12 @@
 	"keywords": [
 		"cluster"
 	],
-	"acf": {
-		"mode": "preview",
-		"renderTemplate": "cluster.php"
-	},
 	"supports": {
 		"align": false,
-		"anchor": true,
-		"mode": false
+		"anchor": true
+	},
+	"acf": {
+		"renderTemplate": "cluster.php",
+		"blockVersion": 3
 	}
 }

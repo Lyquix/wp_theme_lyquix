@@ -22,6 +22,7 @@
 		"*  DO NOT MODIFY THIS FILE!",
 		"*/"
 	],
+	"apiVersion": 3,
 	"name": "lqx/stack",
 	"title": "Lyquix Stack",
 	"description": "A Stack block",
@@ -30,13 +31,12 @@
 	"keywords": [
 		"stack"
 	],
-	"acf": {
-		"mode": "preview",
-		"renderTemplate": "stack.php"
-	},
 	"supports": {
 		"align": false,
-		"anchor": true,
-		"mode": false
+		"anchor": true
+	},
+	"acf": {
+		"renderTemplate": "stack.php",
+		"blockVersion": 3
 	}
 }

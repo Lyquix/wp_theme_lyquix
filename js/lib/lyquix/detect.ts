@@ -22,7 +22,6 @@
 
 import { vars, cfg, log } from './core';
 import { util } from './util';
-declare let MobileDetect: (a: string) => void;
 const ua: string = window.navigator.userAgent;
 
 /**
@@ -85,30 +84,42 @@ export const detect = (() => {
 		return (match && match.length > 1 && match[2]) || '';
 	};
 
-	// Uses the mobile-detect.js library to detect if the browser is a mobile device
+	// Detects whether the browser is a phone or a tablet
 	// Adds the classes mobile, phone and tablet to the body tag if applicable
+	//
+	// Replaces the mobile-detect.js library, which shipped a ~40KB device database to
+	// answer three booleans. Client Hints are used where the browser provides them and
+	// the user agent string is the fallback, same as before.
 	const detectMobile = () => {
-		if (typeof MobileDetect == 'function') {
-			const md = new MobileDetect(window.navigator.userAgent);
-			const r = {
-				mobile: false,
-				phone: false,
-				tablet: false
-			};
+		const uaData = (window.navigator as any).userAgentData;
 
-			for (const key of Object.keys(r)) {
-				r[key] = (md[key]() !== null);
-				if (r[key]) vars.body.addClass(key);
-			}
+		// iPadOS 13+ reports itself as a desktop Macintosh; touch points give it away
+		const isIpadOS = /Macintosh/i.test(ua) && navigator.maxTouchPoints > 1;
 
-			log('Detect mobile', r);
-			vars.detect.mobile = r;
-			return true;
+		const tablet = isIpadOS
+			|| /iPad|PlayBook|Silk|Kindle|Tablet|Nexus (?:7|9|10)/i.test(ua)
+			|| (/Android/i.test(ua) && !/Mobile/i.test(ua));
+
+		// Either signal is enough: Client Hints are absent on Safari and can disagree with
+		// an overridden user agent string, and the string is absent from nothing.
+		const phone = !tablet && (
+			/iPhone|iPod|Windows Phone|BlackBerry|BB10|Opera Mini|IEMobile|webOS|(?:Android.*Mobile)/i.test(ua)
+			|| (uaData && uaData.mobile === true)
+		);
+
+		const r = {
+			mobile: phone || tablet,
+			phone: phone,
+			tablet: tablet
+		};
+
+		for (const key of Object.keys(r)) {
+			if (r[key]) vars.body.addClass(key);
 		}
-		else {
-			log('MobileDetect library not loaded');
-			return false;
-		}
+
+		log('Detect mobile', r);
+		vars.detect.mobile = r;
+		return true;
 	};
 
 	// Detects the browser name, type and version, and sets body classes
@@ -169,7 +180,7 @@ export const detect = (() => {
 		}
 
 		// Add classes to body
-		if (browser.type && browser.version) {
+		if (browser && browser.type && browser.version) {
 			// browser type
 			vars.body.addClass(browser.type);
 			// browser type and major version
@@ -248,8 +259,10 @@ export const detect = (() => {
 			};
 		}
 
-		// Add classes to body
-		if (os.type && os.version) {
+		// Add classes to body. A user agent that matches none of the branches above
+		// (headless browsers, bots, new engines) leaves os undefined — guard rather
+		// than throw, which would abort lqx.init() for every module after this one.
+		if (os && os.type && os.version) {
 			// os type
 			vars.body.addClass(os.type);
 			// os type and major version

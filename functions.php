@@ -36,6 +36,8 @@ nocache_headers();
 require_once get_template_directory() . '/php/util.php';
 
 // Remove comments
+require_once get_template_directory() . '/php/rest.php';
+
 require_once get_template_directory() . '/php/comments.php';
 
 // Theme setup
@@ -117,6 +119,9 @@ require_once get_template_directory() . '/php/options.php';
 require_once get_template_directory() . '/php/block-settings-sync.php';
 
 // QR Code Generator
+// SVG upload sanitizer
+require_once get_template_directory() . '/php/svg.php';
+
 require_once get_template_directory() . '/php/qr-code.php';
 
 // URL Shortener

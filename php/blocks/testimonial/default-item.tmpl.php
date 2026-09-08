@@ -26,14 +26,14 @@
 
 ?>
 <li
-	class="<?= $s['slider'] == 'y' ? 'swiper-slide' : 'testimonial-slide' ?> <?= $item['additional_classes'] ? esc_attr($item['additional_classes']) : '' ?>"
-	id="<?= $item['item_id'] ?: $s['hash'] . '-' . $idx ?>"
-	<?php if($item['background_color']): ?> style="background: <?= $item['background_color'] ?>" <?php endif; ?>
+	class="<?= esc_attr($s['slider'] == 'y' ? 'swiper-slide' : 'testimonial-slide') ?> <?= $item['additional_classes'] ? esc_attr($item['additional_classes']) : '' ?>"
+	id="<?= esc_attr($item['item_id'] ?: $s['hash'] . '-' . $idx) ?>"
+	<?php if($item['background_color']): ?> style="background: <?= esc_attr($item['background_color']) ?>" <?php endif; ?>
 	>
-	<blockquote <?php if($item['foreground_color']): ?> style="--text-color: <?= $item['foreground_color'] ?>" <?php endif; ?>><?= $item['content'] ?></blockquote>
+	<blockquote <?php if($item['foreground_color']): ?> style="--text-color: <?= esc_attr($item['foreground_color']) ?>" <?php endif; ?>><?= $item['content'] ?></blockquote>
 	<?php if ($item['name'] !== ''): ?>
 	<div class="author-wrapper">
-		<div class="testimonial-author" <?php if($item['foreground_color']): ?> style="--text-color: <?= $item['foreground_color'] ?>" <?php endif; ?>>
+		<div class="testimonial-author" <?php if($item['foreground_color']): ?> style="--text-color: <?= esc_attr($item['foreground_color']) ?>" <?php endif; ?>>
 			<span class="name !m-0"><?= strip_tags($item['name']) ?></span>
 			<?php if ($item['job_title'] !== '' && $item['job_title'] !== null): ?><span class="job-title ml-[1ch] lg:m-0"><?= strip_tags($item['job_title']) ?></span><?php endif; ?>
 			<?php if ($item['company_name'] !== '' && $item['company_name'] !== null): ?><span class="company_name ml-[1ch] lg:m-0"><?= strip_tags($item['company_name']) ?></span><?php endif; ?>

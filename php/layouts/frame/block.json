@@ -22,6 +22,7 @@
 		"*  DO NOT MODIFY THIS FILE!",
 		"*/"
 	],
+	"apiVersion": 3,
 	"name": "lqx/frame",
 	"title": "Lyquix Frame",
 	"description": "A Frame block",
@@ -30,13 +31,12 @@
 	"keywords": [
 		"frame"
 	],
-	"acf": {
-		"mode": "preview",
-		"renderTemplate": "frame.php"
-	},
 	"supports": {
 		"align": false,
-		"anchor": true,
-		"mode": false
+		"anchor": true
+	},
+	"acf": {
+		"renderTemplate": "frame.php",
+		"blockVersion": 3
 	}
 }

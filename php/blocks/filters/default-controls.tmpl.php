@@ -31,20 +31,20 @@ if (
 ) :
 ?>
 
-<div class="controls" id="<?= $s['hash'] ?>-controls">
+<div class="controls" id="<?= esc_attr($s['hash']) ?>-controls">
 
 <?php if ($s['show_open_close'] == 'y') : ?>
 	<div class="open-close-wrapper">
-		<button id="<?= $s['hash'] ?>-open" class="open"><?= $s['open_label'] ?></button>
-		<button id="<?= $s['hash'] ?>-close" class="close"><?= $s['close_label'] ?></button>
+		<button id="<?= esc_attr($s['hash']) ?>-open" class="open"><?= esc_html($s['open_label']) ?></button>
+		<button id="<?= esc_attr($s['hash']) ?>-close" class="close"><?= esc_html($s['close_label']) ?></button>
 	</div>
 <?php endif; ?>
 
 <?php if ($s['show_search'] == 'y') : ?>
 	<div class="search-wrapper">
-		<label for="<?= $s['hash'] ?>-search"><?= $s['search_placeholder'] ?></label>
-		<input class="search" id="<?= $s['hash'] ?>-search" placeholder="<?= esc_attr($s['search_placeholder']) ?>" value="<?= esc_attr($s['search']) ?>">
-		<button class="search-button" id="<?= $s['hash'] ?>-search-button" aria-label="<?= esc_attr__('Search', 'lyquix') ?>"></button>
+		<label for="<?= esc_attr($s['hash']) ?>-search"><?= esc_html($s['search_placeholder']) ?></label>
+		<input class="search" id="<?= esc_attr($s['hash']) ?>-search" placeholder="<?= esc_attr($s['search_placeholder']) ?>" value="<?= esc_attr($s['search']) ?>">
+		<button class="search-button" id="<?= esc_attr($s['hash']) ?>-search-button" aria-label="<?= esc_attr__('Search', 'lyquix') ?>"></button>
 	</div>
 <?php endif; ?>
 
@@ -54,22 +54,22 @@ if (
 
 		<div class="control-tabs-wrapper">
 
-			<ul class="control-tabs" id="<?= $s['hash'] ?>-control-tabs" role="tablist">
+			<ul class="control-tabs" id="<?= esc_attr($s['hash']) ?>-control-tabs" role="tablist">
 
 			<?php foreach ($s['controls'] as $j => $control) : ?>
 				<?php if ($control['visible'] == 'y') : ?>
 
-					<li role="presentation" class="<?= $j == 0 ? 'active' : '' ?>">
+					<li role="presentation" class="<?= esc_attr($j == 0 ? 'active' : '') ?>">
 						<button
-							id="<?= $s['hash'] ?>-control-tab-<?= $j ?>"
+							id="<?= esc_attr($s['hash']) ?>-control-tab-<?= esc_html($j) ?>"
 							class="control-tab"
 							role="tab"
-							aria-controls="<?= $s['hash'] ?>-control-wrapper-<?= $j ?>"
-							aria-selected="<?= $j == 0 ? 'true' : 'false' ?>"
-							data-control="<?= $control['slug'] ?>"
-							data-control-type="<?= $control['type'] ?>"
-							tabindex="<?= $j == 0 ? '' : '-1' ?>">
-							<?= $control['label'] ?>
+							aria-controls="<?= esc_attr($s['hash']) ?>-control-wrapper-<?= esc_html($j) ?>"
+							aria-selected="<?= esc_attr($j == 0 ? 'true' : 'false') ?>"
+							data-control="<?= esc_attr($control['slug']) ?>"
+							data-control-type="<?= esc_attr($control['type']) ?>"
+							tabindex="<?= esc_attr($j == 0 ? '' : '-1') ?>">
+							<?= esc_html($control['label']) ?>
 						</button>
 					</li>
 
@@ -90,10 +90,10 @@ if (
 		<?php if ($control['visible'] == 'y') : ?>
 
 			<div
-				class="control-wrapper<?= $control['selected'] !== false && $control['selected'] !== '' ? ' selected': ''?><?= $s['layout'] == 'tabbed' && $j == 0 ? ' active' : '' ?>"
-				id="<?= $s['hash'] ?>-control-wrapper-<?= $j ?>"
-				data-control="<?= $control['slug'] ?>"
-				data-control-type="<?= $control['type'] ?>">
+				class="control-wrapper<?= esc_attr($control['selected'] !== false && $control['selected'] !== '' ? ' selected': '') ?><?= $s['layout'] == 'tabbed' && $j == 0 ? ' active' : '' ?>"
+				id="<?= esc_attr($s['hash']) ?>-control-wrapper-<?= esc_html($j) ?>"
+				data-control="<?= esc_attr($control['slug']) ?>"
+				data-control-type="<?= esc_attr($control['type']) ?>">
 			<?php
 
 			$options = $control['options'];
@@ -101,14 +101,14 @@ if (
 			switch ($control['presentation']) {
 				case 'select': ?>
 
-					<label for="<?= $s['hash'] ?>-control-<?= $j ?>">
-						<span class="label"><?= $control['label'] ?></span>
+					<label for="<?= esc_attr($s['hash']) ?>-control-<?= esc_html($j) ?>">
+						<span class="label"><?= esc_html($control['label']) ?></span>
 						<span class="selected"><?= \lqx\filters\get_selected_option_label($control) ?></span>
-						<select name="<?= $control['slug'] ?>" id="<?= $s['hash'] ?>-control-<?= $j ?>">
+						<select name="<?= esc_attr($control['slug']) ?>" id="<?= esc_attr($s['hash']) ?>-control-<?= esc_html($j) ?>">
 							<?php if ($control['show_view_all'] == 'y') : ?>
 							<option
 								value=""
-								<?= $control['selected'] == '' ? ' selected' : '' ?>><?= $control['view_all_label'] ?></option>
+								<?= $control['selected'] == '' ? ' selected' : '' ?>><?= esc_html($control['view_all_label']) ?></option>
 							<?php endif; ?>
 
 							<?php foreach ($options as $option) : ?>
@@ -127,28 +127,28 @@ if (
 					<fieldset>
 
 						<legend>
-							<span class="label"><?= $control['label'] ?></span>
+							<span class="label"><?= esc_html($control['label']) ?></span>
 							<span class="selected"><?= \lqx\filters\get_selected_option_label($control) ?></span>
 						</legend>
 
 						<?php if ($control['show_view_all'] == 'y') : ?>
-							<label for="<?= $s['hash'] ?>-control-<?= $j ?>-all">
+							<label for="<?= esc_attr($s['hash']) ?>-control-<?= esc_html($j) ?>-all">
 								<input
 									type="checkbox"
-									id="<?= $s['hash'] ?>-control-<?= $j ?>-all"
-									name="<?= $control['slug'] ?>"
+									id="<?= esc_attr($s['hash']) ?>-control-<?= esc_html($j) ?>-all"
+									name="<?= esc_attr($control['slug']) ?>"
 									value=""
 									<?= $control['selected'] == '' ? ' checked' : '' ?> />
-								<span><?= $control['view_all_label'] ?></span>
+								<span><?= esc_html($control['view_all_label']) ?></span>
 							</label>
 						<?php endif; ?>
 
 						<?php foreach ($options as $i => $option) : ?>
-							<label for="<?= $s['hash'] ?>-control-<?= $j ?>-<?= $i ?>">
+							<label for="<?= esc_attr($s['hash']) ?>-control-<?= esc_html($j) ?>-<?= esc_html($i) ?>">
 								<input
 									type="checkbox"
-									id="<?= $s['hash'] ?>-control-<?= $j ?>-<?= $i ?>"
-									name="<?= $control['slug'] ?>"
+									id="<?= esc_attr($s['hash']) ?>-control-<?= esc_html($j) ?>-<?= esc_html($i) ?>"
+									name="<?= esc_attr($control['slug']) ?>"
 									value="<?= esc_attr($option['value']) ?>"
 									<?= $control['selected'] == $option['value'] ? ' checked' : '' ?> />
 								<span><?= $option['text'] ?></span>
@@ -164,28 +164,28 @@ if (
 					<fieldset>
 
 						<legend>
-							<span class="label"><?= $control['label'] ?></span>
+							<span class="label"><?= esc_html($control['label']) ?></span>
 							<span class="selected"><?= \lqx\filters\get_selected_option_label($control) ?></span>
 						</legend>
 
 						<?php if ($control['show_view_all'] == 'y') : ?>
-							<label for="<?= $s['hash'] ?>-control-<?= $j ?>-all">
+							<label for="<?= esc_attr($s['hash']) ?>-control-<?= esc_html($j) ?>-all">
 								<input
 									type="radio"
-									id="<?= $s['hash'] ?>-control-<?= $j ?>-all"
-									name="<?= $control['slug'] ?>"
+									id="<?= esc_attr($s['hash']) ?>-control-<?= esc_html($j) ?>-all"
+									name="<?= esc_attr($control['slug']) ?>"
 									value=""
 									<?= $control['selected'] == '' ? ' checked' : '' ?> />
-								<span><?= $control['view_all_label'] ?></span>
+								<span><?= esc_html($control['view_all_label']) ?></span>
 							</label>
 						<?php endif; ?>
 
 						<?php foreach ($options as $i => $option) : ?>
-							<label for="<?= $s['hash'] ?>-control-<?= $j ?>-<?= $i ?>">
+							<label for="<?= esc_attr($s['hash']) ?>-control-<?= esc_html($j) ?>-<?= esc_html($i) ?>">
 								<input
 									type="radio"
-									id="<?= $s['hash'] ?>-control-<?= $j ?>-<?= $i ?>"
-									name="<?= $control['slug'] ?>"
+									id="<?= esc_attr($s['hash']) ?>-control-<?= esc_html($j) ?>-<?= esc_html($i) ?>"
+									name="<?= esc_attr($control['slug']) ?>"
 									value="<?= esc_attr($option['value']) ?>"
 									<?= $control['selected'] == $option['value'] ? ' checked' : '' ?> />
 								<span><?= $option['text'] ?></span>
@@ -198,25 +198,25 @@ if (
 
 				case 'list': ?>
 
-					<label id="<?= $s['hash'] ?>-control-<?= $j ?>-label">
-						<span class="label"><?= $control['label'] ?></span>
+					<label id="<?= esc_attr($s['hash']) ?>-control-<?= esc_html($j) ?>-label">
+						<span class="label"><?= esc_html($control['label']) ?></span>
 						<span class="selected"><?= \lqx\filters\get_selected_option_label($control) ?></span>
 					</label>
 					<button type="button" class="control-clear" aria-label="Clear <?= esc_attr($control['label']) ?> filter"></button>
 
-					<ul class="control-list" id="<?= $s['hash'] ?>-control-<?= $j ?>" role="combobox" aria-labelledby="<?= $s['hash'] ?>-control-<?= $j ?>-label">
+					<ul class="control-list" id="<?= esc_attr($s['hash']) ?>-control-<?= esc_html($j) ?>" role="combobox" aria-labelledby="<?= esc_attr($s['hash']) ?>-control-<?= esc_html($j) ?>-label">
 
 						<?php if ($control['show_view_all'] == 'y') : ?>
 						<li
-							id="<?= $s['hash'] ?>-control-<?= $j ?>-all"
-							class="option<?= $control['selected'] == '' ? ' selected' : '' ?>"
-							data-value=""><?= $control['view_all_label'] ?></li>
+							id="<?= esc_attr($s['hash']) ?>-control-<?= esc_html($j) ?>-all"
+							class="option<?= esc_attr($control['selected'] == '' ? ' selected' : '') ?>"
+							data-value=""><?= esc_html($control['view_all_label']) ?></li>
 						<?php endif; ?>
 
 						<?php foreach ($options as $i => $option) : ?>
 						<li
-							id="<?= $s['hash'] ?>-control-<?= $j ?>-<?= $i ?>"
-							class="option<?= $control['selected'] == $option['value'] ? ' selected' : '' ?>"
+							id="<?= esc_attr($s['hash']) ?>-control-<?= esc_html($j) ?>-<?= esc_html($i) ?>"
+							class="option<?= esc_attr($control['selected'] == $option['value'] ? ' selected' : '') ?>"
 							data-value="<?= esc_attr($option['value']) ?>"><?= $option['text'] ?></li>
 						<?php endforeach; ?>
 
@@ -225,15 +225,15 @@ if (
 					<?php break;
 				//for distance we need to add the select alongside the "use my current location" and the search field
 				case 'distance':?>
-					<label for="<?= $s['hash'] ?>-control-<?= $j ?>">
-						<span class="label"><?= $control['label'] ?></span>
-						<input name="<?= $s['hash'] ?>-control-<?= $j ?>-search" type="text" class="search" id="<?= $s['hash'] ?>-control-<?= $j ?>-search" placeholder="<?= esc_attr($s['search_placeholder']) ?>" value="<?= (isset($control['address']) ? esc_attr($control['address']) : '') ?>">
-						<button class="search-button" id="<?= $s['hash'] ?>-control-<?= $j ?>-search-button">Go</button>
-						<select name="<?= $control['slug'] ?>" id="<?= $s['hash'] ?>-control-<?= $j ?>">
+					<label for="<?= esc_attr($s['hash']) ?>-control-<?= esc_html($j) ?>">
+						<span class="label"><?= esc_html($control['label']) ?></span>
+						<input name="<?= esc_attr($s['hash']) ?>-control-<?= esc_html($j) ?>-search" type="text" class="search" id="<?= esc_attr($s['hash']) ?>-control-<?= esc_html($j) ?>-search" placeholder="<?= esc_attr($s['search_placeholder']) ?>" value="<?= (isset($control['address']) ? esc_attr($control['address']) : '') ?>">
+						<button class="search-button" id="<?= esc_attr($s['hash']) ?>-control-<?= esc_html($j) ?>-search-button">Go</button>
+						<select name="<?= esc_attr($control['slug']) ?>" id="<?= esc_attr($s['hash']) ?>-control-<?= esc_html($j) ?>">
 							<?php if ($control['show_view_all'] == 'y') : ?>
 							<option
 								value=""
-								<?= $control['selected'] == '' ? ' selected' : '' ?>><?= $control['view_all_label'] ?></option>
+								<?= $control['selected'] == '' ? ' selected' : '' ?>><?= esc_html($control['view_all_label']) ?></option>
 							<?php endif; ?>
 
 							<?php foreach ($options as $option) : ?>
@@ -243,7 +243,7 @@ if (
 							<?php endforeach; ?>
 
 						</select>
-						<button class="location-button" id="<?= $s['hash'] ?>-control-<?= $j ?>-location-button">Use my current location</button>
+						<button class="location-button" id="<?= esc_attr($s['hash']) ?>-control-<?= esc_html($j) ?>-location-button">Use my current location</button>
 					</label>
 					<?php break;
 
@@ -255,20 +255,20 @@ if (
 							<span class="selected"><?= \lqx\filters\get_selected_option_label($control) ?></span>
 						</legend>
 
-						<label for="<?= $s['hash'] ?>-control-<?= $j ?>-<?= $i ?>">
+						<label for="<?= esc_attr($s['hash']) ?>-control-<?= esc_html($j) ?>-<?= esc_html($i) ?>">
 							<input
 								type="radio"
-								id="<?= $s['hash'] ?>-control-<?= $j ?>-<?= $i ?>"
-								name="<?= $control['slug'] ?>"
+								id="<?= esc_attr($s['hash']) ?>-control-<?= esc_html($j) ?>-<?= esc_html($i) ?>"
+								name="<?= esc_attr($control['slug']) ?>"
 								value="this-region"
 								<?= $control['selected'] !== '' ? ' checked' : '' ?> />
 							<span>This Region</span>
 						</label>
-						<label for="<?= $s['hash'] ?>-control-<?= $j ?>-all">
+						<label for="<?= esc_attr($s['hash']) ?>-control-<?= esc_html($j) ?>-all">
 							<input
 								type="radio"
-								id="<?= $s['hash'] ?>-control-<?= $j ?>-all"
-								name="<?= $control['slug'] ?>"
+								id="<?= esc_attr($s['hash']) ?>-control-<?= esc_html($j) ?>-all"
+								name="<?= esc_attr($control['slug']) ?>"
 								value=""
 								<?= $control['selected'] == '' ? ' checked' : '' ?> />
 							<span>All Regions</span>
@@ -297,7 +297,7 @@ if (
 
 <?php if (($s['show_search'] || count($s['controls'])) && $s['show_clear'] == 'y') : ?>
 	<div class="clear-wrapper">
-		<button id="<?= $s['hash'] ?>-clear" class="clear"><?= $s['clear_label']?></button>
+		<button id="<?= esc_attr($s['hash']) ?>-clear" class="clear"><?= esc_html($s['clear_label']) ?></button>
 	</div>
 <?php endif; ?>
 
@@ -306,7 +306,7 @@ if (
 if ($s['change_order'] == 'y') : ?>
 	<div class="order-wrapper">
 	<?php foreach ($s['order_options'] as $option) : ?>
-		<div class="option" data-value="<?= esc_attr($option['order_by']['value']) ?>" data-order="<?= esc_attr($option['order']) ?>"><?= $option['order_by']['label'] ?></div>
+		<div class="option" data-value="<?= esc_attr($option['order_by']['value']) ?>" data-order="<?= esc_attr($option['order']) ?>"><?= esc_html($option['order_by']['label']) ?></div>
 	<?php endforeach; ?>
 	</div>
 
@@ -315,7 +315,7 @@ if ($s['change_order'] == 'y') : ?>
 </div>
 
 <?php if($s['use_pills'] == 'y') : ?>
-	<div class="pills" id="<?= $s['hash'] ?>-pills"></div>
+	<div class="pills" id="<?= esc_attr($s['hash']) ?>-pills"></div>
 <?php endif; ?>
 
 <?php endif;

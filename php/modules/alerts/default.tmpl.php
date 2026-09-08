@@ -27,11 +27,11 @@
 <section id="lqx-module-alerts">
 	<div
 		class="alerts hidden"
-		data-autoplay="<?= $s['autoplay'] ?>"
-		data-autoplay-delay="<?= $s['autoplay_delay'] ?>"
-		data-show-pagination="<?= $s['show_pagination'] ?>"
+		data-autoplay="<?= esc_attr($s['autoplay']) ?>"
+		data-autoplay-delay="<?= esc_attr($s['autoplay_delay']) ?>"
+		data-show-pagination="<?= esc_attr($s['show_pagination']) ?>"
 		data-swiper-options-override="<?= esc_attr($s['swiper_options_override']) ?>"
-		data-heading-style="<?= $s['heading_style'] ?>">
+		data-heading-style="<?= esc_attr($s['heading_style']) ?>">
 		<button class="close">Close</button>
 		<div class="swiper">
 			<div class="swiper-wrapper"></div>

@@ -26,7 +26,7 @@
 
 ?>
 <li
-	class="<?= $s['slider'] == 'y' ? 'swiper-slide' : 'card' ?> <?= esc_attr($item['additional_classes']) ?>"
+	class="<?= esc_attr($s['slider'] == 'y' ? 'swiper-slide' : 'card') ?> <?= esc_attr($item['additional_classes']) ?>"
 	id="<?= ($item['item_id'] !== '' ? esc_attr($item['item_id']) : $s['hash'] . '-' . $idx) ?>"
 	<?php if (($s['group_by'] ?? 'n') === 'y' && !empty($item['id'])) echo \lqx\util\get_group_by_attribs((int) $item['id'], $s); ?>>
 

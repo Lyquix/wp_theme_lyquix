@@ -115,6 +115,10 @@ function is_local_environment() {
  *              - 'required' (bool, optional): Indicates whether a key in an object is required. If set to true, the key
  *                must exist in the incoming data, or it will be considered missing. Default is false.
  *
+ *              - 'strict' (bool, optional): Applicable only if 'type' is 'object' and 'keys' is set. When true, any key
+ *                in the data that the schema does not declare is removed and reported in 'unknown'. Defaults to false
+ *                for backwards compatibility; set it to true for anything derived from a request.
+ *
  *              - 'keys' (array, optional): Applicable only if 'type' is 'object'. Defines the expected keys within the
  *                object. This is a nested schema that follows the same structure as the main `$schema` and is used to
  *                validate the keys of the object.
@@ -130,6 +134,7 @@ function is_local_environment() {
  *               - 'mistyped': An array listing keys whose data types do not match the schema.
  *               - 'invalid': An array listing keys whose values are not allowed by the schema.
  *               - 'fixed': An array listing keys for which fixes were applied.
+ *               - 'unknown': An array listing keys that were removed because the schema did not declare them.
  *               - 'data': The processed data, which may include fixes if 'isFixed' is true.
  */
 
@@ -138,6 +143,7 @@ function validate_data($data, $schema, $field = 'root') {
 	$mistyped = [];
 	$invalid = [];
 	$fixed = [];
+	$unknown = [];
 	$isValid = true;
 	$isFixed = false;
 
@@ -157,6 +163,12 @@ function validate_data($data, $schema, $field = 'root') {
 				break;
 
 			case 'default':
+				break;
+
+			case 'strict':
+				if (gettype($schema['strict']) !== 'boolean') {
+					throw new \Exception('validate_data: invalid strict in schema');
+				}
 				break;
 
 			case 'keys':
@@ -349,6 +361,7 @@ function validate_data($data, $schema, $field = 'root') {
 						foreach ($elemResult['mistyped'] as $f) $mistyped[] = $f;
 						foreach ($elemResult['invalid'] as $f) $invalid[] = $f;
 						foreach ($elemResult['fixed'] as $f) $fixed[] = $f;
+						foreach ($elemResult['unknown'] as $f) $unknown[] = $f;
 
 						if ($elemResult['isValid']) {
 							if ($elemResult['isFixed']) {
@@ -398,6 +411,7 @@ function validate_data($data, $schema, $field = 'root') {
 						foreach ($keyResult['mistyped'] as $f) $mistyped[] = $f;
 						foreach ($keyResult['invalid'] as $f) $invalid[] = $f;
 						foreach ($keyResult['fixed'] as $f) $fixed[] = $f;
+						foreach ($keyResult['unknown'] as $f) $unknown[] = $f;
 
 						if ($keyResult['isValid']) {
 							if ($keyResult['isFixed']) {
@@ -407,6 +421,21 @@ function validate_data($data, $schema, $field = 'root') {
 						} else {
 							$isValid = false;
 						}
+					}
+				}
+
+				// Drop anything the schema doesn't declare, so unvalidated values can't reach
+				// code that assumes validate_data filtered them. Opt-in rather than default:
+				// block settings arrive carrying framework keys (preset, style, hash, ...)
+				// that individual block schemas don't list, and every child theme ships its
+				// own block schemas, so stripping by default would break rendering fleet-wide.
+				// Use it wherever the data came from a request.
+				if (is_array($data) && !empty($schema['strict'])) {
+					foreach (array_keys($data) as $key) {
+						if (array_key_exists($key, $schema['keys'])) continue;
+						unset($data[$key]);
+						$unknown[] = $field . '/' . $key;
+						$isFixed = true;
 					}
 				}
 			}
@@ -420,6 +449,7 @@ function validate_data($data, $schema, $field = 'root') {
 		'mistyped' => $mistyped,
 		'invalid' => $invalid,
 		'fixed' => $fixed,
+		'unknown' => $unknown,
 		'data' => $data
 	];
 }
@@ -815,6 +845,7 @@ function get_src_srcset_sizes_attribs($image, $src_size = 'medium', $size_map = 
 	// Build srcset — deduplicate by URL (WordPress serves the original when
 	// the image is smaller than the target crop size, producing duplicate URLs)
 	$srcset_parts = [];
+	$srcset_urls = [];
 	$seen_urls = [];
 
 	foreach ($crop_sizes as $name) {
@@ -823,6 +854,7 @@ function get_src_srcset_sizes_attribs($image, $src_size = 'medium', $size_map = 
 			$width = (int) $image['sizes'][$name . '-width'];
 			if ($width > 0 && !isset($seen_urls[$url])) {
 				$srcset_parts[] = $url . ' ' . $width . 'w';
+				$srcset_urls[] = $url;
 				$seen_urls[$url] = true;
 			}
 		}
@@ -832,10 +864,18 @@ function get_src_srcset_sizes_attribs($image, $src_size = 'medium', $size_map = 
 		$width = (int) $image['width'];
 		if ($width > 0 && !isset($seen_urls[$image['url']])) {
 			$srcset_parts[] = $image['url'] . ' ' . $width . 'w';
+			$srcset_urls[] = $image['url'];
 		}
 	}
 
 	if (empty($srcset_parts)) return '';
+
+	// One candidate leaves the browser no choice to make, so srcset/sizes only add
+	// markup. This happens whenever the original is smaller than the smallest crop:
+	// every size resolves to the original URL and the dedup above collapses them.
+	// Emitting just src also keeps lazy-load scripts that parse WordPress'
+	// -WIDTHxHEIGHT filename convention out of a dead end.
+	if (count($srcset_parts) === 1) return 'src="' . $srcset_urls[0] . '"';
 
 	// Resolve src — try the requested size, then progressively larger, then full
 	$src = '';
@@ -1033,4 +1073,84 @@ function get_group_by_attribs(int $post_id, array $s): string {
 	$data = get_group_by_data($post_id, $s);
 	if ($data['key'] === '') return '';
 	return 'data-group-key="' . esc_attr($data['key']) . '" data-group-label="' . esc_attr($data['label']) . '"';
+}
+
+/**
+ * Resolve the client's IP address.
+ *
+ * Walks the usual proxy headers in order of trustworthiness and returns the first
+ * value that parses as an IP, falling back to REMOTE_ADDR. Note that every header
+ * before REMOTE_ADDR is client-supplied and can be forged: this is good enough for
+ * geolocation and rate limiting, and must not be used for authorization.
+ *
+ * @param string|null $preferred - header to consult first, e.g. the site's configured
+ *                                 ip2geo_ip_address_header. Ignored when empty.
+ *
+ * @return string - an IP address, or '' when none could be determined
+ */
+function get_client_ip($preferred = null) {
+	$candidates = [
+		'HTTP_CF_CONNECTING_IP',
+		'HTTP_CF_CONNECTING_IPV6',
+		'HTTP_TRUE_CLIENT_IP',
+		'HTTP_CLIENT_IP',
+		'HTTP_X_FORWARDED_FOR',
+		'HTTP_X_FORWARDED',
+		'HTTP_X_CLUSTER_CLIENT_IP',
+		'HTTP_FORWARDED_FOR',
+		'HTTP_FORWARDED',
+		'REMOTE_ADDR',
+	];
+
+	if (!empty($preferred)) array_unshift($candidates, $preferred);
+
+	foreach ($candidates as $key) {
+		if (empty($_SERVER[$key])) continue;
+
+		$value = trim((string) $_SERVER[$key]);
+
+		// RFC 7239 Forwarded header: for=...
+		if ($key === 'HTTP_FORWARDED') {
+			foreach (preg_split('/\s*,\s*/', $value) ?: [] as $part) {
+				if (stripos($part, 'for=') === false) continue;
+
+				$ip = explode(';', explode('for=', $part, 2)[1], 2)[0];
+				$ip = trim($ip, " \t\n\r\0\x0B\"'[]");
+
+				if (filter_var($ip, FILTER_VALIDATE_IP)) return $ip;
+			}
+
+			continue;
+		}
+
+		// All other headers: take the first IP (may be comma-separated)
+		$ips = preg_split('/\s*,\s*/', $value) ?: [];
+		$ip = trim((string) ($ips[0] ?? ''));
+
+		if (filter_var($ip, FILTER_VALIDATE_IP)) return $ip;
+	}
+
+	return '';
+}
+
+/**
+ * The Content-Security-Policy nonce for this request, or '' when the site isn't using one.
+ *
+ * The theme doesn't set a CSP itself — policies are site-specific and belong with the
+ * rest of the security headers — but it routes every inline script it prints through
+ * wp_print_inline_script_tag(), so a site that wants a nonce-based policy only has to
+ * supply the nonce:
+ *
+ *     add_filter('lqx_csp_nonce', fn() => MY_REQUEST_NONCE);
+ *
+ * and the theme's inline and enqueued script tags will carry it.
+ *
+ * @return string - the nonce, or '' when none is configured
+ */
+function csp_nonce() {
+	static $nonce = null;
+
+	if ($nonce === null) $nonce = (string) apply_filters('lqx_csp_nonce', '');
+
+	return $nonce;
 }

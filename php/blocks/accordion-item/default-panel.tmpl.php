@@ -26,11 +26,11 @@
 
 ?>
 <section
-	class="accordion-panel <?= $s['open_on_load'] == 'y' ? '' : 'closed' ?>"
-	id="<?= $s['hash'] . '-panel-' . $s['uid'] ?>"
+	class="accordion-panel <?= esc_attr($s['open_on_load'] == 'y' ? '' : 'closed') ?>"
+	id="<?= esc_attr($s['hash'] . '-panel-' . $s['uid']) ?>"
 	role="region"
-	aria-labelledby="<?= ($c['item_id'] !== '') ? $c['item_id'] : $s['hash'] . '-header-' . $s['uid'] ?>"
-	aria-hidden="<?= $s['open_on_load'] == 'y' ? 'false' : 'true' ?>">
+	aria-labelledby="<?= esc_attr(($c['item_id'] !== '') ? $c['item_id'] : $s['hash'] . '-header-' . $s['uid']) ?>"
+	aria-hidden="<?= esc_attr($s['open_on_load'] == 'y' ? 'false' : 'true') ?>">
 	<div>
 		<InnerBlocks />
 	</div>

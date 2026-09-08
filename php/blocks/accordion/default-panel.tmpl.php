@@ -26,15 +26,15 @@
 
 ?>
 <section
-	class="accordion-panel <?= $idx == 0 && $s['open_on_load'] == 'y' ? '' : 'closed' ?>"
-	id="<?= $s['hash'] . '-panel-' . $idx ?>"
+	class="accordion-panel <?= esc_attr($idx == 0 && $s['open_on_load'] == 'y' ? '' : 'closed') ?>"
+	id="<?= esc_attr($s['hash'] . '-panel-' . $idx) ?>"
 	role="region"
-	aria-labelledby="<?= ($item['item_id'] !== '') ? $item['item_id'] : $s['hash'] . '-header-' . $idx ?>"
-	aria-hidden="<?= $idx == 0 && $s['open_on_load'] == 'y' ? 'false' : 'true' ?>">
+	aria-labelledby="<?= esc_attr(($item['item_id'] !== '') ? $item['item_id'] : $s['hash'] . '-header-' . $idx) ?>"
+	aria-hidden="<?= esc_attr($idx == 0 && $s['open_on_load'] == 'y' ? 'false' : 'true') ?>">
 	<div>
 		<?= $item['content'] ?>
 		<?php if (!empty($item['image']['url']) && ($s['show_image'] == 'y')): ?>
-			<img src="<?= htmlspecialchars($item['image']['url'], ENT_QUOTES, 'UTF-8') ?>" <?= \lqx\util\get_alt_attribs($item['image']['alt'] ?? '') ?>
+			<img src="<?= esc_url(htmlspecialchars($item['image']['url'], ENT_QUOTES, 'UTF-8')) ?>" <?= \lqx\util\get_alt_attribs($item['image']['alt'] ?? '') ?>
 			<?= $s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '' ?>>
 		<?php endif; ?>
 	</div>

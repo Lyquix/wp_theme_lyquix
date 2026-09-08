@@ -3010,11 +3010,11 @@ function handle_api_call($request)
  * Register a REST API endpoint for filters
  */
 add_action('rest_api_init', function () {
-    register_rest_route('lyquix/v3', '/filters', [
-        'methods' => 'POST',
-        'callback' => '\lqx\filters\handle_api_call',
-        'permission_callback' => '__return_true',
-    ]);
+    // Driven by visitor interaction (typing, paging), so allow a higher ceiling
+	\lqx\rest\register_public_route('filters', [
+		'methods' => 'POST',
+		'callback' => '\lqx\filters\handle_api_call',
+	], ['rate_limit' => 240]);
 });
 
 /**

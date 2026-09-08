@@ -3,33 +3,87 @@
     "apiVersion": 3,
     "name": "lqx/video",
     "title": "Lyquix Video",
+    "description": "Video block supporting YouTube/Vimeo URLs (via Lyqbox) and uploaded video files (inline or Lyqbox) with optional lazy load, hover play, and viewport play.",
     "category": "media",
     "icon": "format-video",
-    "description": "Video block supporting YouTube/Vimeo URLs (via Lyqbox) and uploaded video files (inline or Lyqbox) with optional lazy load, hover play, and viewport play.",
+    "textdomain": "lyquix",
+    "attributes": {
+        "videoType": {
+            "type": "string",
+            "default": "url"
+        },
+        "videoUrl": {
+            "type": "string",
+            "default": ""
+        },
+        "videoUploadId": {
+            "type": "number",
+            "default": 0
+        },
+        "videoUploadUrl": {
+            "type": "string",
+            "default": ""
+        },
+        "videoUploadMime": {
+            "type": "string",
+            "default": ""
+        },
+        "posterId": {
+            "type": "number",
+            "default": 0
+        },
+        "posterUrl": {
+            "type": "string",
+            "default": ""
+        },
+        "caption": {
+            "type": "string",
+            "default": ""
+        },
+        "openInLyqbox": {
+            "type": "boolean",
+            "default": false
+        },
+        "lazyLoad": {
+            "type": "boolean",
+            "default": false
+        },
+        "hoverPlay": {
+            "type": "boolean",
+            "default": false
+        },
+        "viewportPlay": {
+            "type": "boolean",
+            "default": false
+        },
+        "controls": {
+            "type": "boolean",
+            "default": true
+        },
+        "autoplay": {
+            "type": "boolean",
+            "default": false
+        },
+        "loop": {
+            "type": "boolean",
+            "default": false
+        },
+        "muted": {
+            "type": "boolean",
+            "default": false
+        }
+    },
     "supports": {
-        "align": ["wide", "full"],
+        "align": [
+            "wide",
+            "full"
+        ],
         "html": false,
         "anchor": true
     },
-    "attributes": {
-        "videoType":       { "type": "string",  "default": "url" },
-        "videoUrl":        { "type": "string",  "default": "" },
-        "videoUploadId":   { "type": "number",  "default": 0 },
-        "videoUploadUrl":  { "type": "string",  "default": "" },
-        "videoUploadMime": { "type": "string",  "default": "" },
-        "posterId":        { "type": "number",  "default": 0 },
-        "posterUrl":       { "type": "string",  "default": "" },
-        "caption":         { "type": "string",  "default": "" },
-        "openInLyqbox":    { "type": "boolean", "default": false },
-        "lazyLoad":        { "type": "boolean", "default": false },
-        "hoverPlay":       { "type": "boolean", "default": false },
-        "viewportPlay":    { "type": "boolean", "default": false },
-        "controls":        { "type": "boolean", "default": true },
-        "autoplay":        { "type": "boolean", "default": false },
-        "loop":            { "type": "boolean", "default": false },
-        "muted":           { "type": "boolean", "default": false }
-    },
     "editorScript": "file:./editor.js",
     "render": "file:./render.php",
-    "textdomain": "lyquix"
+    "acf": {
+        "blockVersion": 3
+    }
 }

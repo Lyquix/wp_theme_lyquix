@@ -38,6 +38,7 @@ add_action('init', function () {
 	);
 
 	register_block_type('lqx/facebook', [
+		'api_version' => 3,
 		'editor_script' => 'facebook-embed-block',
 		'render_callback' => function ($attributes) {
 			ob_start();
@@ -56,6 +57,7 @@ add_action('init', function () {
 	);
 
 	register_block_type('lqx/instagram', [
+		'api_version' => 3,
 		'editor_script' => 'instagram-embed-block',
 		'render_callback' => function ($attributes) {
 			ob_start();
@@ -67,8 +69,16 @@ add_action('init', function () {
 
 /**
  * Load SDKs in the block editor
+ *
+ * Uses enqueue_block_assets rather than enqueue_block_editor_assets: since WP 7.1 the
+ * editor canvas is always an iframe, and only enqueue_block_assets reaches it. The SDKs
+ * parse the embed markup in the document they are loaded into, so in the parent frame
+ * they would never see the blocks. Guarded to the admin — the front end loads them
+ * conditionally below, only when an embed block is present.
  */
-add_action('enqueue_block_editor_assets', function () {
+add_action('enqueue_block_assets', function () {
+	if (!is_admin()) return;
+
 	wp_enqueue_script(
 		'facebook-sdk',
 		'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v21.0',

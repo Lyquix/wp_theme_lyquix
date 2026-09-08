@@ -658,6 +658,15 @@ function theme_setup() {
 				}
 			}
 
+			/* The notch is a bare <button> appended to <body>, so global button styling in a
+			   project lands on it - arrows, borders, hover fills and all. Neutralise the
+			   decoration here rather than asking every child theme to exclude the id. */
+			#lqx-adminbar-notch::before,
+			#lqx-adminbar-notch::after {
+				content: none;
+				display: none;
+			}
+
 			/* Notch button */
 			#lqx-adminbar-notch {
 				position: fixed;

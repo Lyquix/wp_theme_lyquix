@@ -26,8 +26,8 @@ namespace lqx\browsers;
 
 // Render alert for outdated browsers
 function render() {
-	if (get_theme_mod('browser_alert', 1)) : ?>
-	<script>
+	if (get_theme_mod('browser_alert', 1)) :
+		ob_start(); ?>
 	((u) => {
 		// lyquix.js loads deferred: run once lqx is available (both event systems, run-once)
 		var done = false;
@@ -42,7 +42,7 @@ function render() {
 			document.addEventListener('lqxload', run);
 			if (window.jQuery) jQuery(document).one('lqxload', run);
 		}
-	})('<?= get_template_directory_uri() ?>/php/browsers/?accepted=<?= get_theme_mod('accepted_browser_versions', 3) ?>');
-	</script>
-<?php endif;
+	})('<?= get_template_directory_uri() ?>/php/browsers/?accepted=<?= esc_js(get_theme_mod('accepted_browser_versions', 3)) ?>');
+<?php	wp_print_inline_script_tag(ob_get_clean(), ['id' => 'lqx-browser-alert']);
+	endif;
 }

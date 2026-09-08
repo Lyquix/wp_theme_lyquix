@@ -33,7 +33,7 @@
 	<div
 		class="banner"
 		id="<?= esc_attr($s['hash']) ?>"
-		data-heading-style="<?= $s['heading_style'] ?>">
+		data-heading-style="<?= esc_attr($s['heading_style']) ?>">
 
 		<?php require \lqx\blocks\get_template('banner', $s['preset'], 'text') ?>
 

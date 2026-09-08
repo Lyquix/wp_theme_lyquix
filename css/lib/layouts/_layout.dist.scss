@@ -28,7 +28,7 @@
 @use "sass:math";
 
 @each $s in $screen-sizes {
-	@screen #{$s} {
+	@include screen($s) {
 		// $grdCls = total number of grid columns
 		$grdCls: nth($grid-columns, index($screen-sizes, $s));
 		// $grdGap = grid gap in pixels

@@ -27,10 +27,10 @@
 ?>
 <<?= $s['heading_style'] ?>>
 	<button
-		class="accordion-header <?= !$c['heading'] ? 'hidden' : '' ?>"
-		id="<?= $s['hash'] . '-header-' . $s['uid'] ?>"
-		aria-expanded="<?= $s['open_on_load'] == 'y' ? 'true' : 'false' ?>"
-		aria-controls="<?= $s['hash'] . '-panel-' . $s['uid'] ?>">
+		class="accordion-header <?= esc_attr(!$c['heading'] ? 'hidden' : '') ?>"
+		id="<?= esc_attr($s['hash'] . '-header-' . $s['uid']) ?>"
+		aria-expanded="<?= esc_attr($s['open_on_load'] == 'y' ? 'true' : 'false') ?>"
+		aria-controls="<?= esc_attr($s['hash'] . '-panel-' . $s['uid']) ?>">
 		<?= $c['heading'] ?>
 	</button>
 </<?= $s['heading_style'] ?>>

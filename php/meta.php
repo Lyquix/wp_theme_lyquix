@@ -64,12 +64,9 @@ function render() {
 
 	// Additional meta tags
 	if (get_theme_mod('add_meta_tags', '')) echo get_theme_mod('add_meta_tags', '') . "\n";
-	?>
-	<script>
+	wp_print_inline_script_tag(
 		// Add class js to html element
-		(function(html) {
-			html.className = html.className.replace(/\bno-js\b/, 'js')
-		})(document.documentElement);
-	</script>
-<?php
+		"(function(html) { html.className = html.className.replace(/\\bno-js\\b/, 'js') })(document.documentElement);",
+		['id' => 'lqx-no-js']
+	);
 }

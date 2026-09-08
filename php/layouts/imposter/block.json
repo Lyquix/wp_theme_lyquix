@@ -22,6 +22,7 @@
 		"*  DO NOT MODIFY THIS FILE!",
 		"*/"
 	],
+	"apiVersion": 3,
 	"name": "lqx/imposter",
 	"title": "Lyquix Imposter",
 	"description": "A Imposter block",
@@ -30,13 +31,12 @@
 	"keywords": [
 		"imposter"
 	],
-	"acf": {
-		"mode": "preview",
-		"renderTemplate": "imposter.php"
-	},
 	"supports": {
 		"align": false,
-		"anchor": true,
-		"mode": false
+		"anchor": true
+	},
+	"acf": {
+		"renderTemplate": "imposter.php",
+		"blockVersion": 3
 	}
 }

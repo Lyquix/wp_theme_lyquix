@@ -26,8 +26,8 @@
 
 ?>
 <li
-	class="<?= $s['slider'] == 'y' ? 'swiper-slide' : 'gallery-slide' ?><?= is_array($video) ? ' video' : '' ?> <?= $item['additional_classes'] ? esc_attr($item['additional_classes']) : '' ?>"
-	id="<?= $item['item_id'] ? $item['item_id'] : $s['hash'] . '-' . $idx ?>"
+	class="<?= esc_attr($s['slider'] == 'y' ? 'swiper-slide' : 'gallery-slide') ?><?= is_array($video) ? ' video' : '' ?> <?= $item['additional_classes'] ? esc_attr($item['additional_classes']) : '' ?>"
+	id="<?= esc_attr($item['item_id'] ? $item['item_id'] : $s['hash'] . '-' . $idx) ?>"
 	data-lyqbox="<?= htmlentities(json_encode([
 		'name' => $c['lightbox_slug'],
 		'slug' => $item['item_id'],

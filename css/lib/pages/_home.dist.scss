@@ -62,7 +62,7 @@ body.home {
     }
   }
 
-  @screen md {
+  @include screen(md) {
     header:hover {
       @apply bg-white;
 

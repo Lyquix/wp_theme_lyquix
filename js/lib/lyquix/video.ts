@@ -67,11 +67,11 @@ export const video = (() => {
 
 			//Only play videos on hover
 			hoverPlay(document.querySelectorAll(cfg.video.hoverPlaySelector));
-			mutation.addHandler('addNode', cfg.video.hoverPlaySelector, lazyLoad);
+			mutation.addHandler('addNode', cfg.video.hoverPlaySelector, hoverPlay);
 
 			//Only play videos while they are in the viewport
 			viewportPlay(document.querySelectorAll(cfg.video.viewportPlaySelector));
-			mutation.addHandler('addNode', cfg.video.viewportPlaySelector, lazyLoad);
+			mutation.addHandler('addNode', cfg.video.viewportPlaySelector, viewportPlay);
 			// Add a mutation handler for galleries added to the DOM
 
 		});
@@ -79,7 +79,7 @@ export const video = (() => {
 		vars.video.init = true;
 	};
 
-	const lazyLoad = (elems: Array) => {
+	const lazyLoad = (elems) => {
 		const lazyObserver = new IntersectionObserver((videos = elems, observer) => {
 
 			videos.forEach(entry => {
@@ -104,16 +104,12 @@ export const video = (() => {
 
 		});
 
-		if (elems.length !== undefined) {
-			elems.forEach(video => lazyObserver.observe(video));
-		} else {
-			lazyObserver.observe(elems);
-		}
+		mutation.toElements(elems).forEach(video => lazyObserver.observe(video));
 
 	};
 
-	const hoverPlay = (elems: Array) => {
-		elems.forEach(video => {
+	const hoverPlay = (elems) => {
+		mutation.toElements(elems).forEach(video => {
 
 			video.addEventListener('mouseenter', () => video.play());
 
@@ -127,7 +123,7 @@ export const video = (() => {
 		});
 	};
 
-	const viewportPlay = (elems: Array) => {
+	const viewportPlay = (elems) => {
 		const viewportObserver = new IntersectionObserver((entries) => {
 
 			entries.forEach(entry => {
@@ -151,11 +147,7 @@ export const video = (() => {
 			threshold: 0.5 // You can tweak this to control how much needs to be visible
 
 		});
-		if (elems.length !== undefined) {
-			elems.forEach(video => viewportObserver.observe(video));
-		} else {
-			viewportObserver.observe(elems);
-		}
+		mutation.toElements(elems).forEach(video => viewportObserver.observe(video));
 	};
 
 	return {

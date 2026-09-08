@@ -26,10 +26,10 @@
 
 ?>
 <div class="posts-per-page-wrapper">
-	<label for="<?= $s['hash'] ?>-posts-per-page">Posts per Page</label>
-	<select id="<?= $s['hash'] ?>-posts-per-page" class="posts-per-page">
+	<label for="<?= esc_attr($s['hash']) ?>-posts-per-page">Posts per Page</label>
+	<select id="<?= esc_attr($s['hash']) ?>-posts-per-page" class="posts-per-page">
 	<?php foreach ($s['pagination']['posts_per_page_options'] as $option) : ?>
-		<option value="<?= $option ?>"<?= $option == $s['pagination']['posts_per_page'] ? ' selected' : '' ?>><?= $option ?></option>
+		<option value="<?= esc_attr($option) ?>"<?= $option == $s['pagination']['posts_per_page'] ? ' selected' : '' ?>><?= $option ?></option>
 	<?php endforeach; ?>
 	</select>
 </div>

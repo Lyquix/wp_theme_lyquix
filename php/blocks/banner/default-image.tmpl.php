@@ -38,9 +38,9 @@
 			$video_classes[] = 'video-viewport-play';
 		}
 		?>
-		<video class="<?= implode(' ', $video_classes)?>" preload="auto"
+		<video class="<?= esc_attr(implode(' ', $video_classes)) ?>" preload="auto"
 			loop muted playsinline autoplay
-			poster="<?= $c['image']['sizes']['medium'] ?? '' ?>"
+			poster="<?= esc_url($c['image']['sizes']['medium'] ?? '') ?>"
 			data-src="<?= esc_attr($c['video']['upload']['url']) ?>"
 			type="<?= esc_attr($c['video']['mime_type']) ?>">
 			<source
@@ -51,7 +51,7 @@
 		<img
 			<?= \lqx\util\get_src_srcset_sizes_attribs($c['image']) ?>
 			<?= \lqx\util\get_alt_attribs($c['image']['alt'] ?? '') ?>
-			class="<?= array_key_exists('url', $c['image_mobile']) ? 'xs:hidden md:block' : '' ?>"
+			class="<?= esc_attr(array_key_exists('url', $c['image_mobile']) ? 'xs:hidden md:block' : '') ?>"
 			<?= $s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '' ?> />
 		<?php if (array_key_exists('url', $c['image_mobile'])) : ?>
 			<img

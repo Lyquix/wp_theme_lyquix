@@ -34,10 +34,10 @@ $innerBlocks = $settings['innerBlocks'];
 	<div
 		class="tabs"
 		id="<?= esc_attr($settings['hash']) ?>"
-		data-browser-history="<?= $s['browser_history'] ?>"
-		data-close-on-click="<?= $s['close_on_click'] ?>"
-		data-convert-to-accordion="<?= implode(',', $s['convert_to_accordion']) ?>"
-		data-auto-scroll="<?= implode(',', $s['auto_scroll']) ?>">
+		data-browser-history="<?= esc_attr($s['browser_history']) ?>"
+		data-close-on-click="<?= esc_attr($s['close_on_click']) ?>"
+		data-convert-to-accordion="<?= esc_attr(implode(',', $s['convert_to_accordion'])) ?>"
+		data-auto-scroll="<?= esc_attr(implode(',', $s['auto_scroll'])) ?>">
 
 		<ul
 			class="tabs-list"

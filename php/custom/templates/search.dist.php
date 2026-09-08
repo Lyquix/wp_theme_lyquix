@@ -89,7 +89,7 @@
 		<?php else : ?>
 			<h2>Nothing Found</h2>
 			<p>Sorry, but nothing matched your search terms. Please try again with some different keywords.</p>
-			<p>Or visit our <a href="<?= get_bloginfo('url'); ?>">homepage</a>.</p>
+			<p>Or visit our <a href="<?= esc_url(get_bloginfo('url')) ?>">homepage</a>.</p>
 		<?php
 		endif;
 

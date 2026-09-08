@@ -102,12 +102,12 @@ function get_stylesheets() {
 	// Force non-minified version on local environments
 	if (\lqx\util\is_local_environment()) $non_min_css = '1';
 
-	// Swiper
-	if (get_theme_mod('swiperjs', 1)) {
+	// Swiper — same enable/scope decision as the script, see \lqx\js\swiper_enabled()
+	if (\lqx\js\swiper_enabled()) {
 		$stylesheets[] = [
 			'handle' => 'swiper',
-			'url' => \lqx\cdn_mirror\get_url('https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css'),
-			'version' => '11'
+			'url' => \lqx\cdn_mirror\get_url('https://cdn.jsdelivr.net/npm/swiper@14/swiper-bundle.min.css'),
+			'version' => '14'
 		];
 	}
 
@@ -194,11 +194,13 @@ add_action('wp_enqueue_scripts', function () {
 		}
 
 		add_action('wp_footer', function () use ($stylesheets) {
-			echo '<script>document.querySelectorAll(\'';
-			echo implode(', ', array_map(function ($s) use ($stylesheets) {
+			$selectors = implode(', ', array_map(function ($s) {
 				return '#' . $s['handle'] . '-css';
 			}, $stylesheets));
-			echo '\').forEach(s => { if (s.sheet) s.media = \'all\'; else s.onload = () => s.media = \'all\'; });</script>';
+			wp_print_inline_script_tag(
+				'document.querySelectorAll(\'' . $selectors . '\').forEach(s => { if (s.sheet) s.media = \'all\'; else s.onload = () => s.media = \'all\'; });',
+				['id' => 'lqx-css-media-switch']
+			);
 		});
 	} else {
 		foreach ($stylesheets as $css_url) {

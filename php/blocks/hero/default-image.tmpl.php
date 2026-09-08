@@ -38,23 +38,23 @@
 			$video_classes[] = 'video-viewport-play';
 		}
 		?>
-		<video class="<?= implode(' ', $video_classes)?>" preload="auto"
+		<video class="<?= esc_attr(implode(' ', $video_classes)) ?>" preload="auto"
 			loop muted playsinline autoplay
-			poster="<?= array_key_exists('url', $c['image_override']) ?
+			poster="<?= esc_url(array_key_exists('url', $c['image_override']) ?
 				($s['image_size'] == 'full' ? $c['image_override']['url'] : $c['image_override']['sizes'][$s['image_size']]) :
-				get_the_post_thumbnail_url(null, $s['image_size']) ?>"
+				get_the_post_thumbnail_url(null, $s['image_size'])) ?>"
 			data-src="<?= esc_attr($c['video']['upload']['url']) ?>"
 			type="<?= esc_attr($c['video']['mime_type']) ?>">
 			<source
 				src="<?= esc_attr($c['video']['upload']['sizes']['small']) ?>"
-				type="<?= $c['video']['upload']['mime_type'] ?>">
+				type="<?= esc_attr($c['video']['upload']['mime_type']) ?>">
 		</video>
 	<?php else: ?>
 		<?php if (array_key_exists('url', $c['image_override'])) : ?>
 			<img
 				<?= \lqx\util\get_src_srcset_sizes_attribs($c['image_override'], $s['image_size']) ?>
 				<?= \lqx\util\get_alt_attribs($c['image_override']['alt'] ?? '') ?>
-				class="<?= array_key_exists('url', $c['image_mobile']) ? 'xs:hidden md:block' : '' ?>"
+				class="<?= esc_attr(array_key_exists('url', $c['image_mobile']) ? 'xs:hidden md:block' : '') ?>"
 				<?= $s['lazy_load'] != 'y' ? 'loading="eager" data-skip-lazy' : '' ?> />
 		<?php else :
 			$the_post_thumbnail_opts = [];

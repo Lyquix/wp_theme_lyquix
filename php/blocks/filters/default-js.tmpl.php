@@ -24,12 +24,11 @@
 //  Instead, copy it to /php/custom/blocks/filters/default-js.tmpl.php to override it
 //  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/filters/{preset}-js.tmpl.php
 
-?>
-<script>
+wp_print_inline_script_tag(
 	// Render filters
-	((settings) => {
+	"((settings) => {
 		lqx.ready(() => {
 			lqx.filters.render(JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(settings), c => c.charCodeAt(0)))));
 		});
-	})('<?= base64_encode(json_encode(\lqx\filters\prepare_json_data($s))) ?>');
-</script>
+	})('" . base64_encode(json_encode(\lqx\filters\prepare_json_data($s))) . "');"
+);

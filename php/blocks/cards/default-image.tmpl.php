@@ -38,9 +38,9 @@
 			$video_classes[] = 'video-viewport-play';
 		}
 		?>
-		<video class="<?= implode(' ', $video_classes)?>" preload="auto"
+		<video class="<?= esc_attr(implode(' ', $video_classes)) ?>" preload="auto"
 			loop muted playsinline autoplay
-			poster="<?= $item['image']['sizes']['medium'] ?>"
+			poster="<?= esc_url($item['image']['sizes']['medium']) ?>"
 			data-src="<?= esc_attr($hover_content['video']['url'] ?? '') ?>"
 			type="<?= esc_attr($hover_content['video']['mime_type'] ?? '') ?>">
 			<source

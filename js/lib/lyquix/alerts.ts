@@ -24,7 +24,7 @@ import { vars, cfg, log, warn, error } from './core';
 import { util } from './util';
 import { analytics } from './analytics';
 
-declare const dayjs, Swiper, jQuery;
+declare const Swiper, jQuery;
 
 /**
  * This module provides functionality for alerts in a web page.
@@ -186,10 +186,10 @@ export const alerts = (() => {
 						if (util.cookie(alert.id) !== null) return;
 
 						// Skip if alert hasn't started yet
-						if (alert.start_date != '' && now < dayjs(alert.start_date).valueOf()) return;
+						if (alert.start_date != '' && now < util.parseDate(alert.start_date)) return;
 
 						// Skip if alert has expired
-						if (alert.expiration != '' && now > dayjs(alert.expiration).valueOf()) return;
+						if (alert.expiration != '' && now > util.parseDate(alert.expiration)) return;
 
 						// Skip if alert has no content
 						if (!alert.heading && !alert.body) return;
@@ -280,7 +280,7 @@ export const alerts = (() => {
 							vars.alerts.alerts.forEach((alert) => {
 								util.cookie(alert.id, '1', {
 									path: '/',
-									maxAge: alert.expiration ? dayjs(alert.expiration).diff(dayjs(), 'second') : 60 * 60 * 24 * 365 // 1 year
+									maxAge: alert.expiration ? Math.round((util.parseDate(alert.expiration) - Date.now()) / 1000) : 60 * 60 * 24 * 365 // 1 year
 								});
 							});
 

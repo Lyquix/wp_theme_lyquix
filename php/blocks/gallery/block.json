@@ -22,6 +22,7 @@
 		"*  DO NOT MODIFY THIS FILE!",
 		"*/"
 	],
+	"apiVersion": 3,
 	"name": "lqx/gallery",
 	"title": "Lyquix Gallery",
 	"description": "A media gallery block with lightbox support",
@@ -34,13 +35,12 @@
 		"image",
 		"video"
 	],
-	"acf": {
-		"mode": "edit",
-		"renderTemplate": "gallery.php"
-	},
 	"supports": {
 		"align": false,
-		"anchor": true,
-		"mode" : false
+		"anchor": true
+	},
+	"acf": {
+		"renderTemplate": "gallery.php",
+		"blockVersion": 3
 	}
 }

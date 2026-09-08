@@ -29,13 +29,13 @@
 	class="lqx-block-testimonial <?= esc_attr($s['class']) ?>"
 	<?php if ($s['preset']): ?>data-preset="<?= esc_attr($s['preset']) ?>"<?php endif; ?>>
 	<div
-		class="testimonial <?= $s['slider'] == 'y' ? 'slider' : '' ?>"
+		class="testimonial <?= esc_attr($s['slider'] == 'y' ? 'slider' : '') ?>"
 		id="<?= esc_attr($s['hash']) ?>"
-		data-slider="<?= $s['slider'] ?>"
+		data-slider="<?= esc_attr($s['slider']) ?>"
 		data-swiper-options-override="<?= esc_attr($s['swiper_options_override'] ?? '') ?>">
 
 		<?= $s['slider'] == 'y' ? '<div class="swiper">' : '' ?>
-		<ul class="<?= $s['slider'] == 'y' ? 'swiper-wrapper' : 'testimonial-wrapper' ?>">
+		<ul class="<?= esc_attr($s['slider'] == 'y' ? 'swiper-wrapper' : 'testimonial-wrapper') ?>">
 
 			<?php
 

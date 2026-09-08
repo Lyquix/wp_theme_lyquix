@@ -22,6 +22,7 @@
 		"*  DO NOT MODIFY THIS FILE!",
 		"*/"
 	],
+	"apiVersion": 3,
 	"name": "lqx/container",
 	"title": "Lyquix Container",
 	"description": "A Container block",
@@ -30,13 +31,12 @@
 	"keywords": [
 		"container"
 	],
-	"acf": {
-		"mode": "preview",
-		"renderTemplate": "container.php"
-	},
 	"supports": {
 		"align": false,
-		"anchor": true,
-		"mode": false
+		"anchor": true
+	},
+	"acf": {
+		"renderTemplate": "container.php",
+		"blockVersion": 3
 	}
 }

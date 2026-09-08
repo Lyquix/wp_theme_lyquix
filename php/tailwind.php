@@ -53,23 +53,21 @@ function collectClasses($block, $classes) {
 }
 
 if (get_theme_mod('feat_tailwind', '1') === '1') {
-	//Enqueue tailwind cdn assets in the Editor.
+	// Enqueue the editor helper script.
+	// Editor CSS is delivered by add_editor_style('css/editor.css') in setup.php: since
+	// WP 7.1 the post editor is always iframed, and styles enqueued on
+	// enqueue_block_editor_assets never reach the canvas — only editor styles do.
+	// (The Tailwind Play CDN + skypack imports used here previously could not style the
+	// iframed canvas at all, so they were removed.)
 	add_action('enqueue_block_editor_assets', function () {
-		if (is_admin()) {
-			wp_enqueue_script(
-				'tailwind-cdn',
-				'https://cdn.tailwindcss.com'
-			);
-			wp_enqueue_script(
-				'tailwind-config',
-                get_stylesheet_directory_uri() . '/css/tailwind/editor.cdn.js'
-			);
-			wp_enqueue_script(
-				'tailwind-editor',
-                get_template_directory_uri() . '/css/tailwind/editor.js',
-				['wp-blocks', 'wp-data', 'wp-edit-post', 'acf-input', 'jquery']
-			);
-		}
+		if (!is_admin()) return;
+		wp_enqueue_script(
+			'tailwind-editor',
+			get_template_directory_uri() . '/css/tailwind/editor.js',
+			['wp-blocks', 'wp-data', 'wp-edit-post', 'acf-input', 'jquery'],
+			date('YmdHis', filemtime(get_template_directory() . '/css/tailwind/editor.js')),
+			true
+		);
 	});
 
 	/**

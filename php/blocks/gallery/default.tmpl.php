@@ -31,15 +31,15 @@
 	<?php if ($s['preset']): ?>data-preset="<?= esc_attr($s['preset']) ?>"<?php endif; ?>>
 
 	<div
-		class="gallery <?= $s['slider'] == 'y' ? 'slider' : '' ?>"
+		class="gallery <?= esc_attr($s['slider'] == 'y' ? 'slider' : '') ?>"
 		id="<?= esc_attr($s['hash']) ?>"
-		data-slider="<?= $s['slider'] ?>"
+		data-slider="<?= esc_attr($s['slider']) ?>"
 		data-swiper-options-override="<?= esc_attr($s['swiper_options_override']) ?>"
-		data-heading-style="<?= $s['heading_style'] ?>"
-		data-browser-history="<?= $s['browser_history'] ?>">
+		data-heading-style="<?= esc_attr($s['heading_style']) ?>"
+		data-browser-history="<?= esc_attr($s['browser_history']) ?>">
 
 		<?= $s['slider'] == 'y' ? '<div class="swiper">' : '' ?>
-			<ul class="<?= $s['slider'] == 'y' ? 'swiper-wrapper' : 'gallery-wrapper' ?>">
+			<ul class="<?= esc_attr($s['slider'] == 'y' ? 'swiper-wrapper' : 'gallery-wrapper') ?>">
 
 				<?php
 				foreach ($c['slides'] as $idx => $item) {

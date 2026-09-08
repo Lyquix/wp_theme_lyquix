@@ -29,11 +29,11 @@
 	<button
 		class="tab <?= $item['additional_classes'] ? esc_attr($item['additional_classes']) : '' ?>"
 		id="<?= $item['item_id'] ? esc_attr($item['item_id']) . '-tab' : $s['hash'] . '-tab-' . $idx ?>"
-		aria-controls="<?= $s['hash'] . '-panel-' . $idx ?>"
-		aria-selected="<?= $idx == 0 ? 'true' : 'false' ?>"
+		aria-controls="<?= esc_attr($s['hash'] . '-panel-' . $idx) ?>"
+		aria-selected="<?= esc_attr($idx == 0 ? 'true' : 'false') ?>"
 		role="tab"
-		tabindex="<?= $idx == 0 ? '' : '-1' ?>">
-		<?= $item['label'] ?>
+		tabindex="<?= esc_attr($idx == 0 ? '' : '-1') ?>">
+		<?= esc_html($item['label']) ?>
 	</button>
 	<?php if (!empty($item['subheading'])): ?>
 		<<?= $s['subheading_style'] ?>
@@ -43,6 +43,6 @@
 		</<?= $s['subheading_style'] ?>>
 	<?php endif; ?>
 	<?php if (!empty($item['header_image']['url']) && ($s['show_header_image'] == 'y')): ?>
-		<img src="<?= htmlspecialchars($item['header_image']['url'], ENT_QUOTES, 'UTF-8') ?>" <?= \lqx\util\get_alt_attribs($item['header_image']['alt'] ?? '') ?> <?= $s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '' ?>>
+		<img src="<?= esc_url(htmlspecialchars($item['header_image']['url'], ENT_QUOTES, 'UTF-8')) ?>" <?= \lqx\util\get_alt_attribs($item['header_image']['alt'] ?? '') ?> <?= $s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '' ?>>
 	<?php endif; ?>
 </li>

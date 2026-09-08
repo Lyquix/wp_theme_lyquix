@@ -27,25 +27,25 @@
 <section
 	class="tab-panel  <?= $c['additional_classes'] ? esc_attr($c['additional_classes']) : '' ?>"
 	id="<?= $c['item_id'] ? esc_attr($c['item_id']) . '-panel' : $s['hash'] . '-panel-' . $s['idx'] ?>"
-	aria-labelledby="<?= $s['hash'] . '-tab-' . $s['idx'] ?>"
-	aria-hidden="<?= $s['idx'] == 0 ? 'false' : 'true' ?>"
+	aria-labelledby="<?= esc_attr($s['hash'] . '-tab-' . $s['idx']) ?>"
+	aria-hidden="<?= esc_attr($s['idx'] == 0 ? 'false' : 'true') ?>"
 	role="tabpanel"
 	tabindex="0">
 
 	<?php if ($s['convert_to_accordion']) : ?>
 		<button
 			class="accordion-header"
-			id="<?= $s['hash'] . '-header-' . $s['idx'] ?>"
-			aria-expanded="<?=  $s['idx'] == 0 ? 'true' : 'false' ?>"
-			aria-controls="<?= $s['hash'] . '-panel-' . $s['idx'] ?>"
+			id="<?= esc_attr($s['hash'] . '-header-' . $s['idx']) ?>"
+			aria-expanded="<?= esc_attr($s['idx'] == 0 ? 'true' : 'false') ?>"
+			aria-controls="<?= esc_attr($s['hash'] . '-panel-' . $s['idx']) ?>"
 			aria-hidden="true">
-			<?= $c['label'] ?>
+			<?= esc_html($c['label']) ?>
 		</button>
 	<?php endif; ?>
 
 	<div
 		class="tab-content"
-		id="<?= $s['hash'] . '-content-' . $s['idx'] ?>">
+		id="<?= esc_attr($s['hash'] . '-content-' . $s['idx']) ?>">
 	<?= $c['heading'] ? sprintf('<%s>%s</%s>', $s['heading_style'], $c['heading'], $s['heading_style']) : '' ?>
 	<InnerBlocks />
 	</div>

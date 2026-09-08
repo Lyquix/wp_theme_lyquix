@@ -24,7 +24,7 @@ import { vars, cfg, log, warn, error } from './core';
 import { util } from './util';
 import { analytics } from './analytics';
 
-declare const dayjs, jQuery;
+declare const jQuery;
 
 /**
  * This module provides functionality for popups in a web page.
@@ -171,10 +171,10 @@ export const popup = (() => {
 						if (util.cookie(popup.id) !== null) return;
 
 						// Skip if popup hasn't started yet
-						if (popup.start_date != '' && now < dayjs(popup.start_date).valueOf()) return;
+						if (popup.start_date != '' && now < util.parseDate(popup.start_date)) return;
 
 						// Skip if popup has expired
-						if (popup.expiration != '' && now > dayjs(popup.expiration).valueOf()) return;
+						if (popup.expiration != '' && now > util.parseDate(popup.expiration)) return;
 
 						// Skip if there's no content
 						if (!popup.heading && !popup.body) return;

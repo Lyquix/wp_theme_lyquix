@@ -25,18 +25,18 @@
 
 ?>
 <div class="lqx-module-social">
-	<ul class="icons-list <?= $s['style'] ?>" style="<?= \lqx\modules\social\get_inline_style($s) ?>">
+	<ul class="icons-list <?= esc_attr($s['style']) ?>" style="<?= esc_attr(\lqx\modules\social\get_inline_style($s)) ?>">
 		<?php foreach ($s['links'] as $l) :
 			$platform = \lqx\modules\social\get_platform($l['url']);
 			if ($platform['code'] !== 'unknown'): ?>
 			<li>
-				<a class="link-<?= $platform['code'] ?>"
+				<a class="link-<?= esc_attr($platform['code']) ?>"
 					href="<?= esc_attr($l['url']) ?>"
 					target="_blank"
 					rel="noopener noreferrer"
-					aria-label="Follow us on <?= $platform['name'] ?>">
+					aria-label="Follow us on <?= esc_attr($platform['name']) ?>">
 					<svg aria-hidden="true" class="icon" width="48" height="48">
-						<use href="<?= get_template_directory_uri(); ?>/images/social/sprites.svg#<?= $platform['code'] ?>">
+						<use href="<?= esc_url(get_template_directory_uri()) ?>/images/social/sprites.svg#<?= esc_url($platform['code']) ?>">
 					</svg>
 				</a>
 			</li>

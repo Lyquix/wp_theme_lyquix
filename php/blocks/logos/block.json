@@ -22,6 +22,7 @@
 		"*  DO NOT MODIFY THIS FILE!",
 		"*/"
 	],
+	"apiVersion": 3,
 	"name": "lqx/logos",
 	"title": "Lyquix Logos",
 	"description": "An logos block",
@@ -30,13 +31,12 @@
 	"keywords": [
 		"logos"
 	],
-	"acf": {
-		"mode": "edit",
-		"renderTemplate": "logos.php"
-	},
 	"supports": {
 		"align": false,
-		"anchor": true,
-		"mode" : false
+		"anchor": true
+	},
+	"acf": {
+		"renderTemplate": "logos.php",
+		"blockVersion": 3
 	}
 }

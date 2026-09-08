@@ -22,6 +22,7 @@
 		"*  DO NOT MODIFY THIS FILE!",
 		"*/"
 	],
+	"apiVersion": 3,
 	"name": "lqx/filters",
 	"title": "Lyquix Filters",
 	"description": "A list of items with filters",
@@ -30,13 +31,12 @@
 	"keywords": [
 		"cards"
 	],
-	"acf": {
-		"mode": "edit",
-		"renderTemplate": "filters.php"
-	},
 	"supports": {
 		"align": false,
-		"anchor": true,
-		"mode" : false
+		"anchor": true
+	},
+	"acf": {
+		"renderTemplate": "filters.php",
+		"blockVersion": 3
 	}
 }

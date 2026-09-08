@@ -33,12 +33,12 @@
 	<div
 		class="slider"
 		id="<?= esc_attr($s['hash']) ?>"
-		data-autoplay="<?= $s['autoplay'] ?>"
-		data-autoplay-delay="<?= $s['autoplay_delay'] ?>"
+		data-autoplay="<?= esc_attr($s['autoplay']) ?>"
+		data-autoplay-delay="<?= esc_attr($s['autoplay_delay']) ?>"
 		data-swiper-options-override="<?= esc_attr($s['swiper_options_override']) ?>"
-		data-loop="<?= $s['loop'] ?>"
-		data-navigation="<?= $s['navigation'] ?>"
-		data-pagination="<?= $s['pagination'] ?>">
+		data-loop="<?= esc_attr($s['loop']) ?>"
+		data-navigation="<?= esc_attr($s['navigation']) ?>"
+		data-pagination="<?= esc_attr($s['pagination']) ?>">
 
 		<div class="swiper">
 

@@ -22,6 +22,7 @@
 		"*  DO NOT MODIFY THIS FILE!",
 		"*/"
 	],
+	"apiVersion": 3,
 	"name": "lqx/accordion-item",
 	"title": "Lyquix Accordion Item",
 	"description": "An Accordion Item block",
@@ -31,15 +32,19 @@
 		"accordion",
 		"accordion-item"
 	],
-	"acf": {
-		"mode": "preview",
-		"renderTemplate": "accordion-item.php"
-	},
+	"parent": [
+		"lqx/accordion-plus"
+	],
 	"supports": {
 		"align": false,
 		"anchor": true,
 		"jsx": true
 	},
-	"parent": ["lqx/accordion-plus"],
-	"usesContext": ["acf/fields"]
+	"usesContext": [
+		"acf/fields"
+	],
+	"acf": {
+		"renderTemplate": "accordion-item.php",
+		"blockVersion": 3
+	}
 }

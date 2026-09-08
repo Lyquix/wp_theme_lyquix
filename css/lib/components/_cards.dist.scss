@@ -85,7 +85,7 @@ $cards-image-icon-positions: left center right;
   }
 
   @each $size in $screen-sizes {
-    @screen #{$size} {
+    @include screen($size) {
       @for $i from 1 through 12 {
         .#{$size}\:columns-#{$i} .cards-wrapper {
           grid-template-columns: repeat(#{$i}, 1fr);

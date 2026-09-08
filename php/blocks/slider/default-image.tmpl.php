@@ -47,7 +47,7 @@ if ($item['video']['type'] == 'url' && $item['video']['url']) {
 		<a
 			href="<?= esc_attr($item['image_link']['url']) ?>"
 			title="<?= esc_attr($item['image_link']['title']) ?>"
-			target="<?= $item['image_link']['target'] ?>">
+			target="<?= esc_attr($item['image_link']['target']) ?>">
 	<?php endif; ?>
 
 		<?php if ($item['video']['type'] == 'upload' && $item['video']['upload']) :
@@ -64,7 +64,7 @@ if ($item['video']['type'] == 'url' && $item['video']['url']) {
 			?>
 			<video
 				autoplay loop muted playsinline
-				poster="<?= $item['image']['sizes']['large'] ?? '' ?>">
+				poster="<?= esc_url($item['image']['sizes']['large'] ?? '') ?>">
 				<source
 					src="<?= esc_attr($item['video']['upload']['url']) ?>"
 					type="<?= esc_attr($item['video']['upload']['mime_type']) ?>">
@@ -74,7 +74,7 @@ if ($item['video']['type'] == 'url' && $item['video']['url']) {
 				<img
 					<?= \lqx\util\get_src_srcset_sizes_attribs($item['image'], 'medium') ?>
 					<?= \lqx\util\get_alt_attribs($item['image']['alt'] ?? '') ?>
-					class="<?= array_key_exists('url', $item['image_mobile']) ? 'xs:hidden md:block' : '' ?>"
+					class="<?= esc_attr(array_key_exists('url', $item['image_mobile']) ? 'xs:hidden md:block' : '') ?>"
 					<?= $s['lazy_load'] != 'y' ? 'loading="eager" data-no-lazy="1"' : '' ?> />
 			<?php endif;
 			if (array_key_exists('url', $item['image_mobile'])) : ?>

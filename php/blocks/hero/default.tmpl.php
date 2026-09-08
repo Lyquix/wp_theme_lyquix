@@ -33,11 +33,11 @@
 	<div
 		class="hero"
 		id="<?= esc_attr($s['hash']) ?>"
-		data-show-image="<?= $s['show_image'] ?>"
-		data-breadcrumbs-show-breadcrumbs="<?= $s['breadcrumbs']['show_breadcrumbs'] ?>"
-		data-breadcrumbs-type="<?= $s['breadcrumbs']['type'] ?>"
-		data-breadcrumbs-depth="<?= $s['breadcrumbs']['depth'] ?>"
-		data-breadcrumbs-show-current="<?= $s['breadcrumbs']['show_current'] ?>"
+		data-show-image="<?= esc_attr($s['show_image']) ?>"
+		data-breadcrumbs-show-breadcrumbs="<?= esc_attr($s['breadcrumbs']['show_breadcrumbs']) ?>"
+		data-breadcrumbs-type="<?= esc_attr($s['breadcrumbs']['type']) ?>"
+		data-breadcrumbs-depth="<?= esc_attr($s['breadcrumbs']['depth']) ?>"
+		data-breadcrumbs-show-current="<?= esc_attr($s['breadcrumbs']['show_current']) ?>"
 		>
 
 		<?php
