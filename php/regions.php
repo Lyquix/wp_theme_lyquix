@@ -24,6 +24,10 @@
 
 namespace lqx\regions;
 
+// This file is also required from wp-config.php before WordPress loads, so the IP helper it
+// shares with the ip2geo endpoint comes from a file without WordPress dependencies
+require_once __DIR__ . '/client-ip.php';
+
 /**
  * Load regions configuration from the cache file (generated on admin save)
  * or fall back to ACF options if the cache file doesn't exist.
@@ -106,6 +110,12 @@ function get_region_from_cookie() {
  * @return string|null - The user's region from IP geolocation or null if not found
  */
 function get_region_from_ip() {
+	// When wp-config.php runs the early detection, its answer is already in $_COOKIE['ipDetectedRegion']
+	// (see get_region_from_cookie()) and W3TC has keyed this page's cache entry on it. A second lookup
+	// here can disagree, and its region then gets baked into a page served to every visitor without the
+	// cookie (incognito visitors saw Florida preselected).
+	if (defined('LQX_EARLY_REGION_DETECT')) return null;
+
 	$config = get_regions_config();
 	$geo_data = $config['regions'] ?? [];
 
@@ -345,6 +355,10 @@ function point_in_geojson(float $testLon, float $testLat, array $geojson): bool 
  * @return void
  */
 function run_early_ip_region_detect() {
+	// The region for this request is decided here, where W3TC can key the page cache on it:
+	// get_region_from_ip() must not look the IP up again while rendering
+	if (!defined('LQX_EARLY_REGION_DETECT')) define('LQX_EARLY_REGION_DETECT', true);
+
 	// Skip for admin, cron, and CLI
 	if (
 		(defined('DOING_CRON') && DOING_CRON) ||
@@ -379,7 +393,8 @@ function run_early_ip_region_detect() {
 
 	if (!$regions || !file_exists($mmdb_path) || !file_exists($reader_path . 'Reader.php')) return;
 
-	$ip = $test_ip ?: ($_SERVER[$ip_header] ?? '');
+	// Same resolution as the ip2geo REST endpoint: proxy lists and fallback headers
+	$ip = $test_ip ?: \lqx\util\get_client_ip($ip_header);
 	$ip = filter_var($ip, FILTER_VALIDATE_IP);
 	if (!$ip) return;
 	if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE)) return;

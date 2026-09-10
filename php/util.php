@@ -1075,63 +1075,9 @@ function get_group_by_attribs(int $post_id, array $s): string {
 	return 'data-group-key="' . esc_attr($data['key']) . '" data-group-label="' . esc_attr($data['label']) . '"';
 }
 
-/**
- * Resolve the client's IP address.
- *
- * Walks the usual proxy headers in order of trustworthiness and returns the first
- * value that parses as an IP, falling back to REMOTE_ADDR. Note that every header
- * before REMOTE_ADDR is client-supplied and can be forged: this is good enough for
- * geolocation and rate limiting, and must not be used for authorization.
- *
- * @param string|null $preferred - header to consult first, e.g. the site's configured
- *                                 ip2geo_ip_address_header. Ignored when empty.
- *
- * @return string - an IP address, or '' when none could be determined
- */
-function get_client_ip($preferred = null) {
-	$candidates = [
-		'HTTP_CF_CONNECTING_IP',
-		'HTTP_CF_CONNECTING_IPV6',
-		'HTTP_TRUE_CLIENT_IP',
-		'HTTP_CLIENT_IP',
-		'HTTP_X_FORWARDED_FOR',
-		'HTTP_X_FORWARDED',
-		'HTTP_X_CLUSTER_CLIENT_IP',
-		'HTTP_FORWARDED_FOR',
-		'HTTP_FORWARDED',
-		'REMOTE_ADDR',
-	];
-
-	if (!empty($preferred)) array_unshift($candidates, $preferred);
-
-	foreach ($candidates as $key) {
-		if (empty($_SERVER[$key])) continue;
-
-		$value = trim((string) $_SERVER[$key]);
-
-		// RFC 7239 Forwarded header: for=...
-		if ($key === 'HTTP_FORWARDED') {
-			foreach (preg_split('/\s*,\s*/', $value) ?: [] as $part) {
-				if (stripos($part, 'for=') === false) continue;
-
-				$ip = explode(';', explode('for=', $part, 2)[1], 2)[0];
-				$ip = trim($ip, " \t\n\r\0\x0B\"'[]");
-
-				if (filter_var($ip, FILTER_VALIDATE_IP)) return $ip;
-			}
-
-			continue;
-		}
-
-		// All other headers: take the first IP (may be comma-separated)
-		$ips = preg_split('/\s*,\s*/', $value) ?: [];
-		$ip = trim((string) ($ips[0] ?? ''));
-
-		if (filter_var($ip, FILTER_VALIDATE_IP)) return $ip;
-	}
-
-	return '';
-}
+// get_client_ip() lives in client-ip.php, which has no WordPress dependencies so the early
+// region detection in regions.php can use it before WordPress loads
+require_once __DIR__ . '/client-ip.php';
 
 /**
  * The Content-Security-Policy nonce for this request, or '' when the site isn't using one.

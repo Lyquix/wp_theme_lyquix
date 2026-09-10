@@ -4,6 +4,12 @@
  * Included from wp-config.php before advanced-cache.php loads.
  */
 
+// The region for this request is decided here, where W3TC can key the page cache on it:
+// \lqx\regions\get_region_from_ip() must not look the IP up again while rendering
+if (!defined('LQX_EARLY_REGION_DETECT')) define('LQX_EARLY_REGION_DETECT', true);
+
+require_once __DIR__ . '/client-ip.php';
+
 // Skip for admin, cron, and CLI
 if (
     (defined('DOING_CRON') && DOING_CRON) ||
@@ -36,7 +42,8 @@ $default     = $config['no_user_region_meaning'] ?? 'outside-region';
 
 if (!$regions || !file_exists($mmdb_path) || !file_exists($reader_path . 'Reader.php')) return;
 
-$ip = $test_ip ?: ($_SERVER[$ip_header] ?? '');
+// Same resolution as the ip2geo REST endpoint: proxy lists and fallback headers
+$ip = $test_ip ?: \lqx\util\get_client_ip($ip_header);
 $ip = filter_var($ip, FILTER_VALIDATE_IP);
 if (!$ip) return;
 if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE)) return;
