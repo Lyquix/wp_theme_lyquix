@@ -84,3 +84,17 @@ function get_client_ip($preferred = null) {
 
 	return '';
 }
+
+/**
+ * The geolocation test IP only applies when the request is explicitly flagged for testing:
+ * a ?lqx-ip2geo-test (or lqx-ip2geo-test cookie) triggers it, and an IP in the flag value
+ * overrides the configured one. Without the flag the configured test IP is ignored, so a
+ * leftover value in the Customizer ("Test IP Address") can't pin every anonymous visitor's
+ * region to it — dev kept a Miami IP set, and every visitor got Florida preselected.
+ */
+function geolocation_test_ip(string $configured): string {
+	$flag = $_GET['lqx-ip2geo-test'] ?? $_COOKIE['lqx-ip2geo-test'] ?? null;
+	if ($flag === null) return '';
+	if ($flag !== '' && $flag !== '1' && filter_var($flag, FILTER_VALIDATE_IP)) return $flag;
+	return $configured;
+}

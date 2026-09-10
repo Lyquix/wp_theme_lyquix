@@ -198,8 +198,11 @@ function rest_route()
 	if (database_is_stale()) request_update();
 	if (!file_exists($db)) return ['error' => 'Geolocation database unavailable'];
 
-	// Get IP address from HTTP request, honouring the site's configured header
-	$ip = get_theme_mod('ip2geo_test_ip_address', '')
+	// Get IP address from HTTP request, honouring the site's configured header.
+	// The configured test IP only applies to explicitly flagged test requests
+	// (geolocation_test_ip), so a leftover value can't pin anonymous visitors.
+	$test_ip = get_theme_mod('ip2geo_test_ip_address', '');
+	$ip = \lqx\util\geolocation_test_ip($test_ip)
 		?: \lqx\util\get_client_ip(get_theme_mod('ip2geo_ip_address_header', 'REMOTE_ADDR'));
 
 	// Sanitize IP address

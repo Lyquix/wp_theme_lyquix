@@ -393,8 +393,10 @@ function run_early_ip_region_detect() {
 
 	if (!$regions || !file_exists($mmdb_path) || !file_exists($reader_path . 'Reader.php')) return;
 
-	// Same resolution as the ip2geo REST endpoint: proxy lists and fallback headers
-	$ip = $test_ip ?: \lqx\util\get_client_ip($ip_header);
+	// Same resolution as the ip2geo REST endpoint: proxy lists and fallback headers.
+	// The configured test IP only applies to explicitly flagged test requests
+	// (geolocation_test_ip), so a leftover value can't pin anonymous visitors.
+	$ip = \lqx\util\geolocation_test_ip($test_ip) ?: \lqx\util\get_client_ip($ip_header);
 	$ip = filter_var($ip, FILTER_VALIDATE_IP);
 	if (!$ip) return;
 	if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE)) return;
