@@ -2345,7 +2345,8 @@ function get_posts_with_data($s)
                         $p['address'] = get_field('address', $p['id']);
                         $p['type'] = get_field('location_type', $p['id']);
                         $p['infoWindow'] = "true";
-                        $p['html'] = require \lqx\blocks\get_template('map', $s['render_map_php']['map_preset'], 'infowindow');
+                        // No info window HTML here: the map block builds it from each post's location
+                        // fields, and this scope lacks the variables the infowindow template expects
                     }
 
                     // Handle heading, subheading and body

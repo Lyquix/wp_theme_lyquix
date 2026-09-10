@@ -109,7 +109,7 @@ function get_second_match($regex, $ua) {
  *               - version (string): The version of the browser.
  */
 function detect_browser() {
-	$ua = $_SERVER['HTTP_USER_AGENT'];
+	$ua = $_SERVER['HTTP_USER_AGENT'] ?? '';
 	$browser = [];
 
 	if (preg_match('/opera|opr/i', $ua)) {
@@ -144,9 +144,9 @@ function detect_browser() {
 		];
 	} else {
 		$browser = [
+			'type' => strtolower(str_replace(' ', '', get_first_match('/^(.*)\/(.*) /', $ua))),
 			'version' => get_second_match('/^(.*)\/(.*) /', $ua)
 		];
-		$browser['type'] = strtolower(str_replace(' ', '', $browser['name']));
 	}
 
 	return $browser;
@@ -178,12 +178,15 @@ function get_browser_version($browser) {
 		CURLOPT_RETURNTRANSFER => true,
 		CURLOPT_ENCODING => '',
 		CURLOPT_MAXREDIRS => 10,
-		CURLOPT_TIMEOUT => 0,
+		// This runs inside a visitor's request, so never wait long on Wikidata
+		CURLOPT_CONNECTTIMEOUT => 5,
+		CURLOPT_TIMEOUT => 10,
 		CURLOPT_FOLLOWLOCATION => true,
 		CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 		CURLOPT_CUSTOMREQUEST => 'GET',
 		CURLOPT_HTTPHEADER => [
-			'User-Agent: ' . $_SERVER['HTTP_USER_AGENT']
+			// Wikimedia asks for an identifying user agent, and the visitor's is not ours to pass on
+			'User-Agent: LyquixTheme/3.5 (https://github.com/Lyquix/wp_theme_lyquix)'
 		]
 	]);
 
@@ -194,11 +197,11 @@ function get_browser_version($browser) {
 	curl_close($curl);
 
 	// Decode response
-	$res = json_decode($res, true);
+	$res = json_decode((string) $res, true);
 
 	// Store all the version numbers in an array
 	$versions = [];
-	foreach ($res['results']['bindings'] as $version) {
+	foreach ($res['results']['bindings'] ?? [] as $version) {
 		// Convert version string to array of integers
 		$ver = explode('.', $version['version']['value']);
 
@@ -229,6 +232,13 @@ function get_browser_version($browser) {
 	return $versions;
 }
 
+// Where the versions are cached: next to this file, or the temp directory when the theme is
+// read-only (otherwise nothing is ever cached and every visitor triggers the Wikidata lookups)
+function versions_file() {
+	$file = __DIR__ . '/browsers.json';
+	return is_writable(file_exists($file) ? $file : __DIR__) ? $file : sys_get_temp_dir() . '/lqx-browsers-' . md5(__DIR__) . '.json';
+}
+
 // Get all browser versions
 function get_all_browsers_versions() {
 	global $browser_data;
@@ -236,10 +246,12 @@ function get_all_browsers_versions() {
 	$versions = [];
 
 	foreach ($browser_data as $browser => $data) {
-		$versions[$browser] = get_browser_version($browser);
+		// A failed lookup keeps the versions we already had
+		$versions[$browser] = get_browser_version($browser) ?: ($data['version'] ?? []);
+		$browser_data[$browser]['version'] = $versions[$browser];
 	}
 
-	file_put_contents('browsers.json', json_encode($versions, JSON_PRETTY_PRINT));
+	@file_put_contents(versions_file(), json_encode($versions, JSON_PRETTY_PRINT));
 }
 
 // Check if browser is outdated
@@ -253,12 +265,12 @@ function browser_outdated() {
 
 	if (array_key_exists($res['type'], $browser_data)) {
 		// A browser will be considered outdated if it is older than the last 3 versions
-		if (array_key_exists('accepted', $_GET)) $accepted_versions = intval($_GET['accepted']);
-		if (!$accepted_versions) $accepted_versions = 3;
-		$res['accepted_version'] = $browser_data[$res['type']]['version'][$accepted_versions - 1];
+		$accepted_versions = array_key_exists('accepted', $_GET) ? intval($_GET['accepted']) : 0;
+		if ($accepted_versions < 1) $accepted_versions = 3;
+		$res['accepted_version'] = $browser_data[$res['type']]['version'][$accepted_versions - 1] ?? null;
 
-		// Known browser with outdated version
-		if (version_compare($res['version'], $res['accepted_version']) == -1) $res['outdated'] = true;
+		// Known browser with outdated version (without version data nobody is flagged)
+		if ($res['accepted_version'] !== null && version_compare($res['version'], $res['accepted_version']) == -1) $res['outdated'] = true;
 
 		// Known browser up to date
 		else $res['outdated'] =  false;
@@ -275,7 +287,7 @@ function browser_outdated() {
 				'long_name' => $item['long_name'],
 				'url' => $item['url'],
 				'info' => $item['info'],
-				'version' => $item['version'][0]
+				'version' => $item['version'][0] ?? ''
 			];
 		}, $browser_data);
 	}
@@ -283,18 +295,20 @@ function browser_outdated() {
 	return $res;
 }
 
-// Check if the file browsers.json exists
-if (file_exists('browsers.json')) {
-	// Check if the last modified date of the file is more than 1 day ago
-	if (filemtime('browsers.json') < strtotime('-1 day') || array_key_exists('refresh', $_GET)) get_all_browsers_versions();
-	else {
-		// Load versions from file to data dictionary
-		$versions = json_decode(file_get_contents('browsers.json'), true);
-		foreach ($versions as $browser => $version) {
-			$browser_data[$browser]['version'] = $version;
-		}
-	}
-} else get_all_browsers_versions();
+// Load the cached versions into the data dictionary
+$versions_file = versions_file();
+$versions = file_exists($versions_file) ? json_decode((string) file_get_contents($versions_file), true) : null;
+foreach (is_array($versions) ? $versions : [] as $browser => $version) {
+	if (isset($browser_data[$browser])) $browser_data[$browser]['version'] = $version;
+}
+
+// Refresh them once a day; ?refresh forces it, but at most every 10 minutes
+$versions_age = file_exists($versions_file) ? time() - filemtime($versions_file) : PHP_INT_MAX;
+if ($versions_age > 86400 || (array_key_exists('refresh', $_GET) && $versions_age > 600)) {
+	// Touch the file first so requests arriving meanwhile keep using the cached versions
+	@touch($versions_file);
+	get_all_browsers_versions();
+}
 
 // Check if browser is outdated
 $browser_outdated = browser_outdated();
