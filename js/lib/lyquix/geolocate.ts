@@ -20,7 +20,7 @@
 //
 //  DO NOT MODIFY THIS FILE!
 
-import { vars, cfg, log } from './core';
+import { vars, cfg, log, error } from './core';
 import { mutation } from './mutation';
 import { util } from './util';
 declare const jQuery;
