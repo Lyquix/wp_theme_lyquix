@@ -326,6 +326,35 @@ function scope_recaptcha_scripts() {
 add_action('wp_print_footer_scripts', '\lqx\js\scope_recaptcha_scripts', 9);
 
 /**
+ * Keeps EWWW Image Optimizer's lazy loader from throwing on images without dimensions
+ *
+ * Before an image loads, EWWW swaps its srcset for a data: placeholder. Looking for the
+ * image's aspect ratio it then checks the width/height attributes, a -WIDTHxHEIGHT file
+ * name, data-eio-rwidth/rheight and finally that placeholder srcset, and when none has
+ * dimensions it throws "Cannot read properties of undefined (reading 'w')". Handing it the
+ * rendered box as data-eio-rwidth/rheight turns its sizes adjustment into a no-op, which is
+ * what the error amounted to. Remove once EWWW reads data-srcset there itself.
+ *
+ * Runs first on wp_head, so the listener is in place before EWWW's async script.
+ *
+ * @return void
+ */
+function render_ewww_lazy_load_guard() {
+	if (!defined('EWWW_IMAGE_OPTIMIZER_VERSION')) return;
+	wp_print_inline_script_tag('window.addEventListener("lazybeforesizes", (e) => {
+		const img = e.target;
+		if (img.dataset.eioRwidth || (img.getAttribute("width") > 1 && img.getAttribute("height") > 1)) return;
+		const dims = /-(\d+)x(\d+)\./;
+		const src = img.src && img.src.includes("http") ? img.src : img.getAttribute("data-src");
+		const srcset = img.srcset || img.getAttribute("data-srcset") || "";
+		if ((src && dims.test(src)) || srcset.split(",").some((c) => dims.test(c.trim().split(" ")[0]))) return;
+		img.dataset.eioRwidth = Math.max(2, img.clientWidth);
+		img.dataset.eioRheight = Math.max(2, img.clientHeight);
+	}, true);', ['id' => 'lqx-ewww-lazy-load-guard']);
+}
+add_action('wp_head', '\lqx\js\render_ewww_lazy_load_guard', 1);
+
+/**
  * Renders the Lyquix options and scripts options
  * 		- lqx options
  * 		- scripts options
