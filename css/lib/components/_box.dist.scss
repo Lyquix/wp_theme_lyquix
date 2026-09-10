@@ -1,3 +1,6 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
 .grey-box {
   @apply bg-[#F6F6F6] py-[35px] md:py-[70px];
 
@@ -52,7 +55,8 @@
 
 .box-l {
   &.grouped-content {
-    @apply full-width-grid bg-[#F6F6F6] py-[35px] md:py-[60px] lg:py-[70px];
+    @apply bg-[#F6F6F6] py-[35px] md:py-[60px] lg:py-[70px];
+    @include full-width-grid;
 
     h2 {
       @apply col-span-12 col-start-2 mt-0 mb-[14px] md:mb-[20px] lg:mb-[35px] text-midnight-black;
@@ -64,7 +68,8 @@
   }
 
   &.dark-wrapper {
-    @apply full-width-grid bg-midnight-black text-white md:py-[60px] lg:py-[70px] py-[35px] md:mb-[70px] mb-[35px] relative;
+    @apply bg-midnight-black text-white md:py-[60px] lg:py-[70px] py-[35px] md:mb-[70px] mb-[35px] relative;
+    @include full-width-grid;
 
     h2.wp-block-heading {
       @apply row-start-1 col-start-2 col-span-12 text-white font-bold mb-0 mb-[20px] lg:mb-[35px] mt-0 text-[35px] leading-[42px] lg:text-[45px] lg:leading-[60px];

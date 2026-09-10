@@ -65,8 +65,9 @@ const extend = {
 			'button-bg': 'theme("colors.lyquix-green-accessible")',
 			'button-bg-hover': 'theme("colors.midnight-black")',
 			'label': 'theme("colors.color-base")',
-			'checkbox': 'theme("colors.gray.500")',
-			'radio': 'theme("colors.gray.500")',
+			// Tailwind 3's gray-500: theme("colors.gray.500") gives Tailwind 4's own gray-500, a different colour
+			'checkbox': '#6b7280',
+			'radio': '#6b7280',
 		},
 		fontFamily: {
 			/* Font families */

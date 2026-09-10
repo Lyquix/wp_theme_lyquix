@@ -30,7 +30,12 @@ body.error-404 {
     @apply flex flex-wrap gap-[1rem] mb-28;
 
     .search-submit {
-      @apply button;
+      // Tailwind 3 compat: `@apply button` also copied `nav ul li a:not(.button):hover` (base/_typography)
+      @at-root nav ul li a:not(#{&}):hover {
+        text-decoration: none;
+      }
+
+      @include button;
     }
   }
 }

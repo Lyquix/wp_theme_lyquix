@@ -102,7 +102,8 @@
   }
 
   &.full-width-grey {
-    @apply full-width-grid bg-[#F6F6F6];
+    @apply bg-[#F6F6F6];
+    @include full-width-grid;
 
     .hero {
       @apply col-span-12 col-start-2;
@@ -114,7 +115,7 @@
       @apply col-start-2 col-span-12 sm:col-span-4 sm:col-start-2;
 
       .intro {
-        @apply h1;
+        @include h1;
 
         p {
           @apply text-lyquix-green;
@@ -196,7 +197,7 @@
 .single-service {
   .hero {
     .image {
-      @apply max-md:row-start-2 max-md:mb-[20px] col-span-full col-span-4 col-start-5 md:col-start-9 flex md:relative;
+      @apply max-md:row-start-2 max-md:mb-[20px] col-span-4 col-start-5 md:col-start-9 flex md:relative;
 
       img {
         @apply md:right-0 md:w-auto;

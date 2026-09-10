@@ -21,10 +21,8 @@
 //  DO NOT MODIFY THIS FILE!
 //  Instead copy it to css/custom/custom.scss and make your changes there.
 
-// Tailwind CSS
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+// Tailwind CSS is added by the build (css/tailwind/entry.css): Sass cannot resolve
+// @import "tailwindcss", so the Tailwind 4 preamble is prepended to the Sass output.
 
 @import "abstracts";
 @import "base";

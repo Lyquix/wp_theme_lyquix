@@ -106,7 +106,8 @@ $cards-image-icon-positions: left center right;
 
   &.service-cards-home {
     .cards-wrapper {
-      @apply inner-grid xs:max-md:gap-y-[50px] md:gap-y-[35px];
+      @apply xs:max-md:gap-y-[50px] md:gap-y-[35px];
+      @include inner-grid;
 
       .card {
         @apply xs:max-md:gap-x-[25px] xs:max-md:flex-nowrap m-0 xs:max-md:col-span-full md:max-lg:px-[10px] lg:min-w-0 md:col-span-4 flex md:flex-col items-center;

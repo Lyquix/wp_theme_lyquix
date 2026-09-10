@@ -1,6 +1,7 @@
 // screen() needs $screen-sizes / $breakpoints from _variables.scss
 @use "variables" as *;
 @use "sass:list";
+@use "sass:math";
 @use "sass:meta";
 @use "sass:string";
 
@@ -123,5 +124,182 @@
 		@media (min-width: $min) {
 			@content;
 		}
+	}
+}
+
+// ---------------------------------------------------------------------------
+// Project classes as mixins
+//
+// Tailwind 3 could `@apply` any class defined in this stylesheet (`@apply grid-container`,
+// `@apply h2`, `@apply button`). Tailwind 4 only applies its own utilities and fails the build
+// on anything else, so these classes are defined here once: layouts/_layout, base/_typography
+// and components/_buttons build the classes from them, and other rules `@include` them.
+//
+// Put the @include where the `@apply` of the class was: after the plain utilities of that `@apply`
+// and before any declarations that followed it, with its variants (`md:`, `hover:`) in a second
+// `@apply` after the @include. Tailwind 3 emitted the class's rules at that point, so this keeps
+// which declaration wins the same.
+//
+// Tailwind 3 also copied every other rule that mentions the class, with the class replaced by
+// the applying selector (e.g. `header .grid-container` gave `header .lqx-module-cta`). Where
+// that happened, the copies are written out next to the @include, marked "Tailwind 3 compat".
+// ---------------------------------------------------------------------------
+
+// Column math of the layout classes for one screen size; $target picks the class
+@mixin layout-screen($target, $s) {
+	// $grdCls = total number of grid columns
+	$grdCls: list.nth($grid-columns, list.index($screen-sizes, $s));
+	// $grdGap = grid gap in pixels
+	$grdGap: list.nth($grid-gaps, list.index($screen-sizes, $s));
+	// $cntMrg = container margins
+	$cntMrgPct: math.percentage(math.div(1, $grdCls));
+	$cntMrgPx: math.div($grdGap, $grdCls);
+	$cntMrg: calc(#{$cntMrgPct} + #{$cntMrgPx});
+	// $cntWth = container width
+	$cntWthPct: math.percentage(1 - math.div(2, $grdCls));
+	$cntWthPx: math.div(2 * $grdGap, $grdCls);
+	$cntWth: calc(#{$cntWthPct} + #{$cntWthPx});
+	// $xlCntWth = max-width for XL screen
+	$xlCntWth: (math.div(list.nth($breakpoints, 5), 1px) * 1 - math.div(2, $grdCls)) + math.div(2 * $grdGap, $grdCls);
+
+	@if $target == container {
+		@if $s == xl {
+			margin: 0 auto;
+			width: 100%;
+			max-width: $xlCntWth;
+		} @else {
+			margin: 0 $cntMrg;
+			width: calc(100% - 2 * #{$cntMrg});
+			max-width: none;
+		}
+	} @else if $target == grid-container {
+		@if $s == xl {
+			grid-template-columns:
+				[full-width-start]
+				minmax($cntMrg, 1fr)
+				[container-start]
+				minmax(0, $xlCntWth)
+				[container-end]
+				minmax($cntMrg, 1fr)
+				[full-width-end];
+		} @else {
+			grid-template-columns:
+				[full-width-start]
+				$cntMrg
+				[container-start]
+				auto
+				[container-end]
+				$cntMrg
+				[full-width-end];
+		}
+	} @else if $target == full-width-grid {
+		@if $s == xl {
+			grid-template-columns:
+				[full-width-start]
+				minmax(calc($cntMrg - $grdGap), 1fr)
+				[container-start]
+				repeat(calc($grdCls - 2), minmax(0, calc(calc($xlCntWth - calc($grdCls - 3) * $grdGap) / calc($grdCls - 2))))
+				[container-end]
+				minmax(calc($cntMrg - $grdGap), 1fr)
+				[full-width-end];
+		} @else {
+			grid-template-columns:
+				[full-width-start]
+				minmax(calc($cntMrg - $grdGap), 1fr)
+				[container-start]
+				repeat(calc($grdCls - 2), 1fr)
+				[container-end]
+				minmax(calc($cntMrg - $grdGap), 1fr)
+				[full-width-end];
+		}
+		@apply gap-x-[#{$grdGap}];
+	} @else if $target == inner-grid {
+		grid-template-columns: repeat(calc($grdCls - 2), 1fr);
+		@apply grid gap-x-[#{$grdGap}];
+	} @else {
+		@error "layout-screen(): unknown target `#{$target}`.";
+	}
+}
+
+// Layout class rules for every screen size
+@mixin layout-responsive($target) {
+	@each $s in $screen-sizes {
+		@include screen($s) {
+			@include layout-screen($target, $s);
+		}
+	}
+}
+
+// .container: centered content column with the grid's side margins
+@mixin container {
+	@include layout-responsive(container);
+}
+
+// .grid-container: full-width / container / full-width named grid columns; children go in the container column
+@mixin grid-container {
+	@include layout-responsive(grid-container);
+	@apply grid;
+
+	> * {
+		grid-column: container;
+	}
+}
+
+// .full-width: span the full-width columns of a .grid-container
+@mixin full-width {
+	grid-column: full-width;
+}
+
+// .full-width-grid: full-width element with the site's column grid inside
+@mixin full-width-grid {
+	@include layout-responsive(full-width-grid);
+	grid-column: full-width;
+	@apply grid;
+}
+
+// .inner-grid: the site's column grid inside the container column
+@mixin inner-grid {
+	@include layout-responsive(inner-grid);
+}
+
+// Heading styles of level $h (h1-h6), used by the h1-h6 elements and the .h1-.h6 classes
+@mixin heading($h) {
+	// text color / font family / font weight / margin
+	@apply text-color-#{$h} font-#{$h} font-weight-#{$h} my-headings;
+
+	@each $s in $screen-sizes {
+		// text size / line height
+		@apply #{$s}:text-size-#{$h}-#{$s} #{$s}:leading-#{$h}-#{$s};
+	}
+}
+
+@mixin h1 {
+	@include heading(h1);
+}
+
+@mixin h2 {
+	@include heading(h2);
+}
+
+@mixin h3 {
+	@include heading(h3);
+}
+
+@mixin h4 {
+	@include heading(h4);
+}
+
+@mixin h5 {
+	@include heading(h5);
+}
+
+@mixin h6 {
+	@include heading(h6);
+}
+
+// .button: the common button look, except on pills, clear and CTA buttons
+@mixin button {
+	&:not(.clear, .pill, .cta-btn) {
+		@include common-button;
 	}
 }

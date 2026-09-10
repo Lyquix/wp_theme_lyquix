@@ -90,19 +90,12 @@ nav ul li a:not(.button) {
 	}
 }
 
+// Heading styles are the heading() mixin in abstracts/_mixins.scss, so other rules can
+// @include h1 ... h6 (Tailwind 4 cannot @apply a class that is not a utility)
 @each $h in $headings {
 	#{$h},
 	.#{$h} {
-		/* text color / font family / font weight / margin */
-		@apply text-color-#{$h} font-#{$h} font-weight-#{$h} my-headings;
-	}
-
-	@each $s in $screen-sizes {
-		#{$h},
-		.#{$h} {
-			/* text size / line height */
-			@apply #{$s}:text-size-#{$h}-#{$s} #{$s}:leading-#{$h}-#{$s};
-		}
+		@include heading($h);
 	}
 }
 

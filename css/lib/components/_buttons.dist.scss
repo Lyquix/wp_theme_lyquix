@@ -31,9 +31,7 @@ button,
 [type="reset"],
 .button,
 .btn {
-  &:not(.clear, .pill, .cta-btn) {
-    @include common-button;
-  }
+  @include button;
 }
 
 .cta-btn {

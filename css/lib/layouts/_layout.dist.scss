@@ -25,112 +25,27 @@
 
 @use "../abstracts/variables" as *;
 @use "../abstracts/mixins" as *;
-@use "sass:math";
 
-@each $s in $screen-sizes {
-	@include screen($s) {
-		// $grdCls = total number of grid columns
-		$grdCls: nth($grid-columns, index($screen-sizes, $s));
-		// $grdGap = grid gap in pixels
-		$grdGap: nth($grid-gaps, index($screen-sizes, $s));
-		// $cntMrg = container margins
-		$cntMrgPct: math.percentage(math.div(1, $grdCls));
-		$cntMrgPx: math.div($grdGap, $grdCls);
-		$cntMrg: calc(#{$cntMrgPct} + #{$cntMrgPx});
-		// $cntWth = container width
-		$cntWthPct: math.percentage(1 - math.div(2, $grdCls));
-		$cntWthPx: math.div(2 * $grdGap, $grdCls);
-		$cntWth: calc(#{$cntWthPct} + #{$cntWthPx});
-		// $xlCntWth = max-width for XL screen
-		$xlCntWth: (math.div(nth($breakpoints, 5), 1px) * 1 - math.div(2, $grdCls)) + math.div(2 * $grdGap, $grdCls);
-
-
-		@if $s == xl {
-			.container {
-				margin: 0 auto;
-				width: 100%;
-				max-width: $xlCntWth;
-			}
-
-			.grid-container {
-				grid-template-columns:
-					[full-width-start]
-					minmax($cntMrg, 1fr)
-					[container-start]
-					minmax(0, $xlCntWth)
-					[container-end]
-					minmax($cntMrg, 1fr)
-					[full-width-end];
-			}
-
-			.full-width-grid {
-				grid-template-columns:
-								[full-width-start]
-								minmax(calc($cntMrg - $grdGap), 1fr)
-								[container-start]
-								repeat(calc($grdCls - 2), minmax(0, calc(calc($xlCntWth - calc($grdCls - 3) * $grdGap) / calc($grdCls - 2))))
-								[container-end]
-								minmax(calc($cntMrg - $grdGap), 1fr)
-								[full-width-end];
-				@apply gap-x-[#{$grdGap}]
-			}
-
-			.inner-grid {
-				grid-template-columns: repeat(calc($grdCls - 2), 1fr);
-				@apply grid gap-x-[#{$grdGap}]
-			}
-		} @else {
-			.container {
-				margin: 0 $cntMrg;
-				width: calc(100% - 2 * #{$cntMrg});
-				max-width: none;
-			}
-			.grid-container {
-				grid-template-columns:
-					[full-width-start]
-					$cntMrg
-					[container-start]
-					auto
-					[container-end]
-					$cntMrg
-					[full-width-end];
-			}
-
-			.full-width-grid {
-				grid-template-columns:
-								[full-width-start]
-								minmax(calc($cntMrg - $grdGap), 1fr)
-								[container-start]
-								repeat(calc($grdCls - 2), 1fr)
-								[container-end]
-								minmax(calc($cntMrg - $grdGap), 1fr)
-								[full-width-end];
-				@apply gap-x-[#{$grdGap}];
-			}
-
-			.inner-grid {
-				grid-template-columns: repeat(calc($grdCls - 2), 1fr);
-				@apply grid gap-x-[#{$grdGap}];
-			}
-		}
-	}
+// The layout classes are defined as mixins in abstracts/_mixins.scss (column math included), so
+// other rules can @include them: Tailwind 4 cannot @apply a class that is not a utility.
+.container {
+	@include container;
 }
 
 .grid-container {
-	@apply grid;
-
-	> * {
-		grid-column: container;
-	}
+	@include grid-container;
 }
 
 .full-width {
-	grid-column: full-width;
+	@include full-width;
 }
 
 .full-width-grid {
-	grid-column: full-width;
-	@apply grid;
+	@include full-width-grid;
+}
+
+.inner-grid {
+	@include inner-grid;
 }
 
 .flex-container {

@@ -162,7 +162,8 @@ body.home {
 
   .panel {
     will-change: transform; transform: translateZ(0);
-    @apply full-width-grid relative h-dvh bg-white max-w-[100dvw];
+    @apply relative h-dvh bg-white max-w-[100dvw];
+    @include full-width-grid;
 
     &.pinned-panel {
       @apply h-[120dvh];
@@ -176,7 +177,7 @@ body.home {
       }
 
       .inner-pinned-grid {
-        @apply full-width-grid
+        @include full-width-grid;
       }
     }
 
@@ -314,7 +315,8 @@ body.home {
     &.active {
       .service-cards-home {
         .card {
-          transition: transform 1s, opacity 2s;
+          // Tailwind 4's translate-* sets `translate`, not `transform`
+          transition: transform 1s, translate 1s, opacity 2s;
           @apply translate-y-0 opacity-100;
 
           @for $i from 1 through 3 {
@@ -344,7 +346,8 @@ body.home {
       }
     }
     .inner-pinned-grid {
-      @apply place-content-center full-width-grid bg-white;
+      @apply place-content-center bg-white;
+      @include full-width-grid;
 
       & > h2, .service-cards-home {
         @apply col-[container]
@@ -353,7 +356,8 @@ body.home {
   }
 
   .bottom-box {
-    @apply full-width-grid bg-white;
+    @apply bg-white;
+    @include full-width-grid;
 
     [data-preset=insights-home], .wp-block-buttons {
       @apply col-[container]

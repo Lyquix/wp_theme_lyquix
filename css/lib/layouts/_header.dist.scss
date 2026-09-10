@@ -87,7 +87,10 @@ header {
           }
 
           .mega-menu {
-            @apply md:duration-300 full-width-grid md:opacity-0 md:z-[-2] md:pointer-events-none max-md:hidden absolute left-0 top-[69px] py-[35px] lg:py-[70px] bg-[#FFFFFF] border-y-[1px] border-[#DBDBDB] w-full md:max-h-0 md:overflow-hidden md:scale-y-0 md:origin-top;
+            @apply absolute left-0 top-[69px] py-[35px] bg-[#FFFFFF] border-y-[1px] border-[#DBDBDB] w-full;
+            @include full-width-grid;
+            // breakpoint utilities after the grid, where Tailwind 3 put them (max-md:hidden must win over display: grid)
+            @apply md:duration-300 md:opacity-0 md:z-[-2] md:pointer-events-none max-md:hidden lg:py-[70px] md:max-h-0 md:overflow-hidden md:scale-y-0 md:origin-top;
 
             .mega-menu-title {
               @apply max-md:hidden text-midnight-black max-lg:mb-[30px] text-[45px] leading-[53px] lg:text-[60px] lg:leading-[75px] font-extrabold col-start-2 lg:col-start-2 col-span-full lg:col-span-3 lg:-ml-[20px] md:-mr-[20px] xl:ml-0 xl:mr-0;
@@ -211,7 +214,7 @@ header {
           @apply flex flex-col gap-[10px];
 
           @media screen and (max-width: 719px) {
-            @apply container;
+            @include container;
           }
 
           li {

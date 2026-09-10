@@ -27,11 +27,17 @@
 @use "../abstracts/mixins" as *;
 
 .lqx-module-cta {
-	@apply grid-container;
+	@include grid-container;
+
+	// Tailwind 3 compat: `@apply grid-container` also copied `header .grid-container` (layouts/_header)
+	header & {
+		@apply h-full;
+	}
 
 	.cta {
 		&.contact {
-			@apply bg-midnight-black full-width-grid;
+			@apply bg-midnight-black;
+			@include full-width-grid;
 
 			.image {
 				@apply h-[180px] md:h-full order-2 col-span-full md:col-start-7 md:col-span-8 md:-ml-[20px] relative;
@@ -45,7 +51,10 @@
 				@apply col-start-2 col-span-12 md:col-start-2 md:col-span-4 xs:max-md:pt-[16.55px] xs:max-md:pb-[40px] md:max-lg:pt-[36.55px] md:max-lg:pb-[60px] lg:py-24;
 
 				.title {
-					@apply md:max-lg:tracking-[-0.36px] md:max-lg:text-[35px] md:max-lg:leading-[42px] mt-0 h2;
+					@apply mt-0;
+					@include h2;
+					// responsive sizes after the heading, where Tailwind 3 put variant utilities
+					@apply md:max-lg:tracking-[-0.36px] md:max-lg:text-[35px] md:max-lg:leading-[42px];
 
 					strong {
 						@apply text-white font-bold;

@@ -51,7 +51,8 @@
           text-align: left;
 
           &:after {
-            transition: transform 0.3s ease;
+            // Tailwind 4's rotate-* sets `rotate`, not `transform`
+            transition: transform 0.3s ease, rotate 0.3s ease;
             @apply w-[24px] h-[24px] bg-center bg-no-repeat bg-[url('../images/green-plus.svg')];
           }
 

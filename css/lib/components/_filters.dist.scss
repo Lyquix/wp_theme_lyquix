@@ -39,7 +39,7 @@
     }
 
     .clear, .control-wrapper label {
-      @apply absolute top-0 font-sans-alt tracking-[1%] xs:max-lg:text-[1.6rem] leading-[28px] border-solid inline-block m-0 bg-transparent text-color-base font-normal pb-[2px] px-0 pt-0 border-b-[3px] border-t-0 border-x-0 border-transparent cursor-pointer font-medium;
+      @apply absolute top-0 font-sans-alt tracking-[1%] xs:max-lg:text-[1.6rem] leading-[28px] border-solid inline-block m-0 bg-transparent text-color-base pb-[2px] px-0 pt-0 border-b-[3px] border-t-0 border-x-0 border-transparent cursor-pointer font-medium;
 
       .label {
         @apply xs:max-md:relative xs:max-md:pr-[18px];
@@ -78,6 +78,14 @@
 
       .control-list {
         @apply xs:max-md:columns-1 md:max-lg:columns-2 lg:columns-3 m-0 xs:max-lg:pt-[20px] xs:max-lg:pb-[15px] lg:pt-[35px] pb-[30px] border-b-[1px] border-[#A7A7A7] px-0 invisible opacity-0;
+
+        // Tailwind 3 compat: `lg:columns-3` also matched the `.lg\:columns-3 .cards-wrapper` rule of components/_cards
+        @include screen(lg) {
+          @at-root .lqx-block-cards #{&} .cards-wrapper {
+            grid-template-columns: repeat(3, 1fr);
+          }
+        }
+
         transition: visibility 0.5s, opacity 0.5s;
 
         li {
@@ -130,7 +138,8 @@
   }
 
   &.sub-services-grey-full-width {
-    @apply full-width-grid bg-[#F6F6F6];
+    @apply bg-[#F6F6F6];
+    @include full-width-grid;
 
     .filters {
       @apply col-span-12 col-start-2;
@@ -161,7 +170,8 @@
       grid-template-rows: 1fr min-content 1fr;
     }
     .text {
-      @apply w-full xl:mx-auto justify-self-center relative xs:max-lg:col-start-2 xs:max-lg:col-span-12 lg:col-start-3 lg:col-span-10 z-10 xs:max-sm:gap-y-[30px] sm:max-md:gap-y-[35px] md:gap-y-[50px] inner-grid md:place-content-center;
+      @apply w-full xl:mx-auto justify-self-center relative xs:max-lg:col-start-2 xs:max-lg:col-span-12 lg:col-start-3 lg:col-span-10 z-10 xs:max-sm:gap-y-[30px] sm:max-md:gap-y-[35px] md:gap-y-[50px] md:place-content-center;
+      @include inner-grid;
       grid-template-rows: min-content min-content;
       grid-row: 2;
       .logo-wrapper {
@@ -182,7 +192,10 @@
         @apply col-span-full col-start-1 md:pl-[220px] translate-y-[20px] opacity-0 row-start-2;
 
         p {
-          @apply tracking-[-0.36px] xs:max-lg:leading-[1.4] xs:max-lg:text-[2.5rem] md:max-lg:text-[2.2rem] md:max-lg:leading-[1.455] lg:text-[3rem] lg:leading-[1.467] h2 !text-white !mt-0;
+          @apply tracking-[-0.36px] !text-white !mt-0;
+          @include h2;
+          // responsive sizes after the heading, where Tailwind 3 put variant utilities
+          @apply xs:max-lg:leading-[1.4] xs:max-lg:text-[2.5rem] md:max-lg:text-[2.2rem] md:max-lg:leading-[1.455] lg:text-[3rem] lg:leading-[1.467];
         }
         //on different screen sizes there are combinations of width and height where we hide the text. We need to do this with media queries.
         @media screen and (max-width: 479px) and (max-height:483px) {
@@ -266,7 +279,8 @@
 
   &[data-preset=insights-home], &[data-preset=insights] {
     .cards-wrapper {
-      @apply inner-grid xs:max-md:gap-y-[20px] md:gap-y-[35px];
+      @apply xs:max-md:gap-y-[20px] md:gap-y-[35px];
+      @include inner-grid;
 
       .card {
         @apply my-0 col-span-full md:col-span-4;
@@ -329,7 +343,8 @@
         @apply col-span-full sm:col-span-6 md:col-span-4 flex flex-col;
 
         &:first-child {
-          @apply flex col-span-full inner-grid mb-0 border-b border-light-b-gray pb-16;
+          @apply flex col-span-full mb-0 border-b border-light-b-gray pb-16;
+          @include inner-grid;
 
           .image {
             @apply self-center md:col-start-8 col-span-full xs:max-md:order-1 md:order-2 md:col-span-5 rounded-[5px] overflow-hidden row-span-1;
@@ -371,7 +386,8 @@
           @apply pl-0 mb-[5px] list-none flex gap-[.5rem] order-2;
 
           li {
-            @apply text-color-base uppercase h6 hidden;
+            @apply text-color-base uppercase hidden;
+            @include h6;
             margin-bottom: 0;
 
             &:first-child {
@@ -395,17 +411,19 @@
   }
 
   &[data-preset=testimonials] {
-    @apply full-width-grid bg-background-fill py-28 mt-20;
+    @apply bg-background-fill py-28 mt-20;
+    @include full-width-grid;
 
     .filters {
       grid-column-end: 14;
       @apply col-start-2;
 
       .card {
-        @apply inner-grid;
+        @include inner-grid;
 
         blockquote {
-          @apply h2 col-span-8;
+          @apply col-span-8;
+          @include h2;
         }
 
         .author-wrapper {
@@ -628,7 +646,7 @@
       }
 
       &.page-prev, &.prev {
-        @apply bg-[url(../images/prev.svg)] bg-center bg-[length:8px_15px] block w-[8px] h-[15px] mr-[5px] text-[0];
+        @apply bg-[url(../images/prev.svg)] bg-center bg-[length:8px_15px] block w-[8px] h-[15px] mr-[5px] text-[0px];
 
         &:hover {
           @apply bg-[url(../images/prev-hover.svg)];
@@ -636,7 +654,7 @@
       }
 
       &.page-next, &.next {
-        @apply bg-[url(../images/next.svg)] bg-center bg-[length:8px_15px] block w-[8px] h-[15px] ml-[5px] text-[0];
+        @apply bg-[url(../images/next.svg)] bg-center bg-[length:8px_15px] block w-[8px] h-[15px] ml-[5px] text-[0px];
 
         &:hover {
           @apply bg-[url(../images/next-hover.svg)];

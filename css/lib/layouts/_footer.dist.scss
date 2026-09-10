@@ -29,7 +29,7 @@ footer {
   @apply xs:max-md:pt-[35px] xs:max-md:pb-[50px] md:pt-[70px] md:pb-[100px] bg-white;
 
   .wrapper {
-    @apply inner-grid;
+    @include inner-grid;
   }
   .left {
     @apply xs:max-lg:col-span-full col-start-1 lg:col-span-7;

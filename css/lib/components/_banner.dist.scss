@@ -98,7 +98,13 @@
   }
 
   &[data-preset=dark-banner] {
-      @apply grid-container bg-midnight-black text-white mb-[35px] md:mb-[60px] lg:mb-[70px] py-[35px] md:py-[70px];
+      @apply bg-midnight-black text-white mb-[35px] md:mb-[60px] lg:mb-[70px] py-[35px] md:py-[70px];
+      @include grid-container;
+
+      // Tailwind 3 compat: `@apply grid-container` also copied `header .grid-container` (layouts/_header)
+      header & {
+        @apply h-full;
+      }
 
       .banner {
         @apply grid grid-cols-12 md:gap-x-[20px];
@@ -180,11 +186,13 @@
   }
 
   &.banner-gray {
-    @apply full-width-grid bg-background-fill;
+    @apply bg-background-fill;
+    @include full-width-grid;
 
     .banner {
       grid-column: container;
-      @apply inner-grid py-[3.5rem] md:py-[6rem] lg:py-28;
+      @apply py-[3.5rem] md:py-[6rem] lg:py-28;
+      @include inner-grid;
 
       .image {
         @apply w-full h-full col-span-full md:order-1 md:col-span-4 rounded-[5px] overflow-hidden relative lg:aspect-[7/5];

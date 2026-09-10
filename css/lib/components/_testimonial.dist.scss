@@ -27,16 +27,52 @@
 @use "../abstracts/mixins" as *;
 
 @mixin default-testimonial {
-  @apply full-width;
+  @include full-width;
+
+  // Tailwind 3 compat: `@apply full-width` also copied the other rules that mention .full-width
+  // (components/_banner, _hero, _slider), with .full-width replaced by this selector
+  @at-root figure#{&} img {
+    @apply w-full;
+  }
+
+  @at-root .lqx-block-hero#{&}:not([data-preset=home]) .hero {
+    @apply p-0 block;
+  }
+
+  @at-root .single-portfolio .lqx-block-hero:not([data-preset])#{&} .hero:has(.image img) .image {
+    @apply min-h-[300px] md:min-h-[700px] relative;
+
+    img {
+      @apply object-cover absolute w-full h-full;
+    }
+  }
+
+  @at-root .lqx-block-slider#{&} .swiper-slide {
+    @apply w-full m-0;
+
+    picture {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+
+      img {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+      }
+    }
+  }
 
   ul {
     @apply p-0 list-none;
 
     li {
-      @apply full-width-grid py-[35px] md:py-[60px] lg:py-[7rem] my-0;
+      @apply py-[35px] md:py-[60px] lg:py-[7rem] my-0;
+      @include full-width-grid;
 
       blockquote {
-        @apply h2 col-span-12 col-start-2 col-start-2 lg:col-start-3 lg:col-span-10 !m-0 !mb-[30px];
+        @apply col-span-12 col-start-2 col-start-2 lg:col-start-3 lg:col-span-10 !m-0 !mb-[30px];
+        @include h2;
         quotes: "“" "”";
         color: var(--text-color, theme('colors.color-headings'));
 
@@ -96,7 +132,8 @@
     }
 
     .testimonial-slide {
-      @apply full-width-grid py-[7rem] m-0;
+      @apply py-[7rem] m-0;
+      @include full-width-grid;
 
       blockquote {
         @apply text-4xl col-span-12 col-start-2 lg:col-span-8 lg:col-start-4 text-center italic mb-4 leading-relaxed;
