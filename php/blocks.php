@@ -493,18 +493,18 @@ function reset_global_settings_page() {
 <script>
 	jQuery(document).ready(function() {
 		// Toggle All checkbox functionality
-		jQuery('#toggleAll').click(function() {
+		jQuery('#toggleAll').on('click', function() {
 			jQuery('input[name="field_groups[]"]').prop('checked', this.checked);
 		});
 
 		// Check if all checkboxes are checked
-		jQuery('input[name="field_groups[]"]').click(function() {
+		jQuery('input[name="field_groups[]"]').on('click', function() {
 			let allChecked = jQuery('input[name="field_groups[]"]').length === jQuery('input[name="field_groups[]"]:checked').length;
 			jQuery('#toggleAll').prop('checked', allChecked);
 		});
 
 		// Handle reset button click
-		jQuery('#resetFieldsBtn').click(function() {
+		jQuery('#resetFieldsBtn').on('click', function() {
 			let checkedCheckboxes = jQuery('input[name="field_groups[]"]:checked');
 			if (checkedCheckboxes.length === 0) {
 					alert('Please select at least one block or module.');

@@ -239,7 +239,7 @@ export const popup = (() => {
 						}
 
 						// Close button listener
-						popupElem.find('.close').click(() => {
+						popupElem.find('.close').on('click', () => {
 							close(popup.id);
 						});
 

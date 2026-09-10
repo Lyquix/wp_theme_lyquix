@@ -253,8 +253,8 @@ function render_admin_page() {
 				$('#lqxSyncResult').text(response);
 			});
 		}
-		$('#lqxExportBtn').click(function() { run('lqx_export_block_settings'); });
-		$('#lqxImportBtn').click(function() {
+		$('#lqxExportBtn').on('click', function() { run('lqx_export_block_settings'); });
+		$('#lqxImportBtn').on('click', function() {
 			if (confirm('This will overwrite this site\'s saved block Global Settings, Styles, and Presets with the contents of the file. Continue?')) {
 				run('lqx_import_block_settings');
 			}

@@ -155,7 +155,7 @@ export const cards = (() => {
 				new Swiper('#' + cardsElem.attr('id') + ' ' + cfg.cards.swiperSelector, swiperOptions);
 
 				// Prev/Next button listeners
-				cardsElem.find(`${cfg.cards.swiperPrevSelector}, ${cfg.cards.swiperNextSelector}`).click((event) => {
+				cardsElem.find(`${cfg.cards.swiperPrevSelector}, ${cfg.cards.swiperNextSelector}`).on('click', (event) => {
 					// Send event for cards prev/next button click
 					if (cfg.cards.analytics.enabled && cfg.cards.analytics.onPrevNext) {
 						analytics.sendGAEvent({

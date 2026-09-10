@@ -235,7 +235,7 @@ export const modal = (() => {
 						}
 
 						// Close button listener
-						modalElem.find('.close').click(() => {
+						modalElem.find('.close').on('click', () => {
 							close(modal.id);
 						});
 

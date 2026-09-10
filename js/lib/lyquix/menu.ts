@@ -66,19 +66,19 @@ export const menu = (() => {
 	};
 
 	const setup = (menuElems) => {
-		jQuery(menuElems).click(() => {
+		jQuery(menuElems).on('click', () => {
 			jQuery('header').toggleClass('mobile-menu-open');
 		});
-		jQuery('#search-container button').click(function(){
+		jQuery('#search-container button').on('click', function(){
 			jQuery('#search-container').toggleClass('open');
 		});
-		jQuery('.open-submenu').click(function(){
+		jQuery('.open-submenu').on('click', function(){
 			jQuery(this).closest('li').addClass('open');
 		});
-		jQuery('.return-link').click(function(){
+		jQuery('.return-link').on('click', function(){
 			jQuery(this).closest('li').removeClass('open');
 		});
-		jQuery('.open-accordion-submenu').click(function(){
+		jQuery('.open-accordion-submenu').on('click', function(){
 			jQuery(this).closest('li').toggleClass('accordion-open');
 		});
 	};

@@ -157,7 +157,7 @@ export const slider = (() => {
 
 				if (navigation == true) {
 					// Prev/Next button listeners
-					sliderElem.find(cfg.slider.swiperPrevSelector).click(() => {
+					sliderElem.find(cfg.slider.swiperPrevSelector).on('click', () => {
 						// Send event for alerts previous button click
 						if (cfg.slider.analytics.enabled && cfg.slider.analytics.onPrevNext) {
 							analytics.sendGAEvent({
@@ -168,7 +168,7 @@ export const slider = (() => {
 							});
 						}
 					});
-					sliderElem.find(cfg.slider.swiperNextSelector).click(() => {
+					sliderElem.find(cfg.slider.swiperNextSelector).on('click', () => {
 						// Send event for alerts next button click
 						if (cfg.slider.analytics.enabled && cfg.slider.analytics.onPrevNext) {
 							analytics.sendGAEvent({

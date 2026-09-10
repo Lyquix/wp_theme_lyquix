@@ -275,7 +275,7 @@ export const alerts = (() => {
 						}
 
 						// Close button listener
-						alertsModuleElem.find('.close').click(() => {
+						alertsModuleElem.find('.close').on('click', () => {
 							// Set cookies for each alert
 							vars.alerts.alerts.forEach((alert) => {
 								util.cookie(alert.id, '1', {
@@ -300,7 +300,7 @@ export const alerts = (() => {
 						});
 
 						// Prev/Next button listeners
-						alertsModuleElem.find(cfg.alerts.swiperPrevSelector).click(() => {
+						alertsModuleElem.find(cfg.alerts.swiperPrevSelector).on('click', () => {
 							// Send event for alerts previous button click
 							if (cfg.alerts.analytics.enabled && cfg.alerts.analytics.onPrevNext) {
 								analytics.sendGAEvent({
@@ -311,7 +311,7 @@ export const alerts = (() => {
 								});
 							}
 						});
-						alertsModuleElem.find(cfg.alerts.swiperNextSelector).click(() => {
+						alertsModuleElem.find(cfg.alerts.swiperNextSelector).on('click', () => {
 							// Send event for alerts next button click
 							if (cfg.alerts.analytics.enabled && cfg.alerts.analytics.onPrevNext) {
 								analytics.sendGAEvent({

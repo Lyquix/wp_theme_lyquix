@@ -125,7 +125,7 @@ export const testimonial = (() => {
 				new Swiper('#' + testimonialElem.attr('id') + ' ' + cfg.testimonial.swiperSelector, swiperOptions);
 
 				// Prev/Next button listeners
-				testimonialElem.find(`${cfg.testimonial.swiperPrevSelector}, ${cfg.testimonial.swiperNextSelector}`).click((event) => {
+				testimonialElem.find(`${cfg.testimonial.swiperPrevSelector}, ${cfg.testimonial.swiperNextSelector}`).on('click', (event) => {
 					// Send event for testimonial prev/next button click
 					if (cfg.testimonial.analytics.enabled && cfg.testimonial.analytics.onPrevNext) {
 						analytics.sendGAEvent({

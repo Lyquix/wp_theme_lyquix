@@ -146,7 +146,7 @@ export const gallery = (() => {
 				new Swiper('#' + galleryElem.attr('id') + ' ' + cfg.gallery.swiperSelector, swiperOptions);
 
 				// Prev/Next button listeners
-				galleryElem.find(`${cfg.gallery.swiperPrevSelector}, ${cfg.gallery.swiperNextSelector}`).click((event) => {
+				galleryElem.find(`${cfg.gallery.swiperPrevSelector}, ${cfg.gallery.swiperNextSelector}`).on('click', (event) => {
 					// Send event for gallery prev/next button click
 					if (cfg.gallery.analytics.enabled && cfg.gallery.analytics.onPrevNext) {
 						analytics.sendGAEvent({
