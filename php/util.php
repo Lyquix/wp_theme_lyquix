@@ -853,7 +853,7 @@ function get_src_srcset_sizes_attribs($image, $src_size = 'medium', $size_map = 
 			$url = $image['sizes'][$name];
 			$width = (int) $image['sizes'][$name . '-width'];
 			if ($width > 0 && !isset($seen_urls[$url])) {
-				$srcset_parts[] = $url . ' ' . $width . 'w';
+				$srcset_parts[] = esc_url($url) . ' ' . $width . 'w';
 				$srcset_urls[] = $url;
 				$seen_urls[$url] = true;
 			}
@@ -863,7 +863,7 @@ function get_src_srcset_sizes_attribs($image, $src_size = 'medium', $size_map = 
 	if (!empty($image['url']) && !empty($image['width'])) {
 		$width = (int) $image['width'];
 		if ($width > 0 && !isset($seen_urls[$image['url']])) {
-			$srcset_parts[] = $image['url'] . ' ' . $width . 'w';
+			$srcset_parts[] = esc_url($image['url']) . ' ' . $width . 'w';
 			$srcset_urls[] = $image['url'];
 		}
 	}
@@ -875,7 +875,7 @@ function get_src_srcset_sizes_attribs($image, $src_size = 'medium', $size_map = 
 	// every size resolves to the original URL and the dedup above collapses them.
 	// Emitting just src also keeps lazy-load scripts that parse WordPress'
 	// -WIDTHxHEIGHT filename convention out of a dead end.
-	if (count($srcset_parts) === 1) return 'src="' . $srcset_urls[0] . '"';
+	if (count($srcset_parts) === 1) return 'src="' . esc_url($srcset_urls[0]) . '"';
 
 	// Resolve src — try the requested size, then progressively larger, then full
 	$src = '';
@@ -894,7 +894,7 @@ function get_src_srcset_sizes_attribs($image, $src_size = 'medium', $size_map = 
 		if (empty($src)) $src = $image['url'];
 	}
 
-	return 'src="' . $src . '" srcset="' . implode(', ', $srcset_parts) . '" sizes="' . implode(', ', $sizes_parts) . '"';
+	return 'src="' . esc_url($src) . '" srcset="' . implode(', ', $srcset_parts) . '" sizes="' . esc_attr(implode(', ', $sizes_parts)) . '"';
 }
 
 /**

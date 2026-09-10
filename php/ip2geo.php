@@ -30,6 +30,9 @@ const UPDATE_HOOK = 'lqx_ip2geo_update_db';
 // Guards against two overlapping downloads of a ~60MB archive
 const LOCK_TRANSIENT = 'lqx_ip2geo_updating';
 
+// Set after a failed attempt so every request doesn't queue another one straight away
+const FAILED_TRANSIENT = 'lqx_ip2geo_failed';
+
 /**
  * Absolute path of the GeoLite2 database.
  *
@@ -52,71 +55,128 @@ function database_is_stale() {
 }
 
 /**
- * Download and install the GeoLite2 database.
+ * Download and install the GeoLite2 database, if it is due.
  *
  * Runs on cron rather than inside a request: the archive is tens of megabytes and
  * has to be decompressed and untarred, which is far too slow to do while a visitor
  * waits, and doing it inline let concurrent requests all start the same download.
  *
+ * Does nothing while the installed copy is younger than the configured maximum age, so
+ * the daily event doesn't spend the MaxMind account's download quota. A failed attempt
+ * holds off further tries for an hour.
+ *
  * @return true|\WP_Error
  */
 function update_database() {
-	$license_key = get_theme_mod('ip2geo_maxmind_license_key', '');
-	if (!$license_key) return new \WP_Error('lqx_ip2geo_no_key', 'No MaxMind license key configured');
+	if (!database_is_stale()) return true;
+
+	if (!get_theme_mod('ip2geo_maxmind_license_key', '')) return new \WP_Error('lqx_ip2geo_no_key', 'No MaxMind license key configured');
 
 	// Another run is already working on it
 	if (get_transient(LOCK_TRANSIENT)) return new \WP_Error('lqx_ip2geo_locked', 'An update is already running');
 	set_transient(LOCK_TRANSIENT, 1, 15 * MINUTE_IN_SECONDS);
 
-	$basedir = wp_get_upload_dir()['basedir'];
-	$db_filename = 'GeoLite2-City';
-	$db_basepath = $basedir . '/' . $db_filename;
-	$db_tar_gz = $db_basepath . '.tar.gz';
-	$db_tar = $db_basepath . '.tar';
-	$db = database_path();
-
 	try {
-		$download_url = 'https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=' . $license_key . '&suffix=tar.gz';
-
-		$response = wp_remote_get($download_url, ['timeout' => 300, 'stream' => true, 'filename' => $db_tar_gz]);
-
-		if (is_wp_error($response)) {
-			// The message can carry the URL, and the URL carries the license key
-			return new \WP_Error('lqx_ip2geo_download_failed', 'Error downloading database');
-		}
-
-		if (wp_remote_retrieve_response_code($response) !== 200) {
-			if (file_exists($db_tar_gz)) unlink($db_tar_gz);
-			return new \WP_Error('lqx_ip2geo_download_failed', 'Error downloading database', [
-				'http_code' => wp_remote_retrieve_response_code($response)
-			]);
-		}
-
-		// Decompress gz
-		$p = new \PharData($db_tar_gz);
-		$p->decompress();
-		unlink($db_tar_gz);
-
-		// Unarchive tar
-		$p = new \PharData($db_tar);
-		$p->extractTo($basedir, null, true);
-		unlink($db_tar);
-
-		// Move file, and delete directory
-		$extract_dirs = glob($basedir . '/' . $db_filename . '_*', GLOB_ONLYDIR);
-		if (empty($extract_dirs)) return new \WP_Error('lqx_ip2geo_extract_failed', 'Could not find extracted database');
-
-		$extract_dir = $extract_dirs[0];
-		rename($extract_dir . '/' . $db_filename . '.mmdb', $db);
-		foreach (glob($extract_dir . '/*') as $file) unlink($file);
-		rmdir($extract_dir);
-
-		return true;
+		$result = install_database();
+	} catch (\Throwable $e) {
+		$result = new \WP_Error('lqx_ip2geo_install_failed', 'Could not install database');
 	} finally {
 		delete_transient(LOCK_TRANSIENT);
 	}
+
+	if (is_wp_error($result)) {
+		remove_leftovers();
+		set_transient(FAILED_TRANSIENT, 1, HOUR_IN_SECONDS);
+	}
+
+	return $result;
+}
+
+/**
+ * Remove partial downloads and extraction directories left by an interrupted run, which
+ * would otherwise make PharData refuse every later attempt.
+ *
+ * @return void
+ */
+function remove_leftovers() {
+	$basedir = wp_get_upload_dir()['basedir'];
+
+	foreach (['/GeoLite2-City.tar.gz', '/GeoLite2-City.tar'] as $leftover) {
+		if (file_exists($basedir . $leftover)) unlink($basedir . $leftover);
+	}
+
+	foreach (glob($basedir . '/GeoLite2-City_*', GLOB_ONLYDIR) ?: [] as $dir) {
+		foreach (glob($dir . '/*') ?: [] as $file) unlink($file);
+		rmdir($dir);
+	}
+}
+
+/**
+ * Fetch the archive and move the database into place.
+ *
+ * @return true|\WP_Error
+ */
+function install_database() {
+	$license_key = get_theme_mod('ip2geo_maxmind_license_key', '');
+	$basedir = wp_get_upload_dir()['basedir'];
+	$db_filename = 'GeoLite2-City';
+	$db_tar_gz = $basedir . '/' . $db_filename . '.tar.gz';
+	$db_tar = $basedir . '/' . $db_filename . '.tar';
+
+	remove_leftovers();
+
+	$download_url = 'https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=' . $license_key . '&suffix=tar.gz';
+	$response = wp_remote_get($download_url, ['timeout' => 300, 'stream' => true, 'filename' => $db_tar_gz]);
+
+	// The error message can carry the URL, and the URL carries the license key
+	if (is_wp_error($response)) return new \WP_Error('lqx_ip2geo_download_failed', 'Error downloading database');
+
+	if (wp_remote_retrieve_response_code($response) !== 200) {
+		return new \WP_Error('lqx_ip2geo_download_failed', 'Error downloading database', [
+			'http_code' => wp_remote_retrieve_response_code($response)
+		]);
+	}
+
+	// Decompress gz
+	$p = new \PharData($db_tar_gz);
+	$p->decompress();
+	unlink($db_tar_gz);
+
+	// Unarchive tar
+	$p = new \PharData($db_tar);
+	$p->extractTo($basedir, null, true);
+	unlink($db_tar);
+
+	// Move file, and delete directory
+	$extract_dirs = glob($basedir . '/' . $db_filename . '_*', GLOB_ONLYDIR);
+	if (empty($extract_dirs)) return new \WP_Error('lqx_ip2geo_extract_failed', 'Could not find extracted database');
+
+	$extract_dir = $extract_dirs[0];
+	rename($extract_dir . '/' . $db_filename . '.mmdb', database_path());
+	foreach (glob($extract_dir . '/*') as $file) unlink($file);
+	rmdir($extract_dir);
+
+	return true;
 }
 add_action(UPDATE_HOOK, '\lqx\ip2geo\update_database');
+
+/**
+ * Ask cron for a refresh now, unless one is already queued, running or recently failed, or
+ * there is no license key to download with (otherwise every geolocation request on a
+ * site that doesn't use MaxMind would queue a cron event that can only fail).
+ *
+ * The request carries its own argument so it can be told apart from the daily event,
+ * which is always scheduled and would otherwise make a refresh look permanently queued.
+ *
+ * @return void
+ */
+function request_update() {
+	if (!get_theme_mod('ip2geo_maxmind_license_key', '')) return;
+	if (get_transient(LOCK_TRANSIENT) || get_transient(FAILED_TRANSIENT)) return;
+	if (wp_next_scheduled(UPDATE_HOOK, ['now'])) return;
+
+	wp_schedule_single_event(time(), UPDATE_HOOK, ['now']);
+}
 
 // Keep the database fresh in the background
 add_action('init', function () {
@@ -126,22 +186,17 @@ add_action('init', function () {
 // Don't leave the schedule behind when the theme is swapped out
 add_action('switch_theme', function () {
 	wp_clear_scheduled_hook(UPDATE_HOOK);
+	wp_clear_scheduled_hook(UPDATE_HOOK, ['now']);
 });
 
 function rest_route()
 {
 	$db = database_path();
 
-	// The database is refreshed on cron. If it isn't there yet, ask for one now and
-	// answer without it rather than making this visitor wait for the download.
-	if (!file_exists($db)) {
-		if (!get_transient(LOCK_TRANSIENT) && !wp_next_scheduled(UPDATE_HOOK, [])) {
-			wp_schedule_single_event(time(), UPDATE_HOOK);
-		}
-		return ['error' => 'Geolocation database unavailable'];
-	}
-
-	if (database_is_stale() && !get_transient(LOCK_TRANSIENT)) wp_schedule_single_event(time(), UPDATE_HOOK);
+	// The database is refreshed on cron. If it is missing or out of date, ask for a refresh
+	// and answer with what is there rather than making this visitor wait for the download.
+	if (database_is_stale()) request_update();
+	if (!file_exists($db)) return ['error' => 'Geolocation database unavailable'];
 
 	// Get IP address from HTTP request, honouring the site's configured header
 	$ip = get_theme_mod('ip2geo_test_ip_address', '')

@@ -47,6 +47,12 @@ const DENIED_ELEMENTS = [
 	'audio',
 	'video',
 	'animation',  // SVG Tiny 1.2, can reference external documents
+	// HTML form controls: inert in SVG, live if the document ends up in the XHTML namespace
+	'form',
+	'button',
+	'input',
+	'textarea',
+	'select',
 ];
 
 // Attributes that are never safe
@@ -66,11 +72,12 @@ const ANIMATION_ELEMENTS = [
 	'animatemotion',
 ];
 
-// Attributes whose value is a URL and must therefore be scheme-checked
+// Attributes whose whole value is a URL (or a list of them) and must be scheme-checked
 const URL_ATTRIBUTES = [
 	'href',
 	'xlink:href',
 	'src',
+	'action',
 	'data',
 	'from',
 	'to',
@@ -79,16 +86,31 @@ const URL_ATTRIBUTES = [
 	'begin',
 	'end',
 	'attributename',
+];
+
+// Presentation attributes: only their url(...) references are URLs. The value as a whole
+// can't be scheme-checked, because "fill:red;stroke:blue" looks like a scheme to a URL test
+const STYLE_ATTRIBUTES = [
+	'style',
+	'fill',
+	'stroke',
 	'filter',
 	'mask',
 	'clip-path',
-	'fill',
-	'stroke',
 	'marker-start',
 	'marker-mid',
 	'marker-end',
-	'style',
 ];
+
+// Attributes holding a semicolon-separated list, any item of which can be a URL
+const LIST_ATTRIBUTES = [
+	'values',
+	'begin',
+	'end',
+];
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const XHTML_NS = 'http://www.w3.org/1999/xhtml';
 
 /**
  * Is this URL value safe to keep?
@@ -130,6 +152,9 @@ function is_safe_url($value) {
 function sanitize($svg) {
 	// Fail closed: without DOM we cannot verify the file, so it must not be accepted
 	if (!class_exists('\DOMDocument')) return false;
+
+	// A UTF-8 byte order mark ahead of the XML declaration makes the parser reject the file
+	$svg = preg_replace('/^\xEF\xBB\xBF/', '', $svg);
 	if (trim($svg) === '') return false;
 
 	$had_declaration = (bool) preg_match('/^\s*<\?xml/i', $svg);
@@ -148,18 +173,23 @@ function sanitize($svg) {
 
 	$previous = libxml_use_internal_errors(true);
 	// Force UTF-8 handling without adding a wrapper element
-	$loaded = $doc->loadXML('<?xml version="1.0" encoding="UTF-8"?>' . preg_replace('/^<\?xml[^>]*\?>/i', '', $svg), $options);
+	$loaded = $doc->loadXML('<?xml version="1.0" encoding="UTF-8"?>' . preg_replace('/^\s*<\?xml[^>]*\?>/i', '', $svg), $options);
 	libxml_clear_errors();
 	libxml_use_internal_errors($previous);
 
 	if (!$loaded || !$doc->documentElement) return false;
 	if (strtolower($doc->documentElement->localName) !== 'svg') return false;
 
+	// An <svg> root in another namespace (XHTML, say) makes the browser treat the whole
+	// document as that language, form controls included
+	$root_ns = $doc->documentElement->namespaceURI;
+	if ($root_ns !== null && $root_ns !== SVG_NS) return false;
+
 	$xpath = new \DOMXPath($doc);
 
-	// Remove denied elements regardless of namespace
+	// Remove denied elements regardless of namespace, and anything in the XHTML namespace
 	foreach ($xpath->query('//*') as $node) {
-		if (in_array(strtolower($node->localName), DENIED_ELEMENTS, true)) {
+		if (in_array(strtolower($node->localName), DENIED_ELEMENTS, true) || $node->namespaceURI === XHTML_NS) {
 			$node->parentNode?->removeChild($node);
 		}
 	}
@@ -169,7 +199,9 @@ function sanitize($svg) {
 		if (!in_array(strtolower($node->localName), ANIMATION_ELEMENTS, true)) continue;
 
 		$target = strtolower((string) $node->getAttribute('attributeName'));
-		if ($target === '' || str_starts_with($target, 'on') || in_array($target, URL_ATTRIBUTES, true)) {
+		// Compare without the namespace prefix too: z:href is href once z is bound to XLink
+		$local_target = str_contains($target, ':') ? substr($target, strrpos($target, ':') + 1) : $target;
+		if ($target === '' || str_starts_with($local_target, 'on') || in_array($target, URL_ATTRIBUTES, true) || in_array($local_target, URL_ATTRIBUTES, true) || $local_target === 'style') {
 			$node->parentNode?->removeChild($node);
 		}
 	}
@@ -200,7 +232,8 @@ function sanitize($svg) {
 				continue;
 			}
 
-			if (in_array($name, URL_ATTRIBUTES, true) || in_array($local, URL_ATTRIBUTES, true)) {
+			$is_url = in_array($name, URL_ATTRIBUTES, true) || in_array($local, URL_ATTRIBUTES, true);
+			if ($is_url || in_array($local, STYLE_ATTRIBUTES, true)) {
 				// style and paint attributes may carry url(...) references
 				if (preg_match_all('/url\(\s*[\'"]?([^\'")]+)/i', (string) $value, $m)) {
 					foreach ($m[1] as $url) {
@@ -210,9 +243,14 @@ function sanitize($svg) {
 						}
 					}
 				}
-				if (!is_safe_url((string) $value)) {
-					$node->removeAttributeNode($attr);
-					continue;
+				// The whole value only for real URL attributes, since presentation values contain
+				// colons. values="#;javascript:..." would pass as a whole, so list items go one by one.
+				$items = !$is_url ? [] : (in_array($local, LIST_ATTRIBUTES, true) ? explode(';', (string) $value) : [(string) $value]);
+				foreach ($items as $item) {
+					if (!is_safe_url($item)) {
+						$node->removeAttributeNode($attr);
+						continue 2;
+					}
 				}
 			}
 
@@ -247,7 +285,7 @@ if (get_theme_mod('feat_allow_svg_upload', '1') === '1' && apply_filters('lqx_sa
 	 * cannot be parsed as SVG is rejected with a readable message rather than being
 	 * silently emptied, so editors know what happened.
 	 */
-	add_filter('wp_handle_upload_prefilter', function ($file) {
+	$lqx_svg_prefilter = function ($file) {
 		$is_svg = ($file['type'] ?? '') === 'image/svg+xml'
 			|| strtolower(pathinfo($file['name'] ?? '', PATHINFO_EXTENSION)) === 'svg';
 
@@ -269,5 +307,9 @@ if (get_theme_mod('feat_allow_svg_upload', '1') === '1' && apply_filters('lqx_sa
 		if ($clean !== $original) file_put_contents($file['tmp_name'], $clean);
 
 		return $file;
-	});
+	};
+
+	// Media Library uploads run one filter; REST raw-body and URL sideloads run another
+	add_filter('wp_handle_upload_prefilter', $lqx_svg_prefilter);
+	add_filter('wp_handle_sideload_prefilter', $lqx_svg_prefilter);
 }

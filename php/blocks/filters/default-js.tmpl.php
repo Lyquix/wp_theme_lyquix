@@ -25,10 +25,13 @@
 //  You may also create overrides for specific presets, by copying this file to /php/custom/blocks/filters/{preset}-js.tmpl.php
 
 wp_print_inline_script_tag(
-	// Render filters
+	// Render filters. lyquix.js loads with defer, so lqx doesn't exist yet while the body is
+	// being parsed; deferred scripts have all run by the time DOMContentLoaded fires.
 	"((settings) => {
-		lqx.ready(() => {
+		const render = () => lqx.ready(() => {
 			lqx.filters.render(JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(settings), c => c.charCodeAt(0)))));
 		});
+		if (window.lqx) render();
+		else document.addEventListener('DOMContentLoaded', render);
 	})('" . base64_encode(json_encode(\lqx\filters\prepare_json_data($s))) . "');"
 );

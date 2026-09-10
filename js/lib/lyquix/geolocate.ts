@@ -182,8 +182,9 @@ export const geolocate = (() => {
 
 				bodyGeoData();
 			},
-			error: (xhr, ready, error) => {
-				error('Geolocate error ' + ready + ' ' + error);
+			// Not named error: that would shadow the logger imported from core
+			error: (xhr, ready, message) => {
+				error('Geolocate error ' + ready + ' ' + message);
 			}
 		});
 	};

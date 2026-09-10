@@ -55,5 +55,5 @@ if ($item['image'] && $s['items_display_settings']['show_image'] == 'y'): ?>
 	<?php endif; ?>
 	<?php if ($s['items_display_settings']['show_description'] == 'y'):?> <?= $item['description'] ?> <?php endif; ?>
 	<?php if (is_array($item['business_hours']) && count($item['business_hours']) > 0 && $s['items_display_settings']['show_business_hours'] == 'y') require \lqx\blocks\get_template('map', $s['preset'], 'office-hours'); ?>
-	<?php	if ($s['show_get_directions_link'] == 'y'): ?><a href="https://maps.google.com/?q=<?= esc_url(URLEncode($item['address'])) ?>">Get Directions</a><?php endif;?>
+	<?php	if ($s['show_get_directions_link'] == 'y'): ?><a href="https://maps.google.com/?q=<?= esc_attr(urlencode($item['address'])) ?>">Get Directions</a><?php endif;?>
 </div>

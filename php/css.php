@@ -180,6 +180,14 @@ function get_critical_css() {
 	return file_get_contents($filename);
 }
 
+// Yoast's "Remove unregistered URL parameters" setting redirects ?no-critical-path-css to
+// the bare URL, which quietly turns the bypass (and critical CSS generation) into an
+// ordinary page load
+add_filter('Yoast\WP\SEO\allowlist_permalink_vars', function ($vars) {
+	$vars[] = 'no-critical-path-css';
+	return $vars;
+});
+
 add_action('wp_enqueue_scripts', function () {
 	$critical_css = get_critical_css();
 	$stylesheets = get_stylesheets();
@@ -194,8 +202,11 @@ add_action('wp_enqueue_scripts', function () {
 		}
 
 		add_action('wp_footer', function () use ($stylesheets) {
+			// Attribute selectors, not #ids: generated library handles can start with a digit,
+			// which makes #1abc-css invalid, querySelectorAll throws, and every stylesheet stays
+			// on media="print"
 			$selectors = implode(', ', array_map(function ($s) {
-				return '#' . $s['handle'] . '-css';
+				return '[id="' . $s['handle'] . '-css"]';
 			}, $stylesheets));
 			wp_print_inline_script_tag(
 				'document.querySelectorAll(\'' . $selectors . '\').forEach(s => { if (s.sheet) s.media = \'all\'; else s.onload = () => s.media = \'all\'; });',

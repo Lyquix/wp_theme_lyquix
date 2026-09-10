@@ -36,7 +36,7 @@
 					rel="noopener noreferrer"
 					aria-label="Share on <?= esc_attr($p['platform_name']['label']) ?>">
 					<svg aria-hidden="true" class="icon" width="48" height="48">
-						<use href="<?= esc_url(get_template_directory_uri()) ?>/images/social/sprites.svg#<?= esc_url($p['platform_name']['value']) ?>">
+						<use href="<?= esc_url(get_template_directory_uri()) ?>/images/social/sprites.svg#<?= esc_attr($p['platform_name']['value']) ?>">
 					</svg>
 				</a>
 			</li>

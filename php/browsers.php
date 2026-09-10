@@ -26,7 +26,9 @@ namespace lqx\browsers;
 
 // Render alert for outdated browsers
 function render() {
-	if (get_theme_mod('browser_alert', 1)) :
+	// Not while critical CSS is being generated: an alert shown to the headless browser would
+	// be captured as above-the-fold content for everyone
+	if (get_theme_mod('browser_alert', 1) && !isset($_GET['no-critical-path-css'])) :
 		ob_start(); ?>
 	((u) => {
 		// lyquix.js loads deferred: run once lqx is available (both event systems, run-once)

@@ -248,6 +248,9 @@ function browser_outdated() {
 
 	$res = detect_browser();
 
+	// The alert names the browser, and detect_browser() only returns its type
+	$res['name'] = $browser_data[$res['type']]['name'] ?? ($res['type'] === 'msie' ? 'Internet Explorer' : ucfirst((string) $res['type']));
+
 	if (array_key_exists($res['type'], $browser_data)) {
 		// A browser will be considered outdated if it is older than the last 3 versions
 		if (array_key_exists('accepted', $_GET)) $accepted_versions = intval($_GET['accepted']);

@@ -55,13 +55,16 @@ function page_needs_swiper() {
 	if ($post && has_blocks($post->post_content)) {
 		$needs = false;
 
-		foreach (['lqx/slider', 'lqx/cards', 'lqx/gallery', 'lqx/testimonial', 'lqx/logos', 'lqx/filters'] as $block) {
+		foreach (['lqx/slider', 'lqx/cards', 'lqx/related-items', 'lqx/gallery', 'lqx/testimonial', 'lqx/logos', 'lqx/filters'] as $block) {
 			if (has_block($block, $post)) {
 				$needs = true;
 				break;
 			}
 		}
 	}
+
+	// The alerts module is rendered on every page and builds its carousel with Swiper
+	if (!$needs && function_exists('get_field') && !empty(get_field('alerts_module_content', 'option'))) $needs = true;
 
 	return (bool) apply_filters('lqx_needs_swiper', $needs);
 }
@@ -91,9 +94,10 @@ function swiper_enabled() {
 function enqueue_scripts() {
 	// Prevent adding js libraries in wp_head()
 	global $wp_scripts;
-	$remove_js_libraries = explode("\n", trim(get_theme_mod('remove_js_libraries', '')));
+	$remove_js_libraries = array_filter(array_map('trim', explode("\n", get_theme_mod('remove_js_libraries', ''))));
 	foreach ($wp_scripts->queue as $i => $js) {
-		if (array_search(trim($js), $remove_js_libraries)) unset($wp_scripts->queue[$i]);
+		// in_array, not array_search: the first entry sits at index 0, which is falsy
+		if (in_array(trim($js), $remove_js_libraries, true)) unset($wp_scripts->queue[$i]);
 	}
 
 	// Enable jQuery
@@ -415,7 +419,7 @@ function render_gtm_body_code() {
 	// Load GTM head code
 	if (get_theme_mod('gtm_account', '')): ?>
 		<!-- Google Tag Manager (noscript) -->
-		<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<?= esc_url(get_theme_mod('gtm_account')) ?>" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+		<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<?= esc_attr(rawurlencode(get_theme_mod('gtm_account'))) ?>" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 		<!-- End Google Tag Manager (noscript) -->
 	<?php endif;
 }

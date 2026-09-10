@@ -28,6 +28,9 @@ if ($content == null) $content = get_field('cta_module_content', 'option');
 
 // Check if there are any CTAs configured
 if (empty($content)) return;
+// Never configured: the options page hasn't been saved, so there is nothing to render.
+// (Only settings that exist but fail validation are worth an exception.)
+if (empty($settings)) return;
 
 // Validate the settings
 $s = \lqx\util\validate_data($settings, [

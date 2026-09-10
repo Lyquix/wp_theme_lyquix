@@ -1,5 +1,8 @@
 // screen() needs $screen-sizes / $breakpoints from _variables.scss
 @use "variables" as *;
+@use "sass:list";
+@use "sass:meta";
+@use "sass:string";
 
 /**
  * _mixins.dist.scss - Sample styles for the colors styles

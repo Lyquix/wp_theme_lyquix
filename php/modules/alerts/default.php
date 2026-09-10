@@ -25,6 +25,9 @@
 
 // Get settings
 if ($settings == null) $settings = get_field('alerts_module_settings', 'option');
+// Never configured: the options page hasn't been saved, so there is nothing to render.
+// (Only settings that exist but fail validation are worth an exception.)
+if (empty($settings)) return;
 
 // Validate the settings
 $s = \lqx\util\validate_data($settings, [

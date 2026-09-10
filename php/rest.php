@@ -25,10 +25,11 @@ namespace lqx\rest;
 
 /**
  * Requests allowed per window, per client, for a route that doesn't set its own.
- * Public routes are called once or twice per page view, so this is far above what
- * a person browsing can produce and well below what a script can.
+ * A single page view can call several public routes (alerts, popup, modal, geolocation)
+ * and a whole office can share one address, so this leaves generous room for people
+ * while still stopping a script hammering an endpoint.
  */
-const DEFAULT_LIMIT = 120;
+const DEFAULT_LIMIT = 300;
 
 // Length of the rate limit window, in seconds
 const DEFAULT_WINDOW = 60;
@@ -37,16 +38,45 @@ const DEFAULT_WINDOW = 60;
 const CACHE_GROUP = 'lqx_rest_rate';
 
 /**
+ * The address a rate limit is keyed on.
+ *
+ * Only the header the site has configured for ip2geo is trusted (REMOTE_ADDR unless the
+ * site sits behind a proxy that sets another one). Walking the usual forwarding headers
+ * instead would let any client take a fresh identity per request by sending its own
+ * X-Forwarded-For.
+ *
+ * @return string
+ */
+function client_key() {
+	$header = (string) get_theme_mod('ip2geo_ip_address_header', 'REMOTE_ADDR');
+	$value = $_SERVER[$header] ?? ($_SERVER['REMOTE_ADDR'] ?? '');
+
+	// Proxy headers can carry a list; the first entry is the original client
+	$ip = trim(explode(',', (string) $value)[0]);
+
+	if (!filter_var($ip, FILTER_VALIDATE_IP)) $ip = (string) ($_SERVER['REMOTE_ADDR'] ?? 'unknown');
+
+	return $ip;
+}
+
+/**
  * Count one request against a client's budget and report whether they're over it.
  *
- * Uses the object cache when the site has a persistent one (Redis, Memcached, W3TC),
- * and falls back to transients otherwise. Without a persistent object cache the
- * counters live in the options table, which is durable but writes on every request —
- * acceptable for the request volumes these routes see, and the reason the default
- * window is a whole minute rather than a few seconds.
+ * Fixed windows: the counter key includes the current window number, so every client
+ * starts again at the top of each window however steadily they browse. A single key
+ * given a fresh expiry on every hit never resets for an active visitor.
  *
- * Fails open: if the counter can't be read or written the request is allowed. A
- * broken cache should not take the site's public endpoints down with it.
+ * Each bucket is counted once per request. WordPress calls a route's permission callback
+ * again while building the Allow header on rest_post_dispatch, so without this every
+ * request would count twice.
+ *
+ * Counts in APCu when it is available: its increment is atomic, so concurrent requests
+ * can't lose counts. Otherwise a persistent object cache is used as a best effort (W3 Total
+ * Cache implements increment as read-then-write, so parallel requests can slip through).
+ * With neither, the limit isn't applied: counting in the database would mean writes on
+ * every public request, lost increments under concurrent load, and a leftover row per
+ * visitor per minute, which costs more than it protects. Fails open for the same reason
+ * if the store misbehaves.
  *
  * @param string $bucket - identifier for the route being limited
  * @param int $limit - requests allowed per window
@@ -55,35 +85,36 @@ const CACHE_GROUP = 'lqx_rest_rate';
  * @return bool - true when the client has exceeded the limit
  */
 function is_rate_limited($bucket, $limit = DEFAULT_LIMIT, $window = DEFAULT_WINDOW) {
+	static $decided = [];
+
+	if (array_key_exists($bucket, $decided)) return $decided[$bucket];
+
 	$limit = (int) apply_filters('lqx_rest_rate_limit', $limit, $bucket);
 	$window = (int) apply_filters('lqx_rest_rate_window', $window, $bucket);
 
 	// A limit of zero or less disables limiting for this route
-	if ($limit <= 0 || $window <= 0) return false;
+	if ($limit <= 0 || $window <= 0) return $decided[$bucket] = false;
 
 	// Logged-in users with a reason to make many calls aren't the threat model here
-	if (is_user_logged_in() && current_user_can('edit_posts')) return false;
+	if (is_user_logged_in() && current_user_can('edit_posts')) return $decided[$bucket] = false;
 
-	$key = 'lqx_rl_' . md5($bucket . '|' . \lqx\util\get_client_ip());
-	$persistent = function_exists('wp_using_ext_object_cache') && wp_using_ext_object_cache();
+	$slot = (int) floor(time() / $window);
+	// The site is part of the key: APCu is shared by every site on the server
+	$key = 'lqx_rl_' . md5($bucket . '|' . home_url('/') . '|' . client_key() . '|' . $slot);
 
-	if ($persistent) {
-		$count = wp_cache_get($key, CACHE_GROUP);
-		if ($count === false) {
-			wp_cache_set($key, 1, CACHE_GROUP, $window);
-			return false;
-		}
-		wp_cache_set($key, (int) $count + 1, CACHE_GROUP, $window);
-		return (int) $count + 1 > $limit;
+	if (function_exists('apcu_enabled') && apcu_enabled()) {
+		apcu_add($key, 0, $window * 2);
+		$count = apcu_inc($key);
+	} elseif (function_exists('wp_using_ext_object_cache') && wp_using_ext_object_cache()) {
+		wp_cache_add($key, 0, CACHE_GROUP, $window * 2);
+		$count = wp_cache_incr($key, 1, CACHE_GROUP);
+	} else {
+		$count = false;
 	}
 
-	$count = get_transient($key);
-	if ($count === false) {
-		set_transient($key, 1, $window);
-		return false;
-	}
-	set_transient($key, (int) $count + 1, $window);
-	return (int) $count + 1 > $limit;
+	if ($count === false) return $decided[$bucket] = false;
+
+	return $decided[$bucket] = (int) $count > $limit;
 }
 
 /**

@@ -36,7 +36,7 @@
 					rel="noopener noreferrer"
 					aria-label="Follow us on <?= esc_attr($platform['name']) ?>">
 					<svg aria-hidden="true" class="icon" width="48" height="48">
-						<use href="<?= esc_url(get_template_directory_uri()) ?>/images/social/sprites.svg#<?= esc_url($platform['code']) ?>">
+						<use href="<?= esc_url(get_template_directory_uri()) ?>/images/social/sprites.svg#<?= esc_attr($platform['code']) ?>">
 					</svg>
 				</a>
 			</li>
