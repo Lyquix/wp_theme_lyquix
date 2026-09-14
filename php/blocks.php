@@ -800,6 +800,16 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 		wp_enqueue_script('lqx-canvas-lyquix');
 		wp_add_inline_script('lqx-canvas-lyquix', '(function (src, options) {
 			var load = function () {
+				// On the page, blocks sit inside <div class="content"> (singular.php) and project
+				// styles are often scoped to it. Give the editor post content container the same
+				// class, and put it back whenever the editor re-renders the container.
+				var tagContent = function () {
+					var root = document.querySelector(".wp-block-post-content");
+					if (root && !root.classList.contains("content")) root.classList.add("content");
+				};
+				tagContent();
+				new MutationObserver(tagContent).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
+
 				var script = document.createElement("script");
 				script.src = src;
 				script.onload = function () { lqx.init(options); };
