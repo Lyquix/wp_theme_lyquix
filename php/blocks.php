@@ -632,16 +632,29 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 		// JSON-decoding each block.json on every request. The manifest is generated
 		// by `wp lqx regenerate-block-manifest` and must be re-run after any
 		// block.json change. Falls back to the glob path if the manifest is absent.
+		$parent_blocks = glob(__DIR__ . '/blocks/*/block.json') ?: [];
 		$manifest = __DIR__ . '/blocks/blocks-manifest.php';
 		if (function_exists('wp_register_block_metadata_collection') && file_exists($manifest)) {
-			wp_register_block_metadata_collection(__DIR__ . '/blocks', $manifest);
+			// WP reads the manifest instead of block.json, so a manifest older than any
+			// block.json would register outdated definitions: a stale one kept every
+			// content block in ACF edit mode with no Preview toggle after the blocks
+			// moved to blockVersion 3. Ignore it until it is regenerated.
+			$manifest_time = filemtime($manifest);
+			$stale = false;
+			foreach ($parent_blocks as $json_file) {
+				if (filemtime($json_file) > $manifest_time) {
+					$stale = true;
+					break;
+				}
+			}
+			if (!$stale) wp_register_block_metadata_collection(__DIR__ . '/blocks', $manifest);
 		}
 
 		// Glob still drives the actual register_block_type() calls. For parent-theme
 		// blocks this is now a cheap lookup against the in-memory collection;
 		// child-theme custom blocks still parse their own block.json files.
 		$matches = array_merge(
-			glob(__DIR__ . '/blocks/*/block.json'),
+			$parent_blocks,
 			glob(get_stylesheet_directory() . '/php/custom/blocks/*/block.json') ?: []
 		);
 
@@ -735,6 +748,52 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 
 		$field['choices'] = $choices_cache[$choice_key];
 		return $field;
+	});
+
+	// Load the front-end styles and scripts into the editor canvas so ACF block previews
+	// look and behave as they do on the page. Canvas only: core fires enqueue_block_assets
+	// for the admin document too, where the theme CSS would restyle the editor UI, and it
+	// marks the canvas pass by filtering should_load_block_editor_scripts_and_styles off.
+	add_action('enqueue_block_assets', function () {
+		if (!is_admin() || wp_should_load_block_editor_scripts_and_styles()) return;
+
+		// Handles are prefixed: the canvas inherits every handle registered in the admin,
+		// and plugins register their own 'swiper' or 'styles'
+		foreach (\lqx\css\get_stylesheets() as $css) {
+			wp_enqueue_style('lqx-canvas-' . $css['handle'], $css['url'], [], $css['version'] ?? null);
+		}
+
+		$min = get_theme_mod('non_min_js', '0') || \lqx\util\is_local_environment() ? '' : '.min';
+		$lyquix = '/js/lyquix' . $min . '.js';
+		if (!file_exists(get_stylesheet_directory() . $lyquix)) return;
+
+		$deps = ['jquery'];
+
+		if (\lqx\js\swiper_enabled()) {
+			wp_enqueue_script('lqx-canvas-swiper', \lqx\cdn_mirror\get_url('https://cdn.jsdelivr.net/npm/swiper@14/swiper-bundle.min.js'), [], '14');
+			wp_add_inline_script('lqx-canvas-swiper', 'if (window.Swiper && Swiper.extendDefaults) Swiper.extendDefaults({ navigation: { addIcons: ' . (apply_filters('lqx_swiper_add_icons', false) ? 'true' : 'false') . ' } });');
+			$deps[] = 'lqx-canvas-swiper';
+		}
+
+		wp_enqueue_script('lqx-canvas-lyquix', get_stylesheet_directory_uri() . $lyquix, $deps, date('YmdHis', filemtime(get_stylesheet_directory() . $lyquix)));
+
+		$options = [
+			'debug' => get_theme_mod('lqx_debug', '0'),
+			'siteURL' => get_site_url(),
+			'tmplURL' => get_template_directory_uri()
+		];
+		$theme_options = json_decode(get_theme_mod('lqx_options'), true);
+		if (is_array($theme_options)) $options = array_replace_recursive($options, $theme_options);
+		$options = apply_filters('lqx_options', $options);
+
+		// Page-level behaviour has no place in the editor: no analytics or geolocation
+		// requests, no alerts, popups or modals over the canvas, no leaving-site prompts
+		foreach (['analytics', 'geolocate', 'alerts', 'popup', 'modal', 'leavingSiteAlert'] as $mod) {
+			$options[$mod] = array_merge(is_array($options[$mod] ?? null) ? $options[$mod] : [], ['enabled' => false]);
+		}
+
+		// Previews are inserted after load; the mutation module initializes them as they appear
+		wp_add_inline_script('lqx-canvas-lyquix', 'lqx.init(' . wp_json_encode(apply_filters('lqx_editor_canvas_options', $options)) . ');');
 	});
 
 	// Load field display logic

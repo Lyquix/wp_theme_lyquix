@@ -82,8 +82,5 @@
         "anchor": true
     },
     "editorScript": "file:./editor.js",
-    "render": "file:./render.php",
-    "acf": {
-        "blockVersion": 3
-    }
+    "render": "file:./render.php"
 }
