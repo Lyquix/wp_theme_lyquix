@@ -75,13 +75,17 @@ add_action('init', function () {
  * parse the embed markup in the document they are loaded into, so in the parent frame
  * they would never see the blocks. Guarded to the admin — the front end loads them
  * conditionally below, only when an embed block is present.
+ *
+ * No xfbml=1 here: the SDK would parse the canvas body on load, before the editor has
+ * rendered one ("Invalid DOM node passed to FB.XFBML.parse()"). The block parses its own
+ * preview once it is on screen.
  */
 add_action('enqueue_block_assets', function () {
 	if (!is_admin()) return;
 
 	wp_enqueue_script(
 		'facebook-sdk',
-		'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v21.0',
+		'https://connect.facebook.net/en_US/sdk.js#version=v21.0',
 		[],
 		null,
 		true

@@ -83,8 +83,10 @@
 			const normalizedUrl = normalizeInstagramUrl(url);
 
 			useEffect(() => {
-				if (preview && normalizedUrl && window.instgrm?.Embeds?.process) {
-					window.instgrm.Embeds.process();
+				// The SDK is loaded into the editor canvas iframe, not this window
+				const instgrm = embedRef.current?.ownerDocument?.defaultView?.instgrm || window.instgrm;
+				if (preview && normalizedUrl && instgrm?.Embeds?.process) {
+					instgrm.Embeds.process();
 				}
 			}, [normalizedUrl, preview]);
 

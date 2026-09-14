@@ -775,8 +775,6 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 			$deps[] = 'lqx-canvas-swiper';
 		}
 
-		wp_enqueue_script('lqx-canvas-lyquix', get_stylesheet_directory_uri() . $lyquix, $deps, date('YmdHis', filemtime(get_stylesheet_directory() . $lyquix)));
-
 		$options = [
 			'debug' => get_theme_mod('lqx_debug', '0'),
 			'siteURL' => get_site_url(),
@@ -792,8 +790,32 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 			$options[$mod] = array_merge(is_array($options[$mod] ?? null) ? $options[$mod] : [], ['enabled' => false]);
 		}
 
-		// Previews are inserted after load; the mutation module initializes them as they appear
-		wp_add_inline_script('lqx-canvas-lyquix', 'lqx.init(' . wp_json_encode(apply_filters('lqx_editor_canvas_options', $options)) . ');');
+		// The canvas document is written with scripts in its head and no <body>; the parser
+		// adds a placeholder that goes away when the editor renders its own body into it,
+		// and document.body is null in between. The bundle needs the real one (vars.body,
+		// the mutation observer), so wait for it. Previews are inserted later still; the
+		// mutation module initializes them as they appear.
+		$src = add_query_arg('ver', date('YmdHis', filemtime(get_stylesheet_directory() . $lyquix)), get_stylesheet_directory_uri() . $lyquix);
+		wp_register_script('lqx-canvas-lyquix', false, $deps, null);
+		wp_enqueue_script('lqx-canvas-lyquix');
+		wp_add_inline_script('lqx-canvas-lyquix', '(function (src, options) {
+			var load = function () {
+				var script = document.createElement("script");
+				script.src = src;
+				script.onload = function () { lqx.init(options); };
+				document.body.appendChild(script);
+			};
+			var ready = function () {
+				return document.body && document.body.classList.contains("block-editor-iframe__body");
+			};
+			if (ready()) return load();
+			var observer = new MutationObserver(function () {
+				if (!ready()) return;
+				observer.disconnect();
+				load();
+			});
+			observer.observe(document.documentElement, { childList: true });
+		})(' . wp_json_encode($src) . ', ' . wp_json_encode(apply_filters('lqx_editor_canvas_options', $options)) . ');');
 	});
 
 	// Load field display logic

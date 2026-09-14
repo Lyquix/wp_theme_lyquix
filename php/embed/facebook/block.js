@@ -99,8 +99,10 @@
 			const normalizedUrl = result ? result.url : null;
 
 			useEffect(() => {
-				if (preview && normalizedUrl && window.FB?.XFBML?.parse) {
-					window.FB.XFBML.parse(embedRef.current);
+				// The SDK is loaded into the editor canvas iframe, not this window
+				const FB = embedRef.current?.ownerDocument?.defaultView?.FB || window.FB;
+				if (preview && normalizedUrl && FB?.XFBML?.parse) {
+					FB.XFBML.parse(embedRef.current);
 				}
 			}, [normalizedUrl, preview]);
 

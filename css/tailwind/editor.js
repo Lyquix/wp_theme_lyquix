@@ -54,7 +54,8 @@
 	// Initialize Tailwind classes for existing blocks
 	function initBlocks(blocks) {
 		blocks.forEach((block) => {
-			if (block.name.includes('lqx')) {
+			// Native lqx blocks (video, embeds) have no ACF data attribute
+			if (block.name.includes('lqx') && block.attributes.data) {
 				Object.entries(block.attributes.data).forEach(([key, value]) => {
 					if (typeof key === 'string' &&  key.indexOf(classPrefix) === 0 && value) {
 						value = key + value;
