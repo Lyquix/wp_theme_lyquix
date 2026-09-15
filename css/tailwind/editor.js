@@ -85,7 +85,8 @@
 						if (name && name.includes(classPrefix) && val) {
 							val = name + val;
 						}
-						if (val && val.includes(classPrefix)) {
+						// Multi-value fields (checkbox, multi-select, relationship) return arrays
+			if (typeof val === 'string' && val.includes(classPrefix)) {
 							tailwindClasses[blockId][field.cid] = val.replace(classPrefix, '');
 						}
 
@@ -111,7 +112,8 @@
 			}
 
 			// Initialize tailwindClasses for the selectedBlockId if it doesn't exist
-			if (val && val.includes(classPrefix)) {
+			// Multi-value fields (checkbox, multi-select, relationship) return arrays
+			if (typeof val === 'string' && val.includes(classPrefix)) {
 				val = val.replace(classPrefix, '');
 				if (tailwindClasses[blockId][key] && val !== tailwindClasses[blockId][key]) {
 					replaceClassName(blockId, tailwindClasses[blockId][key], val);

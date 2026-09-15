@@ -763,6 +763,23 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 			wp_enqueue_style('lqx-canvas-' . $css['handle'], $css['url'], [], $css['version'] ?? null);
 		}
 
+		// Previews are live markup, so a click on a link or a form submit would navigate the
+		// canvas iframe away from the editor, which then breaks on the cross-origin frame.
+		// Core only intercepts #hash links. Capture phase and preventDefault only: block
+		// selection and theme handlers (lyqbox, tabs) still receive the event.
+		wp_register_script('lqx-canvas-guard', false, [], null);
+		wp_enqueue_script('lqx-canvas-guard');
+		wp_add_inline_script('lqx-canvas-guard', '(function () {
+			document.addEventListener("click", function (event) {
+				var link = event.target.closest ? event.target.closest("a[href]") : null;
+				if (!link || link.isContentEditable || link.getAttribute("href").charAt(0) === "#") return;
+				event.preventDefault();
+			}, true);
+			document.addEventListener("submit", function (event) {
+				event.preventDefault();
+			}, true);
+		})();');
+
 		$min = get_theme_mod('non_min_js', '0') || \lqx\util\is_local_environment() ? '' : '.min';
 		$lyquix = '/js/lyquix' . $min . '.js';
 		if (!file_exists(get_stylesheet_directory() . $lyquix)) return;
