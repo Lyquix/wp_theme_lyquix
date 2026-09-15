@@ -530,6 +530,16 @@ function reset_global_settings_page() {
 <?php
 }
 
+// EWWW sets up its <picture> conversion on init and skips admin requests unless allowed, so
+// allow it for the requests that render editor previews: the editor screens and ACF's
+// fetch-block AJAX call. Page output is only buffered on template_redirect, which admin
+// requests never reach, so the admin itself is not rewritten.
+if (is_admin()) {
+	$lqx_preview_request = (wp_doing_ajax() && ($_REQUEST['action'] ?? '') === 'acf/ajax/fetch-block')
+		|| in_array(basename($_SERVER['SCRIPT_NAME'] ?? ''), ['post.php', 'post-new.php'], true);
+	if ($lqx_preview_request) add_filter('eio_allow_admin_picture_webp', '__return_true');
+}
+
 /**
  * Renders the block based on the selected preset and available overrides.
  *
@@ -554,8 +564,26 @@ function reset_global_settings_page() {
  * @return void
 */
 function render_block($settings, $content) {
+	// Editor previews are rendered in admin and REST requests, where EWWW does not rewrite
+	// images into <picture> elements as it does on the page. Project styles written for that
+	// markup would not apply, so run the preview through the same conversion (picture only:
+	// lazy load needs its script, which the editor does not load).
+	$preview = (is_admin() || (defined('REST_REQUEST') && REST_REQUEST)) && has_filter('eio_parse_page_html');
+	if ($preview) ob_start();
+
 	// Get the renderer based on the selected preset and available overrides
 	require get_renderer($settings['processed']['block'], $settings['processed']['preset']);
+
+	if ($preview) {
+		$allow = function () {
+			return true;
+		};
+		add_filter('eio_allow_admin_picture_webp', $allow);
+		add_filter('eio_allow_restapi_parsing', $allow);
+		echo apply_filters('eio_parse_page_html', ob_get_clean(), 'picture_webp');
+		remove_filter('eio_allow_admin_picture_webp', $allow);
+		remove_filter('eio_allow_restapi_parsing', $allow);
+	}
 }
 
 /**
@@ -763,28 +791,47 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 			wp_enqueue_style('lqx-canvas-' . $css['handle'], $css['url'], [], $css['version'] ?? null);
 		}
 
-		// Previews are live markup, so a click on a link or a form submit would navigate the
-		// canvas iframe away from the editor, which then breaks on the cross-origin frame.
-		// Core only intercepts #hash links. Capture phase and preventDefault only: block
-		// selection and theme handlers (lyqbox, tabs) still receive the event.
-		wp_register_script('lqx-canvas-guard', false, [], null);
-		wp_enqueue_script('lqx-canvas-guard');
-		wp_add_inline_script('lqx-canvas-guard', '(function () {
-			document.addEventListener("click", function (event) {
-				var link = event.target.closest ? event.target.closest("a[href]") : null;
-				if (!link || link.isContentEditable || link.getAttribute("href").charAt(0) === "#") return;
-				event.preventDefault();
-			}, true);
-			document.addEventListener("submit", function (event) {
-				event.preventDefault();
-			}, true);
-		})();');
+		// Link and form guard, page content wrapper, and layout parity for inner blocks
+		wp_enqueue_script('lqx-canvas', get_template_directory_uri() . '/php/blocks/canvas.js', [], date('YmdHis', filemtime(__DIR__ . '/blocks/canvas.js')));
+
+		// The body classes and feature flags the page template prints for this post, since
+		// project styles are often scoped to them (.home, .page-{slug}, .single-{type}).
+		// \lqx\body\classes() reads the main query, so give it one for the edited post.
+		$post = get_post();
+		if ($post) {
+			global $wp_query, $wp_the_query;
+			$saved_query = $wp_query;
+			$saved_the_query = $wp_the_query;
+			// The front page is served at / without a pagename, which would add a page-{slug} class
+			if ($post->post_type === 'page' && (int) get_option('page_on_front') === $post->ID) $vars = ['page_id' => $post->ID];
+			elseif ($post->post_type === 'page') $vars = ['pagename' => get_page_uri($post)];
+			else $vars = ['name' => $post->post_name, 'post_type' => $post->post_type];
+			$wp_query = $wp_the_query = new \WP_Query($vars + ['posts_per_page' => 1, 'no_found_rows' => true]);
+			$page = [
+				'bodyClass' => \lqx\body\classes(),
+				'features' => \lqx\body\features(),
+				// Classes of the element the template wraps the post content in (singular.php by
+				// default). Child themes with templates that use a different wrapper can filter it.
+				'contentClasses' => array_values((array) apply_filters('lqx_editor_canvas_content_classes', ['content', 'grid-container'], $post))
+			];
+			$wp_query = $saved_query;
+			$wp_the_query = $saved_the_query;
+			wp_add_inline_script('lqx-canvas', 'window.lqxCanvasPage = ' . wp_json_encode($page) . ';', 'before');
+		}
 
 		$min = get_theme_mod('non_min_js', '0') || \lqx\util\is_local_environment() ? '' : '.min';
 		$lyquix = '/js/lyquix' . $min . '.js';
 		if (!file_exists(get_stylesheet_directory() . $lyquix)) return;
 
 		$deps = ['jquery'];
+
+		// Map and filters templates enqueue the Maps API while rendering, which never reaches the
+		// canvas: previews are rendered in separate requests. Load it here for posts that use them.
+		$google_api_key = function_exists('acf_get_setting') ? acf_get_setting('google_api_key') : '';
+		if ($google_api_key && $post && (has_block('lqx/map', $post) || has_block('lqx/filters', $post))) {
+			wp_enqueue_script('lqx-canvas-google-maps', 'https://maps.googleapis.com/maps/api/js?key=' . rawurlencode($google_api_key) . '&libraries=places', [], null);
+			$deps[] = 'lqx-canvas-google-maps';
+		}
 
 		if (\lqx\js\swiper_enabled()) {
 			wp_enqueue_script('lqx-canvas-swiper', \lqx\cdn_mirror\get_url('https://cdn.jsdelivr.net/npm/swiper@14/swiper-bundle.min.js'), [], '14');
@@ -803,7 +850,7 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 
 		// Page-level behaviour has no place in the editor: no analytics or geolocation
 		// requests, no alerts, popups or modals over the canvas, no leaving-site prompts
-		foreach (['analytics', 'geolocate', 'alerts', 'popup', 'modal', 'leavingSiteAlert'] as $mod) {
+		foreach (['analytics', 'geolocate', 'alerts', 'popup', 'modal', 'leavingSiteAlert', 'menu'] as $mod) {
 			$options[$mod] = array_merge(is_array($options[$mod] ?? null) ? $options[$mod] : [], ['enabled' => false]);
 		}
 
@@ -817,16 +864,6 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 		wp_enqueue_script('lqx-canvas-lyquix');
 		wp_add_inline_script('lqx-canvas-lyquix', '(function (src, options) {
 			var load = function () {
-				// On the page, blocks sit inside <div class="content"> (singular.php) and project
-				// styles are often scoped to it. Give the editor post content container the same
-				// class, and put it back whenever the editor re-renders the container.
-				var tagContent = function () {
-					var root = document.querySelector(".wp-block-post-content");
-					if (root && !root.classList.contains("content")) root.classList.add("content");
-				};
-				tagContent();
-				new MutationObserver(tagContent).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
-
 				var script = document.createElement("script");
 				script.src = src;
 				script.onload = function () { lqx.init(options); };
