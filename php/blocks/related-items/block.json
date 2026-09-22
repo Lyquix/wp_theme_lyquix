@@ -11,6 +11,7 @@
 	},
 	"acf": {
 		"renderTemplate": "related-items.php",
-		"blockVersion": 3
+		"blockVersion": 3,
+		"hideFieldsInSidebar": true
 	}
 }

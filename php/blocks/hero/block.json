@@ -37,6 +37,7 @@
 	},
 	"acf": {
 		"renderTemplate": "hero.php",
-		"blockVersion": 3
+		"blockVersion": 3,
+		"hideFieldsInSidebar": true
 	}
 }

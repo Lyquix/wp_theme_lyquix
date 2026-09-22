@@ -45,6 +45,7 @@
 	],
 	"acf": {
 		"renderTemplate": "tab-item.php",
-		"blockVersion": 3
+		"blockVersion": 3,
+		"hideFieldsInSidebar": true
 	}
 }

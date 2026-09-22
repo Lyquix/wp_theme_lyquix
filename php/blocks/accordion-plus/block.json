@@ -41,6 +41,7 @@
 	},
 	"acf": {
 		"renderTemplate": "accordion-plus.php",
-		"blockVersion": 3
+		"blockVersion": 3,
+		"hideFieldsInSidebar": true
 	}
 }

@@ -47,6 +47,7 @@ return array (
     array (
       'renderTemplate' => 'accordion.php',
       'blockVersion' => 3,
+      'hideFieldsInSidebar' => true,
     ),
   ),
   'accordion-item' => 
@@ -104,6 +105,7 @@ return array (
     array (
       'renderTemplate' => 'accordion-item.php',
       'blockVersion' => 3,
+      'hideFieldsInSidebar' => true,
     ),
   ),
   'accordion-plus' => 
@@ -156,6 +158,7 @@ return array (
     array (
       'renderTemplate' => 'accordion-plus.php',
       'blockVersion' => 3,
+      'hideFieldsInSidebar' => true,
     ),
   ),
   'banner' => 
@@ -203,6 +206,7 @@ return array (
     array (
       'renderTemplate' => 'banner.php',
       'blockVersion' => 3,
+      'hideFieldsInSidebar' => true,
     ),
   ),
   'cards' => 
@@ -250,6 +254,7 @@ return array (
     array (
       'renderTemplate' => 'cards.php',
       'blockVersion' => 3,
+      'hideFieldsInSidebar' => true,
     ),
   ),
   'filters' => 
@@ -297,6 +302,7 @@ return array (
     array (
       'renderTemplate' => 'filters.php',
       'blockVersion' => 3,
+      'hideFieldsInSidebar' => true,
     ),
   ),
   'gallery' => 
@@ -348,6 +354,7 @@ return array (
     array (
       'renderTemplate' => 'gallery.php',
       'blockVersion' => 3,
+      'hideFieldsInSidebar' => true,
     ),
   ),
   'hero' => 
@@ -395,6 +402,7 @@ return array (
     array (
       'renderTemplate' => 'hero.php',
       'blockVersion' => 3,
+      'hideFieldsInSidebar' => true,
     ),
   ),
   'logos' => 
@@ -442,6 +450,7 @@ return array (
     array (
       'renderTemplate' => 'logos.php',
       'blockVersion' => 3,
+      'hideFieldsInSidebar' => true,
     ),
   ),
   'map' => 
@@ -490,6 +499,7 @@ return array (
     array (
       'renderTemplate' => 'map.php',
       'blockVersion' => 3,
+      'hideFieldsInSidebar' => true,
     ),
   ),
   'related-items' => 
@@ -509,6 +519,7 @@ return array (
     array (
       'renderTemplate' => 'related-items.php',
       'blockVersion' => 3,
+      'hideFieldsInSidebar' => true,
     ),
   ),
   'slider' => 
@@ -556,6 +567,7 @@ return array (
     array (
       'renderTemplate' => 'slider.php',
       'blockVersion' => 3,
+      'hideFieldsInSidebar' => true,
     ),
   ),
   'tab-item' => 
@@ -613,6 +625,7 @@ return array (
     array (
       'renderTemplate' => 'tab-item.php',
       'blockVersion' => 3,
+      'hideFieldsInSidebar' => true,
     ),
   ),
   'tabs' => 
@@ -660,6 +673,7 @@ return array (
     array (
       'renderTemplate' => 'tabs.php',
       'blockVersion' => 3,
+      'hideFieldsInSidebar' => true,
     ),
   ),
   'tabs-plus' => 
@@ -711,6 +725,7 @@ return array (
     array (
       'renderTemplate' => 'tabs-plus.php',
       'blockVersion' => 3,
+      'hideFieldsInSidebar' => true,
     ),
   ),
   'testimonial' => 
@@ -758,6 +773,7 @@ return array (
     array (
       'renderTemplate' => 'testimonial.php',
       'blockVersion' => 3,
+      'hideFieldsInSidebar' => true,
     ),
   ),
   'video' => 

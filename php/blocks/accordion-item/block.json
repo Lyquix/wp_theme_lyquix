@@ -45,6 +45,7 @@
 	],
 	"acf": {
 		"renderTemplate": "accordion-item.php",
-		"blockVersion": 3
+		"blockVersion": 3,
+		"hideFieldsInSidebar": true
 	}
 }
