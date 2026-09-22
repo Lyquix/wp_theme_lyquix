@@ -914,7 +914,10 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 			var load = function () {
 				var script = document.createElement("script");
 				script.src = src;
-				script.onload = function () { lqx.init(options); };
+				script.onload = function () {
+					lqx.init(options);
+					document.dispatchEvent(new Event("lqxcanvasinit"));
+				};
 				document.body.appendChild(script);
 			};
 			var ready = function () {

@@ -499,6 +499,191 @@
 		return out;
 	};
 
+	// Tabs Plus and Accordion Plus render their items as inner blocks. On the page the whole block
+	// is rendered at once: the tabs list is built from the items, and items get ids from their
+	// parent (render_block_data in php/blocks.php). In the editor each item is a preview of its
+	// own, rendered later and without the parent, so the tabs list is empty, the ids don't match,
+	// and the tabs and accordion modules have already set up the block before its items arrived.
+	// Rebuild what the page has, then set the block up again whenever its items change.
+	var editorBlock = function (clientId) {
+		try {
+			return window.parent.wp.data.select('core/block-editor').getBlock(clientId);
+		} catch (e) {
+			return null;
+		}
+	};
+
+	var itemPreviews = function (container, itemSelector) {
+		var wrappers = container.querySelectorAll(':scope > ' + CONTAINER + ' > ' + WRAPPER);
+		return Array.prototype.filter.call(wrappers, function (wrapper) {
+			return wrapper.firstElementChild && wrapper.firstElementChild.matches(itemSelector);
+		});
+	};
+
+	// Open one tab of an editor tabs block. The tabs module can't do it here: it takes the panel's
+	// parent as the tabs element, which in the editor is the preview wrapper.
+	// Open tab per tabs block, by block id: the preview is replaced when the block re-renders
+	var openTabs = {};
+
+	var showTab = function (tabs, index) {
+		var buttons = tabs.querySelectorAll(':scope > .tabs-list .tab');
+		itemPreviews(tabs, '.tab-panel').forEach(function (item, i) {
+			item.firstElementChild.setAttribute('aria-hidden', i === index ? 'false' : 'true');
+			if (!buttons[i]) return;
+			buttons[i].setAttribute('aria-selected', i === index ? 'true' : 'false');
+			buttons[i].setAttribute('tabindex', i === index ? '' : '-1');
+		});
+		openTabs[tabs.id] = index;
+		tabs.setAttribute('data-lqx-shown', String(index));
+	};
+
+	// The tab item's Label field. ACF keeps block data by field name until the block's form is
+	// loaded, then by field key, nested in the field's group (acf-json/group_67a48f82279d6.json).
+	var TAB_LABEL = ['tab-item_block_content_label', 'field_67a48f8235846'];
+
+	// Last label seen per tab item, by block id
+	var tabLabels = {};
+
+	var findValue = function (data, names) {
+		for (var key in data) {
+			if (!Object.prototype.hasOwnProperty.call(data, key)) continue;
+			if (names.indexOf(key) !== -1 && typeof data[key] === 'string') return data[key];
+			if (data[key] && typeof data[key] === 'object') {
+				var found = findValue(data[key], names);
+				if (found) return found;
+			}
+		}
+		return '';
+	};
+
+	var syncTabs = function () {
+		document.querySelectorAll('.lqx-block-tabs > .tabs').forEach(function (tabs) {
+			var items = itemPreviews(tabs, '.tab-panel');
+			if (!items.length) return;
+
+			var wrapper = tabs.closest(WRAPPER);
+			var hash = 'lqx-' + (wrapper ? wrapper.getAttribute('data-block') : 'tabs');
+			var labels = items.map(function (item, i) {
+				var clientId = item.getAttribute('data-block');
+				var block = editorBlock(clientId);
+				var label = findValue((block && block.attributes.data) || {}, TAB_LABEL);
+				if (label) tabLabels[clientId] = label;
+				return tabLabels[clientId] || 'Tab ' + (i + 1);
+			});
+
+			// The open tab: the item being edited, else the one open before, else the first
+			var open = openTabs[hash] || 0;
+			items.forEach(function (item, i) {
+				if (item.matches('.is-selected, .has-child-selected')) open = i;
+			});
+			if (open >= items.length) open = 0;
+
+			var signature = hash + '|' + items.map(function (item) { return item.getAttribute('data-block'); }).join(',') + '|' + labels.join('|');
+			var list = tabs.querySelector(':scope > .tabs-list');
+			if (!list) return;
+
+			if (tabs.getAttribute('data-lqx-signature') !== signature || list.children.length !== items.length || !items.every(function (item, i) { return item.firstElementChild.id === hash + '-panel-' + i; })) {
+				tabs.setAttribute('data-lqx-signature', signature);
+				tabs.id = hash;
+
+				list.innerHTML = '';
+				items.forEach(function (item, i) {
+					var li = document.createElement('li');
+					li.setAttribute('role', 'presentation');
+					var button = document.createElement('button');
+					button.className = 'tab';
+					button.id = hash + '-tab-' + i;
+					button.setAttribute('role', 'tab');
+					button.setAttribute('aria-controls', hash + '-panel-' + i);
+					button.textContent = labels[i];
+					li.appendChild(button);
+					list.appendChild(li);
+
+					var panel = item.firstElementChild;
+					panel.id = hash + '-panel-' + i;
+					panel.setAttribute('aria-labelledby', hash + '-tab-' + i);
+					var content = panel.querySelector(':scope > .tab-content');
+					if (content) content.id = hash + '-content-' + i;
+					var header = panel.querySelector(':scope > .accordion-header');
+					if (header) {
+						header.id = hash + '-header-' + i;
+						header.setAttribute('aria-controls', hash + '-panel-' + i);
+					}
+				});
+
+				tabs.removeAttribute('data-lqx-shown');
+			}
+
+			// Show the open tab, as the page does on load
+			if (tabs.getAttribute('data-lqx-shown') !== String(open)) showTab(tabs, open);
+		});
+	};
+
+	// Clicks and the arrow, Home and End keys on the tabs, as on the page
+	var editorTab = function (target) {
+		var tab = target.closest ? target.closest('.lqx-block-tabs > .tabs[data-lqx-signature] > .tabs-list .tab') : null;
+		if (!tab) return null;
+		var tabs = tab.closest('.tabs');
+		var all = Array.prototype.slice.call(tabs.querySelectorAll(':scope > .tabs-list .tab'));
+		return { tab: tab, tabs: tabs, all: all, index: all.indexOf(tab) };
+	};
+
+	// On pointer down as well as click: pressing selects the tabs block, the preview re-renders and
+	// the tabs list is rebuilt before the button is released, so the click lands on the list.
+	// Capture phase: the editor stops some events on their way up from block previews.
+	['pointerdown', 'click'].forEach(function (type) {
+		document.addEventListener(type, function (event) {
+			var found = editorTab(event.target);
+			if (found) showTab(found.tabs, found.index);
+		}, true);
+	});
+
+	document.addEventListener('keydown', function (event) {
+		var found = editorTab(event.target);
+		if (!found) return;
+		var count = found.all.length;
+		var next = { ArrowRight: found.index + 1, ArrowDown: found.index + 1, ArrowLeft: found.index - 1, ArrowUp: found.index - 1, Home: 0, End: count - 1 }[event.key];
+		if (next === undefined) return;
+		event.preventDefault();
+		next = (next + count) % count;
+		showTab(found.tabs, next);
+		found.all[next].focus();
+	}, true);
+
+	var syncAccordions = function () {
+		if (!window.lqx || !lqx.accordion || !lqx.accordion.setup) return;
+
+		document.querySelectorAll('.lqx-block-accordion > .accordion').forEach(function (accordion) {
+			var items = itemPreviews(accordion, '.accordion-item');
+			if (!items.length) return;
+
+			var headers = accordion.querySelectorAll('.accordion-header');
+			var signature = Array.prototype.map.call(headers, function (header) { return header.id; }).join(',');
+			if (accordion.getAttribute('data-lqx-signature') !== signature) {
+				accordion.setAttribute('data-lqx-signature', signature);
+				jQuery(headers).off('click keydown');
+				lqx.accordion.setup(jQuery(accordion));
+			}
+
+			// Open the item being edited, once when it gets selected
+			items.forEach(function (item) {
+				var clientId = item.getAttribute('data-block');
+				var selected = item.matches('.is-selected, .has-child-selected');
+				if (!selected) {
+					if (openedItems[clientId]) delete openedItems[clientId];
+					return;
+				}
+				if (openedItems[clientId]) return;
+				openedItems[clientId] = true;
+				var panel = item.querySelector('.accordion-panel');
+				if (panel && panel.classList.contains('closed')) lqx.accordion.open(panel.id);
+			});
+		});
+	};
+
+	// Accordion items opened because they were selected, by block id
+	var openedItems = {};
+
 	var frame = null;
 	var schedule = function () {
 		if (frame) return;
@@ -506,6 +691,8 @@
 			frame = null;
 			tagContent();
 			syncWrappers();
+			syncTabs();
+			syncAccordions();
 		});
 	};
 
@@ -540,6 +727,8 @@
 		schedule();
 		new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
 		window.addEventListener('resize', schedule);
+		// The theme script loads after this one; set up nested items once it has initialized
+		document.addEventListener('lqxcanvasinit', schedule);
 	};
 
 	// The canvas document is written with this script in its head and no <body>; the editor
