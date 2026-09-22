@@ -530,6 +530,55 @@ function reset_global_settings_page() {
 <?php
 }
 
+/**
+ * Get the classes of the element the page template wraps the post content in
+ * 		- Uses the template the router would load for the current query: a custom template
+ * 		  from the child theme, or singular.php
+ * 		- Reads the innermost element with a class around the_content() in the template file
+ *
+ * @return array
+ * 		The classes, or ['content', 'grid-container'] (singular.php) if none are found
+ */
+function content_classes() {
+	$template = \lqx\router\template_name();
+	if ($template) $file = get_stylesheet_directory() . '/php/custom/templates/' . $template . '.php';
+	elseif (\lqx\router\tmpl_file_exists('singular')) $file = get_stylesheet_directory() . '/php/custom/templates/singular.php';
+	else $file = get_template_directory() . '/php/singular.php';
+
+	// Walk the markup before the first the_content() call, with PHP blocks and comments left out,
+	// and keep a stack of the open elements: the wrapper is the innermost one with a class
+	$source = is_readable($file) ? file_get_contents($file) : '';
+	if (preg_match('/(?<![\w>$])the_content\s*\(/', $source, $match, PREG_OFFSET_CAPTURE)) {
+		$markup = substr($source, 0, $match[0][1]);
+		$markup = preg_replace(['/<\?.*?\?>/s', '/<\?.*$/s', '/<!--.*?-->/s'], '', $markup);
+		preg_match_all('/<(\/?)([a-z][\w-]*)\b([^>]*?)(\/?)>/i', $markup, $tags, PREG_SET_ORDER);
+
+		$open = [];
+		foreach ($tags as $tag) {
+			$name = strtolower($tag[2]);
+			if ($tag[1]) {
+				// Closing tag: pop back to the matching element
+				for ($i = count($open) - 1; $i >= 0; $i--) {
+					if ($open[$i]['name'] === $name) {
+						array_splice($open, $i);
+						break;
+					}
+				}
+			} elseif (!$tag[4] && !in_array($name, ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr'], true)) {
+				$open[] = ['name' => $name, 'attributes' => $tag[3]];
+			}
+		}
+
+		foreach (array_reverse($open) as $element) {
+			if (!preg_match('/\bclass\s*=\s*(["\'])(.*?)\1/s', $element['attributes'], $class)) continue;
+			$classes = preg_split('/\s+/', trim($class[2]), -1, PREG_SPLIT_NO_EMPTY);
+			if ($classes) return $classes;
+		}
+	}
+
+	return ['content', 'grid-container'];
+}
+
 // EWWW sets up its <picture> conversion on init and skips admin requests unless allowed, so
 // allow it for the requests that render editor previews: the editor screens and ACF's
 // fetch-block AJAX call. Page output is only buffered on template_redirect, which admin
@@ -810,9 +859,8 @@ if (get_theme_mod('feat_content_blocks', '1') === '1') {
 			$page = [
 				'bodyClass' => \lqx\body\classes(),
 				'features' => \lqx\body\features(),
-				// Classes of the element the template wraps the post content in (singular.php by
-				// default). Child themes with templates that use a different wrapper can filter it.
-				'contentClasses' => array_values((array) apply_filters('lqx_editor_canvas_content_classes', ['content', 'grid-container'], $post))
+				// Classes of the element the page template wraps the post content in
+				'contentClasses' => array_values((array) apply_filters('lqx_editor_canvas_content_classes', content_classes(), $post))
 			];
 			$wp_query = $saved_query;
 			$wp_the_query = $saved_the_query;

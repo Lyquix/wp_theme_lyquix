@@ -225,7 +225,13 @@
 				var selectors = [];
 				if (rule.selectorText.indexOf('>') !== -1) selectors = selectors.concat(variants(rule.selectorText));
 				if (rule.selectorText.indexOf('-child') !== -1) selectors = selectors.concat(positionalVariants(rule.selectorText));
-				if (rule.selectorText.indexOf('.content') !== -1) selectors = selectors.concat(pageVariants(rule.selectorText));
+				if (rule.selectorText.indexOf('.content') !== -1) {
+					// The page selector's children are block previews too, so it needs the wrapper variants
+					pageVariants(rule.selectorText).forEach(function (selector) {
+						selectors.push(selector);
+						if (selector.indexOf('>') !== -1) selectors = selectors.concat(variants(selector));
+					});
+				}
 				if (/[+~]/.test(rule.selectorText)) selectors = selectors.concat(siblingVariants(rule.selectorText));
 				if (/:has\(\s*[+~]/.test(rule.selectorText)) selectors = selectors.concat(hasSiblingVariants(rule.selectorText));
 				if (!selectors.length) continue;

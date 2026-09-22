@@ -37,15 +37,12 @@ function tmpl_file_exists($tmpl_name) {
 }
 
 /**
- * Render template based on the current request
- * 		- This function is called from /php/router.php
- * 		- It checks the current request and loads the appropriate template
- * 		- If no suitable template is found, it throws a WordPress error
+ * Get the name of the custom template for the current request
  *
- * @return void
- * 		Loads the appropriate template
+ * @return string
+ * 		Name of the template file in /php/custom/templates, or '' if there is none
  */
-function render() {
+function template_name() {
 	global $wp_query;
 	$tmpl_name = '';
 
@@ -144,6 +141,22 @@ function render() {
 			require get_stylesheet_directory() . '/php/custom/router.php';
 		}
 	}
+
+	return $tmpl_name;
+}
+
+/**
+ * Render template based on the current request
+ * 		- This function is called from /php/router.php
+ * 		- It checks the current request and loads the appropriate template
+ * 		- If no suitable template is found, it throws a WordPress error
+ *
+ * @return void
+ * 		Loads the appropriate template
+ */
+function render() {
+	global $wp_query;
+	$tmpl_name = template_name();
 
 	// Load template file if found
 	if ($tmpl_name) {
