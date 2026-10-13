@@ -29,7 +29,7 @@
 	<button
 		class="tab <?= $item['additional_classes'] ? esc_attr($item['additional_classes']) : '' ?>"
 		id="<?= $item['item_id'] ? esc_attr($item['item_id']) . '-tab' : $s['hash'] . '-tab-' . $idx ?>"
-		aria-controls="<?= esc_attr($s['hash'] . '-panel-' . $idx) ?>"
+		aria-controls="<?= esc_attr($item['item_id'] ? $item['item_id'] . '-panel' : $s['hash'] . '-panel-' . $idx) ?>"
 		aria-selected="<?= esc_attr($idx == 0 ? 'true' : 'false') ?>"
 		role="tab"
 		tabindex="<?= esc_attr($idx == 0 ? '' : '-1') ?>">

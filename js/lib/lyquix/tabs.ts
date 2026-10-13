@@ -103,9 +103,9 @@ export const tabs = (() => {
 					tabElem = jQuery(tabElem);
 
 					// The panel id
-					const panelId = tabElem.attr('id').replace('-tab-', '-panel-');
-					if (!jQuery('#' + panelId).length) {
-						warn('Tab panel element not found', panelId);
+					const panelId = getPanel(tabElem).attr('id');
+					if (!panelId) {
+						warn('Tab panel element not found', tabElem.attr('id'));
 						return;
 					}
 
@@ -150,7 +150,8 @@ export const tabs = (() => {
 
 						const newTabElem = jQuery(allTabs.get(newIndex));
 						(newTabElem.get(0) as HTMLElement).focus();
-						open(newTabElem.attr('id').replace('-tab-', '-panel-'));
+						const newPanelId = getPanel(newTabElem).attr('id');
+						if (newPanelId) open(newPanelId);
 					});
 				});
 
@@ -208,8 +209,8 @@ export const tabs = (() => {
 						headerElem = jQuery(headerElem);
 
 						// The panel element
-						const panelId = headerElem.attr('id').replace('-header-', '-panel-');
-						const panelElem = jQuery('#' + headerElem.attr('id').replace('-header-', '-content-'));
+						const panelId = headerElem.closest(cfg.tabs.tabPanelSelector).attr('id');
+						const panelElem = getAccordionElems(jQuery('#' + panelId)).contentElem;
 						// Add click listener
 						jQuery(headerElem).on('click', () => {
 							// Open accordion, close if clicked on again
@@ -246,7 +247,7 @@ export const tabs = (() => {
 
 							const newHeaderElem = jQuery(allHeaders.get(newIndex));
 							(newHeaderElem.get(0) as HTMLElement).focus();
-							open(newHeaderElem.attr('id').replace('-header-', '-panel-'));
+							open(newHeaderElem.closest(cfg.tabs.tabPanelSelector).attr('id'));
 						});
 					});
 				}
@@ -254,12 +255,70 @@ export const tabs = (() => {
 		}
 	};
 
+	/**
+	 * Find the panel of a tab: the element named by the tab's aria-controls, falling back to the id
+	 * conventions of the templates: `{hash}-tab-{n}` -> `{hash}-panel-{n}`, and, for items with an
+	 * Item ID, `{id}-tab` -> `{id}-panel`
+	 * @param tabElem jQuery object of the tab
+	 * @returns jQuery object of the panel (empty if not found)
+	 */
+	const getPanel = (tabElem) => {
+		const tabId = tabElem.attr('id') || '';
+		return findElem([
+			tabElem.attr('aria-controls'),
+			tabId.replace('-tab-', '-panel-'),
+			tabId.replace(/-tab$/, '-panel')
+		], cfg.tabs.tabPanelSelector);
+	};
+
+	/**
+	 * Find the tab of a panel: the element named by the panel's aria-labelledby, falling back to the
+	 * same id conventions as getPanel
+	 * @param panelElem jQuery object of the panel
+	 * @returns jQuery object of the tab (empty if not found)
+	 */
+	const getTab = (panelElem) => {
+		const panelId = panelElem.attr('id') || '';
+		return findElem([
+			panelElem.attr('aria-labelledby'),
+			panelId.replace('-panel-', '-tab-'),
+			panelId.replace(/-panel$/, '-tab')
+		], cfg.tabs.tabSelector);
+	};
+
+	/**
+	 * Find the accordion header and content elements of a panel (used when tabs convert to accordion)
+	 * @param panelElem jQuery object of the panel
+	 * @returns object with the headerElem and contentElem jQuery objects (empty if not found)
+	 */
+	const getAccordionElems = (panelElem) => {
+		return {
+			headerElem: panelElem.children(cfg.tabs.headerSelector).first(),
+			contentElem: panelElem.children(cfg.tabs.tabContentSelector).first()
+		};
+	};
+
+	/**
+	 * Return the first of the given ids that belongs to an element matching the selector
+	 * @param ids list of candidate element ids
+	 * @param selector selector the element must match
+	 * @returns jQuery object of the element (empty if none matches)
+	 */
+	const findElem = (ids, selector) => {
+		for (const id of ids) {
+			if (!id) continue;
+			const elem = jQuery(document.getElementById(id)).filter(selector);
+			if (elem.length) return elem;
+		}
+		return jQuery();
+	};
+
 	const open = (panelId) => {
 		log('Opening tab', panelId);
 
 		// The elements
 		const panelElem = jQuery('#' + panelId);
-		const tabElem = jQuery('#' + panelId.replace('-panel-', '-tab-'));
+		const tabElem = getTab(panelElem);
 		const tabsElem = panelElem.parent();
 		if (!panelElem.length || !tabElem.length) {
 			warn('Tab panel or tab element not found', panelId);
@@ -280,8 +339,7 @@ export const tabs = (() => {
 
 		if(accordionScreens.includes(responsive.screen)) {
 			// The elements
-			const headerElem = jQuery('#' + panelId.replace('-panel-', '-header-'));
-			const contentElem = jQuery('#' + panelId.replace('-panel-', '-content-'));
+			const { headerElem, contentElem } = getAccordionElems(panelElem);
 			if (headerElem.length && contentElem.length) {
 				// Toggle aria-hidden
 				contentElem.attr('aria-hidden', 'false');
@@ -324,7 +382,7 @@ export const tabs = (() => {
 
 		// The elements
 		const panelElem = jQuery('#' + panelId);
-		const tabElem = jQuery('#' + panelId.replace('-panel-', '-tab-'));
+		const tabElem = getTab(panelElem);
 		const tabsElem = panelElem.parent();
 		if (!panelElem.length || !tabElem.length) {
 			warn('Tab panel or tab element not found', panelId);
@@ -345,8 +403,7 @@ export const tabs = (() => {
 
 		if(accordionScreens.includes(responsive.screen)) {
 			// The elements
-			const headerElem = jQuery('#' + panelId.replace('-panel-', '-header-'));
-			const contentElem = jQuery('#' + panelId.replace('-panel-', '-content-'));
+			const { headerElem, contentElem } = getAccordionElems(panelElem);
 			if (headerElem.length && contentElem.length) {
 				// Toggle aria-hidden
 				contentElem.attr('aria-hidden', 'true');
