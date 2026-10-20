@@ -30,7 +30,7 @@ $contentField = '_block_content_';
     <button
         class="tab <?= !empty($item['additional_classes']) ? esc_attr($item['additional_classes']) : '' ?>"
         id="<?= !empty($item['item_id']) ? esc_attr($item['item_id']) . '-tab' : $settings['hash'] . '-tab-' . $idx ?>"
-        aria-controls="<?= esc_attr($settings['hash'] . '-panel-' . $idx) ?>"
+        aria-controls="<?= !empty($item['item_id']) ? esc_attr($item['item_id']) . '-panel' : esc_attr($settings['hash'] . '-panel-' . $idx) ?>"
         aria-selected="<?= esc_attr($idx == 0 ? 'true' : 'false') ?>"
         role="tab"
         tabindex="<?= esc_attr($idx == 0 ? '' : '-1') ?>">
