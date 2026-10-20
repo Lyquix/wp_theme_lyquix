@@ -28,7 +28,7 @@
 <section
 	class="tab-panel  <?= $item['additional_classes'] ? esc_attr($item['additional_classes']) : '' ?>"
 	id="<?= $item['item_id'] ? esc_attr($item['item_id']) . '-panel' : $s['hash'] . '-panel-' . $idx ?>"
-	aria-labelledby="<?= esc_attr($s['hash'] . '-tab-' . $idx) ?>"
+	aria-labelledby="<?= esc_attr($item['item_id'] ? $item['item_id'] . '-tab' : $s['hash'] . '-tab-' . $idx) ?>"
 	aria-hidden="<?= esc_attr($idx == 0 ? 'false' : 'true') ?>"
 	role="tabpanel"
 	tabindex="0">
@@ -38,7 +38,7 @@
 			class="accordion-header"
 			id="<?= esc_attr($s['hash'] . '-header-' . $idx) ?>"
 			aria-expanded="<?= esc_attr($idx == 0 ? 'true' : 'false') ?>"
-			aria-controls="<?= esc_attr($s['hash'] . '-panel-' . $idx) ?>"
+			aria-controls="<?= esc_attr($item['item_id'] ? $item['item_id'] . '-panel' : $s['hash'] . '-panel-' . $idx) ?>"
 			aria-hidden="true">
 			<?= esc_html($item['label']) ?>
 		</button>
